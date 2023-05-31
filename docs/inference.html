@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ADA511 Data science and data-driven engineering - 3&nbsp; Truth inference and probability inference</title>
+<title>ADA511 Data science and data-driven engineering - 3&nbsp; Inference</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,7 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./data_information.html" rel="next">
+<link href="./truth_probability_inference.html" rel="next">
 <link href="./statements.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -61,6 +61,8 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -73,7 +75,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./truth_probability.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Truth inference and probability inference</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./inference.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Inference</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -118,32 +120,38 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./truth_probability.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Truth inference and probability inference</span></span></a>
+  <a href="./inference.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./truth_probability_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Truth inference and probability inference</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./data_information.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data and information</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Data and information</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./probability_distributions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Allocation of uncertainty among possible data values: probability distributions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Allocation of uncertainty among possible data values: probability distributions</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./making_decisions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Making decisions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Making decisions</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./inference_exchangeability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">The most general inference problem</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">The most general inference problem</span></span></a>
   </div>
 </li>
     </ul>
@@ -156,15 +164,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#truth-falsity-and-their-consistency" id="toc-truth-falsity-and-their-consistency" class="nav-link active" data-scroll-target="#truth-falsity-and-their-consistency"><span class="header-section-number">3.1</span> Truth, falsity, and their consistency</a></li>
-  <li><a href="#inferences-without-uncertainty-the-truth-calculus" id="toc-inferences-without-uncertainty-the-truth-calculus" class="nav-link" data-scroll-target="#inferences-without-uncertainty-the-truth-calculus"><span class="header-section-number">3.2</span> Inferences without uncertainty: the truth calculus</a></li>
-  <li><a href="#making-room-for-uncertainty-plausibility-credibility-degree-of-belief-probability" id="toc-making-room-for-uncertainty-plausibility-credibility-degree-of-belief-probability" class="nav-link" data-scroll-target="#making-room-for-uncertainty-plausibility-credibility-degree-of-belief-probability"><span class="header-section-number">3.3</span> Making room for uncertainty:<br>Plausibility, credibility, degree of belief, probability</a></li>
-  <li><a href="#inferences-with-uncertainty-the-probability-calculus" id="toc-inferences-with-uncertainty-the-probability-calculus" class="nav-link" data-scroll-target="#inferences-with-uncertainty-the-probability-calculus"><span class="header-section-number">3.4</span> Inferences with uncertainty: the probability calculus</a>
-  <ul class="collapse">
-  <li><a href="#the-three-fundamental-laws-of-inference" id="toc-the-three-fundamental-laws-of-inference" class="nav-link" data-scroll-target="#the-three-fundamental-laws-of-inference"><span class="header-section-number">3.4.1</span> The Three Fundamental Laws of inference</a></li>
-  <li><a href="#bayess-theorem" id="toc-bayess-theorem" class="nav-link" data-scroll-target="#bayess-theorem"><span class="header-section-number">3.4.2</span> Bayes’s theorem</a></li>
-  </ul></li>
-  <li><a href="#common-points-of-certain-and-uncertain-inference" id="toc-common-points-of-certain-and-uncertain-inference" class="nav-link" data-scroll-target="#common-points-of-certain-and-uncertain-inference"><span class="header-section-number">3.5</span> Common points of certain and uncertain inference</a></li>
+  <li><a href="#what-is-inference" id="toc-what-is-inference" class="nav-link active" data-scroll-target="#what-is-inference"><span class="header-section-number">3.1</span> What is inference?</a></li>
   </ul>
 </nav>
     </div>
@@ -173,7 +173,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Truth inference and probability inference</span></h1>
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Inference</span></h1>
 </div>
 
 
@@ -188,33 +188,20 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="truth-falsity-and-their-consistency" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="truth-falsity-and-their-consistency"><span class="header-section-number">3.1</span> Truth, falsity, and their consistency</h2>
-</section>
-<section id="inferences-without-uncertainty-the-truth-calculus" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="inferences-without-uncertainty-the-truth-calculus"><span class="header-section-number">3.2</span> Inferences without uncertainty: the truth calculus</h2>
-</section>
-<section id="making-room-for-uncertainty-plausibility-credibility-degree-of-belief-probability" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="making-room-for-uncertainty-plausibility-credibility-degree-of-belief-probability"><span class="header-section-number">3.3</span> Making room for uncertainty:<br>Plausibility, credibility, degree of belief, probability</h2>
-</section>
-<section id="inferences-with-uncertainty-the-probability-calculus" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="inferences-with-uncertainty-the-probability-calculus"><span class="header-section-number">3.4</span> Inferences with uncertainty: the probability calculus</h2>
-<section id="the-three-fundamental-laws-of-inference" class="level3" data-number="3.4.1">
-<h3 data-number="3.4.1" class="anchored" data-anchor-id="the-three-fundamental-laws-of-inference"><span class="header-section-number">3.4.1</span> The Three Fundamental Laws of inference</h3>
-<ul>
-<li><p><em>Exercise: <a href="The_Monty_Hall_problem-exercise.pdf">Monty-Hall problem &amp; variations</a></em></p></li>
-<li><p><em>Exercise: clinical test &amp; diagnosis</em></p></li>
-</ul>
-</section>
-<section id="bayess-theorem" class="level3" data-number="3.4.2">
-<h3 data-number="3.4.2" class="anchored" data-anchor-id="bayess-theorem"><span class="header-section-number">3.4.2</span> Bayes’s theorem</h3>
-</section>
-</section>
-<section id="common-points-of-certain-and-uncertain-inference" class="level2" data-number="3.5">
-<h2 data-number="3.5" class="anchored" data-anchor-id="common-points-of-certain-and-uncertain-inference"><span class="header-section-number">3.5</span> Common points of certain and uncertain inference</h2>
-<blockquote class="blockquote">
-<p><em>No premises? No conclusions!</em></p>
-</blockquote>
+<section id="what-is-inference" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="what-is-inference"><span class="header-section-number">3.1</span> What is inference?</h2>
+<p>One core problem in all data-driven engineering applications – and in daily life too – is that <em>we would like to know something that we don’t know</em>. In other words, we would like to have more information. We may wish to acquire information out of simple curiosity; or we may need it for some specific reason or goal, as we’ll discuss later. Examples:</p>
+<ol type="1">
+<li>We’d like to know whether it’ll rain today, so we can decide whether to get an umbrella or rain clothes, or not to.</li>
+</ol>
+<!-- * We'd like to know the number of the winning lottery ticket (if we can manage to buy that number), so we can buy that Lamborghini. -->
+<ol start="2" type="1">
+<li><p>A clinician would like to know which disease affects a patient, so as to decide for the optimal treatment.</p></li>
+<li><p>The X-player of this game of Xs&amp;Os: <img src="XsOs.png" class="img-fluid" style="width:10.0%"><br>needs to know where put the next <span style="color:#CA5556"><strong>X</strong></span> in order to win.</p></li>
+<li><p>The computer of a self-driving car needs to know whether a particular patch of colours in the visual field is a person, so as to slow down the car and stop.</p></li>
+<li><p>A rocket engineer <a href="http://nasaphysics.cet.edu/escape-velocity.html">needs to know how much is <span class="math inline">\(\sqrt{2\,G\,M\,r}\)</span></a>, where <span class="math inline">\(G=6.67\cdot10^{-11}\;\mathrm{m^3\,s^{-2}\,kg^{-1}}\)</span>, and <span class="math inline">\(M\)</span> and <span class="math inline">\(r\)</span> are the mass and radius of the Earth, in order to launch a rocket to the Moon.</p></li>
+<li><p>An <a href="https://aerospaceamerica.aiaa.org/features/a-i-in-the-cockpit">aircraft’s autopilot system</a> needs to predict how altering a wing’s attack edge will change the aircraft’s roll.</p></li>
+</ol>
 
 
 </section>
@@ -460,8 +447,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./data_information.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data and information</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./truth_probability_inference.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Truth inference and probability inference</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
