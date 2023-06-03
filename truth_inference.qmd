@@ -1,0 +1,197 @@
+# Truth inference
+
+## Building blocks
+
+Consider the following trivial but certain inference:
+$$
+\frac{
+\textit{\small``My umbrella is either blue or red''}\quad
+\textit{\small``My umbrella is not red''}
+}{
+\textit{\small``My umbrella is blue''}
+}
+$$
+Above the line we write the sentences representing the data we have. Below the line we infer the information that supposedly interests us.
+
+How could we draw this obvious inference? Which rules did we follow?
+
+Logic is a huge field that formalizes and makes rigorous the rules that a rational person or an artificial intelligence should use in drawing certain inferences. We'll get a glimpse of it here, as a trampoline for jumping towards our data-driven engineering problems.
+
+### Basic sentences
+
+We start by writing down the _basic_^[A more technical term is "atomic"] sentences that constitute our data and that underlie the inferences we want to draw. "Basic" in the sense that we will not analyse these sentences into further sub-sentences. In the trivial example above we identify two such sentences: *"My umbrella is blue"*, and *"My umbrella is pink"*. Let's represent them by symbols:
+$$
+\begin{aligned}
+b &\coloneqq \textit{\small``My umbrella is blue''}
+\\
+r &\coloneqq \textit{\small``My umbrella is red''}
+\end{aligned}
+$$
+
+::: {.callout-warning appearance="simple"}
+## 
+Note a subtlety in our data -- and again why we need to make their underlying sentences as clear as possible: it is understood here that my umbrella is all of one colour.
+:::
+
+### Connectives
+
+You notice that we didn't consider *"My umbrella is either blue or red"* and *"My umbrella is not red"* as basic sentences. These sentences can indeed be expressed in terms of the basic sentences $b$ and $r$. We consider one way or operation to change a sentence into another related to it, and two ways or operations to combine two or more sentences together. These operations are called "connectives". Our natural language offer many more operations to combine sentences, but these three turn out to be all we need in virtually all engineering problems. The three connectives are:
+
+Not: $\lnot$
+: for example,
+$$
+\lnot r = \textit{\small``My umbrella is not red''}
+$$
+
+And: $\land$
+: for example,
+$$
+b \land r = \textit{\small``My umbrella is blue, and it is red''}
+$$
+
+Or: $\lor$
+: for example,
+$$
+b \lor r = \textit{\small``My umbrella is blue, or red, or both''}
+$$
+
+::: {.callout-warning appearance="simple"}
+## 
+Note some subtleties of the connectives:
+
+- "Not" doesn't mean some kind of complementary quality, but only the negation. For instance, $\lnot{}$*"The chair is black"* does not mean *"The chair is white"*.
+
+- $b \lor r$ does not exclude, a priori, that my umbrella cannot be both blue and black (there is a connective for that: "exclusive-or", but it can be constructed out of the three we already have.)
+:::
+
+From this last remark we see that the sentence *"My umbrella is either blue or red"* does not correspond to $b \lor r$. The sentence also means implicitly that my umbrella cannot be both blue or red. We could rewrite it as *"My umbrella is either blue or red, and it is not both blue and red"*. Convince yourself that in symbols we can write it like this:
+$$
+(b \lor r) \land \lnot(b \land r) =
+\textit{\small``My umbrella is either blue or red''}
+$$
+
+### Data or axioms
+
+Now we have the sentences to represent our data, and even symbols to represent it in a compact way. But what do our data actually say? They say that the sentences *"My umbrella is either blue or red"* and *"My umbrella is not red"* are true. Here's how we express this in symbols.
+
+We represent our data by the symbol $D$ and use the notation^[Current notation in logic writes $D\models \lnot r.$ We use a different notation for an easier transition to probability logic.]
+
+$$
+\begin{aligned}
+\lnot r \:\vert&\:\mathopen{}D
+\\
+(b \lor r) \land \lnot(b \land r) \:\vert&\:\mathopen{}D
+\end{aligned}
+$$
+
+to mean that *"My umbrella is not red"* and *"My umbrella is either blue or red"* are `true` according to our data.
+
+With this notation we can also augment our data with additional assumptions or hypotheses, even if just temporarily. For example,
+
+$$
+\lnot r \:\vert\:\mathopen{}b \land D
+$$
+
+means that *"My umbrella is not red"* is `true` according to data $D$ *together with* the additional assumption that *"My umbrella is blue"* is `true`.
+
+
+## Truth-inference rules
+
+Formal logic gives us a set of rules for making correct inferences. These rules can be represented in a wide variety of ways. For instance as lines: above, we write what the data say; below, what inference we can draw. An example is this:
+
+$$
+\frac{
+a \land b \:\vert\:\mathopen{} D
+}{
+a \:\vert\:\mathopen{} D
+}
+$$ {#eq-example-rule}
+
+In total there are a dozen or so rules of this kind.
+
+But we can compactly encode all these rules in the following way. First, represent `true` with the number $1$, and `false` with $0$. Second, express the fact that a sentence $a$ -- which can be made of subsentences combined by connectives -- is `true` according to data $D$ by writing
+
+$$
+\mathrm{T}(a \:\vert\:\mathopen{} D) = 1
+$$
+
+and that it is `false` according to $D$ by writing
+
+$$
+\mathrm{T}(a \:\vert\:\mathopen{} D) = 0
+$$
+
+Then the rules of truth inference are summarized by the following equations, which must always hold:
+
+:::: {.column-page-inset-right style="color:#228833"}
+::: {.border}
+Rule for "not":
+: $$\mathrm{T}(\lnot a \:\vert\:\mathopen{} D) 
++ \mathrm{T}(a \:\vert\:\mathopen{} D)
+= 1$$ {#eq-t-not}
+
+Rule for "and":
+: $$
+\mathrm{T}(a \land b \:\vert\:\mathopen{} D) 
+= \mathrm{T}(a \:\vert\:\mathopen{} b \land D) \cdot
+\mathrm{T}(b \:\vert\:\mathopen{} D) 
+= \mathrm{T}(b \:\vert\:\mathopen{} a \land D) \cdot
+\mathrm{T}(a \:\vert\:\mathopen{} D)
+$$ {#eq-t-and}
+
+Rule for "or":
+: $$\mathrm{T}(a \lor b \:\vert\:\mathopen{} D) 
+= \mathrm{T}(a \:\vert\:\mathopen{} D) +
+\mathrm{T}(b \:\vert\:\mathopen{} D) 
+- \mathrm{T}(a \land b \:\vert\:\mathopen{} D)
+$$ {#eq-t-or}
+
+Rule of self-consistency:
+: $$\mathrm{T}(a \:\vert\:\mathopen{} a \land D) 
+= 1
+$$ {#eq-t-axiom}
+:::
+::::
+
+\
+
+Let's see how the inference rule (@eq-example-rule), for example, is encoded in these equations. The rule starts with saying that $a \land b$ is `true` according to $D$. This means that $\mathrm{T}(a \land b \:\vert\:\mathopen{} D)=1$. But, by rule (@eq-t-and), we must then have $\mathrm{T}(b \:\vert\:\mathopen{} a \land D) \cdot
+\mathrm{T}(a \:\vert\:\mathopen{} D) = 1$. This can only happen if both $\mathrm{T}(b \:\vert\:\mathopen{} a \land D)$ and $\mathrm{T}(a \:\vert\:\mathopen{} D)$ are equal to $1$. So we can conclude that $\mathrm{T}(a \:\vert\:\mathopen{} D)=1$, which is exactly the conclusion under the line in rule (@eq-example-rule).
+
+::: {.callout-caution}
+## Exercise
+Try to prove our initial inference
+
+$$
+\frac{
+(b \lor r) \land \lnot (b \land r) \:\vert\:\mathopen{} D
+\qquad
+\lnot r \:\vert\:\mathopen{} D
+}{
+b\:\vert\:\mathopen{} D
+}
+$$
+
+using the basic rules (@eq-t-not, @eq-t-and, @eq-t-or, @eq-t-axiom). Remember that you can use each rule as many times as you like, and that there is not only one way of constructing a proof.
+:::
+
+
+## Logical AI agents and their limitations
+
+The basic rules above are also the rules that a logical artificial-intelligent agent should follow. 
+
+::: {.column-margin}
+::: {.callout-tip}
+## Reading material
+[§&nbsp;7 in _Artificial Intelligence_](https://hvl.instructure.com/courses/25074/modules/items/660089)
+:::
+:::
+
+Many -- if not most -- inference problems that a data engineer must face are, however, of the *uncertain* kind: it is not possible to surely infer the truth of some data, and the truth of some initial data may not be known either. In the next chapter we shall see how to generalize the logic rules to uncertain situations.
+
+
+
+::: {.callout-tip}
+## Extra reading material
+Our cursory visit of formal logic only showed a microscopic part of this vast field. The study of logic rules continues still today, with many exciting developments and applications. Feel free take a look at [*Logic in Computer Science*](https://hvl.instructure.com/courses/25074/modules/items/661036) and [*Mathematical Logic for Computer Science*](https://hvl.instructure.com/courses/25074/modules/items/661146).
+:::
