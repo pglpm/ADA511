@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ADA511: Data science and data-driven engineering - 3&nbsp; Inference</title>
+<title>ADA511: Data science and data-driven engineering - 8&nbsp; The most general inference problem</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./truth_probability_inference.html" rel="next">
-<link href="./sentences.html" rel="prev">
+<link href="./making_decisions.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -61,12 +60,10 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
-<body class="nav-sidebar floating slimcontent">
+<body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -75,7 +72,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./inference.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Inference</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./inference_exchangeability.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">The most general inference problem</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -123,13 +120,13 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./inference.html" class="sidebar-item-text sidebar-link active">
+  <a href="./inference.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./truth_probability_inference.html" class="sidebar-item-text sidebar-link">
+  <a href="./truth_probability.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Truth inference and probability inference</span></span></a>
   </div>
 </li>
@@ -153,7 +150,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./inference_exchangeability.html" class="sidebar-item-text sidebar-link">
+  <a href="./inference_exchangeability.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">The most general inference problem</span></span></a>
   </div>
 </li>
@@ -163,20 +160,14 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#what-is-inference" id="toc-what-is-inference" class="nav-link active" data-scroll-target="#what-is-inference"><span class="header-section-number">3.1</span> What is inference?</a></li>
-  </ul>
-</nav>
+        
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Inference</span></h1>
+<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">The most general inference problem</span></h1>
 </div>
 
 
@@ -191,47 +182,8 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="what-is-inference" class="level2 page-columns page-full" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="what-is-inference"><span class="header-section-number">3.1</span> What is inference?</h2>
-<p>The first core problem in all data-driven engineering applications – and in daily life too – is that <em>we would like to know something we don’t</em>. In other words, we’d like to acquire information. We may wish to acquire information out of simple curiosity, or we may need it for some specific engineering reason or goal, as we’ll discuss later. Examples:</p>
-<ol type="1">
-<li>We’d like to know whether it’ll rain today, so we can decide whether to get an umbrella or rain clothes.</li>
-</ol>
-<!-- * We'd like to know the number of the winning lottery ticket (if we can manage to buy that number), so we can buy that Lamborghini. -->
-<ol start="2" type="1">
-<li><p>A clinician would like to know which disease affects a patient, so as to decide for the optimal treatment.</p></li>
-<li><p>The X-player of this game of Xs&nbsp;&amp;&nbsp;Os: <img src="XsOs.png" class="img-fluid" style="width:5.0%"> needs to know where put the next <span style="color:#CA5556"><strong>X</strong></span> in order to win.</p></li>
-<li><p>The computer of a self-driving car needs to know whether a particular patch of colours in the visual field is a person, so as to slow down the car and stop.</p></li>
-<li><p>A rocket engineer needs to know, within two significant digits, <a href="http://nasaphysics.cet.edu/escape-velocity.html">how much is the velocity <span class="math inline">\(\sqrt{2\,G\,M/r\,}\)</span></a>, where <span class="math inline">\(G=6.67 \cdot 10^{-11}\,\mathrm{m^3\,s^{-2}\,kg^{-1}}\)</span>, and <span class="math inline">\(M = 5.97 \cdot 10^{24}\,\mathrm{kg}\)</span> and <span class="math inline">\(r = 6.37 \cdot 10^{6}\,\mathrm{m}\)</span> are the mass and radius of the Earth, in order to launch a rocket to the Moon.</p></li>
-<li><p>We’d like to know whether the coin will come down heads, so we can win a bet.</p></li>
-<li><p>An <a href="https://aerospaceamerica.aiaa.org/features/a-i-in-the-cockpit">aircraft’s autopilot system</a> needs to predict how much the <a href="https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/roll.html">aircraft’s roll</a> will change by increasing the right wing’s <a href="https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/incline.html">angle of attack</a> by 0.1&nbsp;rad.</p></li>
-<li><p>An archaeologist would like to know whether the fossil bone just dug out belonged to a Tyrannosaurus rex.</p></li>
-<li><p>An automated system in an assembly line needs to predict whether an electric component of a widget will fail within the next two years.</p></li>
-</ol>
-<p><br>
-</p>
-<p>Note how each of these inferences boils down to wanting to know whether some sentences are true or false. In example 1., we want to know whether the sentence “<em>It rains today</em>” is true or not. In example 2., the clinician wants to know which of the sentences “<em>The patient has pneumonia</em>”, “<em>The patient has asthma</em>”, “<em>The patient has bronchitis</em>”, and so on, are true (several can be true at the same time). In example 5., the rocket engineer wants to know which among the sentences “<em>The velocity is&nbsp;&nbsp;<span class="math inline">\(1.0\,\mathrm{m/s}\)</span></em>”, “<em>The velocity is&nbsp;&nbsp;<span class="math inline">\(1.1\,\mathrm{m/s}\)</span></em>”, “<em>The velocity is&nbsp;&nbsp;<span class="math inline">\(1.2\,\mathrm{m/s}\)</span></em>”, and so on, is true.</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Try to identify which sentences characterize the other example inferences</p>
-</div>
-</div>
-</div></div><p>The example inferences above present very different levels of difficulty.</p>
-<p>Example inferences 3. and 5. are special because they can actually be made <em>exactly</em>. In example 3., we trivially see that putting the next <span style="color:#CA5556"><strong>X</strong></span> in the mid-right slot makes the X-player win. In example 5., a couple of mathematical operations give the approximate value <span class="math inline">\(11\,\mathrm{km/s}\)</span> for the velocity. When we can obtain data we want from the data we have by using “only” logic and mathematical operations, we call the inference a <em>deduction</em>. We say “only” in quotation marks because the logical analysis and operations leading to the answer can still be computationally very expensive. But every deduction can be basically made by repeatedly applying the rules of logic.</p>
-<p>The other example inferences cannot be made exactly, in the sense that we cannot get</p>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -469,14 +421,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./sentences.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data: use and communication</span></span>
+      <a href="./making_decisions.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Making decisions</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./truth_probability_inference.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Truth inference and probability inference</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
