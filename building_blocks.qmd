@@ -1,0 +1,98 @@
+# Building blocks
+
+Every data-driven engineering problem is unique. But there also are similarities among all engineering problems. We shall now learn a framework, some notions, and a set of principles that allow us to frame and face any data-driven engineering problem, and any sub-problems into which a problem can be broken down. The set of principles is important because it mathematically guarantees an optimal solution to the problem -- within the goals, means, and data into which we framed the problem.
+
+## The framework: Decision Theory
+
+There is always a goal underlying any engineering problem. The problem itself is how to reach that goal. Typically there are several possible courses of actions available; the question is which one to choose. Choice of a specific action will lead to a set of consequences; this could be the goal we want to reach, but it could also be something else, possibly undesirable. The decision upon a specific action is often difficult because its consequences are not known with certainty. This uncertainty comes in turn from a more general uncertainty about the whole context of the problem: past or present unknown details, unknown future events and responses, and so on. 
+
+@@ example
+
+This is what we call a **decision problem**.
+
+A specific course of action may in turn be realized in several ways that are equivalent in regard to the outcome, but inequivalent in regard to costs, time, resources. We thus face a choice within a choice. In general, a decision problem may involve several decision sub-problems, in turn involving sub-sub-problems, and so on.
+
+The main engineering goal itself could be to design and build a device that chooses an optimal course of action in a specific kind of uncertain situation, in an automated way. Think for instance of an aeronautic engineer who is designing an autopilot system.
+
+To analyse and face this kind of situations, we would therefore like to have a framework that takes into consideration choices, consequences, costs and gains, and uncertainties. It must also be suited to recursive application if needed. And it must be suited to being used not only for human engineers, but also for automated or artificial-intelligence devices.
+
+Such a framework turns out to exist: it is called [**Decision Theory**]{.text-warning}.
+
+Decision theory has a long history, going back to Leibniz in the 1600s or maybe even to Aristotle in the &minus;300s, and appearing in its present form around 1920--1960. What's remarkable about it is that it is not only *a* framework, but *the* framework we must use. A logico-mathematical theorem shows that any framework that does not break basic optimality and rationality criteria has to be equivalent to Decision Theory (in other words, it can use different technical terminology and rewrite mathematical operations in a different way, but it boils down to the same notions and operations of Decision Theory). So if you wanted to invent and use another framework, then it either (a) would lead to some irrational or illogical consequences, or (b) would lead to results identical to Decision Theory's. Many frameworks that you are probably familiar with, such as optimization theory, are just specific applications or particular cases of Decision Theory.
+
+Decision theory consists of two main parts:  [**Probability Theory**]{.text-warning}, which deals with data, information, uncertainty, inference; and  [**Utility Theory**]{.text-warning}, which deals with actions, consequences, gain and loss, choice.
+
+
+## Basic notions
+
+Let us get acquainted with the main notions and building blocks of Decision Theory.
+
+:::{.callout-caution}
+## {{< fa seedling >}}
+
+Remember: the main goal is to be able to identify these notions in any data-driven engineering problem. What matters is not their technical names or formal definitions, but their roles and actual meaning in a concrete engineering problem.
+:::
+
+### Agents
+
+The agent is the person or device that has to make a choice between different courses of action. An agent has a specific set of data and background information available, a specific set of choices, and can incur specific gains or losses dependent on the consequences of the available choices.
+
+It is important to identify the agent or agents involved in a problem, because each one will generally have different data, or different available choices, or different gains and losses. A person buying an insurance policy from an insurance company is an example of two agents that have roughly the same data and a common course of action (buy-sell) that is optimal for both. The optimality comes from the fact that the two agents have very different gains and losses for their various courses of action.
+
+::: {.callout-caution}
+## {{< fa book-open >}} Reading
+[§ 1.1.4 in *Artificial Intelligence*](https://hvl.instructure.com/courses/25074/modules/items/660089)
+:::
+
+#### Notation
+
+When necessary, agents are typically denoted by capital letters: $A, B,\dotsc$. But we'll rarely need symbols for them.
+
+
+
+### Data, information, sentences
+
+What is "data"?
+
+"Data" (from Latin "given") is used more or less in the same sense as "information", and in these notes we'll use the two words as synonyms.
+
+"Data" is often presented as numbers; but it's obviously more than that. I give you this number: "8". Is it "data"? what is it about? what should you do with it? We can hardly call this number a piece of information, since we have no clue what we could do with it. Instead, if I tell you: "*[The number of official planets in the solar system is 8](https://solarsystem.nasa.gov/planets/overview)*", then we can say that I've given you data. So "data" is not just numbers: a number is not "data" unless there's some verbal, non-numeric context associated with it -- even if this context is only implicitly understood.
+
+Data can also be completely non-numeric. A clinician saying "*The patient has fully recovered from the disease*" (we imagine to know who's the patient and what was the disease) is giving us a piece of information that we could further use, for instance, to make prognoses about other, similar patients. The clinician's statement surely is "data". It is essentially non-numeric data, even if in some situations we can represent it as "1", say, while "0" would represent "not recovered".
+
+From these two examples, and with some further thought, we realize that "data" -- and in general any piece of information or hypothesis -- can universally be represented and communicated by *sentences*, also called *propositions* or *statements*^[These terms are not always equivalent in Formal Logic, but here we'll use them as synonyms.]. In some cases we can summarize or represent such sentences as numbers. But the numbers alone, by themselves, are not data.
+
+Recognizing that data and information are ultimately represented by sentences has important practical consequences:
+
+- **Clarity, analysis, goal-orientation.** A data engineer must acquire information and convey information. Acquiring information is not simply making some measurement or counting something: the engineer must understand *what* is being measured and *why*. If data is gathered from third parties, the engineer must ask what exactly the data mean and how they were acquired. In designing and engineering a solution, it is important to understand what information or outcomes the end user exactly wants. As a data engineer it will often happen that you ask "wait, what do you mean by that?"; this question is not just an unofficial parenthesis in the official data-transfer workflow between you and someone else. It is an integral part of that workflow; it means that the data has not been completely transferred yet.
+
+- **Artificial Intelligence.** Sentences are the central components of knowledge representation and inference in artificial-intelligence agents.
+
+::: {.callout-caution}
+## {{< fa book-open >}} Reading
+[§ 7.1 in *Artificial Intelligence*](https://hvl.instructure.com/courses/25074/modules/items/660089)
+:::
+
+#### Notation
+
+Sentences are typically denoted by capital or lowercase letters: $A,B,a,b,\dotsc$.
+
+
+
+
+## Well-posed and ill-posed sentences
+
+We face problems when the sentences that should convey information and data are not clear. Suppose that an electric-car model [consumes 150 Wh/km](https://ev-database.org/cheatsheet/energy-consumption-electric-car) and [has a range of 200 km](https://ev-database.org/cheatsheet/range-electric-car); a second car model consumes 250 Wh/km and has a range of 600 km. Someone says "I think the second model is better; what do you think?". It isn't clear how we should answer; what does "better" mean? If it refers to consumption, then the first car model is "better". If it refers to range, then the second model is "better". If it refers to a combination of these two characteristics, or to something else, then we simply can't answer. Here we have a problem with querying and giving data, because the sentence underlying such query is not clear.
+
+We say that such sentences are **not well-posed**, or that they are **ill-posed**.
+
+This may seem an obvious discussion to you. Yet you'd be surprised by how often unclear sentences appear in scientific papers about data engineering! Not seldom we find discussions and disagreements that actually come from unclear underlying sentences, that two parties interpret in different ways.
+
+As a data engineer, you'll often have the upper hand if you are on the lookout for ill-posed sentences. Whenever you face an important question, or you're given an important piece of information, or you must provide an important piece of information, *always take a little time to examine whether the question or information is actually well-posed*.
+
+@@ [TODO] Exercise: give actual paper to analyse_
+
+
+
+## Reading list {.unnumbered}
+
