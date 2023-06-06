@@ -3,15 +3,20 @@
 
 ## When truth isn't known: probability
 
-
-
-In most real-life and engineering situations we don't know the truth or falsity of sentences that interest us. But this doesn't mean that nothing can be said or done in such situations.
+In most real-life and engineering situations we don't know the truth or falsity of sentences and hypotheses that interest us. But this doesn't mean that nothing can be said or done in such situations.
 
 When we cross a busy city street we look left and right to check whether any cars are approaching. We typically don't look up to check whether something is falling from the sky. Yet, couldn't it be `false` that cars are approaching? and couldn't it be `true` that [some object is falling from the sky ](https://www.aerotime.aero/articles/32818-cessna-door-falls-off-lands-in-parking-lot)? Of course both events are possible. Then why do we look left and right, but not up?
 
 The main reason^[We shall see later that one more factor enters the explanation.] is that we *believe strongly* that cars might be approaching, *believe very weakly* that some object might be falling from the sky. In other words, we consider the first occurrence to be very *probable*; the second, extremely improbable.
 
-We shall take the notion of **probability** as intuitively understood (just as we did with the notion of truth). Probabilities are quantified between `0` and `1`, or equivalently between `0%` and `100%`. Assigning to a sentence a probability `1` is the same as saying that it is `true`; and a probability `0`, that it is `false`. A probability of `0.5` represents a belief completely symmetric with respect to truth and falsity.
+We shall take the notion of **probability** as intuitively understood (just as we did with the notion of truth). Terms equivalent for "probability" are *degree of belief*, *plausibility*, *credibility*.
+
+:::{.callout-important appearance="simple"}
+##
+{{< fa exclamation-circle >}} In technical discourse, *likelihood* means something different and is *not* a synonym of "probability", as we'll explain later.
+:::
+
+Probabilities are quantified between `0` and `1`, or equivalently between `0%` and `100%`. Assigning to a sentence a probability `1` is the same as saying that it is `true`; and a probability `0`, that it is `false`. A probability of `0.5` represents a belief completely symmetric with respect to truth and falsity.
 
 It is important to emphasize and agree on some facts about probabilities:
 
@@ -23,13 +28,17 @@ $$
 $$
 \pr{The average power output in the next hour will be \emph{set} to 100\,MW}
 $$
-	the quantity is the same, but the meaning is very different. The probability can therefore be very different (if the engineer is the person deciding the output, the probability is `100%`). The probability depends not only on a number, but on what it's being done with that number -- measuring, setting, third-party reporting, and so on.
+	the quantity is the same, but the meaning is very different. The probability can therefore be very different (if the engineer is the person deciding the output, the probability is `100%`). The probability depends not only on a number, but on what it's being done with that number -- measuring, setting, third-party reporting, and so on. Often we still write simply $\pr{\(\mathsf{O = 100\,W}\)}$ or even just $\pr{100\,W}$, provided that the full sentence behind the shorthand is understood.
+	
 
 - **Probabilities are agent- and context-dependent**. A coin is tossed, comes down heads, and is quickly hidden from view. Alice sees that it landed heads-up. Bob instead doesn't manage to see the outcome and has no clue. Alice considers the sentence $\pr{Coin came down heads}$ to be `true`, that is, to have `100%` probability. Bob considers the same sentence to have `50%` probability.
 
     Note how Alice and Bob assign two different probabilities to the same sentence; yet both assignments are completely rational. If Bob assigned `100%` to $\pr{heads}$, we would suspect that he had seen the outcome after all; if he assigned `0%` to $\pr{heads}$, we would consider that groundless and silly. We would be baffled if Alice assigned `50%` to $\pr{heads}$, because she saw the outcome was actually heads; we would hypothesize that she feels unsure about what she saw.
 
-> Note on omniscience and "true" probability being just 0 or 1.
+    An omniscient agent would know the truth or falsity of every sentence, and assign only probabilities `0` or `1`. Some authors speak of "*actual* (but unknown) probabilities"; if there were "actual" probabilities, they would be all `0` or `1`, and it would be pointless to speak about probabilities at all -- every inference would be a truth inference.
+
+
+- **Probabilities are not frequencies**. The fraction of defective mechanical components to total components produced per year in some factory is a quantity that can be physically measured and would be agreed upon by every agent. It is a *frequency*, not a degree of belief or probability. It is important to understand the difference between them, to avoid making sub-optimal decision. Frequencies can be unknown to some agents, probabilities cannot be unknown (but can be difficult to calculate). Be careful when you read authors speaking of an "unknown probability"; either they actually mean "unknown frequency", or they don't quite understand what they're speaking about.
 
 
 - **Probabilities are not physical properties**. Whether a tossed coin lands heads up or tails up is fully determined by the initial conditions (position, orientation, momentum, rotational momentum) of the toss and the boundary conditions (air velocity and pressure) during the flight. The same is true for all macroscopic engineering phenomena. (Even quantum phenomena have not been proved to be non-deterministic, and there are [deterministic and experimentally consistent](https://doi.org/10.48550/arXiv.quant-ph/9504010)  mathematical representations of quantum theory.)
@@ -40,10 +49,20 @@ $$
 <!-- We conclude that coin tossing is "physics" not "random." -->
 :::
 
-These three facts are not just a matter of principle. They have important practical consequences. A data engineer who is not attentive about the source of the data (measured? set? reported, and so maybe less trustworthy?), or who does not carefully assess the context of a probability, or who does not take advantage (when possible) of the physics involved in the engineering problem,
-will design a system with sub-optimal performance^[This fact can be mathematically proven.] -- or even cause deaths.
+These facts are not just a matter of principle. They have important practical consequences. A data engineer who is not attentive about the source of the data (measured? set? reported, and so maybe less trustworthy?), or who does not carefully assess the context of a probability, or who mixes it up with something else, or who does not take advantage (when possible) of the physics involved in the engineering problem, will design a system with sub-optimal performance^[This fact can be mathematically proven.] -- or even cause deaths.
 
+## No new building blocks
 
+In discussing [truth-inference](truth_inference.qmd) we introduced the notation $\mathrm{T}(a \| b \land D)$ to stand for the truth-value `0` or `1` of sentence $a$ in the context of data $D$ and supposing (even if only hypothetically) sentence $b$ to be true. We can simply extend this notation to probability-values, using a $\P$ instead of $\mathrm{T}$:
+$$\P(a \| b \land D) \in [0,1]$$
+represents the probability or degree of belief in sentence $a$ in the context of data $D$ and supposing also sentence $b$ to be true. Keep in mind that both $a$ and $b$ could be complex sentences (for instance $a = (\lnot c \lor d) \land e$). Note that truth-values are included as the special cases`1` or `0`:
+$$
+\P(a \| b \land D) = 0\text{ or }1
+\quad\Longleftrightarrow\quad
+\mathrm{T}(a \| b \land D) = 0\text{ or }1
+$$
+
+Extending our truth-inference notation to probability-inference notation has been straightforward. But how do the rules for truth-inference, [formulae @eq-t-not, @eq-t-or, @eq-t-and, @eq-t-unity], extend to rules for probability-inference?
 
 
 ## Making room for uncertainty:<br>Plausibility, credibility, degree of belief, probability
