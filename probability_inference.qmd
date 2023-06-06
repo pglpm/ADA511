@@ -49,7 +49,7 @@ $$
 <!-- We conclude that coin tossing is "physics" not "random." -->
 :::
 
-These facts are not just a matter of principle. They have important practical consequences. A data engineer who is not attentive about the source of the data (measured? set? reported, and so maybe less trustworthy?), or who does not carefully assess the context of a probability, or who mixes it up with something else, or who does not take advantage (when possible) of the physics involved in the engineering problem, will design a system with sub-optimal performance^[This fact can be mathematically proven.] -- or even cause deaths.
+These facts are not just a matter of principle. They have important practical consequences. A data engineer who is not attentive to the source of the data (measured? set? reported, and so maybe less trustworthy?), or who does not carefully assess the context of a probability, or who mixes it up with something else, or who does not take advantage (when possible) of the physics involved in the engineering problem, will design a system with sub-optimal performance^[This fact can be mathematically proven.] -- or even cause deaths.
 
 ## No new building blocks
 
@@ -96,7 +96,7 @@ The amazing result is that *the rules for truth-inference, formulae (@eq-t-not, 
 
 This important result was taken more or less for granted at least since Laplace in the 1700s. But was formally proven for the first time in the 1940s by R. T. Cox; the proof has been refined since then. What kind of proof is it? It shows that if we don't follow the rules we arrive at illogical conclusions; we'll show some examples later.
 
-So here are the fundamental rules of probability inference; in these rules, all probabilities can have values in the range $\P() \in [0,1]$, and the symbols $a,b,D$ represent sentences of any complexity:
+Here are the fundamental rules of probability inference. In these rules, all probabilities can have values in the range $\P() \in [0,1]$, and the symbols $a,b,D$ represent sentences of any complexity:
 
 
 
@@ -135,7 +135,7 @@ $$
 ::::
 :::::
 
-It is amazing that **ALL** inference is just a repeated application of these four rules -- billions of times or more in some inferences. All machine-learning algorithms are just applications or approximations of these rules. Methods that you may have heard about in statistics are just specific applications of these rules. Truth inferences are also special applications of these rules. Most of this course is, at bottom, just a study of how to apply these rules in particular kinds of problems.
+It is amazing that **ALL** inference is nothing else but a repeated application of these four rules -- billions of times or more, in some inferences. All machine-learning algorithms are just applications or approximations of these rules. Methods that you may have heard about in statistics are just specific applications of these rules. Truth inferences are also special applications of these rules. Most of this course is, at bottom, just a study of how to apply these rules in particular kinds of problems.
 
 ::: {.callout-caution}
 ## {{< fa book-open >}} Reading
@@ -151,24 +151,58 @@ It is amazing that **ALL** inference is just a repeated application of these fou
 
 ## How the inference rules are used
 
-The fundamental rules represent, first of all, constraints of logical consistency among probabilities. If we have probabilities $\P(a\|D)=0.7$, $\P(b\|a\land D)=0.1$, $\P(a\land b\|D)=0.2$, then there's an inconsistency somewhere, because these values violate the and-rule:\ \ $0.2 \ne 0.1 \cdot 0.7$.\ \ In this case we must find the inconsistency and solve it. The rules also imply more general constraints. For example it is easy to see that we must *always* have
+The fundamental rules represent, first of all, constraints of logical consistency among probabilities. If we have probabilities $\P(a\|D)=0.7$, $\P(b\|a\land D)=0.1$, $\P(a\land b\|D)=0.2$, then there's an inconsistency somewhere, because these values violate the and-rule:\ \ $0.2 \ne 0.1 \cdot 0.7$.\ \ In this case we must find the inconsistency and solve it. Since probabilities are quantified by real numbers, however, it's possible and acceptable to have slight discrepancies owing to numerical round-off errors.
+
+The rules also imply more general constraints. For example we must *always* have
 \begin{gather*}
 \P(a\land b \|D) \le \min\bigl\{\P(a\|D),\  \P(b\|D)\bigr\}
 \\
 \P(a\lor b \|D) \ge \max\bigl\{\P(a\|D),\  \P(b\|D)\bigr\}
 \end{gather*}
-\
+
+::: {.callout-caution icon=false}
+## {{< fa pen >}} Exercise
+Try to prove the two constraints above
+:::
 
 
-The rules also allow us to calculate new probabilities from given ones; the calculated probabilities will be automatically consistent. This is the main use of the rules in data-driven engineering problems. For each equation shown in the rules we can calculate one probability given the remaining ones in the equation, with some special cases when values of $0$ or $1$ appear.
+The main use of the rules in concrete applications is for calculating new probabilities from given ones. The calculated probabilities will be automatically consistent. For each equation shown in the rules we can calculate one probability given the remaining ones in the equation, with some special cases when values of $0$ or $1$ appear.
 
 For example, if we have $\P(a \land b\| D)=0.2$ and  $\P(a\|D)=0.7$, from the and-rule we find $\P(b\| a \land D)$:
-$$
-\P(b\| a \land D) = \frac{\P(a\land b \| D)}{\P(a\|D)} = \frac{0.2}{0.7} 
+\begin{multline*}
+\underbracket{\color[RGB]{34,136,51}\P(a \land b \| D)}_{0.2}
+= {\color[RGB]{238,102,119}\P(b \| a \land D)} \cdot
+\underbracket{\color[RGB]{34,136,51}\P(a \| D)}_{0.7}
+\quad\Longrightarrow
+\\
+{\color[RGB]{238,102,119}\P(b\| a \land D)} = 
+\frac{\color[RGB]{34,136,51}
+\P(a\land b \| D)
+}{\color[RGB]{34,136,51}
+\P(a\|D)
+} = \frac{0.2}{0.7} 
 \approx 0.2857
-$$
+\end{multline*}
 
-Since probabilities are quantified by real numbers, it's possible and acceptable to have slight discrepancies owing to numerical round-off errors.
+
+<!-- $$ -->
+<!-- \begin{aligned} -->
+<!-- &\underbracket{\color{#228833}\P(a \land b \| D)}_{0.2} -->
+<!-- = {\color{#EE6677}\P(b \| a \land D)} \cdot -->
+<!-- \underbracket{\color{#228833}\P(a \| D)}_{0.7} -->
+<!-- \quad\Longrightarrow -->
+<!-- \\ -->
+<!-- &\quad{\color{#EE6677}\P(b\| a \land D)} =  -->
+<!-- \frac{ -->
+<!-- \color{#228833}\P(a\land b \| D) -->
+<!-- }{ -->
+<!-- \color{#228833}\P(a\|D) -->
+<!-- } = \frac{0.2}{0.7}  -->
+<!-- \approx 0.2857 -->
+<!-- \end{aligned} -->
+<!-- $$ -->
+
+
 
 
 @@ umbrella example
@@ -226,3 +260,11 @@ Two other derived rules are used extremely often, so we treat them separately.
 
 ## Common points of certain and uncertain inference
 
+:::{.callout-important appearance="simple"}
+## {{< fa exclamation-circle >}} Differences in terminology
+- Some texts speak of the probability of a "random^[What does "random" mean? Good luck finding an understandable and non-circular definition in texts that use that word. In these notes, if the word "random" is ever used, it means "unpredictable" or "unsystematic".] variable", or more precisely of the probability that a random variable takes on a particular value. As you notice, we have just expressed that idea by means of a *sentence*. The viewpoint and terminology of random variables is a special case of that of sentences. As already discussed, in concrete applications it is important to know how a variable "takes on" a value: for example it could be directly measured, indirectly reported, or purposely set. Thinking in terms of sentences, rather than of random variables, allows us to account for these important differences.
+
+- Some texts speak of the probability of an "event". For all purposes an "event" is just what's expressed in a sentence.
+
+It's a question for sociology of science why some people keep on using less flexible points of view or terminologies. Probably they just memorize them as students and then a fossilization process sets in.
+:::
