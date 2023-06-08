@@ -179,6 +179,7 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#basic-sentences" id="toc-basic-sentences" class="nav-link" data-scroll-target="#basic-sentences">Basic sentences</a></li>
   <li><a href="#connectives" id="toc-connectives" class="nav-link" data-scroll-target="#connectives">Connectives</a></li>
+  <li><a href="#background-information-and-conditional" id="toc-background-information-and-conditional" class="nav-link" data-scroll-target="#background-information-and-conditional">Background information and conditional</a></li>
   <li><a href="#separating-assumptions-and-conclusions" id="toc-separating-assumptions-and-conclusions" class="nav-link" data-scroll-target="#separating-assumptions-and-conclusions">Separating assumptions and conclusions</a></li>
   </ul></li>
   <li><a href="#truth-inference-rules" id="toc-truth-inference-rules" class="nav-link" data-scroll-target="#truth-inference-rules"><span class="header-section-number">4.2</span> Truth-inference rules</a></li>
@@ -211,23 +212,27 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <section id="building-blocks" class="level2 page-columns page-full" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="building-blocks"><span class="header-section-number">4.1</span> Building blocks</h2>
-<p>Consider the following trivial but certain inference: <span class="math display">\[
-\frac{
-\textsf{\small`My umbrella is either blue or red'}\quad
-\textsf{\small`My umbrella is not red'}
-}{
-\textsf{\small`My umbrella is blue'}
-}
-\]</span> Above the line we write the sentences representing the data we have; or the data we imagine to have, if we’re drawing a hypothetical inference. Below the line we infer the information that interests us.</p>
-<p>How could we draw the obvious inference above? Which rules did we follow? Did we make any hidden assumptions, or use data that weren’t explicitly mentioned?</p>
+<p>Consider the following trivial but certain inference. Our data say that</p>
+<ul>
+<li><p><span class="math inline">\(\textsf{\small`If Rita has an umbrella, it is either blue or red'}\)</span></p></li>
+<li><p><span class="math inline">\(\textsf{\small`If Rita has an umbrella, it is not red'}\)</span></p></li>
+</ul>
+<p>We would like to know the colour of Rita’s umbrella, if she really has one.</p>
+<p>But from the data above we can indeed conclude</p>
+<ul>
+<li><span class="math inline">\(\textsf{\small`If Rita has an umbrella, it is blue'}\)</span></li>
+</ul>
+<p>This inference is obvious, but how could we draw it? Which rules did we follow? Did we make any hidden assumptions, or use data that weren’t explicitly mentioned? And from our data, can we say for certain whether Rita has an umbrella?</p>
 <p>Logic is a huge field that formalizes and makes rigorous the rules that a rational person or an artificial intelligence should use in drawing certain inferences. We’ll get a glimpse of it here, as a trampoline for jumping towards the more general inferences that we need in data-driven engineering problems.</p>
 <section id="basic-sentences" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="basic-sentences">Basic sentences</h3>
-<div class="page-columns page-full"><p>We start by writing down the <em>basic</em><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> sentences that constitute our data and that underlie the inferences we want to draw. “Basic” in the sense that we will not analyse these sentences into further sub-sentences. In the trivial example above we identify two such sentences: <span class="math inline">\(\textsf{\small`My umbrella is blue'}\)</span>, and <span class="math inline">\(\textsf{\small`My umbrella is red'}\)</span>. Let’s represent them by symbols: <span class="math display">\[
+<div class="page-columns page-full"><p>We start by writing down the <em>basic</em><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> sentences that constitute our data and that underlie the inferences we want to draw. “Basic” in the sense that we will not analyse these sentences into further sub-sentences. In the trivial example above we identify three such sentences: <span class="math inline">\(\textsf{\small`Rita has an umbrella'}\)</span>, <span class="math inline">\(\textsf{\small`The umbrella is blue'}\)</span>, and <span class="math inline">\(\textsf{\small`The umbrella is red'}\)</span>. Let’s represent them by symbols: <span class="math display">\[
 \begin{aligned}
-b &amp;\coloneqq \textsf{\small`My umbrella is blue'}
+h &amp;\coloneqq \textsf{\small`Rita has an umbrella'}
 \\
-r &amp;\coloneqq \textsf{\small`My umbrella is red'}
+b &amp;\coloneqq \textsf{\small`The umbrella is blue'}
+\\
+r &amp;\coloneqq \textsf{\small`The umbrella is red'}
 \end{aligned}
 \]</span></p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;A more technical term is “atomic”</p></li></div></div>
 <div class="callout callout-style-simple callout-warning no-icon callout-titled">
@@ -240,30 +245,30 @@ r &amp;\coloneqq \textsf{\small`My umbrella is red'}
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i> Note a subtlety in our data – and again why we need to make their underlying sentences as clear as possible: it is understood here that my umbrella is all of one colour.</p>
+<p><i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i> Note a subtlety in our data – and again why we need to make their underlying sentences as clear as possible: it is understood here that the umbrella is all of one colour. We’ll come back to this later.</p>
 </div>
 </div>
 </section>
-<section id="connectives" class="level3">
+<section id="connectives" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="connectives">Connectives</h3>
-<p>You notice that we didn’t consider <span class="math inline">\(\textsf{\small`My umbrella is either blue or red'}\)</span> and <span class="math inline">\(\textsf{\small`My umbrella is not red'}\)</span> as basic sentences. These sentences can indeed be expressed in terms of the basic sentences <span class="math inline">\(b\)</span> and <span class="math inline">\(r\)</span>. We consider one way or operation to change a sentence into another related to it, and two ways or operations to combine two or more sentences together. These operations are called “connectives”. Our natural language offers many more operations to combine sentences, but these three turn out to be all we need in virtually all engineering problems. The three connectives are:</p>
+<p>We didn’t consider <span class="math inline">\(\textsf{\small`The umbrella is either blue or red'}\)</span> and <span class="math inline">\(\textsf{\small`The umbrella is not red'}\)</span> as basic sentences. These sentences can indeed be expressed in terms of the basic sentences <span class="math inline">\(b\)</span> and <span class="math inline">\(r\)</span>. We consider one way or operation to change a sentence into another related to it, and two ways or operations to combine two or more sentences together. These operations are called <strong>connectives</strong>. Our natural language offers many more operations to combine sentences, but these three turn out to be all we need in virtually all engineering problems. The three connectives are:</p>
 <dl>
 <dt>Not: <span class="math inline">\(\lnot\)</span></dt>
 <dd>
 for example, <span class="math display">\[
-\lnot r = \textsf{\small`My umbrella is not red'}
+\lnot r = \textsf{\small`The umbrella is not red'}
 \]</span>
 </dd>
 <dt>And: <span class="math inline">\(\land\)</span></dt>
 <dd>
 for example, <span class="math display">\[
-b \land r = \textsf{\small`My umbrella is blue, and it is red'}
+b \land r = \textsf{\small`The umbrella is blue, and it is red'}
 \]</span>
 </dd>
 <dt>Or: <span class="math inline">\(\lor\)</span></dt>
 <dd>
 for example, <span class="math display">\[
-b \lor r = \textsf{\small`My umbrella is blue, or red, or both'}
+b \lor r = \textsf{\small`The umbrella is blue, or red, or both'}
 \]</span>
 </dd>
 </dl>
@@ -279,31 +284,52 @@ b \lor r = \textsf{\small`My umbrella is blue, or red, or both'}
 <div class="callout-body-container callout-body">
 <p><i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i> Note some subtleties of the connectives:</p>
 <ul>
-<li><p>“Not” doesn’t mean some kind of complementary quality, but only the negation. For instance, <span class="math inline">\(\lnot\textsf{\small`The chair is black'}\)</span> does not mean <span class="math inline">\(\textsf{\small`The chair is white'}\)</span>.</p></li>
-<li><p><span class="math inline">\(b \lor r\)</span> does not exclude, a priori, that my umbrella cannot be both blue and black (there is a connective for that: “exclusive-or”, but it can be constructed out of the three we already have.)</p></li>
-<li><p>It is important to distinguish between <em>logical</em> impossibility and <em>physical</em> impossibility. It is physically impossible that an umbrella be fully white and fully black, but formal logic does allow us to consider the sentence “the umbrella is fully white and fully black”, without setting it true or false a priori. We express its physical impossibility by assigning it the value <code>false</code> in any inference we want to make. This generality of formal logic is a feature: it allows us to entertain and study hypotheses when we still don’t know whether they are physically impossible. Scientific research would be impossible without this feature.</p></li>
+<li><p>“Not” doesn’t mean some kind of complementary quality, but only the negation. For instance, <span class="math inline">\(\lnot\textsf{\small`The umbrella is black'}\)</span> does not mean <span class="math inline">\(\textsf{\small`The umbrella is white'}\)</span>.</p></li>
+<li><p><span class="math inline">\(b \lor r\)</span> does not exclude, a priori, that the umbrella cannot be both blue and black (there is a connective for that: “exclusive-or”, but it can be constructed out of the three we already have.)</p></li>
+<li><p>It is important to distinguish between <em>logical</em> impossibility and <em>physical</em> impossibility. It is physically impossible that an umbrella be fully white and fully black, but formal logic does allow us to consider the sentence “the umbrella is fully white and fully black”, without setting it true or false a priori. We express its physical impossibility by assigning to it the value <code>false</code> in any inference we want to make. This generality of formal logic is a feature: it allows us to entertain and study hypotheses even if we still don’t know whether they are physically impossible. Scientific research could not be done without this feature.</p></li>
 </ul>
 </div>
 </div>
-<p>From this last remark we see that the sentence <span class="math inline">\(\textsf{\small`My umbrella is either blue or red'}\)</span> does not really correspond to <span class="math inline">\(b \lor r\)</span>, because the latter formula includes the possibility that my umbrella could be <em>both</em> blue <em>and</em> red. But we are implicitly assuming that this cannot happen; it’s physically impossible. We have thus discovered that there another piece of data hidden in our inference: my umbrella cannot be both blue and red. Convince yourself that we can write this hidden data like this: <span class="math display">\[
-\lnot(b \land r) \ .
-\]</span></p>
-<p>There’s even more information implicitly understood in our data. In our case, for example, it must be understood whose umbrella we’re speaking about, what an umbrella is, what “red” and “blue” mean, and so on. Usually this kind of data so obvious that we don’t think about it very much and don’t mention it. In real engineering problems, however, it may happen that we have to stop and examine this implicit knowledge, maybe to check whether there are contradictory data or goals. It’s a good idea to represent this implicitly-understood knowledge by a symbol, for example <span class="math inline">\(D\)</span> (for “extra data”; we could have used <span class="math inline">\(K\)</span> for “knowledge” or <span class="math inline">\(I\)</span> for “information”).</p>
+<p>What about the “if” in “if Rita…”? Shouldn’t that be a connective? This “if” is treated in a special way; we shall now see how it works.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><i class="fa-solid fa-info-circle" aria-label="info-circle"></i> There is an <a href="https://plato.stanford.edu/entries/logic-conditionals">old and still ongoing debate</a> in logic and probability on how to deal with this “if”. Here we take the seemingly most common approach, which is simple and effective in applied problems.</p>
+</div>
+</div>
+</div></div></section>
+<section id="background-information-and-conditional" class="level3">
+<h3 class="anchored" data-anchor-id="background-information-and-conditional">Background information and conditional</h3>
+<p>From this last remark we see that the sentence <span class="math inline">\(\textsf{\small`The umbrella is either blue or red'}\)</span> does not really correspond to <span class="math inline">\(b \lor r\)</span>, because the latter formula includes the possibility that the umbrella could be <em>both</em> fully blue <em>and</em> fully red. But we are implicitly assuming that this cannot happen; it’s physically impossible. We have thus discovered that there is another piece of data hidden in our inference: the umbrella cannot be both blue and red. Convince yourself that we can write such hidden data like this: <span class="math display">\[
+\lnot(b \land r) = \textsf{\small`The umbrella cannot be both blue and red'}\ .
+\]</span><br>
+</p>
+<p>There’s even more information implicitly understood in our data. As we mentioned above, it’s understood that the umbrella is all of one colour. It must also be understood what an umbrella is, what “red” and “blue” mean, and so on. Usually this kind of data is either extremely obvious or irrelevant, so we don’t think about it very much and don’t mention it. In real engineering problems, however, it may happen that we have to stop and examine this implicit, hidden knowledge, maybe to check whether it contains contradictory data or goals. It’s a good idea to represent this implicitly-understood knowledge by a symbol, for example <span class="math inline">\(D\)</span> (for “extra data”; we could have used <span class="math inline">\(K\)</span> for “knowledge” or <span class="math inline">\(I\)</span> for “information”).</p>
 <p><br>
 </p>
 <p>Let’s summarize the building blocks of our umbrella inference problem:</p>
 <ul>
 <li><p>Basic sentences:</p>
 <ul>
-<li><p><span class="math inline">\(b=\textsf{\small`My umbrella is blue'}\)</span>.</p></li>
-<li><p><span class="math inline">\(r=\textsf{\small`My umbrella is red'}\)</span>.</p></li>
+<li><p><span class="math inline">\(h=\textsf{\small`Rita has an umbrella'}\)</span>.</p></li>
+<li><p><span class="math inline">\(b=\textsf{\small`The umbrella is blue'}\)</span>.</p></li>
+<li><p><span class="math inline">\(r=\textsf{\small`The umbrella is red'}\)</span>.</p></li>
 <li><p><span class="math inline">\(D={}\)</span> (a long collection of sentences explaining all other information understood implicitly).</p></li>
 </ul></li>
 <li><p>Assumptions, explicit and implicit:</p>
 <ul>
-<li><p><span class="math inline">\(b\lor r= \textsf{\small`My umbrella is either blue or red'}\)</span></p></li>
-<li><p><span class="math inline">\(\lnot r = \textsf{\small`My umbrella is not red'}\)</span></p></li>
-<li><p><span class="math inline">\(\lnot (b \land r) = \textsf{\small`My umbrella cannot be both blue and red'}\)</span>; this is an implicitly understood fact.</p></li>
+<li><p><span class="math inline">\(b\lor r= \textsf{\small`The umbrella is either blue or red'}\)</span></p></li>
+<li><p><span class="math inline">\(\lnot r = \textsf{\small`The umbrella is not red'}\)</span></p></li>
+<li><p><span class="math inline">\(\lnot (b \land r) = \textsf{\small`The umbrella cannot be both blue and red'}\)</span>; this is an implicitly understood fact.</p></li>
 </ul></li>
 <li><p>Conclusions:</p>
 <ul>
@@ -322,21 +348,21 @@ b \nonscript\:\Big\vert\nonscript\:\mathopen{} (b\lor r)\, \land\, \lnot r\, \la
 </section>
 <section id="truth-inference-rules" class="level2 page-columns page-full" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="truth-inference-rules"><span class="header-section-number">4.2</span> Truth-inference rules</h2>
-<div class="page-columns page-full"><p>Deduction systems in formal logic give us a set of rules for making correct inferences, that is, for correctly determining whether the conclusions of interest are true or false. These rules are represented in a <a href="https://plato.stanford.edu/archives/spr2023/entries/natural-deduction">wide variety of ways</a> as steps leading from one conclusion to another one. Using the so-called sequent calculus, for instance, a proof of our inference would look like this<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>:</p><div class="no-row-height column-margin column-container"><li id="fn3"><p><sup>3</sup>&nbsp;Obtained with the online <a href="https://www.nayuki.io/page/propositional-sequent-calculus-prover">Propositional sequent calculus prover</a>.</p></li></div></div>
+<p>Deduction systems in formal logic give us a set of rules for making correct inferences, that is, for correctly determining whether the conclusions of interest are true or false. These rules are represented in a <a href="https://plato.stanford.edu/archives/spr2023/entries/natural-deduction">wide variety of ways</a>, as steps leading from one conclusion to another one. The picture here on the margin, for instance, shows how a proof of our inference would look like, using the so-called sequent calculus</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="umbrella_sequent_proof.png" class="img-fluid figure-img" style="width:50.0%"></p>
-<figcaption class="figure-caption">The top line is our inference; the lines below it represent steps in the proof. Steps with narrower indentation depend on steps with wider indentation. The two lines with widest indentation are <em>axioms</em>, that is, basic conclusions that we take as intuitively evident and don’t need further proof. Those two lines basically say something trivial: “if we assume that my umbrella is blue, then we can conclude that it is blue, within that assumption”, and analogously for “red”.</figcaption>
+<p><img src="umbrella_sequent_proof.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">The top line is our inference; the lines below it represent steps in the proof. Steps with narrower indentation depend on steps with wider indentation. The two lines with widest indentation are <em>axioms</em>, that is, basic truths that we take as intuitively evident and don’t need further proof. Those two lines basically say: “if we assume that my umbrella is blue, then we can conclude that it is blue, within that assumption”, and analogously for “red”. Proof obtained with the online <a href="https://www.nayuki.io/page/propositional-sequent-calculus-prover">Propositional sequent calculus prover</a>.</figcaption>
 </figure>
 </div>
-<p>Only particular steps are allowed – these are the inference rules, about a dozen or so in number for sequent calculus. For example, one rule says that @@<br>
+</div></div><p><br>
 </p>
-<p>We can compactly encode all these rules in the following way. First, represent <code>true</code> with the number <code>1</code>, and <code>false</code> with <code>0</code>. Second, if the conclusion <span class="math inline">\(C\)</span> given assumptions <span class="math inline">\(A\)</span> is true by writing <span class="math display">\[
-\mathrm{T}(C \nonscript\:\vert\nonscript\:\mathopen{} A) = 1
-\]</span> and that it is <code>false</code> according by writing <span class="math display">\[
-\mathrm{T}(C \nonscript\:\vert\nonscript\:\mathopen{} A) = 0
-\]</span></p>
-<p>Then the rules of truth inference are summarized by the following equations, which must always hold for any sentences <span class="math inline">\(A,B,C\)</span>, no matter whether they are basic or complex:</p>
+<p>We can compactly encode all these rules in the following way. First, represent <code>true</code> by the number <code>1</code>, and <code>false</code> by <code>0</code>. Second, symbolically write that conclusion <span class="math inline">\(C\)</span> is <code>true</code>, given assumptions <span class="math inline">\(A\)</span>, as follows: <span class="math display">\[
+\mathrm{T}(C \nonscript\:\vert\nonscript\:\mathopen{} A) = 1 \ .
+\]</span> or with <code>0</code> if it’s <code>false</code>.</p>
+<p>The rules of truth inference are then encoded by the following equations, which must always hold for any sentences <span class="math inline">\(A,B,C\)</span>, no matter whether they are basic or complex:</p>
 <div class="column-page-inset-right" style="color:#228833">
 <div class="border">
 <dl>
