@@ -12,15 +12,15 @@ $$
 \pr{My umbrella is blue}
 }
 $$
-Above the line we write the sentences representing the data we have. Below the line we infer the information that supposedly interests us.
+Above the line we write the sentences representing the data we have; or the data we imagine to have, if we're drawing a hypothetical inference. Below the line we infer the information that interests us.
 
-How could we draw this obvious inference? Which rules did we follow?
+How could we draw the obvious inference above? Which rules did we follow? Did we make any hidden assumptions, or use data that weren't explicitly mentioned?
 
-Logic is a huge field that formalizes and makes rigorous the rules that a rational person or an artificial intelligence should use in drawing certain inferences. We'll get a glimpse of it here, as a trampoline for jumping towards our data-driven engineering problems.
+Logic is a huge field that formalizes and makes rigorous the rules that a rational person or an artificial intelligence should use in drawing certain inferences. We'll get a glimpse of it here, as a trampoline for jumping towards the more general inferences that we need in data-driven engineering problems.
 
 ### Basic sentences
 
-We start by writing down the _basic_^[A more technical term is "atomic"] sentences that constitute our data and that underlie the inferences we want to draw. "Basic" in the sense that we will not analyse these sentences into further sub-sentences. In the trivial example above we identify two such sentences: $\pr{My umbrella is blue}$, and $\pr{My umbrella is pink}$. Let's represent them by symbols:
+We start by writing down the _basic_^[A more technical term is "atomic"] sentences that constitute our data and that underlie the inferences we want to draw. "Basic" in the sense that we will not analyse these sentences into further sub-sentences. In the trivial example above we identify two such sentences: $\pr{My umbrella is blue}$, and $\pr{My umbrella is red}$. Let's represent them by symbols:
 $$
 \begin{aligned}
 b &\coloneqq \pr{My umbrella is blue}
@@ -36,7 +36,7 @@ $$
 
 ### Connectives
 
-You notice that we didn't consider $\pr{My umbrella is either blue or red}$ and $\pr{My umbrella is not red}$ as basic sentences. These sentences can indeed be expressed in terms of the basic sentences $b$ and $r$. We consider one way or operation to change a sentence into another related to it, and two ways or operations to combine two or more sentences together. These operations are called "connectives". Our natural language offer many more operations to combine sentences, but these three turn out to be all we need in virtually all engineering problems. The three connectives are:
+You notice that we didn't consider $\pr{My umbrella is either blue or red}$ and $\pr{My umbrella is not red}$ as basic sentences. These sentences can indeed be expressed in terms of the basic sentences $b$ and $r$. We consider one way or operation to change a sentence into another related to it, and two ways or operations to combine two or more sentences together. These operations are called "connectives". Our natural language offers many more operations to combine sentences, but these three turn out to be all we need in virtually all engineering problems. The three connectives are:
 
 Not: $\lnot$
 : for example,
@@ -67,90 +67,95 @@ $$
 - It is important to distinguish between *logical* impossibility and *physical* impossibility. It is physically impossible that an umbrella be fully white and fully black, but formal logic does allow us to consider the sentence "the umbrella is fully white and fully black", without setting it true or false a priori. We express its physical impossibility by assigning it the value `false` in any inference we want to make. This generality of formal logic is a feature: it allows us to entertain and study hypotheses when we still don't know whether they are physically impossible. Scientific research would be impossible without this feature.
 :::
 
-From this last remark we see that the sentence $\pr{My umbrella is either blue or red}$ does not correspond to $b \lor r$. The sentence also means implicitly that my umbrella cannot be both blue or red. We could rewrite it as $\pr{My umbrella is either blue or red, and it is not both blue and red}$. Convince yourself that in symbols we can write it like this:
+From this last remark we see that the sentence $\pr{My umbrella is either blue or red}$ does not really correspond to $b \lor r$, because the latter formula includes the possibility that my umbrella could be *both* blue *and* red. But we are implicitly assuming that this cannot happen; it's physically impossible. We have thus discovered that there another piece of data hidden in our inference: my umbrella cannot be both blue and red. Convince yourself that we can write this hidden data like this:
 $$
-(b \lor r) \land \lnot(b \land r) =
-\pr{My umbrella is either blue or red}
-$$
-
-### Data or axioms
-
-Now we have the sentences to represent our data, and even symbols to represent it in a compact way. But what do our data actually say? They say that the sentences $\pr{My umbrella is either blue or red}$ and $\pr{My umbrella is not red}$ are true. Here's how we express this in symbols.
-
-We represent our data by the symbol $D$ and use the notation^[Current notation in logic writes $D\models \lnot r.$ We use a different notation for an easier transition to probability logic.]
-
-$$
-\begin{aligned}
-\lnot r \|&D
-\\
-(b \lor r) \land \lnot(b \land r) \|&D
-\end{aligned}
+\lnot(b \land r) \ .
 $$
 
-to mean that $\pr{My umbrella is not red}$ and $\pr{My umbrella is either blue or red}$ are `true` according to our data.
+There's even more information implicitly understood in our data. In our case, for example, it must be understood whose umbrella we're speaking about, what an umbrella is, what "red" and "blue" mean, and so on. Usually this kind of data so obvious that we don't think about it very much and don't mention it. In real engineering problems, however, it may happen that we have to stop and examine this implicit knowledge, maybe to check whether there are contradictory data or goals. It's a good idea to represent this implicitly-understood knowledge by a symbol, for example $D$ (for "extra data"; we could have used $K$ for "knowledge" or $I$ for "information").
 
-With this notation we can also augment our data with additional assumptions or hypotheses, even if just temporarily. For example,
+\
 
+Let's summarize the building blocks of our umbrella inference problem:
+
+- Basic sentences:
+
+    + $b=\pr{My umbrella is blue}$.
+
+    + $r=\pr{My umbrella is red}$.
+
+    + $D={}$ (a long collection of sentences explaining all other information understood implicitly).
+
+- Assumptions, explicit and implicit:
+
+    + $b\lor r= \pr{My umbrella is either blue or red}$
+
+    + $\lnot r = \pr{My umbrella is not red}$
+
+    + $\lnot (b \land r) = \pr{My umbrella cannot be both blue and red}$; this is an implicitly understood fact.
+
+- Conclusions:
+
+    + $b= \pr{My umbrella is blue}$
+
+### Separating assumptions and conclusions
+
+Now we have the sentences that represent all our data and the information we are interested in, and even symbols to represent them in a compact way. It's important to keep the assumptions we make well separated from the conclusions we want to draw. Let's introduce a symbol to do just that.
+
+We can simply use a vertical bar: on its right side we write the sentences that make up our assumptions, and on its left side those that make up our desired conclusions.^[Current notation in logic uses the symbols $\models$ or $\vdash$, and writes assumptions on the *left*, conclusions on the *right*. We use a different notation for an easier transition to probability logic.] So, in symbols, our inference is this:
 $$
-\lnot r \|b \land D
+b \|[\Big] (b\lor r)\, \land\, \lnot r\, \land\, \lnot(b \land r)\, \land\, D
 $$
+Note how we `and`-ed all assumptions together. The collection of assumptions on the right side of the bar "$\|[\big]$" is called the [**conditional**]{.text-warning}. The expression above is read "$b$ *given* $(b\lor r)$" etc., or "$b$ *conditional on* $(b\lor r)$" etc.
 
-means that $\pr{My umbrella is not red}$ is `true` according to data $D$ *together with* the additional assumption that $\pr{My umbrella is blue}$ is `true`.
+All data in the conditional (that is, on the right side of "$\|[\big]$") are considered (at least temporarily) to be `true`. Our goal is to determine whether the sentence on the left of "$\|[\big]$" is `true` or `false`.
 
 
 ## Truth-inference rules
 
-Deduction systems in formal logic give us a set of rules for making correct inferences. These rules can be represented in a wide variety of ways. For instance as lines: above, we write what the data say; below, what inference we can draw. An example is this:
+Deduction systems in formal logic give us a set of rules for making correct inferences, that is, for correctly determining whether the conclusions of interest are true or false. These rules are represented in a [wide variety of ways](https://plato.stanford.edu/archives/spr2023/entries/natural-deduction) as steps leading from one conclusion to another one. Using the so-called sequent calculus, for instance, a proof of our inference would look like this^[Obtained with the online [Propositional sequent calculus prover](https://www.nayuki.io/page/propositional-sequent-calculus-prover).]:
 
+![The top line is our inference; the lines below it represent steps in the proof. Steps with narrower indentation depend on steps with wider indentation. The two lines with widest indentation are *axioms*, that is, basic conclusions that we take as intuitively evident and don't need further proof. Those two lines basically say something trivial: "if we assume that my umbrella is blue, then we can conclude that it is blue, within that assumption", and analogously for "red".](umbrella_sequent_proof.png){width=50%}
+
+Only particular steps are allowed -- these are the inference rules, about a dozen or so in number for sequent calculus. For example, one rule says that @@ 
+\
+
+We can compactly encode all these rules in the following way. First, represent `true` with the number `1`, and `false` with `0`. Second, if the conclusion $C$ given assumptions $A$ is true by writing
 $$
-\frac{
-a \land b \| D
-}{
-a \| D
-}
-$$ {#eq-example-rule}
-
-In total there are a dozen or so rules of this kind.
-
-But we can compactly encode all these rules in the following way. First, represent `true` with the number $1$, and `false` with $0$. Second, express the fact that a sentence $a$ -- which can be made of subsentences combined by connectives -- is `true` according to data $D$ by writing
-
+\mathrm{T}(C \| A) = 1
 $$
-\mathrm{T}(a \| D) = 1
+and that it is `false` according by writing
+$$
+\mathrm{T}(C \| A) = 0
 $$
 
-and that it is `false` according to $D$ by writing
-
-$$
-\mathrm{T}(a \| D) = 0
-$$
-
-Then the rules of truth inference are summarized by the following equations, which must always hold:
+Then the rules of truth inference are summarized by the following equations, which must always hold for any sentences $A,B,C$, no matter whether they are basic or complex:
 
 :::: {.column-page-inset-right style="color:#228833"}
 ::: {.border}
 Rule for "not":
-: $$\mathrm{T}(\lnot a \| D) 
-+ \mathrm{T}(a \| D)
+: $$\mathrm{T}(\lnot A \| B) 
++ \mathrm{T}(A \| B)
 = 1$$ {#eq-t-not}
 
 Rule for "and":
 : $$
-\mathrm{T}(a \land b \| D) 
-= \mathrm{T}(a \| b \land D) \cdot
-\mathrm{T}(b \| D) 
-= \mathrm{T}(b \| a \land D) \cdot
-\mathrm{T}(a \| D)
+\mathrm{T}(A \land B \| C) 
+= \mathrm{T}(A \| B \land C) \cdot
+\mathrm{T}(B \| C) 
+= \mathrm{T}(B \| A \land C) \cdot
+\mathrm{T}(A \| C)
 $$ {#eq-t-and}
 
 Rule for "or":
-: $$\mathrm{T}(a \lor b \| D) 
-= \mathrm{T}(a \| D) +
-\mathrm{T}(b \| D) 
-- \mathrm{T}(a \land b \| D)
+: $$\mathrm{T}(A \lor B \| C) 
+= \mathrm{T}(A \| C) +
+\mathrm{T}(B \| C) 
+- \mathrm{T}(A \land B \| C)
 $$ {#eq-t-or}
 
 Rule of self-consistency:
-: $$\mathrm{T}(a \| a \land D) 
+: $$\mathrm{T}(A \| A \land C) 
 = 1
 $$ {#eq-t-unity}
 :::
