@@ -4,7 +4,7 @@
 |------|---------------------------------------------|
 | 33   |                                             |
 |      |                                             |
-| 34   | Agents, data, information, representation \ |
+| 34   | Agents, data, information, representation <br> |
 |      | truth inference                         \   |
 |      | probability inference                       |
 |      |                                             |
