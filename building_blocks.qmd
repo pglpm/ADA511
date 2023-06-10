@@ -87,10 +87,85 @@ A set of data, being a collection of sentences, will also be denoted by this kin
 
 
 
+"Basic" in the sense that we will not analyse these sentences into further sub-sentences. In the trivial example above we identify three such sentences: $\pr{Rita has an umbrella}$, $\pr{The umbrella is blue}$, and $\pr{The umbrella is red}$. Let's represent them by symbols:
+$$
+\begin{aligned}
+b &\coloneqq \pr{Rita's umbrella is blue}
+\\
+r &\coloneqq \pr{Rita's umbrella is red}
+\end{aligned}
+$$
+
+<!-- ::::{.column-margin} -->
+<!-- ::: {.callout-warning appearance="simple"} -->
+<!-- ## -->
+<!-- {{< fa exclamation-triangle >}} Note a subtlety in our data -- and again why we need to make their underlying sentences as clear as possible: it is understood here that the umbrella is all of one colour. We'll come back to this later. -->
+<!-- ::: -->
+<!-- :::: -->
+
+### Connectives
+
+We didn't consider $\pr{Rita's umbrella is either blue or red}$, $\pr{The umbrella is not blue}$, and $\pr{The umbrella is not red}$ as basic sentences. These sentences can in fact be expressed in terms of the basic sentences $b$ and $r$. We consider one way or operation to change a sentence into another related to it, and two ways or operations to combine two or more sentences together. These operations are called **connectives**. Our natural language offers many more operations to combine sentences, but these three turn out to be all we need in virtually all engineering problems. The three connectives are:
+
+Not: $\lnot$
+: for example,
+$$
+\lnot b = \pr{Rita's umbrella is not blue}
+$$
+
+And: $\land$
+: for example,
+$$
+b \land r = \pr{Rita's umbrella is blue, and it is red}
+$$
+
+Or: $\lor$
+: for example,
+$$
+b \lor r = \pr{Rita's umbrella is blue, or red, or both}
+$$
+
+::: {.callout-warning appearance="simple"}
+## 
+{{< fa exclamation-triangle >}} Note some subtleties of the connectives:
+
+- "Not" doesn't mean some kind of complementary quality, but only the negation. For instance, $\lnot\pr{Rita's umbrella is black}$ does not mean $\pr{Rita's umbrella is white}$.
+
+- $b \lor r$ does not exclude, a priori, that the umbrella cannot be both blue and black (there is a connective for that: "exclusive-or", but it can be constructed out of the three we already have.)
+
+- It is important to distinguish between *logical* impossibility and *physical* impossibility. It is physically impossible that an umbrella be fully white and fully black, but formal logic does allow us to consider the sentence "the umbrella is fully white and fully black", without setting it true or false a priori. We express its physical impossibility by assigning to it the value `false` in any inference we want to make. This generality of formal logic is a feature: it allows us to entertain and study hypotheses even if we still don't know whether they are physically impossible. Scientific research could not be done without this feature.
+:::
+
+What about the "if" in "if the umbrella..."? Shouldn't that be a connective? This "if" is treated in a special way; we shall now see how it works.
+
+:::{.column-margin}
+<!-- {{< fa info-circle >}}  -->
+There is an [old and still ongoing debate](https://plato.stanford.edu/entries/logic-conditionals) in logic and probability on how to deal with "if"-statements. Here we take the seemingly most common approach, which is simple and effective in applied problems.
+:::
+
+
+Obviously we possess even more information, which is implicitly understood. For example, it's understood that the umbrella is all of one colour. It must also be understood what an umbrella is, what "red" and "blue" mean, and so on. Usually this kind of information is extremely obvious or irrelevant, so we don't think about it very much and don't mention it. In real engineering problems, however, it may happen that we have to stop and examine this implicit, hidden knowledge, maybe to check whether it contains contradictory information or contradictory goals. It's a good idea to represent this implicitly-understood information by a symbol, for example $I$ (for "extra information"; we could have used $K$ for "knowledge").
 
 
 
-## Well-posed and ill-posed sentences
+
+### Separating assumptions and conclusions
+
+Now we have the sentences that represent all our data and the information we are interested in, and even symbols to represent them in a compact way. It's important to keep the assumptions we make well separated from the conclusions we want to draw. Let's introduce a symbol to do just that.
+
+We can simply use a vertical bar: on its right side we write the sentences that make up our assumptions, and on its left side those that make up our desired conclusions.^[Current notation in logic uses the symbols $\models$ or $\vdash$, and writes assumptions on the *left*, conclusions on the *right*. We use a different notation for an easier transition to probability logic.] So, in symbols, our inference is this:
+$$
+b \|[\Big] (b\lor r)\, \land\, \lnot r\, \land\, \lnot(b \land r)\, \land\, D
+$$
+Note how we `and`-ed all assumptions together. The collection of assumptions on the right side of the bar "$\|[\big]$" is called the [**conditional**]{.text-warning}. The expression above is read "$b$ *given* $(b\lor r)$" etc., or "$b$ *conditional on* $(b\lor r)$" etc.
+
+All data in the conditional (that is, on the right side of "$\|[\big]$") are considered (at least temporarily) to be `true`. Our goal is to determine whether the sentence on the left of "$\|[\big]$" is `true` or `false`.
+
+
+
+
+
+## well-posed and ill-posed sentences
 
 We face problems when the sentences that should convey information and data are not clear. Suppose that an electric-car model [consumes 150 Wh/km](https://ev-database.org/cheatsheet/energy-consumption-electric-car) and [has a range of 200 km](https://ev-database.org/cheatsheet/range-electric-car); a second car model consumes 250 Wh/km and has a range of 600 km. Someone says "I think the second model is better; what do you think?". It isn't clear how we should answer; what does "better" mean? If it refers to consumption, then the first car model is "better". If it refers to range, then the second model is "better". If it refers to a combination of these two characteristics, or to something else, then we simply can't answer. Here we have a problem with querying and giving data, because the sentence underlying such query is not clear.
 

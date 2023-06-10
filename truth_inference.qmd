@@ -3,133 +3,78 @@
 
 ## Building blocks
 
-Consider the following problem. Rita has an umbrella. Our goal is to find out its colour, if possible. We have data that can help us; the data say that
+Consider the following trivial problem. An inspector examines an electronic component out of a production line. The information available to the inspector is the following:
 
-- $\pr{Rita's umbrella is either blue or red}$
+- The component can either come from the production line in Oslo, or from the one in Rome. 
 
-- $\pr{If the umbrella is not blue, then it is not red either}$
+- If the component is defective, it cannot come from Oslo. 
 
-Can we achieve our goal, and tell the colour of Rita's umbrella? Reasoning a little about the data, we can indeed conclude *for sure* that
+- The component is found to be defective.
 
-- $\pr{Rita's umbrella is blue}$.
+The question is: from which production line does the component come from?
 
-How could we draw this sure inference? Which rules did we follow? Did we make any hidden assumptions, or use data that weren't explicitly mentioned?
+The answer is obvious: from the Rome line. But how could we draw this obvious and sure inference? Which rules did we follow? Did we make any hidden assumptions, or use information that wasn't explicitly mentioned?
 
 Logic is the huge field that formalizes and makes rigorous the rules that a rational person or an artificial intelligence should use in drawing sure inferences. We'll get a glimpse of it here, as a trampoline for jumping towards the more general inferences that we need in data-driven engineering problems.
 
-### Basic sentences
+### Analysis of the problem
 
-We start by writing down the _basic_^[A more technical term is "atomic"] sentences that constitute our data and that underlie the inferences we want to draw. "Basic" in the sense that we will not analyse these sentences into further sub-sentences. In the trivial example above we identify three such sentences: $\pr{Rita has an umbrella}$, $\pr{The umbrella is blue}$, and $\pr{The umbrella is red}$. Let's represent them by symbols:
+Let's write down the basic sentences that constitute our data and the inferences we want to draw. We identify three basic sentences, which we can represent by these symbols:
+
+- $o \coloneqq \pr{The component comes from the Oslo line}$
+
+- $r \coloneqq \pr{The component comes from the Rome line}$
+
+- $d \coloneqq \pr{The component is defective}$
+
+Obviously the inspector possesses even more information which is implicitly understood. It's clear, for instance, that the component cannot come from both Oslo and Rome. Let's denote this information with
+
+- $I \coloneqq{}$(a long collection of sentences explaining all other implicitly understood information).
+\
+
+With the sentences above we can express more complex details and hypotheses appearing in the inspector's problem, in particular:
+
+- $o \lor r = \pr{The component comes from either the Oslo line or the Rome line}$
+
+- $\lnot(o \land r) = \pr{The component cannot come from both the Oslo and the Rome lines}$
+
+- $ \lnot o \coloneqq \pr{The component does not come from the Oslo line}$
+
+### Data, assumptions, desired conclusions
+
+The inspector knows for certain the following facts:
+
+- $o \lor r$, $\pr{The component comes from either the Oslo line or the Rome line}$
+
+- $\lnot(o \land r)$, $\pr{The component cannot come from both the Oslo and the Rome lines}$
+
+- $d$, $\pr{The component is defective}$
+
+- $I$, all remaining implicit information
+
+We `and` them all together:
 $$
-\begin{aligned}
-b &\coloneqq \pr{Rita's umbrella is blue}
-\\
-r &\coloneqq \pr{Rita's umbrella is red}
-\end{aligned}
+d \land (o \lor r) \land \lnot (o \land r) \land I \ .
 $$
 
-<!-- ::::{.column-margin} -->
-<!-- ::: {.callout-warning appearance="simple"} -->
-<!-- ## -->
-<!-- {{< fa exclamation-triangle >}} Note a subtlety in our data -- and again why we need to make their underlying sentences as clear as possible: it is understood here that the umbrella is all of one colour. We'll come back to this later. -->
-<!-- ::: -->
-<!-- :::: -->
+The inspector knows, moreover, this hypothetical consequence:
 
-### Connectives
+- $\lnot o \| d \land (o \lor r) \land \lnot (o \land r) \land I$, if the component is defective, it cannot come from the Oslo production line.
 
-We didn't consider $\pr{Rita's umbrella is either blue or red}$, $\pr{The umbrella is not blue}$, and $\pr{The umbrella is not red}$ as basic sentences. These sentences can indeed be expressed in terms of the basic sentences $b$ and $r$. We consider one way or operation to change a sentence into another related to it, and two ways or operations to combine two or more sentences together. These operations are called **connectives**. Our natural language offers many more operations to combine sentences, but these three turn out to be all we need in virtually all engineering problems. The three connectives are:
+- 
 
-Not: $\lnot$
-: for example,
-$$
-\lnot b = \pr{Rita's umbrella is not blue}
-$$
-
-And: $\land$
-: for example,
-$$
-b \land r = \pr{Rita's umbrella is blue, and it is red}
-$$
-
-Or: $\lor$
-: for example,
-$$
-b \lor r = \pr{Rita's umbrella is blue, or red, or both}
-$$
-
-::: {.callout-warning appearance="simple"}
-## 
-{{< fa exclamation-triangle >}} Note some subtleties of the connectives:
-
-- "Not" doesn't mean some kind of complementary quality, but only the negation. For instance, $\lnot\pr{Rita's umbrella is black}$ does not mean $\pr{Rita's umbrella is white}$.
-
-- $b \lor r$ does not exclude, a priori, that the umbrella cannot be both blue and black (there is a connective for that: "exclusive-or", but it can be constructed out of the three we already have.)
-
-- It is important to distinguish between *logical* impossibility and *physical* impossibility. It is physically impossible that an umbrella be fully white and fully black, but formal logic does allow us to consider the sentence "the umbrella is fully white and fully black", without setting it true or false a priori. We express its physical impossibility by assigning to it the value `false` in any inference we want to make. This generality of formal logic is a feature: it allows us to entertain and study hypotheses even if we still don't know whether they are physically impossible. Scientific research could not be done without this feature.
-:::
-
-What about the "if" in "if the umbrella..."? Shouldn't that be a connective? This "if" is treated in a special way; we shall now see how it works.
-
-:::{.column-margin}
-<!-- {{< fa info-circle >}}  -->
-There is an [old and still ongoing debate](https://plato.stanford.edu/entries/logic-conditionals) in logic and probability on how to deal with "if"-statements. Here we take the seemingly most common approach, which is simple and effective in applied problems.
-:::
 
 
 ## Background information and conditional
 
-
-
-
-From this last remark we see that the sentence $\pr{The umbrella is either blue or red}$ does not really correspond to $b \lor r$, because the latter formula includes the possibility that the umbrella could be *both* fully blue *and* fully red. But we are implicitly assuming that this cannot happen; it's physically impossible. We have thus discovered that there is another piece of data hidden in our inference: the umbrella cannot be both blue and red. Convince yourself that we can write such hidden data like this:
-$$
-\lnot(b \land r) = \pr{The umbrella cannot be both blue and red}\ .
-$$
-\
-
-
-
-
-
-There's even more information implicitly understood in our data. As we mentioned above, it's understood that the umbrella is all of one colour. It must also be understood what an umbrella is, what "red" and "blue" mean, and so on. Usually this kind of data is either extremely obvious or irrelevant, so we don't think about it very much and don't mention it. In real engineering problems, however, it may happen that we have to stop and examine this implicit, hidden knowledge, maybe to check whether it contains contradictory data or goals. It's a good idea to represent this implicitly-understood knowledge by a symbol, for example $D$ (for "extra data"; we could have used $K$ for "knowledge" or $I$ for "information").
+<!-- From this last remark we see that the sentence $\pr{The umbrella is either blue or red}$ does not really correspond to $b \lor r$, because the latter formula includes the possibility that the umbrella could be *both* fully blue *and* fully red. But we are implicitly assuming that this cannot happen; it's physically impossible. We have thus discovered that there is another piece of data hidden in our inference: the umbrella cannot be both blue and red. Convince yourself that we can write such hidden data like this: -->
+<!-- $$ -->
+<!-- \lnot(b \land r) = \pr{The umbrella cannot be both blue and red}\ . -->
+<!-- $$ -->
+<!-- \ -->
 
 \
 
-Let's summarize the building blocks of our umbrella inference problem:
-
-- Basic sentences:
-
-    + $h=\pr{Rita has an umbrella}$.
-
-    + $b=\pr{The umbrella is blue}$.
-
-    + $r=\pr{The umbrella is red}$.
-
-    + $D={}$ (a long collection of sentences explaining all other information understood implicitly).
-
-- Assumptions, explicit and implicit:
-
-    + $b\lor r= \pr{The umbrella is either blue or red}$
-
-    + $\lnot r = \pr{The umbrella is not red}$
-
-    + $\lnot (b \land r) = \pr{The umbrella cannot be both blue and red}$; this is an implicitly understood fact.
-
-- Conclusions:
-
-    + $b= \pr{My umbrella is blue}$
-
-### Separating assumptions and conclusions
-
-Now we have the sentences that represent all our data and the information we are interested in, and even symbols to represent them in a compact way. It's important to keep the assumptions we make well separated from the conclusions we want to draw. Let's introduce a symbol to do just that.
-
-We can simply use a vertical bar: on its right side we write the sentences that make up our assumptions, and on its left side those that make up our desired conclusions.^[Current notation in logic uses the symbols $\models$ or $\vdash$, and writes assumptions on the *left*, conclusions on the *right*. We use a different notation for an easier transition to probability logic.] So, in symbols, our inference is this:
-$$
-b \|[\Big] (b\lor r)\, \land\, \lnot r\, \land\, \lnot(b \land r)\, \land\, D
-$$
-Note how we `and`-ed all assumptions together. The collection of assumptions on the right side of the bar "$\|[\big]$" is called the [**conditional**]{.text-warning}. The expression above is read "$b$ *given* $(b\lor r)$" etc., or "$b$ *conditional on* $(b\lor r)$" etc.
-
-All data in the conditional (that is, on the right side of "$\|[\big]$") are considered (at least temporarily) to be `true`. Our goal is to determine whether the sentence on the left of "$\|[\big]$" is `true` or `false`.
 
 
 ## Truth-inference rules
