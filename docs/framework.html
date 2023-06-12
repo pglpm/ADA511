@@ -175,8 +175,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#decision-theory" id="toc-decision-theory" class="nav-link active" data-scroll-target="#decision-theory"><span class="header-section-number">2.1</span> Decision Theory</a></li>
-  <li><a href="#anatomy-of-a-decision-problem" id="toc-anatomy-of-a-decision-problem" class="nav-link" data-scroll-target="#anatomy-of-a-decision-problem"><span class="header-section-number">2.2</span> Anatomy of a decision problem</a></li>
+  <li><a href="#our-goal-not-success-but-optimality" id="toc-our-goal-not-success-but-optimality" class="nav-link active" data-scroll-target="#our-goal-not-success-but-optimality"><span class="header-section-number">2.1</span> Our goal: not “success”, but <em>optimality</em></a></li>
+  <li><a href="#decision-theory" id="toc-decision-theory" class="nav-link" data-scroll-target="#decision-theory"><span class="header-section-number">2.2</span> Decision Theory</a></li>
+  <li><a href="#anatomy-of-a-decision-problem" id="toc-anatomy-of-a-decision-problem" class="nav-link" data-scroll-target="#anatomy-of-a-decision-problem"><span class="header-section-number">2.3</span> Anatomy of a decision problem</a></li>
   </ul>
 </nav>
 </nav>
@@ -207,28 +208,51 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 
 </div>
-<p>Every data-driven engineering problem is unique. But there are also similarities among all engineering problems. We shall now learn a framework that allow us to frame and face any data-driven engineering problem, and any sub-problems into which a problem can be broken down. This framework is build on some notions that help us analyse the problem, and on a set of principles. This set of principles is important because it mathematically guarantees an optimal solution to the problem – within the goals, means, and data into which we framed the problem.</p>
-<section id="decision-theory" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="decision-theory"><span class="header-section-number">2.1</span> Decision Theory</h2>
-<p>There is always a goal underlying any engineering problem. The problem itself is how to reach that goal. Typically there are several possible courses of actions available; the question is which one to choose. Choice of a specific action will lead to some consequences, which could be the goal we want to reach, but could also be something else, possibly undesirable. The decision upon a specific action is often difficult because its consequences are not known with certainty. This uncertainty comes in turn from a more general uncertainty about the whole context of the problem: unknown past or present details, unknown future events and responses, and so on.</p>
+<p>Every data-driven engineering problem is unique. But there are also similarities among all engineering problems. We shall now learn a framework that allows us to frame and face some important aspects of any data-driven engineering problem, and any sub-problems into which a problem can be broken down. This framework is build on notions that help us analyse the problem, and on a set of principles. This set of principles is important because it mathematically guarantees an optimal solution to the problem – within the goals, means, and data into which we framed the problem.</p>
+<section id="our-goal-not-success-but-optimality" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="our-goal-not-success-but-optimality"><span class="header-section-number">2.1</span> Our goal: not “success”, but <em>optimality</em></h2>
+<p>What can we demand of a method for facing engineering problems?</p>
+<p>A typical and important aspect in any engineering problem is that there are several possible courses of actions available; the question is which one to choose. Choice of a specific action will lead to some consequences, which could get us close to the goal we want to reach, but could also lead to something else, possibly undesirable. The decision among the actions, however, is difficult because <strong>their consequences are not known with certainty, given the information and data available</strong> in the problem. We may lack information and data about past or present details, about future events and responses, and so on. Yet a decision has to made nevertheless. This is what we call a <strong>decision problem under uncertainty</strong>]{.text-warning}, which we’ll simply call a “decision problem” for short.</p>
+<p>By definition, <strong>in a decision problem under uncertainty there is no method to <em>determine</em> the action that will surely lead to the desired consequence</strong> (if such a method existed, then the problem would not be one of deciding under uncertainty). Therefore, if there is a method to deal with decision problems, its goal cannot be the determination of the <em>successful</em> action. This also means that a priori we cannot blame an engineer for making an unsuccessful decision in a situation of uncertainty. Imagine someone accusing you of negligence because you chose “heads” in a toss of a coin that landed “tails” instead.</p>
+<p>On the other hand, imagine that a person (who doesn’t get any special thrill from betting) must bet on “heads” or “tails” under the following conditions:</p>
+<ul>
+<li>if the bet is “heads” and the coin lands “heads”, the person wins a small amount of money; if it lands “tails”, they lose the same small amount of money.</li>
+<li>if the bet is “tails” and the coin lands “tails”, the person wins a small amount of money; but if it lands “heads”, they lose a large amount of money.</li>
+</ul>
+<p>The person makes the second bet, on “tails”; and the coin comes down “tails”. Even if the person won the small amount of money, we would say that their decision was lucky but <em>irrational</em>: they risked losing a larger amount of money than in the first bet, without the possibility of winning more than in the first bet. We also expect that if this person makes the same choice in similar future bets, they will eventually lose large amounts of money.</p>
+<p>This shows that even if there is no method to determine which decision is successful, there seems to be a method to determine which decision is rationally <span class="text-warning"><strong>optimal</strong></span> given the particular uncertainties, gains, and losses involved in the decision problem.</p>
+<p>Such a method indeed does exist, and its explanation and use will be the core of the present notes.<br>
+</p>
+<p>There are other important aspects in engineering problems, besides the one of making decisions under uncertainty. For instance the <em>discovery</em> or the <em>invention</em> of new technologies and solutions. These aspects can barely be planned or decided; but their fruits, once available, should be handled and used optimally – thus leading to a decision problem.</p>
+<p>Artificial intelligence is proving to be a valuable aid in these more creative aspects too. This kind of use of AI is outside the scope of the present notes. Some aspects of this creativity-assisting use, however, do fall within the domain of the present notes. A pattern-searching algorithm, for example, can be optimized by means of the method we are going to study.</p>
+</section>
+<section id="decision-theory" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="decision-theory"><span class="header-section-number">2.2</span> Decision Theory</h2>
+<p>There is always a goal underlying any engineering problem. The problem itself is how to reach that goal. Typically there are several possible courses of actions available; the question is which one to choose. Choice of a specific action will lead to some consequences, which could be the goal we want to reach, but could also be something else, possibly undesirable. The decision among the actions is often difficult because <strong>their consequences are not known with certainty</strong>. This uncertainty comes in turn from a more general uncertainty about the whole context of the problem: unknown past or present details, unknown future events and responses, and so on.</p>
 <p>@@ example</p>
-<p>This is what we call a <strong>decision problem</strong>.</p>
+<p>This is what we call a <strong>decision problem</strong>, more specifically a <em>decision problem under uncertainty</em>.</p>
 <p>A specific course of action may in turn be realized in several ways that are equivalent in regard to the outcome, but inequivalent in regard to costs, time, resources. We thus face a decision within a decision. In general, a decision problem may involve several decision sub-problems, in turn involving sub-sub-problems, and so on.</p>
 <p>The main engineering goal itself could be to design and build an automated device that chooses an optimal course of action in a specific kind of uncertain situation. Think for instance of an aeronautic engineer who is designing an autopilot system.</p>
-<p>Therefore, to analyse and tackle this kind of problems we would like to have a framework with the following features: it should take into consideration choices, consequences, costs and gains, and uncertainties; it should be susceptible to recursive application if needed; and it should be suited to being used not only for human engineers, but also for automated or artificial-intelligence devices.</p>
+<p>Therefore, to analyse and tackle this kind of problems we would like to have a framework with the following features:</p>
+<ul>
+<li><p>it should take into consideration choices, consequences, costs and gains</p></li>
+<li><p>it should be able to deal with uncertainties</p></li>
+<li><p>it should be susceptible to recursive application if needed</p></li>
+<li><p>it should be suited to being used not only for human decision-makers, but also for automated or artificial-intelligence devices.</p></li>
+</ul>
 <p>Such a framework does exist: it is called <span class="text-warning"><strong>Decision Theory</strong></span>.</p>
 <p>Decision theory has a long history, going back to Leibniz in the 1600s and partly even to Aristotle in the −300s, and appearing in its present form around 1920–1960. What’s remarkable about it is that it is not only <em>a</em> framework, but <em>the</em> framework we must use. A logico-mathematical theorem shows that any framework that does not break basic optimality and rationality criteria has to be equivalent to Decision Theory (in other words, it can use different technical terminology and rewrite mathematical operations in a different way, but it boils down to the same notions and operations of Decision Theory). So if you wanted to invent and use another framework, then either (a) it would lead to some irrational or illogical consequences, or (b) it would lead to results identical to Decision Theory’s. Many frameworks that you are probably familiar with, such as optimization theory, are just specific applications or particular cases of Decision Theory.</p>
 <p>Decision theory consists of two main theories: <span class="text-warning"><strong>Probability Theory</strong></span>, which deals with data, information, uncertainty, inference; and <span class="text-warning"><strong>Utility Theory</strong></span>, which deals with actions, consequences, gain and loss, decisions.</p>
-<p>We shall get acquainted with Decision Theory step by step, introducing its main ideas and notions as they become necessary. Let us start with the first building blocks.</p>
+<p>We shall get acquainted with Decision Theory step by step, introducing its main ideas and notions as they become necessary.</p>
 </section>
-<section id="anatomy-of-a-decision-problem" class="level2 page-columns page-full" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="anatomy-of-a-decision-problem"><span class="header-section-number">2.2</span> Anatomy of a decision problem</h2>
+<section id="anatomy-of-a-decision-problem" class="level2 page-columns page-full" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="anatomy-of-a-decision-problem"><span class="header-section-number">2.3</span> Anatomy of a decision problem</h2>
 <p>An extremely important – and surprisingly often neglected – first step in every engineering problem is to define exactly what the problem is. This means, in particular, to specify unambiguously the goals, the available data and information, the available courses of action, the hypotheses of interest.</p>
 <p>Decision theory analyses any problem in terms of minimal decision problems, each of which consists of these elements:</p>
 <ul>
 <li><p><em>Agent</em>: the person or device that has to make an optimal decision.</p></li>
 <li><p><em>Assumptions</em>: data and background information that are known, or temporarily imagined to be known, to the agent.</p></li>
-<li><p><em>Conclusions</em>: hypotheses, conjectures, or actual facts that the agent wishes to assess; often they are related to the unknown consequences of the possible actions.</p></li>
+<li><p><em>Conclusions</em>: hypothesess, conjectures, or actual facts that the agent wishes to assess; often they are related to the unknown consequences of the possible actions.</p></li>
 <li><p><em>Probabilities</em> of the conclusions given the assumptions.</p></li>
 <li><p><em>Courses of actions</em>: the choices available to the agent.</p></li>
 <li><p><em>Utilities</em>: the gains and losses involved in choosing a course of action.</p></li>
@@ -253,8 +277,8 @@ ul.task-list li input[type="checkbox"] {
 <p>Remember: What matters is to be able to identify these elements in a concrete engineering problem, understanding their role. Their technical names don’t matter.</p>
 </div>
 </div>
-</div></div><p>The basic idea is that the agent will estimate effects of the conclusions given the assumptions, and from this estimate choose the optimal course of action.</p>
-<p>Some of these elements may themselves be open to be analysed by a decision sub-problem. For instance, it may be unknown what the utilities are: thus we have a decision sub-problem to determine the optimal values we should choose for them. This is an example of the modularity of decision theory.</p>
+</div></div><p>The basic idea is that the agent will <span class="text-warning"><strong>infer</strong></span> the conclusions given the assumptions, with some degree of <span class="text-warning"><strong>uncertainty</strong></span>. From these inferences it will choose the <span class="text-warning"><strong>optimal</strong></span> course of action.</p>
+<p>Some of the elements listed above may themselves be open to be analysed by a decision sub-problem. For instance, the utilities could be unknown: thus we have a decision sub-problem to determine the optimal values for the utilities of the main problem. This is an example of the modularity of decision theory.</p>
 <p>The elements above must be unambiguously identified in any decision problem. The analysis of the problem into these elements greatly helps in making the problem and its solution well-defined. Suppose someone (probably a politician) says: “We must solve the energy crisis by reducing energy consumption or producing more energy”. This person has effectively said <em>nothing whatsoever</em>. By definition the “energy crisis” is the problem that energy production doesn’t meet demand. So this person has only said “we would like the problem to be solved”, without giving any solution. A decision-theory approach to this problem requires us to specify which concrete courses of action should be taken for reducing consumption or increasing productions, and what their costs, gains, and probable consequences would be.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -273,8 +297,6 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div></div><p>An advantage of decision theory is that its application <em>forces</em> us to make sense of an engineering problem. A useful procedure is to formulate the general problem in terms of the elements above, identifying them clearly. If the definition of any of the terms involves uncertainty of further decisions, then we analyse it in turn as a decision sub-problem, and so on.<br>
 </p>
-<p>There are important aspects of engineering that cannot be captured by decision theory or, likely, by any logico-mathematical framework: the <em>discovery</em> or the <em>invention</em> of new technologies and solutions, for instance. These aspects cannot be planned or decided; but their fruits, once available, can be handled and used optimally by means of decision theory.</p>
-<p>Artificial intelligence is proving to be a valuable aid in these aspects too. This kind of use of AI is outside the scope of the present notes. Some aspects of this creativity-assisting use, however, do fall within the domain of decision theory and of the present notes. A pattern-searching algorithm, for example, can be optimized by means of decision theory, if we have an idea of the kind of patterns that could be useful.</p>
 
 
 </section>
