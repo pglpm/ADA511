@@ -8,7 +8,7 @@ Every data-driven engineering problem is unique. But there are also similarities
 
 What can we demand of a method for facing engineering problems?
 
-A typical and important aspect in any engineering problem is that there are several possible decisions, or courses of actions, available. The question is which one to choose. Making a particular decision will lead to some consequences, which could get us close to the desired goal but also lead to something else, possibly undesirable. Making a decision is often difficult because **its consequences are not known with certainty, given the information and data available** in the problem. We may lack information and data about past or present details, about future events and responses, and so on. Yet a decision has to made nevertheless. This is what we call a [**decision problem under uncertainty**]{.text-warning} or [**under risk**]{.text-warning}, or simply a "decision problem" for short.
+A typical and important aspect in any engineering problem is that there are several possible decisions, or courses of actions, available. The question is which one to choose. Making a particular decision will lead to some consequences, which could get us close to the desired goal but also lead to something else, possibly undesirable. Making a decision is often difficult because **its consequences are not known with certainty, given the information and data available** in the problem. We may lack information and data about past or present details, about future events and responses, and so on. Yet a decision has to made nevertheless. This is what we call a [**decision problem under uncertainty**]{style="color:#4477AA;"} or [**under risk**]{style="color:#4477AA;"}, or simply a "decision problem" for short.
 
 By definition, in a decision problem under uncertainty there is generally no method to *determine* the decision that will surely lead to the desired consequence (if such a method existed, then the problem would not be one of deciding under uncertainty). Therefore, if there is a method to deal with decision problems, its goal cannot be the determination of the *successful* decision. This also means that a priori we cannot blame an engineer for making an unsuccessful decision in a situation of uncertainty.
 
@@ -21,7 +21,7 @@ Henry chooses the first bet, on "heads". Tina chooses the second bet, on "tails"
 
 Henry's decision was lucky, and yet *irrational*: he risked losing much more money than in the second bet, without any possibility of winning more. Tina's decision was unlucky, and yet *rational*: the possibility and amount of winning was the same in the two bets, and she chose the bet with the least amount of loss. We expect that any person making Henry's decision in similar, future bets will eventually lose more money than any person making Tina's decision.
 
-This example shows two points. First, "success" is generally not a good criterion to judge a decision under uncertainty. Second, even if there is no method to determine which decision is successful, there seems to be a method to determine which decision is rational or [**optimal**]{.text-warning}, given the particular gains, losses, and uncertainties involved in the decision problem.
+This example shows two points. First, "success" is generally not a good criterion to judge a decision under uncertainty. Second, even if there is no method to determine which decision is successful, there seems to be a method to determine which decision is rational or [**optimal**]{style="color:#4477AA;"}, given the particular gains, losses, and uncertainties involved in the decision problem.
 
 Such a method indeed does exist, and its explanation and use will be the core of the present notes.
 
@@ -65,71 +65,89 @@ Therefore, to analyse and tackle this kind of problems we would like to have a f
 
 - it should be suited to being used not only for human decision-makers, but also for automated or AI devices.
 
-A framework with these features exists: it is [**Decision Theory**]{.text-warning}.
+A framework with these features exists: it is [**Decision Theory**]{style="color:#4477AA;"}.
 
 Decision Theory has a long history, going back to Leibniz in the 1600s and partly even to Aristotle in the &minus;300s, and appearing in its present form around 1920--1960. What's remarkable about it is that it is not only *a* framework, but *the* framework we must use. A logico-mathematical theorem shows that any framework that does not break basic optimality and rationality criteria has to be equivalent to Decision Theory (in other words, it can use different technical terminology and rewrite mathematical operations in a different way, but it boils down to the same notions and operations of Decision Theory). So if you wanted to invent and use another framework, then either (a) it would lead to some irrational or illogical consequences, or (b) it would lead to results identical to Decision Theory's. Many frameworks that you are probably familiar with, such as optimization theory, are just specific applications or particular cases of Decision Theory.
 
-Decision Theory can be roughly divided into two main parts: [**Probability Theory**]{.text-warning}, which deals with information, data, uncertainty, inference; and [**Utility Theory**]{.text-warning}, which deals with actions, consequences, gain and loss, decisions. We shall get acquainted with Decision Theory step by step, introducing its main ideas and notions as they become necessary.
+Decision Theory can be roughly divided into two main parts: [**Probability Theory**]{style="color:#4477AA;"}, which deals with information, data, uncertainty, inference; and [**Utility Theory**]{style="color:#4477AA;"}, which deals with actions, consequences, gain and loss, decisions. We shall get acquainted with Decision Theory step by step, introducing its main ideas and notions as they become necessary.
 
 
 ## Anatomy of a decision problem
 
 An extremely important -- and surprisingly often neglected -- first step in every engineering problem is to define exactly what the problem is. This means, in particular, to specify unambiguously the goals, the available data and information, the available decisions or courses of action, the hypotheses of interest.
 
-Decision theory analyses any problem in terms of nested or sequential decision problems, each of which is framed in terms of these elements:
+Decision theory analyses any problem in terms of nested or sequential basic decision problems, each of which is framed in terms of these elements:
 
 ::::{.column-margin}
-:::{.callout-caution}
+:::{.callout-tip}
 ## {{< fa seedling >}}
 Remember: What matters is to be able to identify these elements in a concrete engineering problem, understanding their role. Their technical names don't matter.
 :::
 ::::
 
-- *Agent*: the person or device that has to make an optimal decision.
+- [**Agent**]{style="color:#4477AA;"}: the person or device that has to make an optimal decision.
 
-- *Assumptions*: data and background information that are known, or temporarily imagined to be known, to the agent.
+- [**Decisions**]{style="color:#4477AA;"} or [**courses of actions**]{style="color:#4477AA;"}: the choices available to the agent.
 
-- *Outcomes*: hypotheses, conjectures, or actual facts that the agent wishes to assess; often they are related to the unknown consequences of the possible actions.
+- [**Assumptions**]{style="color:#4477AA;"}: data and background information that are known, or temporarily imagined to be known, to the agent.
 
-- *Probabilities*: quantifying the uncertainties in the the outcomes given the assumptions.
+- [**Outcomes**]{style="color:#4477AA;"}: hypotheses, conjectures, or actual facts that the agent wishes to assess; often they depend on the possible decisions.
 
-- *Decisions* or *courses of actions*: the choices available to the agent.
+- [**Probabilities**]{style="color:#4477AA;"}: forecasting the outcomes given the assumptions, and the uncertainty of these forecasts.
 
-- *Utilities*: the gains and losses involved in making each possible decision.
+- [**Utilities**]{style="color:#4477AA;"}: the gains and losses involved in making each possible decision.
 
 Together with the "assumptions" and "outcomes" it is also useful to keep in mind two more, somewhat different elements:
 
-- *Knowns*: the data and information that are actually known to the agent.
+- [**Knowns**]{style="color:#4477AA;"}: the data and information that are actually known to the agent.
 
-- *Unknowns*: hypotheses, conjectures, and situations whose truth or falsity are actually unknown to the agent.
+- [**Unknowns**]{style="color:#4477AA;"}: hypotheses, conjectures, and situations whose truth or falsity are actually unknown to the agent.
 
-The basic idea is that the agent will [**infer**]{.text-warning} the outcomes given the assumptions, with some degree of [**uncertainty**]{.text-warning}. From these inferences it will determine the [**optimal**]{.text-warning} decision.
+The basic idea is that the agent will [**infer**]{style="color:#4477AA;"} the outcomes given the assumptions, with some degree of [**uncertainty**]{style="color:#4477AA;"}. From these inferences it will determine the [**optimal**]{style="color:#4477AA;"} decision.
 
-:::{.callout-tip}
-## Example
-> A particular kind of electronic component is produced in an assembly line. At the end of the line there is an automated tester that makes some tests on every new component. The tests should give an indication whether the component will fail within less than a year or only after a year, with some probabilities. For a particular new component, for instance, there turns out to be a 10% probability of failure within a year.
->
-> Depending on the test results, the automated tester approves the component for sale, or discards it. A sold component gives a net gain of 1\$, if it works for at least a year; but if it fails within a year, it leads to a net *loss* of 10\$, owing to damage and warranty refunds. A discarded component doesn't lead to any gain or loss.
-\
+A basic decision problem and some of its elements can be graphically represented in a diagram like this:
 
-A decision problem is involved in this process, for every new component that arrives at the tester. The elements of the problem can be identified as follows:
-
-- *Agent*: the automated tester (and indirectly the engineer who designed and programmed it).
-- *Assumptions*: the values obtained with the various tests.
-- *Outcomes*: three possible ones: (1) failure of the component within a year, (2) survival of the component for longer than a year, (3) destruction of the component. Either of the first two outcomes can happen if the component is sold; the third outcome happens if the component is discarded.
-- *Probabilities*: 10% probability of failure within a year, if the component is sold, and 90% of functioning correctly. If the component is discarded, nothing further happens.
-- *Decisions*: approve the component, or discard it.
-- *Utilities*: 1\$ for approval without failure, -10\$ for approval with failure, 0\$ for disposal.
+::::: {.column-page-inset-right}
+![](assembly_tree.svg){width=100%}
 :::
 
-Some of the elements listed above may themselves be open to be analysed by a decision sub-problem. For instance, the utilities could be unknown: thus we have a decision sub-problem to determine the optimal values for the utilities of the main problem. This is an example of the modularity of decision theory.
+It has one *decision node*, usually represented by a square {{< fa regular square >}}, from which the available decisions depart as lines. Each decision leads to an *uncertainty node*, usually represented by a circle {{< fa regular circle >}}, from which the possible outcomes depart as lines. Each outcome leads to a particular utility value. The uncertainty of each outcome is quantified by a probability, which depends on the assumptions common to the problem and, often, on the decision.
 
-The elements above must be unambiguously identified in every decision problem. The analysis into these elements greatly helps in making the problem and its solution well-defined. Suppose someone (probably a politician) says: "We must solve the energy crisis by reducing energy consumption or producing more energy". This person has effectively said *nothing whatsoever*. By definition the "energy crisis" is the problem that energy production doesn't meet demand. So this person has only said "we would like the problem to be solved", without giving any solution. A decision-theory approach to this problem requires us to specify which concrete courses of action should be taken for reducing consumption or increasing productions, and what their costs, gains, and probable consequences would be.
+{{< fa exclamation-circle >}}\ \ A priori there isn't any particular temporal order among decisions, outcomes, and even assumptions. In some cases an outcome happens after a decision; for instance, you pick an umbrella, and then it rains. In other cases the outcome already happened before the decision; for instance, a clinician decides to treat a patient who might have a disease, but the disease, if present, was already there before the clinician's decision. The difference between decisions and outcomes is not one of time, but of control: decisions are under our control; outcomes are not and are generally uncertain.
+
+:::{.callout-note}
+## Example
+> A particular kind of electronic component is produced on an assembly line. At the end of the line, an automated inspection device makes some tests on every newly produced component. The tests give an uncertain forecast of whether the component would fail within less than a year of use, or after a year.
+>
+> Depending on the test results, the automated inspector approves the component, or discards it. An approved component is sold, leading to some net monetary gain if it works for at least a year; but leading to a net loss if it fails within a year, owing to damage and warranty refunds. A discarded component doesn't lead to any gain or loss.
+\
+
+A decision problem is involved in this process: one for every new component that arrives at the automated inspector. The elements of the problem can be identified as follows:
+
+- *Agent*: the automated inspector (and indirectly the engineer who designed and programmed it).
+- *Decisions*: approve the new electronic component, or discard it.
+- *Assumptions*: the values obtained from the tests.
+- *Outcomes*: three possible ones: (1) failure of the component within a year, (2) survival of the component for longer than a year, (3) destruction of the component. Either of the first two outcomes can happen if the component is sold; the third outcome happens if the component is discarded.
+- *Probabilities*: the quantified forecast of failure within a year if the component were sold. If the component is discarded, there's nothing to forecast.
+- *Utilities*: The gains or losses to be had if the component is sold and doesn't fail within a year, if it's sold and fails, and if it's discarded.
+:::
+:::{.callout-caution}
+## Exercise
+Suppose that a new component arrives at the inspector. Tests give a `10%` probability of failure within a year, and `90%` otherwise, if the component is approved. If the component is approved, it will be sold for a net gain of `1$` if it works for a year, but for a net *loss* of `5$` if it fails instead. If the component is discarded, there won't be any net gain or loss.
+
+1. Sketch the diagram for this basic decision problem.
+
+2. Should the automated inspector `approve` or `discard` this new component? Try to make a decision on intuitive grounds, trying to interpret what the probabilities and utilities given above could mean.
+:::
+
+Some of the decision-problem elements listed above may themselves need to be analysed by a decision sub-problem. For instance, the utilities could depend on uncertain factors: thus we have a decision sub-problem to determine the optimal values to be used for the utilities of the main problem. This is an example of the modular character of decision theory.
+
+The elements above must be identified unambiguously in every decision problem. The analysis into these elements greatly helps in making the problem and its solution well-defined. Suppose someone (probably a politician) says: "We must solve the energy crisis by reducing energy consumption or producing more energy". This person has effectively said *nothing whatsoever*. By definition the "energy crisis" is the problem that energy production doesn't meet demand. So this person has only said "we would like the problem to be solved", without specifying any solution. A decision-theory approach to this problem requires us to specify which concrete courses of action should be taken for reducing consumption or increasing productions, and what their costs, gains, and probable outcomes would be.
 
 ::::{.column-margin}
 ::: {.callout-tip}
 ## {{< fa book-open >}} For the curious
-See MacKay's rational options-costs analysis in [Sustainable Energy -- without the hot air](https://www.withouthotair.com)
+See MacKay's options-vs-costs rational analysis in [Sustainable Energy -- without the hot air](https://www.withouthotair.com)
 :::
 ::::
 
