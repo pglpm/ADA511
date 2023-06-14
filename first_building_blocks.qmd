@@ -45,6 +45,8 @@ Consider a data engineer testing, in controlled conditions, the responses of a n
 
 ## Sentences
 
+### How to represent assumptions, outcomes, decisions?
+
 Is there a flexible and general way of representing assumptions, outcomes, knowns, unknowns, data, information, hypotheses; and, later, also outcomes and decisions?
 
 When speaking of "data", what comes to mind to many people is basically numbers or collections of numbers. So numbers could perhaps be used to representing assumptions etc. This option turns out to be too limiting, however.
@@ -63,9 +65,9 @@ But *what is a sentence*? The everyday meaning of this word will work for us, ev
 :::
 ::::
 
-::: {.callout-caution}
+::: {.callout-note}
 ##
-a "sentence" is a verbal message for which we can determine, at least in principle, whether it is `true` or `false`, in such a way that all interested receivers of the message would agree.
+[A "sentence" is a verbal message for which we can determine whether it is `true` or `false`, at least in principle and in such a way that all interested receivers of the message would agree.]{style="color:#4477AA;font-size:125%"}
 :::
 
 For instance, in most engineering contexts the phrase "This valve will operate for at least two months" is a sentence; whereas the phrase "Apples are much tastier than pears" is not, because it's a matter of personal taste -- there's no objective criterion to determine its truth or falsity. However, the phrase "Rita finds apples tastier than pears" could be a sentence.
@@ -74,9 +76,9 @@ Note that a sentence can contain numbers, and even pictures and graphs: this pos
 
 The use of sentences in our framework has important practical consequences:
 
-- **Clarity, analysis, goal-orientation.** A data engineer must acquire information and convey information. Acquiring information is not simply making some measurement or counting something: the engineer must understand *what* is being measured and *why*. If data is gathered from third parties, the engineer must ask what exactly the data mean and how they were acquired. In designing and engineering a solution, it is important to understand what information or outcomes the end user exactly wants. A data engineer will often ask "wait, what do you mean by that?"; this question is not just an unofficial parenthesis in the official data-transfer workflow between the engineer and someone else. It is an integral part of that workflow; it means that the data has not been completely transferred yet.
+- **Clarity, analysis, goal-orientation**. A data engineer must acquire information and convey information. Acquiring information is not simply making some measurement or counting something: the engineer must understand *what* is being measured and *why*. If data is gathered from third parties, the engineer must ask what exactly the data mean and how they were acquired. In designing and engineering a solution, it is important to understand what information or outcomes the end user exactly wants. A data engineer will often ask "wait, what do you mean by that?"; this question is not just an unofficial parenthesis in the official data-transfer workflow between the engineer and someone else. It is an integral part of that workflow; it means that the data has not been completely transferred yet.
 
-- **Artificial Intelligence.** Sentences are the central components of knowledge representation and inference in artificial-intelligence agents.
+- **Artificial Intelligence**. Sentences are the central components of knowledge representation and inference in artificial-intelligence agents.
 
 ::: {.callout-caution}
 ## {{< fa book-open >}} Reading
@@ -101,103 +103,102 @@ We'll next see how more complex sentences are built from simpler ones. No matter
 
 ### Basic sentences
 
-In analysing the assumptions and outcomes of a decision problem it is convenient to find a collection of [**basic sentences**]{style="color:#4477AA;"}^[A more technical term is "atomic"] out of which all other sentences of interest can be constructed. Often these basic sentences represent a elementary pieces of information in the problem.
+In analysing the assumptions and outcomes of a decision problem it is convenient to find a collection of [**basic sentences**]{style="color:#4477AA;"}^[A more technical term is *atomic sentences*.] out of which all other sentences of interest can be constructed. Often these basic sentences represent elementary pieces of information in the problem.
 
-Consider for instance the following statement in a High-Performance Computing engineering problem:
+Consider for instance the following sentence which could appear in our earlier assembly-line problem:
 
-> "Both CPUs report a temperature of 50 °C. CPU 1 is consuming 100 W, whereas CPU 2 is consuming either 110 W or 90 W."
+> "The electronic component is still whole after the shock test and the subsequent heating test. The voltage reported in the power test is either 90 mV or 110 mV."
 
-For the sake of this example, let's say that the statement above represents data, that is, it's the description of a factual situation. But keep in mind that in a different problem -- say, one where the unknown temperatures and consumptions of the three CPU need to be assessed -- the same statement could represent a hypothesis, that is, one possible state of affairs among other possible ones.
+In our example the statement above represents data, that is, it's the description of a factual situation. But keep in mind that in a different problem -- say, one where it need to be assessed whether the component is still whole -- the same statement could represent a hypothesis, that is, one possible state of affairs among other possible ones.
 
-In the statement above we can identify at least five basic sentences, which we denote by convenient symbols:
+In the statement above we can identify at least four basic sentences, which we denote by convenient symbols:
 \begin{align*}
-\se{t}_{1,50} &\coloneqq \pr{CPU\,1 reports a temperature of 50\,°C}
+\se{s} &\coloneqq \pr{The component is whole after the shock test}
 \\
-\se{t}_{2,50} &\coloneqq \pr{CPU\,2 reports a temperature of 50\,°C}
+\se{h} &\coloneqq \pr{The component is whole after the heating test}
 \\
-\se{c}_{1,100} &\coloneqq \pr{CPU\,1 is consuming 100\,W}
+\se{v}_{90} &\coloneqq \pr{The power-test voltage reading is 90\,mV}
 \\
-\se{c}_{2,90} &\coloneqq \pr{CPU\,2 is consuming 90\,W}
-\\
-\se{c}_{2,110} &\coloneqq \pr{CPU\,2 is consuming 110\,W}
+\se{v}_{110} &\coloneqq \pr{The power-test voltage reading is 110\,mV}
 \end{align*}
 
-The decision problem may actually require more basic sentences than just these. For instance, it might become necessary to consider basic sentences with other values for the temperature and of the power consumption, such as
+The decision problem may actually require more basic sentences than just these. For instance, it might become necessary to consider basic sentences with other values for the reported voltage, such as
 $$\begin{aligned}
-\se{t}_{1,55} &\coloneqq \pr{CPU\,1 reports a temperature of 55\,°C} \ ,
+\se{v}_{110} &\coloneqq \pr{The power-test voltage reading is 100\,mV}
 \\
-\se{t}_{1,60} &\coloneqq \pr{CPU\,1 reports a temperature of 60\,°C} \ ,
+\se{v}_{80} &\coloneqq \pr{The power-test voltage reading is 80\,mV}
 \end{aligned}$$
-and so on, and similarly for the other CPU and for the power consumption. Moreover, the phrase "Both CPUs..." suggests that the basic sentence
-$$
-\se{n} \coloneqq \pr{There are two CPUs}
-$$ 
-might be part of the data as well. Finally, there are obvious data that we don't even think about but may have to be spelled out explicitly. In our problem an example is the sentence
-$$
-\pr{CPU\,2 cannot be consuming both 90\,W and 110\,W} \ .
-$$
+and so on.
 
+There may also be other basic sentences coming from data or hypotheses that aren't stated explicitly because obvious. Yet they may have to be spelled out. An example in our decision problem is the sentence
+$$
+\pr{The electronic component cannot be broken after the shock test and whole after the subsequent heating test}
+$$
+which must necessarily be true for physical reasons.
 
 ### Connectives
 
-How do we construct the initial data sentence and other complex sentences out of the basic ones?
+How do we construct the initial data sentence, and more complex sentences out of simpler ones in general?
 
 We consider one way or operation to change a sentence into another related to it, and two ways or operations to combine two or more sentences together. These operations are called [**connectives**]{style="color:#4477AA;"}. Our natural language offer many more operations to combine sentences, but these three turn out to be all we need in virtually all engineering problems. The three connectives and their symbols are:
 
 [Not:\ \ $\lnot$]{style="color:#4477AA;"}
 : for example,
 $$
-\lnot \se{t}_{1,55} = \pr{CPU\,1 reports a temperature different from 55\,°C}
+\lnot \se{s} = \pr{The component is broken after the shock test}
 $$
 
 [And:\ \ $\land$]{style="color:#4477AA;"}
 : for example,
 $$
-\se{t}_{2,55} \land \se{c}_{2,90} = \pr{CPU\,2 reports a temperature of 55\,°C and is consuming 90\,W}
+\se{s} \land \se{h} = \pr{The component is whole after the shock and heating tests}
 $$
 
 [Or:\ \ $\lor$]{style="color:#4477AA;"}
 : for example,
 $$
-\se{c}_{2,90} \lor \se{c}_{2,110} = \pr{CPU\,2 is consuming 90\,W, or 110\,W, or both}
+\se{v}_{90} \lor \se{v}_{110} = \pr{The power-test voltage reading is 90\,mV, or 110\,mV, or both}
 $$
+
+The connectives can be applied multiple times, to obtain increasingly complex sentences.
 
 Note some important subtleties of the connectives:
 
 :::{.border}
 - There is not a strict correspondence between the words "not", "and", "or" in natural language and the three connectives. For instance the `and` connective could correspond to the words "but" or "whereas", or just to a comma " , ".
 
-- "Not" doesn't mean some kind of complementary quality, but only the negation. For instance, $\lnot\pr{The chair is black}$ does not mean $\pr{The chair is white}$.
+- "Not" doesn't mean some kind of complementary quality, but only the negation. For instance, $\lnot\pr{The chair is black}$ does not mean $\pr{The chair is white}$, although in some situations these two sentences could amount to the same thing.
 
-- "Or" does not exclude that both sentences can be true. So in our example\ \ $\se{c}_{2,90} \lor \se{c}_{2,110}$\ \ does not exclude, a priori, that CPU 2 can be consuming both 90 W and 110 W. (There is a connective for that: "exclusive-or", but it can be constructed out of the three we already have.)
+- It's best to always be explicit about what the "not" of a sentence concretely means. In our example, we take $\lnot\pr{The component is whole}$ to mean $\pr{The component is broken}$; but in other examples the negation of "being whole" could comprise several different conditions. A good guideline is to always state the "not" of a sentence in *positive* terms.
+
+- "Or" does not exclude that both the sentences it connects can be true. So in our example\ \ $\se{v}_{90} \lor \se{v}_{110}$\ \ does not exclude, a priori, that the reported voltage could be both 90 mV and 110 mV. (There is a connective for that: "exclusive-or", but it can be constructed out of the three we already have.)
 :::
 
 From the last remark we see that the sentence
 $$
-\pr{CPU\,2 is consuming either 90\,W or 110\,W}
+\pr{The power-test voltage reading is 90\,mV, or 110\,mV}
 $$
-does *not* correspond to \ \ $\se{c}_{2,90} \lor \se{c}_{2,110}$. The situation assumes implicitly that a CPU cannot have two different power consumption rates at the same time. Convince yourself that the correct way to write that sentence is this:
+does *not* correspond to \ \ $\se{v}_{90} \lor \se{v}_{110}$. It is implicitly clear that voltage reading cannot yield two different values at the same time. Convince yourself that the correct way to write that sentence is this:
 $$
-(\se{c}_{2,90} \lor \se{c}_{3,110})
+(\se{v}_{90} \lor \se{v}_{110})
 \land
-\lnot(\se{c}_{2,90} \land \se{c}_{2,110})
+\lnot(\se{v}_{90} \land \se{v}_{110})
 $$
 
 Finally, the full initial statement can be written in symbols as follows:
 $$
-\se{t}_{1,50} \land \se{t}_{2,50} 
-\land \se{c}_{1,100} 
-\land (\se{c}_{2,90} \lor \se{c}_{2,110})
+\se{s} \land \se{h} \land
+(\se{v}_{90} \lor \se{v}_{110})
 \land
-\lnot(\se{c}_{2,90} \land \se{c}_{2,110})
+\lnot(\se{v}_{90} \land \se{v}_{110})
 $$
 
 
 ## Distinguishing assumptions and outcomes
 
-Now we know how to represent arbitrarily complex sentences and express them in symbols. Let's introduce a way to clearly distinguish those that constitute the *assumptions* from those that constitute the *outcome* in a specific decision problem. In the CPU example above, suppose that the statement we wrote down symbolically constitutes the assumptions. The outcome to be inferred is $\se{c}_{2,90}$:\ \ $\pr{CPU\,2 is consuming 90\,W}$.
+Now we know how to represent arbitrarily complex sentences and express them in symbols. Let's introduce a way to clearly distinguish those that constitute the *assumptions* from those that constitute the *outcome* in a specific decision problem. In our assembly-line example, suppose that the statement we wrote down symbolically constitutes the assumptions. The outcome to be inferred is $\se{c}_{2,90}$:\ \ $\pr{CPU\,2 is consuming 90\,W}$.
 
-To distinguish assumptions and outcomes we can simply use the symbol\ \ "$\color[RGB]{238,102,119}\pmb{\|[\big]}$",\ \ a vertical bar^[Notation in formal logic uses the symbols\ \ $\models$\ \ or\ \ $\vdash$,\ \ and writes assumptions on the *left*, outcomes on the *right*. We use the notation used in probability logic.]:
+To distinguish assumptions and outcomes we can simply use a vertical bar^[Notation in formal logic uses the symbols\ \ $\models$\ \ or\ \ $\vdash$,\ \ and writes assumptions on the *left*, outcomes on the *right*. We use the notation used in probability logic.] like\ \ "$\color[RGB]{68,119,170}\pmb{\|[\big]}$" :
 
 - on its *left* side we write the sentence representing the *outcome*,
 - on its *right* side we write the sentences that make up our *assumptions*, `and`-ed together:
@@ -216,7 +217,7 @@ $$
 \lnot(\se{c}_{2,90} \land \se{c}_{2,110})
 $$
 
-The collection of assumptions on the right side of the bar "$\|[\big]$" is called the [**conditional**]{style="color:#4477AA;"}. The expression above is read\
+The collection of assumptions on the right side of the bar "$\pmb{\|[\big]}$" is called the [**conditional**]{style="color:#4477AA;"}. The expression above is read\
 "$\se{c}_{2,90}$\ \  *given*\ \  $\se{t}_{1,50} \land \se{t}_{2,50}
 \land\dotsb$"\
 or\
