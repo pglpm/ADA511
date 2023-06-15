@@ -178,11 +178,11 @@
 
 \title{ADA511: Data science and data-driven engineering}
 \author{Steffen Mæland \and PierGianLuca Porta Mana}
-\date{2023-06-14}
+\date{2023-06-15}
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, frame hidden, interior hidden, breakable, boxrule=0pt, sharp corners, enhanced]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, interior hidden, boxrule=0pt, enhanced, sharp corners, borderline west={3pt}{0pt}{shadecolor}, breakable]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -235,9 +235,103 @@ This course makes you acquainted with the foundations.
 \bookmarksetup{startatroot}
 
 \hypertarget{intro}{%
-\chapter{Introduction}\label{intro}}
+\chapter{Accept or discard?}\label{intro}}
 
-To be written: motivation and structure of this course.
+\providecommand{\ul}{\uline}
+\renewcommand*{\|}[1][]{\nonscript\:#1\vert\nonscript\:\mathopen{}}
+\providecommand*{\pr}[1]{\textsf{\small`#1'}}
+\renewcommand*{\pr}[1]{\textsf{\small`#1'}}
+\providecommand*{\prq}[1]{\textsf{\small #1}}
+\renewcommand*{\prq}[1]{\textsf{\small #1}}
+\providecommand{\se}[1]{\mathsfit{#1}}
+\renewcommand{\se}[1]{\mathsfit{#1}}
+\providecommand{\p}{\mathrm{p}}
+\renewcommand{\p}{\mathrm{p}}
+\renewcommand{\P}{\mathrm{P}}
+\definecolor{quarto-callout-note-color}{HTML}{4477AA}
+\definecolor{quarto-callout-note-color-frame}{HTML}{4477AA}
+\definecolor{quarto-callout-important-color}{HTML}{AA3377}
+\definecolor{quarto-callout-important-color-frame}{HTML}{AA3377}
+\definecolor{quarto-callout-warning-color}{HTML}{EE6677}
+\definecolor{quarto-callout-warning-color-frame}{HTML}{EE6677}
+\definecolor{quarto-callout-tip-color}{HTML}{228833}
+\definecolor{quarto-callout-tip-color-frame}{HTML}{228833}
+\definecolor{quarto-callout-caution-color}{HTML}{CCBB44}
+\definecolor{quarto-callout-caution-color-frame}{HTML}{CCBB44}
+
+Let's start with a question that could arise in a particular engineering
+problem:
+
+\begin{quote}
+A particular kind of electronic component is produced on an assembly
+line. At the end of the line, there is an automated inspection device
+that works as follows with every newly produced component coming out of
+the line.
+
+The inspection device first makes some tests on the new component. The
+tests give an uncertain forecast of whether that component will fail
+within its first year of use, or after.
+
+Then the device decides whether the component is accepted and packaged
+for sale, or discarded and thrown away.
+
+When a new electronic component is sold, the manufacturer has a net gain
+of \texttt{1\$}. If the component fails within a year of use, however,
+the manufacturer incur net \emph{loss} of \texttt{10\$} (11\$ loss,
+minus the 1\$ gained at first), owing to warranty refunds and damage
+costs to be paid to the buyer. When a new electronic component is
+discarded, the manufacturer has \texttt{0\$} net gain.
+
+For a specific new electronic component, just come out of the assembly
+line, the tests of the automated inspection device indicate that there
+is a \texttt{10\%} probability that the component will fail within its
+first year of use.
+\end{quote}
+
+{\textbf{\emph{Should the inspection device accept or discard the new
+component?}}}\\
+
+First, try to give and motivate an answer.
+
+This is not the real question of this exercise, however. In fact it
+doesn't matter if you don't get the correct answer; not even if you
+don't manage to get an answer at all.
+
+The purpose here is for you to do some introspection about your own
+reasoning. Then examine and discuss these points:
+
+\begin{itemize}
+\item
+  Which numerical elements in the problem seem to affect the answer?
+\item
+  Can these numerical elements be clearly separated? How would you
+  separate them?
+\item
+  How would the answer change, if these numerical elements were changed?
+  Feel free to change them, also in extreme ways, and see how the answer
+  would change.
+\item
+  Could we solve the problem if we didn't have the probabilities? Why?
+\item
+  Could we solve the problem if we didn't know the various gains and
+  losses? Why?
+\item
+  Can this problem be somehow abstracted, and then transformed into
+  another one with completely different details? For instance, consider
+  translating along these lines:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    inspection device → computer pilot of self-driving car
+  \item
+    tests → camera image
+  \item
+    fail within a year → pedestrian in front of car
+  \item
+    accept/discard → keep on going/~break
+  \end{itemize}
+\end{itemize}
 
 \bookmarksetup{startatroot}
 
@@ -351,7 +445,7 @@ important to keep this point in mind:
 
 \begin{figure*}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={}, rightrule=.15mm, left=2mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-note-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 {Aiming to find the solutions that are \emph{successful} can make us
 \emph{fail} to find those that are optimal when the successful ones
@@ -466,7 +560,7 @@ elements:
 
 \marginnote{\begin{footnotesize}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={\faIcon{seedling}}, rightrule=.15mm, left=2mm, colframe=quarto-callout-tip-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-tip-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-tip-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-tip-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={\faIcon{seedling}}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 Remember: What matters is to be able to identify these elements in a
 concrete engineering problem, understanding their role. Their technical
@@ -549,7 +643,7 @@ already there before the clinician's decision. The difference between
 decisions and outcomes is not one of time, but of control: decisions are
 under our control; outcomes are not and are generally uncertain.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={Example}, rightrule=.15mm, left=2mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-note-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={Example}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 \begin{quote}
 A particular kind of electronic component is produced on an assembly
@@ -597,7 +691,7 @@ problem can be identified as follows:
 
 \end{tcolorbox}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={Exercise}, rightrule=.15mm, left=2mm, colframe=quarto-callout-caution-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-caution-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-caution-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-caution-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={Exercise}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 Suppose that a new component arrives at the inspector. Tests give a
 \texttt{10\%} probability of failure within a year, and \texttt{90\%}
@@ -640,7 +734,7 @@ probable outcomes would be.
 
 \marginnote{\begin{footnotesize}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={\faIcon{book-open} For the curious}, rightrule=.15mm, left=2mm, colframe=quarto-callout-tip-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-tip-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-tip-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-tip-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={\faIcon{book-open} For the curious}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 See MacKay's options-vs-costs rational analysis in
 \href{https://www.withouthotair.com}{Sustainable Energy -- without the
@@ -714,9 +808,9 @@ the same data and a common decision (buy-sell) that is optimal for both.
 The optimality comes from the fact that the two agents have very
 different gains and losses for their various decisions.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={\faIcon{book-open} Reading}, rightrule=.15mm, left=2mm, colframe=quarto-callout-caution-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-caution-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-caution-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-caution-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={\faIcon{book-open} Reading}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
-§~1.1.4 in
+§\,1.1.4 in
 \href{https://hvl.instructure.com/courses/25074/modules/items/660089}{\emph{Artificial
 Intelligence}}
 
@@ -841,14 +935,14 @@ adopt this useful definition:
 
 \marginnote{\begin{footnotesize}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={\faIcon{book-open} For the curious
-\href{https://plato.stanford.edu/archives/win2020/entries/propositions}{Propositions}}, rightrule=.15mm, left=2mm, colframe=quarto-callout-tip-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-tip-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-tip-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-tip-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={\faIcon{book-open} For the curious
+\href{https://plato.stanford.edu/archives/win2020/entries/propositions}{Propositions}}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 \end{tcolorbox}
 
 \end{footnotesize}}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={}, rightrule=.15mm, left=2mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-note-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 {A ``sentence'' is a verbal message for which we can determine whether
 it is \texttt{true} or \texttt{false}, at least in principle and in such
@@ -889,7 +983,7 @@ consequences:
   agents.
 \end{itemize}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={\faIcon{book-open} Reading}, rightrule=.15mm, left=2mm, colframe=quarto-callout-caution-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-caution-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-caution-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-caution-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={\faIcon{book-open} Reading}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 §~7.1 in
 \href{https://hvl.instructure.com/courses/25074/modules/items/660089}{\emph{Artificial
@@ -1231,7 +1325,7 @@ sentences that underlie an inference can be extremely many and complex,
 and yet we must have an idea of what they are (otherwise, do we really
 know what our inference is about?).
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={Exercise}, rightrule=.15mm, left=2mm, colframe=quarto-callout-caution-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-caution-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-caution-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-caution-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={Exercise}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 Try to identify which sentences underlie the other example inferences
 above.
@@ -1494,7 +1588,7 @@ to \(1\). So we can conclude that
 exactly the conclusion under the line in rule
 (\textbf{?@eq-example-rule}).
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={\faIcon{pen} Exercise}, rightrule=.15mm, left=2mm, colframe=quarto-callout-caution-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-caution-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-caution-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-caution-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={\faIcon{pen} Exercise}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 Try to prove our initial inference
 
@@ -1521,7 +1615,7 @@ limitations}\label{logical-ai-agents-and-their-limitations}}
 The basic rules above are also the rules that a logical
 artificial-intelligent agent should follow.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={\faIcon{book-open} Reading}, rightrule=.15mm, left=2mm, colframe=quarto-callout-caution-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-caution-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-caution-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-caution-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={\faIcon{book-open} Reading}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 \href{https://hvl.instructure.com/courses/25074/modules/items/660089}{Ch.~7
 in \emph{Artificial Intelligence}}
@@ -1534,7 +1628,7 @@ infer the truth of some data, and the truth of some initial data may not
 be known either. In the next chapter we shall see how to generalize the
 logic rules to uncertain situations.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={\faIcon{rocket} For the extra curious}, rightrule=.15mm, left=2mm, colframe=quarto-callout-tip-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-tip-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-tip-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-tip-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={\faIcon{rocket} For the extra curious}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 Our cursory visit of formal logic only showed a microscopic part of this
 vast field. The study of logic rules continues still today, with many
@@ -1602,7 +1696,7 @@ understood (just as we did with the notion of truth). Terms equivalent
 for ``probability'' are \emph{degree of belief}, \emph{plausibility},
 \emph{credibility}.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, toprule=.15mm, breakable, left=2mm, colframe=quarto-callout-important-color-frame, colback=white, arc=.35mm, opacityback=0, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, breakable, colframe=quarto-callout-important-color-frame, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, opacityback=0]
 
 \textbf{}\vspace{2mm}
 
@@ -1698,7 +1792,7 @@ probabilities:
   down to physical laws, not to probabilities.
 \end{itemize}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={\faIcon{book-open} Reading}, rightrule=.15mm, left=2mm, colframe=quarto-callout-caution-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-caution-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-caution-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-caution-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={\faIcon{book-open} Reading}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 \href{https://hvl.instructure.com/courses/25074/modules/items/661553}{\emph{Dynamical
 Bias in the Coin Toss}}
@@ -1798,8 +1892,8 @@ sentences of any complexity:
 
 \begin{figure*}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={\faIcon{landmark}~~~THE FUNDAMENTAL LAWS OF
-INFERENCE~~~\faIcon{landmark}}, rightrule=.15mm, left=2mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-note-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={\faIcon{landmark}~~~THE FUNDAMENTAL LAWS OF
+INFERENCE~~~\faIcon{landmark}}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 \begin{description}
 \tightlist
@@ -1840,7 +1934,7 @@ inferences are also special applications of these rules. Most of this
 course is, at bottom, just a study of how to apply these rules in
 particular kinds of problems.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={\faIcon{book-open} Reading}, rightrule=.15mm, left=2mm, colframe=quarto-callout-caution-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-caution-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-caution-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-caution-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={\faIcon{book-open} Reading}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 \begin{itemize}
 \item
@@ -1884,7 +1978,7 @@ The rules also imply more general constraints. For example we must
 \mathrm{P}(a\lor b \nonscript\:\vert\nonscript\:\mathopen{}D) \ge \max\bigl\{\mathrm{P}(a\nonscript\:\vert\nonscript\:\mathopen{}D),\  \mathrm{P}(b\nonscript\:\vert\nonscript\:\mathopen{}D)\bigr\}
 \end{gather*}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={\faIcon{pen} Exercise}, rightrule=.15mm, left=2mm, colframe=quarto-callout-caution-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-caution-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-caution-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-caution-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={\faIcon{pen} Exercise}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 Try to prove the two constraints above
 
@@ -2005,7 +2099,7 @@ inference}\label{common-points-of-certain-and-uncertain-inference}}
 \emph{No premises? No conclusions!}
 \end{quote}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, breakable, toptitle=1mm, coltitle=black, title={\faIcon{exclamation-circle} Differences in terminology}, rightrule=.15mm, left=2mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, arc=.35mm, titlerule=0mm, toprule=.15mm, opacityback=0, colback=white, colbacktitle=quarto-callout-important-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colframe=quarto-callout-important-color-frame, titlerule=0mm, bottomrule=.15mm, breakable, bottomtitle=1mm, toptitle=1mm, title={\faIcon{exclamation-circle} Differences in terminology}, opacityback=0, arc=.35mm, colback=white, rightrule=.15mm, leftrule=.75mm, toprule=.15mm, left=2mm, coltitle=black]
 
 \begin{itemize}
 \item
