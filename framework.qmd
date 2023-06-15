@@ -1,71 +1,92 @@
 # Framework
 {{< include macros.qmd >}}
 
-## Aspects of the assembly problem
+## What does the intro problem tell us?
 
-Let's approach the exercise of the [Introduction @sec-intro] in an intuitive way.
+Let's approach the "accept or discard?" problem of the previous [chapter @sec-intro] in an intuitive way.
 
-:::{.margin}
+:::{.column-margin}
 We're jumping the gun here, because we haven't learned the method to solve this problem yet!
 :::
 
 First let's say that we `accept` the component. What happens?
 
-We must try to make sense of that $10\%$ probability of failure within a year. Different people do this with different imagination tricks. We can imagine, for instance, that this situation is repeated 100 times. In 10 of these repetitions the accepted component fails within a year after selling. In the remaining 90 repetitions, the component works fine for at least a year.
+We must try to make sense of that $10\%$ probability that the component fails within a year. Different people do this with different imagination tricks. We can imagine, for instance, that this situation is repeated 100 times. In 10 of these repetitions the accepted electronic component is sold and fails within a year after selling. In the remaining 90 repetitions, the component is sold and works fine for at least a year.
 
-In each of the 10 imaginary repetitions in which the component fails early, the manufacturer loses $10\,\$$. That's a total loss of $10 \cdot 10\,\$ = 100\,\$$. In each of the 90 imaginary repetitions in which the component doesn't fail early, the manufacturer gains $1\,\$$. That's a total gain of $90\,\$$. So over all 100 imaginary repetitions the manufacturer has gained
+In each of the 10 imaginary repetitions in which the component fails early, the manufacturer loses $10\$$. That's a total loss of $10 \cdot 10\$ = 100\$$. In each of the 90 imaginary repetitions in which the component doesn't fail early, the manufacturer gains $1\$$. That's a total gain of $90\$$. So over all 100 imaginary repetitions the manufacturer gains
 $$
-10\cdot (-10\$) + 90\cdot 1\$ = {\color[RGB]{238,102,119} -10\$} \ .
+10\cdot (-10\$) + 90\cdot 1\$ = {\color[RGB]{238,102,119} -10\$} \ ,
 $$
-So actually the manufacturer has not gained, but *lost* $10\,\$$ ! That's an average of $0.1\,\$$ *lost* per repetition.
+that is, the manufacturer has not gained, but *lost* $10\$$ ! That's an average of $0.1\$$ *lost* per repetition.
 
-Now let's say that we `reject` the component instead. What happens? In this case we don't need to invoke imaginary repetitions, but even if we do, it's clear that the manufacturer doesn't gain or lose anything -- that is, the "gain" is $0\,\$$ -- in all and each repetitions.
+Now let's say that we `discard` the component instead. What happens? In this case we don't need to invoke imaginary repetitions, but even if we do, it's clear that the manufacturer doesn't gain or lose anything -- that is, the "gain" is $0\$$ -- in each and all of the repetitions.
 
-The conclusion is that if in a situation like this we `accept` the component, then we'll lose $1\,\$$ on average; whereas if we `reject` it, then on average we won't lose anything or gain anything.
+The conclusion is that if in a situation like this we [accept]{.red} the component, then we'll [lose $1\$$]{.red} on average; whereas if we [discard]{.green} it, then on average we won't [lose anything or gain anything]{.green}.
 
-Obviously the best -- or "least worst" -- decision to make is to **reject** the component.
+Obviously the best, or "least worst", decision to make is to **discard** the component.
 
 :::{.callout-caution}
-## {{< fa pen >}} Exercise
-@. Now that we have an idea of the general reasoning, check what happens with different values of the probability of failure and of the failure cost: is it still best to reject? For instance, try with
+## {{< fa pen >}} Exercises
+@. Now that we have an idea of the general reasoning, check what happens with different values of the probability of failure and of the failure cost: is it still best to discard? For instance, try with
     
     - failure probability `10%` and failure cost `5$`;
     - failure probability `5%` and failure cost `10$`;
     - failure probability `10%`, failure cost `1$`, non-failure gain `2$`.
     
     Feel free to get wild and do plots.
-	
-@. Consider the special case with failure probability **`0%`** and failure cost `10$`. This means no new component will ever fail. To decide in such a case we do not need imaginary repetitions, but **confirm** that we arrive at the same logical conclusion whether we reason through imaginary repetitions or not.
+
+@. Identify the failure probability at which accepting the component doesn't lead to any loss or any gain, so it doesn't matter whether we discard or accept. (You can solve this as you prefer: analytically with an equation, visually with a plot, by trial & error on several cases, or whatnot.)
+
+@. Consider the special case with failure probability `0%` and failure cost `10$`. This means no new component will ever fail. To decide in such a case we do not need imaginary repetitions; but **confirm** that we arrive at the same logical conclusion whether we reason through imaginary repetitions or not.
+
+@. Consider this completely different problem:
+
+    > A patient is examined by a brand-new medical diagnostics AI system.
+    >
+    > The AI first performs some clinical tests on the patient. The tests give an uncertain forecast of whether the patient has a particular disease or not.
+    >
+    > Then the AI decides whether the patient should be dismissed without treatment, or treated with a particular medicine.
+    >
+    > If the patient is dismissed, then the life expectancy doesn't increase or decrease if the disease is not present, but it decreases by 9 years if the disease is actually present. If the patient is treated, then the life expectancy decreases by 1 year if the disease is not present (owing to treatment side-effects), and also if the disease is present (because it cures the disease, giving 10 more years to the patient, minus 1 year for the side effects).
+    >
+    > For this patient, the clinical tests indicate that there is a $10\%$ probability that the patient has the disease.
+
+    Should the diagnostic AI dismiss or treat the patient? Find differences and similarities, even numerical, with the assembly-line problem.
+
+
 :::
+\
 
-### Peculiarities of the problem
+From the solution of the problem and from the exploring exercises, we gather some instructive points:
+
+- Is it enough if we simply know that the component is less likely to fail than not? in other words, if we simply know that the probability of failure is less than $50\%$?
+
+    Obviously not. We found that if the failure probability is $10\%$ then it's best to discard; but if it's $5\%$ then it's best to accept. In both cases the component was less likely to fail than not, but the decisions were different. Moreover, we found that the probability affected the loss if one made the non-optimal decision. Therefore:
+	
+	[**Knowledge of exact probabilities is absolutely necessary for making the best decision**]{.blue}
+
+- Is it enough if we simply know that failure leads to a cost? that is, that its gain is less than the gain for non-failure?
+
+    Obviously not. The situation is similar to that with the probability. In the exercise we found that if the failure cost is $10\$$ then it's best to discard; but if it's $5\$$ then it's best to accept. It's also best to accept if the failure cost is $10\$$ but the non-failure gain is $2\$$. Therefore:
+	
+	[**Knowledge of the exact gains and losses is absolutely necessary for making the best decision**]{.blue}
+	
+- Is this kind of decision situation only relevant to assembly lines and sales?
+
+    By all means not. We found a clinical situation that's exactly analogous: there's uncertainty, there are gains and losses (of time rather than money), and the best decision depends on both.
+
+	[Decision-making problems under uncertainty or risk occur repeatedly everywhere in engineering and outside engineering, on small and big scales. They all boil down to the same elements: potential decisions, uncertainty in the consequences, gains and risks involved in the consequences.]{.blue}
+    
+
+## Decision-making under risk
+
+Every data-driven engineering project is unique, with its unique difficulties and problems. But there are also problems common to all engineering projects. In the situations we explored above, we found an extremely important problem-pattern, *decision-making under risk*, that seems to appear literally everywhere -- but to have a sort of systematic solution method, too. In this course we're going to focus on this kind of problem.
+
+We'll learn a framework and some abstract notions that allow us to frame and analyse this kind of problem, and we'll learn a universal set of principles to solve it. 
+<!-- This set of principles is important because it mathematically guarantees an optimal solution to the problem -- within the goals, means, and data into which we framed the problem. -->
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Every data-driven engineering problem is unique. But there are also similarities among all engineering problems. We are going to learn a framework that allows us to frame and work out some important aspects of any data-driven engineering problem, and of any sub-problems into which a problem can be broken down. This framework is build on notions and on a set of principles that help us analyse the problem. This set of principles is important because it mathematically guarantees an optimal solution to the problem -- within the goals, means, and data into which we framed the problem.
 
 ## Our goal: not "success", but optimality
 
