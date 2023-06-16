@@ -75,17 +75,21 @@ From the solution of the problem and from the exploring exercises, we gather som
 
     By all means not. We found a clinical situation that's exactly analogous: there's uncertainty, there are gains and losses (of time rather than money), and the best decision depends on both.
 
-	[Decision-making problems under uncertainty or risk occur repeatedly everywhere in engineering and outside engineering, on small and big scales. They all boil down to the same elements: potential decisions, uncertainty in the consequences, gains and risks involved in the consequences.]{.blue}
+	<!-- [Decision-making problems under uncertainty occur repeatedly everywhere in engineering and outside engineering, on small and big scales. They all boil down to the same elements: potential decisions, uncertainty in the consequences, gains and risks involved in the consequences.]{.blue} -->
     
 
 ## Our focus: decision-making and data science
 
-Every data-driven engineering project is unique, with its unique difficulties and problems. But there are also problems common to all engineering projects. In the situations we explored above, we found an extremely important problem-pattern, *decision-making under risk*, that seems to appear literally everywhere -- but to have a sort of systematic solution method, too. In this course we're going to focus on this kind of problem.
+Every data-driven engineering project is unique, with its unique difficulties and problems. But there are also problems common to all engineering projects. 
 
-We'll learn a framework and some abstract notions that allow us to frame and analyse this kind of problem, and we'll learn a universal set of principles -- [**Decision Theory**]{.blue} -- to solve it. 
+In the scenarios we explored above, we found an extremely important problem-pattern. There is a decision or choice to make (and "not deciding" is not an option -- or it's just another kind choice). Making a particular decision will lead to some consequences, some leading to a desired goal, others leading to something undesirable. The decision is difficult because its consequences are not known with certainty, given the information and data available in the problem. We may lack information and data about past or present details, about future events and responses, and so on. This is what we call a problem of [**decision-making under uncertainty**]{.blue} or **under risk**^[We'll avoid the word "risk" because it has several different technical meanings in the literature, some even contradictory.], or simply a "decision problem" for short.
+
+This problem-pattern appears literally everywhere. But our explored scenarios also suggest that this problem-pattern has a sort of systematic solution method.
+
+In this course we're going to focus on decision problems and their systematic solution method. We'll learn a framework and some abstract notions that allow us to frame and analyse this kind of problem, and we'll learn a universal set of principles to solve it. This set of principles goes under the name of [**Decision Theory**]{.blue}.
 <!-- This set of principles is important because it mathematically guarantees an optimal solution to the problem -- within the goals, means, and data into which we framed the problem. -->
 
-But what does decision-making under risk have to do with *data* and *data science*? The three are profoundly and tightly related on many different planes:
+But what do decision-making under uncertainty and Decision Theory have to do with *data* and *data science*? The three are profoundly and tightly related on many different planes:
 
 - We saw that *probability* values are essential in a decision problem. How do we find them? As you can imagine, *data* play an important part in their calculation. In our intro example, the failure probability must come from observations or experiments on similar electronic components.
 
@@ -99,42 +103,6 @@ But what does decision-making under risk have to do with *data* and *data scienc
 
 These five planes will constitute the major parts of the present course.
 
-
-
-## Our goal: not "success", but optimality
-
-What can we demand of a method for facing engineering problems?
-
-A typical and important aspect in any engineering problem is that there are several possible decisions, or courses of actions, available. The question is which one to choose. Making a particular decision will lead to some consequences, which could get us close to the desired goal but also lead to something else, possibly undesirable. Making a decision is often difficult because **its consequences are not known with certainty, given the information and data available** in the problem. We may lack information and data about past or present details, about future events and responses, and so on. Yet a decision has to made nevertheless. This is what we call a [**decision problem under uncertainty**]{.blue} or [**under risk**]{style="color:#4477AA;"}, or simply a "decision problem" for short.
-
-By definition, in a decision problem under uncertainty there is generally no method to *determine* the decision that will surely lead to the desired consequence (if such a method existed, then the problem would not be one of deciding under uncertainty). Therefore, if there is a method to deal with decision problems, its goal cannot be the determination of the *successful* decision. This also means that a priori we cannot blame an engineer for making an unsuccessful decision in a situation of uncertainty.
-
-Imagine two persons, Henry and Tina, who must bet on "heads" or "tails" under the following conditions (and who otherwise don't get any special thrill from betting):
-
-- if the bet is "heads" and the coin lands "heads", the person wins a *small* amount of money; but if it lands "tails", they lose a *large* amount of money.
-- if the bet is "tails" and the coin lands "tails", the person *wins* a small amount of money; if it lands "heads", they lose the same *small* amount of money.
-
-Henry chooses the first bet, on "heads". Tina chooses the second bet, on "tails". The coin comes down "heads". So Henry wins the small amount of money, while Tina loses it small amount. What would we say about their decisions?
-
-Henry's decision was lucky, and yet *irrational*: he risked losing much more money than in the second bet, without any possibility of winning more. Tina's decision was unlucky, and yet *rational*: the possibility and amount of winning was the same in the two bets, and she chose the bet with the least amount of loss. We expect that any person making Henry's decision in similar, future bets will eventually lose more money than any person making Tina's decision.
-
-This example shows two points. First, "success" is generally not a good criterion to judge a decision under uncertainty. Second, even if there is no method to determine which decision is successful, there seems to be a method to determine which decision is rational or [**optimal**]{style="color:#4477AA;"}, given the particular gains, losses, and uncertainties involved in the decision problem.
-
-Such a method indeed does exist, and its explanation and use will be the core of the present notes.
-
-Let us emphasize, however, that we are not giving up on "success", or trading it for "optimality". Indeed we'll find that **the method automatically leads to the *successful* decision** in problems where uncertainty is not present or is irrelevant. It's a win-win. It's important to keep this point in mind:
-
-::::: {.column-page-inset-right}
-:::: {.callout-note appearance="default" icon=false}
-##
-[Aiming to find the solutions that are *successful* can make us *fail* to find those that are optimal when the successful ones cannot be determined.]{style="color:#AA3377;font-size:125%"}
-
-[Aiming to find the solutions that are *optimal* makes us automatically find those that are *successful* when those can be determined.]{style="color:#4477AA;font-size:125%"}
-::::
-:::::
-
-We shall later witness this fact with our own eyes, and will take it up again in the discussion of some misleading techniques to evaluate machine-learning algorithms.
-
 \
 
 There are other important aspects in engineering problems, besides the one of making decisions under uncertainty. For instance the *discovery* or the *invention* of new technologies and solutions. These aspects can barely be planned or decided; but their fruits, once available, should be handled and used optimally -- thus leading to a decision problem.
@@ -142,34 +110,75 @@ There are other important aspects in engineering problems, besides the one of ma
 Artificial intelligence is proving to be a valuable aid in these more creative aspects too. This kind of use of AI is outside the scope of the present notes. Some aspects of this creativity-assisting use, however, do fall within the domain of the present notes. A pattern-searching algorithm, for example, can be optimized by means of the method we are going to study.
 
 
+
+
+## Our goal: optimality, not "success"
+
+What should we demand from a systematic method for solving decision problems?
+
+By definition, in a decision problem under uncertainty there is generally no method to *determine* the decision that surely leads to the desired consequence -- if such a method existed, then the problem would not have any uncertainty! Therefore, if there is a method to deal with decision problems, its goal cannot be the determination of the *successful* decision. This also means that a priori we cannot blame an engineer for making an unsuccessful decision in a situation of uncertainty.
+
+Imagine two persons, Henry and Tina, who must bet on "heads" or "tails" under the following conditions (but who otherwise don't get any special thrill from betting):
+
+- If the bet is "heads" and the coin lands "heads", the person wins a *small* amount of money; but if it lands "tails", they lose a *large* amount of money.
+- If the bet is "tails" and the coin lands "tails", the person *wins* a small amount of money; if it lands "heads", they lose the same *small* amount of money.
+
+Henry chooses the first bet, on "heads". Tina chooses the second bet, on "tails". The coin comes down "heads". So Henry wins the small amount of money, while Tina loses the same small amount. What would we say about their decisions?
+
+Henry's decision was lucky, and yet *irrational*: he risked losing much more money than in the second bet, without any possibility of at least winning more. Tina's decision was unlucky, and yet *rational*: the possibility and amount of winning was the same in the two bets, and she chose the bet with the least amount of loss. We expect that any person making Henry's decision in similar, future bets will eventually lose more money than any person making Tina's decision.
+
+This example shows two points. First, "success" is generally not a good criterion to judge a decision under uncertainty; success can be the pure outcome of luck, not of smarts. Second, even if there is no method to determine which decision is successful, there is a method to determine which decision is rational or [**optimal**]{.blue}, given the particular gains, losses, and uncertainties involved in the decision problem. We had a glimpse of this method in our introductory scenarios.
+
+Let us emphasize, however, that we are not giving up on "success", or trading it for "optimality". Indeed we'll find that [**Decision Theory automatically leads to the *successful* decision**]{.blue} in problems where uncertainty is not present or is irrelevant. It's a win-win. It's important to keep this point in mind:
+
+::::: {.column-page-inset-right}
+:::: {.callout-note appearance="default" icon=false}
+##
+[Aiming to find the solutions that are *successful* can make us *fail* to find those that are optimal when the successful ones cannot be determined.]{.red style="font-size:120%"}
+
+[Aiming to find the solutions that are *optimal* makes us automatically find those that are *successful* when those can be determined.]{.green style="font-size:120%"}
+::::
+:::::
+
+We shall later witness this fact with our own eyes, and will take it up again in the discussion of some misleading techniques to evaluate machine-learning algorithms.
+
+
 ## Decision Theory
 
-We want a method that allows an engineer to make optimal decisions in uncertain situations, and successful decisions in situations with no uncertainty. What other kinds of features should such a method have, in order to be applied to as many kinds of decision problems as possible?
+So far we have mentioned that Decision Theory has the following features:
 
-If we find an optimal course of action in regards to some outcome, it may still happen that the course of action can in practice be realized in several ways that are equivalent in regard to the outcome, but inequivalent in regard to time or resources. We thus face a decision within a decision. In general, a decision problem may involve several decision sub-problems, in turn involving decision sub-sub-problems, and so on.
+- [{{< fa check >}} it tells us what's optimal and, when possible, what's successful]{.green}
 
-The main engineering goal itself could be to design and build an automated or AI-based device capable of making an optimal decision in a specific kind of uncertain situations. Think for instance of an aeronautic engineer designing an autopilot system.
+- [{{< fa check >}} it takes into consideration decisions, consequences, costs and gains]{.green}
 
-Therefore, to analyse and tackle this kind of problems we would like to have a framework with the following features:
+- [{{< fa check >}} it is able to deal with uncertainties]{.green}
 
-- it should tell us what's optimal and, when possible, what's successful
+What other kinds of features should we demand from it, in order to be applied to as many kinds of decision problems as possible, and to be relevant for data science?
 
-- it should take into consideration choices, consequences, costs and gains
+If we find an optimal decision in regards to some outcome, it may still happen that the decision can be realized in several ways that are equivalent in regard to the outcome, but inequivalent in regard to time or resources. In the assembly-line scenario, for example, the decision `discard` could be carried out by burning, recycling, and so on. We thus face a decision within a decision. In general, a decision problem may involve several decision sub-problems, in turn involving decision sub-sub-problems, and so on.
 
-- it should be able to deal with uncertainties
+In data science, a common engineering goal is to design and build an automated or AI-based device capable of making an optimal decision in a specific kind of uncertain situations. Think for instance of an aeronautic engineer designing an autopilot system, or a software company designing an image classifier.
 
-- it should be susceptible to recursive or modular application, if needed
+Decision Theory turns out to meet these demands too, thanks to the following features:
 
-- it should be suited to being used not only for human decision-makers, but also for automated or AI devices.
+- [{{< fa check >}} t is susceptible to recursive, sequential, or modular application]{.green}
 
-A framework with these features exists: it is [**Decision Theory**]{style="color:#4477AA;"}.
+- [{{< fa check >}} it can be used not only for human decision-makers, but also for automated or AI devices]{.green}
 
-Decision Theory has a long history, going back to Leibniz in the 1600s and partly even to Aristotle in the &minus;300s, and appearing in its present form around 1920--1960. What's remarkable about it is that it is not only *a* framework, but *the* framework we must use. A logico-mathematical theorem shows that any framework that does not break basic optimality and rationality criteria has to be equivalent to Decision Theory (in other words, it can use different technical terminology and rewrite mathematical operations in a different way, but it boils down to the same notions and operations of Decision Theory). So if you wanted to invent and use another framework, then either (a) it would lead to some irrational or illogical consequences, or (b) it would lead to results identical to Decision Theory's. Many frameworks that you are probably familiar with, such as optimization theory, are just specific applications or particular cases of Decision Theory.
+\
 
-Decision Theory can be roughly divided into two main parts: [**Probability Theory**]{style="color:#4477AA;"}, which deals with information, data, uncertainty, inference; and [**Utility Theory**]{style="color:#4477AA;"}, which deals with actions, consequences, gain and loss, decisions. We shall get acquainted with Decision Theory step by step, introducing its main ideas and notions as they become necessary.
+Decision Theory has a long history, going back to Leibniz in the 1600s and partly even to Aristotle in the &minus;300s, and appearing in its present form around 1920--1960. What's remarkable about it is that it is not only *a* framework, but *the* framework we must use. A logico-mathematical theorem shows that [**any framework that does not break basic optimality and rationality criteria has to be equivalent to Decision Theory**]{.blue}. In other words, any "alternative" framework may use different technical terminology and rewrite mathematical operations in a different way, but it boils down to the same notions and operations of Decision Theory. So if you wanted to invent and use another framework, then either (a) it would lead to some irrational or illogical consequences, or (b) it would lead to results identical to Decision Theory's. Many frameworks that you are probably familiar with, such as optimization theory or Boolean logic, are just specific applications or particular cases of Decision Theory.
 
+Thus we list one more important characteristic of Decision Theory:
+
+- [{{< fa check >}} it is [**normative**]{.blue}]{.green}
+
+*Normative* contrasts with *descriptive*. The purpose of Decision Theory is not to describe, for example, how human decision-makers typically work. Because human decision-makers typically make irrational, sub-optimal, or biased decisions. That's exactly what we want to avoid and improve!
 
 ## Anatomy of a decision problem
+
+Decision Theory can be roughly divided into two main parts: [**Probability Theory**]{.blue}, which deals with information, data, uncertainty, inference; and [**Utility Theory**]{.blue}, which deals with actions, consequences, gain and loss, decisions. We shall get acquainted with Decision Theory step by step, introducing its main ideas and notions as they become necessary.
+
 
 An extremely important -- and surprisingly often neglected -- first step in every engineering problem is to define exactly what the problem is. This means, in particular, to specify unambiguously the goals, the available data and information, the available decisions or courses of action, the hypotheses of interest.
 
@@ -182,25 +191,25 @@ Remember: What matters is to be able to identify these elements in a concrete en
 :::
 ::::
 
-- [**Agent**]{style="color:#4477AA;"}, and [**background**]{style="color:#4477AA;"} or  [**prior information**]{style="color:#4477AA;"}: the agent is the person or device that has to make an optimal decision. An agent has some specific background information and data that are used and taken for granted in the decision-making process. Since different agents typically have different background information, we shall somehow conflate them.
+- [**Agent**]{.blue}, and [**background**]{.blue} or  [**prior information**]{.blue}: the agent is the person or device that has to make an optimal decision. An agent has some specific background information and data that are used and taken for granted in the decision-making process. Since different agents typically have different background information, we shall somehow conflate them.
 
-- [**Decisions**]{style="color:#4477AA;"} or [**courses of actions**]{style="color:#4477AA;"}: the choices available to the agent.
+- [**Decisions**]{.blue} or [**courses of actions**]{.blue}: the choices available to the agent.
 
-- [**Assumptions**]{style="color:#4477AA;"}: data and information that are known, or temporarily imagined to be known, to the agent. Assumptions are different from background information because the latter is never used for hypothetical or counterfactual reasoning -- a difference that will become clear shortly.
+- [**Assumptions**]{.blue}: data and information that are known, or temporarily imagined to be known, to the agent. Assumptions are different from background information because the latter is never used for hypothetical or counterfactual reasoning -- a difference that will become clear shortly.
 
-- [**Outcomes**]{style="color:#4477AA;"}: hypotheses, conjectures, or actual facts that the agent wishes to assess; often they depend on the possible decisions.
+- [**Outcomes**]{.blue}: hypotheses, conjectures, or actual facts that the agent wishes to assess; often they depend on the possible decisions.
 
-- [**Probabilities**]{style="color:#4477AA;"}: forecasting the outcomes given the assumptions, and the uncertainty of these forecasts.
+- [**Probabilities**]{.blue}: forecasting the outcomes given the assumptions, and the uncertainty of these forecasts.
 
-- [**Utilities**]{style="color:#4477AA;"}: the gains and losses involved in making each possible decision.
+- [**Utilities**]{.blue}: the gains and losses involved in making each possible decision.
 
 Together with the "assumptions" and "outcomes" it is also useful to keep in mind two more, somewhat different elements:
 
-- [**Knowns**]{style="color:#4477AA;"}: the data and information that are actually known to the agent.
+- [**Knowns**]{.blue}: the data and information that are actually known to the agent.
 
-- [**Unknowns**]{style="color:#4477AA;"}: hypotheses, conjectures, and situations whose truth or falsity are actually unknown to the agent.
+- [**Unknowns**]{.blue}: hypotheses, conjectures, and situations whose truth or falsity are actually unknown to the agent.
 
-The basic idea is that the agent will [**infer**]{style="color:#4477AA;"} the outcomes given the assumptions, with some degree of [**uncertainty**]{style="color:#4477AA;"}. From these inferences it will determine the [**optimal**]{style="color:#4477AA;"} decision.
+The basic idea is that the agent will [**infer**]{.blue} the outcomes given the assumptions, with some degree of [**uncertainty**]{.blue}. From these inferences it will determine the [**optimal**]{.blue} decision.
 
 A basic decision problem and some of its elements can be graphically represented in a diagram like this:
 

@@ -178,11 +178,11 @@
 
 \title{ADA511: Data science and data-driven engineering}
 \author{Steffen Mæland \and PierGianLuca Porta Mana}
-\date{2023-06-15}
+\date{2023-06-16}
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, breakable, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, frame hidden, enhanced, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, boxrule=0pt, frame hidden, borderline west={3pt}{0pt}{shadecolor}, interior hidden, breakable, sharp corners]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -415,7 +415,7 @@ it, then on average we won't {lose anything or gain anything}.
 Obviously the best, or ``least worst'', decision to make is to
 \textbf{discard} the component.
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={\faIcon{pen} Exercises}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-caution-color-frame, colbacktitle=quarto-callout-caution-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-caution-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={\faIcon{pen} Exercises}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-caution-color!10!white]
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -519,12 +519,6 @@ gather some instructive points:
   By all means not. We found a clinical situation that's exactly
   analogous: there's uncertainty, there are gains and losses (of time
   rather than money), and the best decision depends on both.
-
-  {Decision-making problems under uncertainty or risk occur repeatedly
-  everywhere in engineering and outside engineering, on small and big
-  scales. They all boil down to the same elements: potential decisions,
-  uncertainty in the consequences, gains and risks involved in the
-  consequences.}
 \end{itemize}
 
 \hypertarget{our-focus-decision-making-and-data-science}{%
@@ -533,27 +527,43 @@ science}\label{our-focus-decision-making-and-data-science}}
 
 Every data-driven engineering project is unique, with its unique
 difficulties and problems. But there are also problems common to all
-engineering projects. In the situations we explored above, we found an
-extremely important problem-pattern, \emph{decision-making under risk},
-that seems to appear literally everywhere -- but to have a sort of
-systematic solution method, too. In this course we're going to focus on
-this kind of problem.
+engineering projects.
 
-We'll learn a framework and some abstract notions that allow us to frame
-and analyse this kind of problem, and we'll learn a universal set of
-principles -- {\textbf{Decision Theory}} -- to solve it.
+In the scenarios we explored above, we found an extremely important
+problem-pattern. There is a decision or choice to make (and ``not
+deciding'' is not an option -- or it's just another kind choice). Making
+a particular decision will lead to some consequences, some leading to a
+desired goal, others leading to something undesirable. The decision is
+difficult because its consequences are not known with certainty, given
+the information and data available in the problem. We may lack
+information and data about past or present details, about future events
+and responses, and so on. This is what we call a problem of
+{\textbf{decision-making under uncertainty}} or \textbf{under
+risk}\footnote{We'll avoid the word ``risk'' because it has several
+  different technical meanings in the literature, some even
+  contradictory.}, or simply a ``decision problem'' for short.
 
-But what does decision-making under risk have to do with \emph{data} and
-\emph{data science}? The three are profoundly and tightly related on
-many different planes:
+This problem-pattern appears literally everywhere. But our explored
+scenarios also suggest that this problem-pattern has a sort of
+systematic solution method.
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-tip-color-frame, colbacktitle=quarto-callout-tip-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+In this course we're going to focus on decision problems and their
+systematic solution method. We'll learn a framework and some abstract
+notions that allow us to frame and analyse this kind of problem, and
+we'll learn a universal set of principles to solve it. This set of
+principles goes under the name of {\textbf{Decision Theory}}.
+
+But what do decision-making under uncertainty and Decision Theory have
+to do with \emph{data} and \emph{data science}? The three are profoundly
+and tightly related on many different planes:
 
 \begin{itemize}
 \item
-  We saw that the \emph{probability} values are essential in a decision
+  We saw that \emph{probability} values are essential in a decision
   problem. How do we find them? As you can imagine, \emph{data} play an
-  important part in their calculation.
+  important part in their calculation. In our intro example, the failure
+  probability must come from observations or experiments on similar
+  electronic components.
 \item
   We saw that also the values of \emph{gains and losses} are essential.
   \emph{Data} play an important part in their calculation as well.
@@ -561,115 +571,21 @@ many different planes:
   \emph{Data science} is based on the laws of \emph{Decision Theory}.
   Here's an analogy: a rocket engineer relies on fundamental physical
   laws (balance of momentum, energy, and so on) for making a rocket
-  work, and makes sure that they are respected. Failure to follow those
-  laws leads at best to sub-optimal solutions, at worst to disasters. As
-  we shall see, the same is true for a data scientist and the rules of
-  decision theory.
+  work. Failure to account for those laws leads at best to sub-optimal
+  solutions, at worst to disasters. As we shall see, the same is true
+  for a data scientist and the rules of decision theory.
 \item
-  \emph{Machine-learning} algorithms in particular are realizations or
-  approximations of the rules of \emph{Decision Theory}.
+  \emph{Machine-learning} algorithms, in particular, are realizations or
+  approximations of the rules of \emph{Decision Theory}. This is clear,
+  for instance, considering that the main task of a machine-learning
+  classifier is to decide among possible output labels or classes.
 \item
   The rules of \emph{Decision Theory} are also the foundations upon
-  which \emph{artificial-intelligence} agents are built.
+  which \emph{artificial-intelligence} agents, which must make optimal
+  inferences and decisions, are built.
 \end{itemize}
 
-\end{tcolorbox}
-
-\emph{These five planes will constitute the major parts of the present
-course}.
-
-\hypertarget{our-goal-not-success-but-optimality}{%
-\section{Our goal: not ``success'', but
-optimality}\label{our-goal-not-success-but-optimality}}
-
-What can we demand of a method for facing engineering problems?
-
-A typical and important aspect in any engineering problem is that there
-are several possible decisions, or courses of actions, available. The
-question is which one to choose. Making a particular decision will lead
-to some consequences, which could get us close to the desired goal but
-also lead to something else, possibly undesirable. Making a decision is
-often difficult because \textbf{its consequences are not known with
-certainty, given the information and data available} in the problem. We
-may lack information and data about past or present details, about
-future events and responses, and so on. Yet a decision has to made
-nevertheless. This is what we call a {\textbf{decision problem under
-uncertainty}} or {\textbf{under risk}}, or simply a ``decision problem''
-for short.
-
-By definition, in a decision problem under uncertainty there is
-generally no method to \emph{determine} the decision that will surely
-lead to the desired consequence (if such a method existed, then the
-problem would not be one of deciding under uncertainty). Therefore, if
-there is a method to deal with decision problems, its goal cannot be the
-determination of the \emph{successful} decision. This also means that a
-priori we cannot blame an engineer for making an unsuccessful decision
-in a situation of uncertainty.
-
-Imagine two persons, Henry and Tina, who must bet on ``heads'' or
-``tails'' under the following conditions (and who otherwise don't get
-any special thrill from betting):
-
-\begin{itemize}
-\tightlist
-\item
-  if the bet is ``heads'' and the coin lands ``heads'', the person wins
-  a \emph{small} amount of money; but if it lands ``tails'', they lose a
-  \emph{large} amount of money.
-\item
-  if the bet is ``tails'' and the coin lands ``tails'', the person
-  \emph{wins} a small amount of money; if it lands ``heads'', they lose
-  the same \emph{small} amount of money.
-\end{itemize}
-
-Henry chooses the first bet, on ``heads''. Tina chooses the second bet,
-on ``tails''. The coin comes down ``heads''. So Henry wins the small
-amount of money, while Tina loses it small amount. What would we say
-about their decisions?
-
-Henry's decision was lucky, and yet \emph{irrational}: he risked losing
-much more money than in the second bet, without any possibility of
-winning more. Tina's decision was unlucky, and yet \emph{rational}: the
-possibility and amount of winning was the same in the two bets, and she
-chose the bet with the least amount of loss. We expect that any person
-making Henry's decision in similar, future bets will eventually lose
-more money than any person making Tina's decision.
-
-This example shows two points. First, ``success'' is generally not a
-good criterion to judge a decision under uncertainty. Second, even if
-there is no method to determine which decision is successful, there
-seems to be a method to determine which decision is rational or
-{\textbf{optimal}}, given the particular gains, losses, and
-uncertainties involved in the decision problem.
-
-Such a method indeed does exist, and its explanation and use will be the
-core of the present notes.
-
-Let us emphasize, however, that we are not giving up on ``success'', or
-trading it for ``optimality''. Indeed we'll find that \textbf{the method
-automatically leads to the \emph{successful} decision} in problems where
-uncertainty is not present or is irrelevant. It's a win-win. It's
-important to keep this point in mind:
-
-\begin{figure*}
-
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-note-color-frame, colbacktitle=quarto-callout-note-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
-
-{Aiming to find the solutions that are \emph{successful} can make us
-\emph{fail} to find those that are optimal when the successful ones
-cannot be determined.}
-
-{Aiming to find the solutions that are \emph{optimal} makes us
-automatically find those that are \emph{successful} when those can be
-determined.}
-
-\end{tcolorbox}
-
-\end{figure*}
-
-We shall later witness this fact with our own eyes, and will take it up
-again in the discussion of some misleading techniques to evaluate
-machine-learning algorithms.
+These five planes will constitute the major parts of the present course.
 
 \hfill\break
 
@@ -687,63 +603,168 @@ do fall within the domain of the present notes. A pattern-searching
 algorithm, for example, can be optimized by means of the method we are
 going to study.
 
+\hypertarget{our-goal-optimality-not-success}{%
+\section{Our goal: optimality, not
+``success''}\label{our-goal-optimality-not-success}}
+
+What should we demand from a systematic method for solving decision
+problems?
+
+By definition, in a decision problem under uncertainty there is
+generally no method to \emph{determine} the decision that surely leads
+to the desired consequence -- if such a method existed, then the problem
+would not have any uncertainty! Therefore, if there is a method to deal
+with decision problems, its goal cannot be the determination of the
+\emph{successful} decision. This also means that a priori we cannot
+blame an engineer for making an unsuccessful decision in a situation of
+uncertainty.
+
+Imagine two persons, Henry and Tina, who must bet on ``heads'' or
+``tails'' under the following conditions (but who otherwise don't get
+any special thrill from betting):
+
+\begin{itemize}
+\tightlist
+\item
+  If the bet is ``heads'' and the coin lands ``heads'', the person wins
+  a \emph{small} amount of money; but if it lands ``tails'', they lose a
+  \emph{large} amount of money.
+\item
+  If the bet is ``tails'' and the coin lands ``tails'', the person
+  \emph{wins} a small amount of money; if it lands ``heads'', they lose
+  the same \emph{small} amount of money.
+\end{itemize}
+
+Henry chooses the first bet, on ``heads''. Tina chooses the second bet,
+on ``tails''. The coin comes down ``heads''. So Henry wins the small
+amount of money, while Tina loses the same small amount. What would we
+say about their decisions?
+
+Henry's decision was lucky, and yet \emph{irrational}: he risked losing
+much more money than in the second bet, without any possibility of at
+least winning more. Tina's decision was unlucky, and yet
+\emph{rational}: the possibility and amount of winning was the same in
+the two bets, and she chose the bet with the least amount of loss. We
+expect that any person making Henry's decision in similar, future bets
+will eventually lose more money than any person making Tina's decision.
+
+This example shows two points. First, ``success'' is generally not a
+good criterion to judge a decision under uncertainty; success can be the
+pure outcome of luck, not of smarts. Second, even if there is no method
+to determine which decision is successful, there is a method to
+determine which decision is rational or {\textbf{optimal}}, given the
+particular gains, losses, and uncertainties involved in the decision
+problem. We had a glimpse of this method in our introductory scenarios.
+
+Let us emphasize, however, that we are not giving up on ``success'', or
+trading it for ``optimality''. Indeed we'll find that {\textbf{Decision
+Theory automatically leads to the \emph{successful} decision}} in
+problems where uncertainty is not present or is irrelevant. It's a
+win-win. It's important to keep this point in mind:
+
+\begin{figure*}
+
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-note-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white]
+
+{Aiming to find the solutions that are \emph{successful} can make us
+\emph{fail} to find those that are optimal when the successful ones
+cannot be determined.}
+
+{Aiming to find the solutions that are \emph{optimal} makes us
+automatically find those that are \emph{successful} when those can be
+determined.}
+
+\end{tcolorbox}
+
+\end{figure*}
+
+We shall later witness this fact with our own eyes, and will take it up
+again in the discussion of some misleading techniques to evaluate
+machine-learning algorithms.
+
 \hypertarget{decision-theory}{%
 \section{Decision Theory}\label{decision-theory}}
 
-We want a method that allows an engineer to make optimal decisions in
-uncertain situations, and successful decisions in situations with no
-uncertainty. What other kinds of features should such a method have, in
-order to be applied to as many kinds of decision problems as possible?
-
-If we find an optimal course of action in regards to some outcome, it
-may still happen that the course of action can in practice be realized
-in several ways that are equivalent in regard to the outcome, but
-inequivalent in regard to time or resources. We thus face a decision
-within a decision. In general, a decision problem may involve several
-decision sub-problems, in turn involving decision sub-sub-problems, and
-so on.
-
-The main engineering goal itself could be to design and build an
-automated or AI-based device capable of making an optimal decision in a
-specific kind of uncertain situations. Think for instance of an
-aeronautic engineer designing an autopilot system.
-
-Therefore, to analyse and tackle this kind of problems we would like to
-have a framework with the following features:
+So far we have mentioned that Decision Theory has the following
+features:
 
 \begin{itemize}
 \item
-  it should tell us what's optimal and, when possible, what's successful
+  {\faIcon{check} it tells us what's optimal and, when possible, what's
+  successful}
 \item
-  it should take into consideration choices, consequences, costs and
-  gains
+  {\faIcon{check} it takes into consideration decisions, consequences,
+  costs and gains}
 \item
-  it should be able to deal with uncertainties
-\item
-  it should be susceptible to recursive or modular application, if
-  needed
-\item
-  it should be suited to being used not only for human decision-makers,
-  but also for automated or AI devices.
+  {\faIcon{check} it is able to deal with uncertainties}
 \end{itemize}
 
-A framework with these features exists: it is {\textbf{Decision
-Theory}}.
+What other kinds of features should we demand from it, in order to be
+applied to as many kinds of decision problems as possible, and to be
+relevant for data science?
+
+If we find an optimal decision in regards to some outcome, it may still
+happen that the decision can be realized in several ways that are
+equivalent in regard to the outcome, but inequivalent in regard to time
+or resources. In the assembly-line scenario, for example, the decision
+\texttt{discard} could be carried out by burning, recycling, and so on.
+We thus face a decision within a decision. In general, a decision
+problem may involve several decision sub-problems, in turn involving
+decision sub-sub-problems, and so on.
+
+In data science, a common engineering goal is to design and build an
+automated or AI-based device capable of making an optimal decision in a
+specific kind of uncertain situations. Think for instance of an
+aeronautic engineer designing an autopilot system, or a software company
+designing an image classifier.
+
+Decision Theory turns out to meet these demands too, thanks to the
+following features:
+
+\begin{itemize}
+\item
+  {\faIcon{check} t is susceptible to recursive, sequential, or modular
+  application}
+\item
+  {\faIcon{check} it can be used not only for human decision-makers, but
+  also for automated or AI devices}
+\end{itemize}
+
+\hfill\break
 
 Decision Theory has a long history, going back to Leibniz in the 1600s
 and partly even to Aristotle in the −300s, and appearing in its present
 form around 1920--1960. What's remarkable about it is that it is not
 only \emph{a} framework, but \emph{the} framework we must use. A
-logico-mathematical theorem shows that any framework that does not break
-basic optimality and rationality criteria has to be equivalent to
-Decision Theory (in other words, it can use different technical
-terminology and rewrite mathematical operations in a different way, but
-it boils down to the same notions and operations of Decision Theory). So
-if you wanted to invent and use another framework, then either (a) it
-would lead to some irrational or illogical consequences, or (b) it would
-lead to results identical to Decision Theory's. Many frameworks that you
-are probably familiar with, such as optimization theory, are just
-specific applications or particular cases of Decision Theory.
+logico-mathematical theorem shows that {\textbf{any framework that does
+not break basic optimality and rationality criteria has to be equivalent
+to Decision Theory}}. In other words, any ``alternative'' framework may
+use different technical terminology and rewrite mathematical operations
+in a different way, but it boils down to the same notions and operations
+of Decision Theory. So if you wanted to invent and use another
+framework, then either (a) it would lead to some irrational or illogical
+consequences, or (b) it would lead to results identical to Decision
+Theory's. Many frameworks that you are probably familiar with, such as
+optimization theory or Boolean logic, are just specific applications or
+particular cases of Decision Theory.
+
+Thus we list one more important characteristic of Decision Theory:
+
+\begin{itemize}
+\tightlist
+\item
+  {\faIcon{check} it is {\textbf{normative}}}
+\end{itemize}
+
+\emph{Normative} contrasts with \emph{descriptive}. The purpose of
+Decision Theory is not to describe, for example, how human
+decision-makers typically work. Because human decision-makers typically
+make irrational, sub-optimal, or biased decisions. That's exactly what
+we want to avoid and improve!
+
+\hypertarget{anatomy-of-a-decision-problem}{%
+\section{Anatomy of a decision
+problem}\label{anatomy-of-a-decision-problem}}
 
 Decision Theory can be roughly divided into two main parts:
 {\textbf{Probability Theory}}, which deals with information, data,
@@ -751,10 +772,6 @@ uncertainty, inference; and {\textbf{Utility Theory}}, which deals with
 actions, consequences, gain and loss, decisions. We shall get acquainted
 with Decision Theory step by step, introducing its main ideas and
 notions as they become necessary.
-
-\hypertarget{anatomy-of-a-decision-problem}{%
-\section{Anatomy of a decision
-problem}\label{anatomy-of-a-decision-problem}}
 
 An extremely important -- and surprisingly often neglected -- first step
 in every engineering problem is to define exactly what the problem is.
@@ -768,7 +785,7 @@ elements:
 
 \marginnote{\begin{footnotesize}
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={\faIcon{seedling}}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-tip-color-frame, colbacktitle=quarto-callout-tip-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-tip-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={\faIcon{seedling}}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white]
 
 Remember: What matters is to be able to identify these elements in a
 concrete engineering problem, understanding their role. Their technical
@@ -851,7 +868,7 @@ already there before the clinician's decision. The difference between
 decisions and outcomes is not one of time, but of control: decisions are
 under our control; outcomes are not and are generally uncertain.
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={Example}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-note-color-frame, colbacktitle=quarto-callout-note-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-note-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={Example}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white]
 
 \begin{quote}
 A particular kind of electronic component is produced on an assembly
@@ -899,7 +916,7 @@ problem can be identified as follows:
 
 \end{tcolorbox}
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={Exercise}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-caution-color-frame, colbacktitle=quarto-callout-caution-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-caution-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={Exercise}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-caution-color!10!white]
 
 Suppose that a new component arrives at the inspector. Tests give a
 \texttt{10\%} probability of failure within a year, and \texttt{90\%}
@@ -942,7 +959,7 @@ probable outcomes would be.
 
 \marginnote{\begin{footnotesize}
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={\faIcon{book-open} For the curious}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-tip-color-frame, colbacktitle=quarto-callout-tip-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-tip-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={\faIcon{book-open} For the curious}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white]
 
 See MacKay's options-vs-costs rational analysis in
 \href{https://www.withouthotair.com}{Sustainable Energy -- without the
@@ -1016,7 +1033,7 @@ the same data and a common decision (buy-sell) that is optimal for both.
 The optimality comes from the fact that the two agents have very
 different gains and losses for their various decisions.
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={\faIcon{book-open} Reading}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-caution-color-frame, colbacktitle=quarto-callout-caution-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-caution-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={\faIcon{book-open} Reading}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-caution-color!10!white]
 
 §\,1.1.4 in
 \href{https://hvl.instructure.com/courses/25074/modules/items/660089}{\emph{Artificial
@@ -1143,14 +1160,14 @@ adopt this useful definition:
 
 \marginnote{\begin{footnotesize}
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={\faIcon{book-open} For the curious
-\href{https://plato.stanford.edu/archives/win2020/entries/propositions}{Propositions}}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-tip-color-frame, colbacktitle=quarto-callout-tip-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-tip-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={\faIcon{book-open} For the curious
+\href{https://plato.stanford.edu/archives/win2020/entries/propositions}{Propositions}}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white]
 
 \end{tcolorbox}
 
 \end{footnotesize}}
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-note-color-frame, colbacktitle=quarto-callout-note-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-note-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white]
 
 {A ``sentence'' is a verbal message for which we can determine whether
 it is \texttt{true} or \texttt{false}, at least in principle and in such
@@ -1191,7 +1208,7 @@ consequences:
   agents.
 \end{itemize}
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={\faIcon{book-open} Reading}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-caution-color-frame, colbacktitle=quarto-callout-caution-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-caution-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={\faIcon{book-open} Reading}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-caution-color!10!white]
 
 §~7.1 in
 \href{https://hvl.instructure.com/courses/25074/modules/items/660089}{\emph{Artificial
@@ -1533,7 +1550,7 @@ sentences that underlie an inference can be extremely many and complex,
 and yet we must have an idea of what they are (otherwise, do we really
 know what our inference is about?).
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={Exercise}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-caution-color-frame, colbacktitle=quarto-callout-caution-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-caution-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={Exercise}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-caution-color!10!white]
 
 Try to identify which sentences underlie the other example inferences
 above.
@@ -1796,7 +1813,7 @@ to \(1\). So we can conclude that
 exactly the conclusion under the line in rule
 (\textbf{?@eq-example-rule}).
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={\faIcon{pen} Exercise}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-caution-color-frame, colbacktitle=quarto-callout-caution-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-caution-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={\faIcon{pen} Exercise}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-caution-color!10!white]
 
 Try to prove our initial inference
 
@@ -1823,7 +1840,7 @@ limitations}\label{logical-ai-agents-and-their-limitations}}
 The basic rules above are also the rules that a logical
 artificial-intelligent agent should follow.
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={\faIcon{book-open} Reading}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-caution-color-frame, colbacktitle=quarto-callout-caution-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-caution-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={\faIcon{book-open} Reading}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-caution-color!10!white]
 
 \href{https://hvl.instructure.com/courses/25074/modules/items/660089}{Ch.~7
 in \emph{Artificial Intelligence}}
@@ -1836,7 +1853,7 @@ infer the truth of some data, and the truth of some initial data may not
 be known either. In the next chapter we shall see how to generalize the
 logic rules to uncertain situations.
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={\faIcon{rocket} For the extra curious}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-tip-color-frame, colbacktitle=quarto-callout-tip-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-tip-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={\faIcon{rocket} For the extra curious}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white]
 
 Our cursory visit of formal logic only showed a microscopic part of this
 vast field. The study of logic rules continues still today, with many
@@ -1904,7 +1921,7 @@ understood (just as we did with the notion of truth). Terms equivalent
 for ``probability'' are \emph{degree of belief}, \emph{plausibility},
 \emph{credibility}.
 
-\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, breakable, left=2mm, colframe=quarto-callout-important-color-frame, colback=white, rightrule=.15mm, bottomrule=.15mm, leftrule=.75mm, opacityback=0, toprule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-important-color-frame, colback=white, bottomrule=.15mm, opacityback=0, arc=.35mm, left=2mm, rightrule=.15mm, breakable, leftrule=.75mm]
 
 \textbf{}\vspace{2mm}
 
@@ -2000,7 +2017,7 @@ probabilities:
   down to physical laws, not to probabilities.
 \end{itemize}
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={\faIcon{book-open} Reading}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-caution-color-frame, colbacktitle=quarto-callout-caution-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-caution-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={\faIcon{book-open} Reading}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-caution-color!10!white]
 
 \href{https://hvl.instructure.com/courses/25074/modules/items/661553}{\emph{Dynamical
 Bias in the Coin Toss}}
@@ -2100,8 +2117,8 @@ sentences of any complexity:
 
 \begin{figure*}
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={\faIcon{landmark}~~~THE FUNDAMENTAL LAWS OF
-INFERENCE~~~\faIcon{landmark}}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-note-color-frame, colbacktitle=quarto-callout-note-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-note-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={\faIcon{landmark}~~~THE FUNDAMENTAL LAWS OF
+INFERENCE~~~\faIcon{landmark}}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white]
 
 \begin{description}
 \tightlist
@@ -2142,7 +2159,7 @@ inferences are also special applications of these rules. Most of this
 course is, at bottom, just a study of how to apply these rules in
 particular kinds of problems.
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={\faIcon{book-open} Reading}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-caution-color-frame, colbacktitle=quarto-callout-caution-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-caution-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={\faIcon{book-open} Reading}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-caution-color!10!white]
 
 \begin{itemize}
 \item
@@ -2186,7 +2203,7 @@ The rules also imply more general constraints. For example we must
 \mathrm{P}(a\lor b \nonscript\:\vert\nonscript\:\mathopen{}D) \ge \max\bigl\{\mathrm{P}(a\nonscript\:\vert\nonscript\:\mathopen{}D),\  \mathrm{P}(b\nonscript\:\vert\nonscript\:\mathopen{}D)\bigr\}
 \end{gather*}
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={\faIcon{pen} Exercise}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-caution-color-frame, colbacktitle=quarto-callout-caution-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-caution-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={\faIcon{pen} Exercise}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-caution-color!10!white]
 
 Try to prove the two constraints above
 
@@ -2307,7 +2324,7 @@ inference}\label{common-points-of-certain-and-uncertain-inference}}
 \emph{No premises? No conclusions!}
 \end{quote}
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, toprule=.15mm, toptitle=1mm, bottomrule=.15mm, leftrule=.75mm, title={\faIcon{exclamation-circle} Differences in terminology}, arc=.35mm, breakable, left=2mm, coltitle=black, colframe=quarto-callout-important-color-frame, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, opacityback=0, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, colframe=quarto-callout-important-color-frame, colback=white, opacityback=0, arc=.35mm, coltitle=black, breakable, title={\faIcon{exclamation-circle} Differences in terminology}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, bottomrule=.15mm, leftrule=.75mm, left=2mm, bottomtitle=1mm, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white]
 
 \begin{itemize}
 \item
