@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ADA511: Data science and data-driven engineering - 5&nbsp; Inference</title>
+<title>ADA511: Data science and data-driven engineering - 4&nbsp; Inference</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./truth_inference.html" rel="next">
-<link href="./first_building_blocks.html" rel="prev">
+<link href="./sentences.html" rel="next">
+<link href="./basic_decisions.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -41,8 +41,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
-<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -63,13 +61,11 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="ada511styles.css">
 </head>
 
-<body class="nav-sidebar docked slimcontent">
+<body class="nav-sidebar docked">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -78,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./first_building_blocks.html">Inference</a></li><li class="breadcrumb-item"><a href="./inference.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Inference</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./inference.html">Inference</a></li><li class="breadcrumb-item"><a href="./inference.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inference</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -152,14 +148,14 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./first_building_blocks.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">First building blocks</span></span></a>
+  <a href="./inference.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./inference.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
+  <a href="./sentences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Sentences</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -206,8 +202,14 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#what-is-inference" id="toc-what-is-inference" class="nav-link active" data-scroll-target="#what-is-inference"><span class="header-section-number">5.1</span> What is inference?</a></li>
-  <li><a href="#certain-and-uncertain-inference" id="toc-certain-and-uncertain-inference" class="nav-link" data-scroll-target="#certain-and-uncertain-inference"><span class="header-section-number">5.2</span> Certain and uncertain inference</a></li>
+  <li><a href="#what-is-inference" id="toc-what-is-inference" class="nav-link active" data-scroll-target="#what-is-inference"><span class="header-section-number">4.1</span> What is inference?</a>
+  <ul class="collapse">
+  <li><a href="#from-truth-to-probability" id="toc-from-truth-to-probability" class="nav-link" data-scroll-target="#from-truth-to-probability">From truth to probability</a></li>
+  <li><a href="#hypothetical-and-counterfactual-inferences" id="toc-hypothetical-and-counterfactual-inferences" class="nav-link" data-scroll-target="#hypothetical-and-counterfactual-inferences">Hypothetical and counterfactual inferences</a></li>
+  <li><a href="#known-and-unknown-by-whom" id="toc-known-and-unknown-by-whom" class="nav-link" data-scroll-target="#known-and-unknown-by-whom">Known and unknown: by whom?</a></li>
+  <li><a href="#future-and-past" id="toc-future-and-past" class="nav-link" data-scroll-target="#future-and-past">Future and past</a></li>
+  </ul></li>
+  <li><a href="#mathematical-representation-of-inferences-and-their-objects" id="toc-mathematical-representation-of-inferences-and-their-objects" class="nav-link" data-scroll-target="#mathematical-representation-of-inferences-and-their-objects"><span class="header-section-number">4.2</span> Mathematical representation of inferences and their objects</a></li>
   </ul>
 </nav>
 </nav>
@@ -216,11 +218,11 @@ ul.task-list li input[type="checkbox"] {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Inference</span></h1>
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Inference</span></h1>
 </div>
 
 
@@ -239,49 +241,44 @@ ul.task-list li input[type="checkbox"] {
 
 </div>
 <p>We now put momentarily aside the full decision-making problem (but keeping it in the back of our minds), and focus on the problem of <span class="blue"><strong>inference</strong></span>. Drawing inferences is very often a goal or need in itself, with no underlying decision process.</p>
-<section id="what-is-inference" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="what-is-inference"><span class="header-section-number">5.1</span> What is inference?</h2>
-<p>By <em>drawing an inference</em> we mean, roughly speaking, to assess whether an outcome, hypothesis, conjecture, or piece of information is <code>true</code> or <code>false</code>, on the basis of some other input, data, or other assumptions or information.</p>
-<p>The first core problem in all data-driven engineering applications – and in daily life too – is to <em>draw inferences</em>, that is, acquire information. We may wish to acquire information out of simple curiosity, or for some specific engineering reason or goal, as we’ll discuss later. Examples:</p>
-<ol type="1">
-<li>We’d like to know whether it’ll rain today, so we can decide whether to get an umbrella or rain clothes.</li>
-</ol>
-<!-- * We'd like to know the number of the winning lottery ticket (if we can manage to buy that number), so we can buy that Lamborghini. -->
-<ol start="2" type="1">
-<li><p>A clinician would like to know which disease affects a patient, so as to decide for the optimal treatment.</p></li>
-<li><p>The X-player of this game of Xs&nbsp;&amp;&nbsp;Os: <img src="XsOs.png" class="img-fluid" style="width:5.0%"> needs to know where put the next <span style="color:#CA5556"><strong>X</strong></span> in order to win.</p></li>
-<li><p>The computer of a self-driving car needs to know whether a particular patch of colours in the visual field is a person, so as to slow down the car and stop.</p></li>
-<li><p>In order to launch a rocket to the Moon, a rocket engineer needs to know, within two significant digits, <a href="http://nasaphysics.cet.edu/escape-velocity.html">how much is the velocity <span class="math inline">\(\sqrt{2\,G\,M/r\,}\)</span></a>, where <span class="math inline">\(G=6.67 \cdot 10^{-11}\,\mathrm{m^3\,s^{-2}\,kg^{-1}}\)</span>, and <span class="math inline">\(M = 5.97 \cdot 10^{24}\,\mathrm{kg}\)</span> and <span class="math inline">\(r = 6.37 \cdot 10^{6}\,\mathrm{m}\)</span> are the mass and radius of the Earth.</p></li>
-<li><p>We’d like to know whether the rolled die will show <i class="fa-solid fa-dice-six" aria-label="dice-six"></i>, so we can win a bet.</p></li>
-<li><p>An <a href="https://aerospaceamerica.aiaa.org/features/a-i-in-the-cockpit">aircraft’s autopilot system</a> needs to predict how much the <a href="https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/roll.html">aircraft’s roll</a> will change by increasing the right wing’s <a href="https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/incline.html">angle of attack</a> by 0.1&nbsp;rad.</p></li>
-<li><p>An archaeologist would like to know whether the fossil bone just dug out belonged to a Tyrannosaurus rex.</p></li>
-<li><p>An automated system in an assembly line needs to predict whether an electric component of a widget will fail within the next two years.</p></li>
-</ol>
-<p>Note how each of these inferences boils down to determining whether some sentences are true or false. In example 1. we want to know whether the sentence <span class="math inline">\(\textsf{\small`It rains today'}\)</span> is true or not. In example 2. the clinician wants to know which of the sentences <span class="math inline">\(\textsf{\small`The patient has pneumonia'}\)</span>, <span class="math inline">\(\textsf{\small`The patient has asthma'}\)</span>, <span class="math inline">\(\textsf{\small`The patient has bronchitis'}\)</span>, and so on, are true (several can be true at the same time). In example 5. the rocket engineer wants to know which among the sentences <span class="math inline">\(\textsf{\small`The velocity is 0.010\,m/s'}\)</span>, <span class="math inline">\(\textsf{\small`The velocity is 0.011\,m/s'}\)</span>, …, <span class="math inline">\(\textsf{\small`The velocity is 130\,m/s'}\)</span>, and so on, is true. The sentences that underlie an inference can be extremely many and complex, and yet we must have an idea of what they are (otherwise, do we really know what our inference is about?).</p>
-<div class="callout callout-style-default callout-caution no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Try to identify which sentences underlie the other example inferences above.</p>
-</div>
-</div>
+<section id="what-is-inference" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="what-is-inference"><span class="header-section-number">4.1</span> What is inference?</h2>
+<p>A first meaning of <em>drawing an inference</em> could be to assess whether an outcome or hypothesis is <code>true</code> or <code>false</code>, on the basis of some data and other information. This definition is too limited, however, especially in problems of engineering and data science; we need to make it more general in two respects. Some general aspects of inference should also be emphasized.</p>
+<section id="from-truth-to-probability" class="level3">
+<h3 class="anchored" data-anchor-id="from-truth-to-probability">From truth to probability</h3>
+<p>First, it is often impossible to determine the truth or falsity of a hypothesis with certainty. This is why decision-making <em>under uncertainty</em> was our starting point. So by <em>drawing an inference</em> we mean <span class="blue"><strong>to assess the plausibility</strong></span> or <span class="blue"><strong>credibility</strong></span> or <span class="blue"><strong>probability</strong></span> rather than the truth or falsity. Note that truth-determination is still included as a special case as <code>fully certain</code> and <code>impossible</code> cases of plausibility.</p>
 </section>
-<section id="certain-and-uncertain-inference" class="level2 page-columns page-full" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="certain-and-uncertain-inference"><span class="header-section-number">5.2</span> Certain and uncertain inference</h2>
-<p>The example inferences above present very different levels of difficulty.</p>
-<div class="page-columns page-full"><p>Inferences 3. and 5. are special because they can actually be drawn <em>exactly</em>, that is, we really find out which of their underlying sentences are true and false. In example 3. it is trivial that putting the next <span style="color:#CA5556"><strong>X</strong></span> in the mid-right slot makes the X-player win. In example 5. a couple of mathematical operations show that the sentence <span class="math inline">\(\textsf{\small`The velocity is 11\,km/s'}\)</span> is true. When we can obtain the data we want from the data we have by using “only”<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> logic and mathematical operations, our inference is <em>certain</em>, also called a “deduction”; in these notes we shall call it a <em>truth inference</em>. But every deduction can be basically drawn by repeatedly applying the rules of logic.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;“Only” in quotation marks because the logical analysis and operations leading to the answer can still be computationally very expensive.</p></li></div></div>
-<p>The other example inferences cannot be drawn exactly, in the sense that we cannot know for sure whether all their underlying sentences are true or false. But this doesn’t mean that we cannot say anything whatsoever. In example 6. we consider the sentence <span class="math inline">\(\textsf{\small`The die shows six pips'}\)</span> to be more likely false than true. In example 2. the clinician might be quite sure about the disease, after observing the symptoms. On the other hand, in example 1. we might really have no clue whether <span class="math inline">\(\textsf{\small`It rains today'}\)</span> will turn out to be true or false. These inferences are <em>uncertain</em>. Certain inferences can be considered as a limit case of uncertain ones, in which the uncertainty vanishes or is extremely small.</p>
-<p>To draw certain inferences, we follow the rules of Logic. What rules do we follow to draw uncertain inferences?</p>
+<section id="hypothetical-and-counterfactual-inferences" class="level3">
+<h3 class="anchored" data-anchor-id="hypothetical-and-counterfactual-inferences">Hypothetical and counterfactual inferences</h3>
+<p>Second, it is not always the case that we want to assess the truth or plausibility of something <em>unknown</em> on the basis of something <em>known</em>. An agent must often make <strong>hypothetical</strong> or <strong>counterfactual</strong> reasoning.</p>
+<p>Consider for instance the assembly-line scenario. To assess the outcome of accepting an electronic component, we momentarily imagine that the component is actually accepted and sold, and then find out what the consequences of this imagined situation would be. This is an example of <em>hypothetical reasoning</em>. Hypothetical reasoning is sometimes assisted by real experiments performed in restricted and controlled conditions. Such supporting experiments are not always viable, however, and often they do not exactly reflect the hypothetical situation.</p>
+<p>Consider also the case where we know that a particular electronic component, already sold, has failed within a year. We can assess what would have been the plausibility of this failing we <em>had employed</em> a different kind of transistors in its construction. From this assessment we may find out whether it would be better to make changes in the assembly line. This is an example of <em>counterfactual reasoning</em>.</p>
+<p>In either case we are determining the plausibility of something known given something unknown, or a combination of the two. Both these kinds of reasoning are staples of scientific research. We will see that they continuously enter in the calculation of probabilities.</p>
+</section>
+<section id="known-and-unknown-by-whom" class="level3">
+<h3 class="anchored" data-anchor-id="known-and-unknown-by-whom">Known and unknown: by whom?</h3>
+<p>What’s known to an agent can be unknown to another, and vice versa. This means that <span class="blue"><strong>every inference is always relative to an agent’s background knowledge</strong></span>. This fact is especially important in data science and artificial intelligence:</p>
+<p>Consider an engineer testing the programming of a particular AI system. The engineer inputs specially-chosen data and checks the AI’s decisions about specially-chosen outcomes. In this scenario we have two ongoing inferences, drawn by two agents:</p>
+<ul>
+<li><p>The AI is one agent. This agent knows the inputs, but doesn’t know the true outcomes. This agent’s inference is about the outcomes.</p></li>
+<li><p>The engineer is the other agent. This agent knows inputs and true outcomes – both are “data” for this agent – but doesn’t know the AI’s final decisions. This agent’s inference is about the AI’s decisions.</p></li>
+</ul>
+</section>
+<section id="future-and-past" class="level3">
+<h3 class="anchored" data-anchor-id="future-and-past">Future and past</h3>
+<p>An inference may concern not only unknown future outcomes – in which case we’ll often call it a <em>forecast</em> – but also unknown <em>past</em> outcomes. For instance, imagine that a particular device has stopped working, and an engineer needs to assess the plausibility of a mechanical failure or of an electronic failure. In this case the inference is about something unknown to the engineer (and maybe to anyone else), but that has already happened. Astrophysicists and archaeologists draw this kind of inferences all the time.</p>
+</section>
+</section>
+<section id="mathematical-representation-of-inferences-and-their-objects" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="mathematical-representation-of-inferences-and-their-objects"><span class="header-section-number">4.2</span> Mathematical representation of inferences and their objects</h2>
+<p>We shall soon explore the rules that govern inference. But first we must address two questions:</p>
+<ul>
+<li><p>Inference <em>about what</em>? and <em>given what</em>? So far we’ve spoken about “outcomes”, “data”, “hypotheses”, “background knowledge”, and similar concepts. They are not identical concepts; can we view them all as instances of a more unified notion?</p></li>
+<li><p>How to mathematically <em>represent</em> this unified notion and those concepts? A mathematical representation is necessary for systematically approaching inference and decision problems of any complexity, and also for implementation in computer algorithms and artificial-intelligence agents.</p></li>
+</ul>
 
 
 </section>
-
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -519,13 +516,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./first_building_blocks.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">First building blocks</span></span>
+      <a href="./basic_decisions.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Basic decision problems</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./truth_inference.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Truth inference</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./sentences.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Sentences</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -5,10 +5,12 @@ We now put momentarily aside the full decision-making problem (but keeping it in
 
 ## What is inference?
 
-A first meaning of *drawing an inference* could be to assess whether an outcome or hypothesis is `true` or `false`, on the basis of some data and other information. This definition is too limited, however, especially in problems of engineering and data science. We need to make it more general in two respects.
+A first meaning of *drawing an inference* could be to assess whether an outcome or hypothesis is `true` or `false`, on the basis of some data and other information. This definition is too limited, however, especially in problems of engineering and data science; we need to make it more general in two respects. Some general aspects of inference should also be emphasized.
 
+### From truth to probability
 First, it is often impossible to determine the truth or falsity of a hypothesis with certainty. This is why  decision-making *under uncertainty* was our starting point. So by *drawing an inference* we mean [**to assess the plausibility**]{.blue} or [**credibility**]{.blue} or [**probability**]{.blue} rather than the truth or falsity. Note that truth-determination is still included as a special case as  `fully certain` and `impossible` cases of plausibility.
 
+### Hypothetical and counterfactual inferences
 Second, it is not always the case that we want to assess the truth or plausibility of something *unknown* on the basis of something *known*.  An agent must often make **hypothetical** or **counterfactual** reasoning.
 
 Consider for instance the assembly-line scenario. To assess the outcome of accepting an electronic component, we momentarily imagine that the component is actually accepted and sold, and then find out what the consequences of this imagined situation would be. This is an example of *hypothetical reasoning*. Hypothetical reasoning is sometimes assisted by real experiments performed in restricted and controlled conditions. Such supporting experiments are not always viable, however, and often they do not exactly reflect the hypothetical situation.
@@ -17,51 +19,25 @@ Consider also the case where we know that a particular electronic component, alr
 
 In either case we are determining the plausibility of something known given something unknown, or a combination of the two. Both these kinds of reasoning are staples of scientific research. We will see that they continuously enter in the calculation of probabilities.
 
-It is also important to point out that an inference may concern not only unknown future outcomes -- in which case we'll often call it a *forecast* -- but also unknown *past* outcomes. For instance, a particular device has stopped working, and an engineer needs to assess the plausibility of a mechanical failure or of an electronic failure. In this case the inference is about something unknown to the engineer (and maybe to anyone else), but that has already happened. Astrophysicists and archaeologists draw this kind of inferences all the time.
+### Known and unknown: by whom?
+
+What's known to an agent can be unknown to another, and vice versa. This means that [**every inference is always relative to an agent's background knowledge**]{.blue}. This fact is especially important in data science and artificial intelligence:
+
+Consider an engineer testing the programming of a particular AI system. The engineer inputs specially-chosen data and checks the AI's decisions about specially-chosen outcomes. In this scenario we have two ongoing inferences, drawn by two agents:
+
+- The AI is one agent. This agent knows the inputs, but doesn't know the true outcomes. This agent's inference is about the outcomes.
+
+- The engineer is the other agent. This agent knows inputs and true outcomes -- both are "data" for this agent -- but doesn't know the AI's final decisions. This agent's inference is about the AI's decisions.
+
+### Future and past
+
+An inference may concern not only unknown future outcomes -- in which case we'll often call it a *forecast* -- but also unknown *past* outcomes. For instance, imagine that a particular device has stopped working, and an engineer needs to assess the plausibility of a mechanical failure or of an electronic failure. In this case the inference is about something unknown to the engineer (and maybe to anyone else), but that has already happened. Astrophysicists and archaeologists draw this kind of inferences all the time.
 
 
 ## Mathematical representation of inferences and their objects
 
+We shall soon explore the rules that govern inference. But first we must address two questions:
 
-The first core problem in all data-driven engineering applications -- and in daily life too -- is to *draw inferences*, that is, acquire information. We may wish to acquire information out of simple curiosity, or for some specific engineering reason or goal, as we'll discuss later. Examples:
+- Inference *about what*? and *given what*? So far we've spoken about "outcomes", "data", "hypotheses", "background knowledge", and similar concepts. They are not identical concepts; can we view them all as instances of a more unified notion?
 
-1. We'd like to know whether it'll rain today, so we can decide whether to get an umbrella or rain clothes.
-
-<!-- * We'd like to know the number of the winning lottery ticket (if we can manage to buy that number), so we can buy that Lamborghini. -->
-
-2. A clinician would like to know which disease affects a patient, so as to decide for the optimal treatment.
-
-3. The X-player of this game of Xs & Os: ![](XsOs.png){width=5%} needs to know where put the next [**X**]{style="color:#CA5556"} in order to win.
-
-4. The computer of a self-driving car needs to know whether a particular patch of colours in the visual field is a person, so as to slow down the car and stop.
-
-5. In order to launch a rocket to the Moon, a rocket engineer needs to know, within two significant digits, [how much is the velocity $\sqrt{2\,G\,M/r\,}$](http://nasaphysics.cet.edu/escape-velocity.html), where $G=6.67 \cdot 10^{-11}\,\mathrm{m^3\,s^{-2}\,kg^{-1}}$, and $M = 5.97 \cdot 10^{24}\,\mathrm{kg}$ and $r = 6.37 \cdot 10^{6}\,\mathrm{m}$ are the mass and radius of the Earth.
-
-6. We'd like to know whether the rolled die will show {{< fa dice-six >}}, so we can win a bet.
-
-7. An [aircraft's autopilot system](https://aerospaceamerica.aiaa.org/features/a-i-in-the-cockpit) needs to predict how much the [aircraft's roll](https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/roll.html) will change by increasing the right wing's [angle of attack](https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/incline.html) by 0.1 rad.
-
-8. An archaeologist would like to know whether the fossil bone just dug out belonged to a Tyrannosaurus rex.
-
-9. An automated system in an assembly line needs to predict whether an electric component of a widget will fail within the next two years.
-
-
-Note how each of these inferences boils down to determining whether some sentences are true or false. In example 1. we want to know whether the sentence $\pr{It rains today}$ is true or not. In example 2. the clinician wants to know which of the sentences $\pr{The patient has pneumonia}$, $\pr{The patient has asthma}$, $\pr{The patient has bronchitis}$, and so on, are true (several can be true at the same time). In example 5. the rocket engineer wants to know which among the sentences $\pr{The velocity is 0.010\,m/s}$, $\pr{The velocity is 0.011\,m/s}$, ..., $\pr{The velocity is 130\,m/s}$, and so on, is true. The sentences that underlie an inference can be extremely many and complex, and yet we  must have an idea of what they are (otherwise, do we really know what our inference is about?).
-
-::: {.callout-caution}
-## Exercise
-Try to identify which sentences underlie the other example inferences above.
-:::
-
-## Certain and uncertain inference
-
-The example inferences above present very different levels of difficulty.
-
-Inferences 3. and 5. are special because they can actually be drawn *exactly*, that is, we really find out which of their underlying sentences are true and false. In example 3. it is trivial that putting the next [**X**]{style="color:#CA5556"} in the mid-right slot makes the X-player win. In example 5. a couple of mathematical operations show that the sentence $\pr{The velocity is 11\,km/s}$ is true. When we can obtain the data we want from the data we have by using "only"^["Only" in quotation marks because the logical analysis and operations leading to the answer can still be computationally very expensive.] logic and mathematical operations, our inference is *certain*, also called a "deduction"; in these notes we shall call it a *truth inference*. But every deduction can be basically drawn by repeatedly applying the rules of logic.
-
-The other example inferences cannot be drawn exactly, in the sense that we cannot know for sure whether all their underlying sentences are true or false. But this doesn't mean that we cannot say anything whatsoever. In example 6. we consider the sentence $\pr{The die shows six pips}$ to be more likely false than true. In example 2. the clinician might be quite sure about the disease, after observing the symptoms. On the other hand, in example 1. we might really have no clue whether $\pr{It rains today}$ will turn out to be true or false. These inferences are *uncertain*. Certain inferences can be considered as a limit case of uncertain ones, in which the uncertainty vanishes or is extremely small.
-
-To draw certain inferences, we follow the rules of Logic. What rules do we follow to draw uncertain inferences?
-
-
-
+- How to mathematically *represent* this unified notion and those concepts? A mathematical representation is necessary for systematically approaching inference and decision problems of any complexity, and also for implementation in computer algorithms and artificial-intelligence agents.
