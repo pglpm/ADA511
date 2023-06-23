@@ -74,7 +74,7 @@ Working with sentences, and keeping in mind that inference is about sentences, i
 
 First, it leads to **clarity** in engineering problems and makes them more **goal-oriented**. A data engineer must acquire information and convey information. "Acquiring information" does not simply consist in making measurements or counting something: the engineer must understand *what* is being measured and *why*. If data is gathered from third parties, the engineer must ask what exactly the data mean and how they were acquired. In designing and engineering a solution, it is important to understand what information or outcomes the end user exactly wants. The "what", "why", "how" are expressed by sentences. A data engineer will often ask "*wait, what do you mean by that?*". This question is not just an unofficial parenthesis in the official data-transfer workflow between the engineer and someone else. It is an integral part of that workflow: it means that some information has not been completely transferred yet.
 
-Second, it is extremely important in AI and machine-learning design. A (human) engineer who draws inferences, may proceed informally, without worrying about "sentences" unless some peculiar situation and a need for disambiguation arise. A data engineer who's *designing* or *programming* an algorithm that will do inferences automatically, must instead be unambiguous and cover beforehand all possible cases that the algorithm will face.
+Second, it is extremely important in AI and machine-learning design. A (human) engineer may proceed informally when drawing inferences, without worrying about "sentences" unless a need for disambiguation arises. A data engineer who's *designing* or *programming* an algorithm that will do inferences automatically, must instead be unambiguous and cover beforehand all possible cases that the algorithm will face.
 
 \
 
@@ -129,7 +129,7 @@ $$
 $$
 which means "the symbol $\se{S}_{10}$ is defined to be the sentence [$\pr{The speed is 10\,m/s}$”.]{.together}
 
-We must be careful about how much we shorten sentences. Consider these three:
+{{< fa exclamation-circle >}}\ \ We must be careful about how much we shorten sentences. Consider these three:
 $$
 \begin{aligned}
 &\pr{The speed is measured to be 10\,m/s}
@@ -139,7 +139,7 @@ $$
 &\pr{The speed is reported, by a third party, to be 10\,m/s}
 \end{aligned}
 $$
-the quantity is the same in all three sentences, but their meanings are very different. The differences in meaning greatly affect any inference about or from thes sentences. For instance, in the third case an engineer may not take the indirectly-reported speed "10 m/s" at face value. In a scenario where all three sentences are relevant, it would be ambiguous to simply write ["$v = 10\,\mathrm{m/s}$"]{.together}: does the equal-sign mean "measured", "set", or "indirectly reported"?
+the quantity is the same in all three sentences, but their meanings are very different. These differences greatly affect any inference about or from these sentences. For instance, in the third case an engineer may not take the indirectly-reported speed "10 m/s" at face value, unlike the first case. In a scenario where all three sentences are relevant, it would be ambiguous to simply write ["$v = 10\,\mathrm{m/s}$"]{.together}: would the equal-sign mean "measured", "set", or "indirectly reported"?
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
@@ -147,20 +147,15 @@ How would you denote the three sentences above, to make their differences clear?
 :::
 
 
-
-\
-
-We'll now see how more complex sentences are built from simpler ones. No matter whether complex or simple, any sentence can be represented by symbols like the ones above.
-
-## Combining sentences
+## Connecting sentences
 
 ### Basic sentences
 
-In analysing the information, data, outcomes, hypotheses that enter into an inference problem, it is convenient to find a collection of [**basic sentences**]{.blue}^[A more technical term is *atomic sentences*.] out of which all other sentences of interest can be constructed. These basic sentences often represent elementary pieces of information in the problem.
+In analysing the measurement results, decision outcomes, hypotheses, assumptions, data and information that enter into an inference problem, it is convenient to find a collection of [**basic sentences**]{.blue}^[A more technical term is *atomic sentences*.] out of which all other sentences of interest can be constructed. These basic sentences often represent elementary pieces of information in the problem.
 
-Consider for instance the following statement, which could appear in our assembly-line scenario:
+Consider for instance the following complex sentence, which could appear in our assembly-line scenario:
 
-> "The electronic component is still whole after the shock test and the subsequent heating test. The voltage reported in the power test is either 90 mV or 110 mV."
+> "The electronic component is still whole after the shock test and the subsequent heating test. The voltage reported in the final power test is either 90 mV or 110 mV."
 
 <!-- In the assembly-line scenario, the statement above represents data, that is, it's the description of a factual situation. But keep in mind that in a different problem -- say, one where it need to be assessed whether the component is still whole -- the same statement could represent a hypothesis, that is, one possible state of affairs among other possible ones. -->
 
@@ -176,7 +171,7 @@ $$\begin{aligned}
 \end{aligned}
 $$
 
-The inference may actually require more basic sentences than just these. For instance, it might become necessary to consider basic sentences with other values for the reported voltage, such as
+The inference may actually require additional basic sentences. For instance, it might become necessary to consider basic sentences with other values for the reported voltage, such as
 $$\begin{aligned}
 \se{v}_{110} &\coloneqq \pr{The power-test voltage reading is 100\,mV}
 \\
@@ -184,50 +179,46 @@ $$\begin{aligned}
 \end{aligned}$$
 and so on.
 
-There may also be other basic sentences coming from data or hypotheses that aren't stated explicitly because they're obvious. Yet they may have to be spelled out. An example in our scenario is the sentence
-$$
-\pr{The electronic component cannot be broken after the shock test and whole after the subsequent heating test}
-$$
-which must necessarily be true for physical reasons.
-
 ### Connectives
 
-How do we construct the statement above and other more complex statements out of basic sentences?
+How do we construct complex sentences, like the one above, out of basic sentences?
 
-We consider one operation to change a sentence into another related to it, and two operations to combine two or more sentences together. These operations are called [**connectives**]{.blue}, and you may have already encountered them in Boolean algebra. Our natural language offers many more operations to combine sentences, but these three connectives turn out to be all we need in virtually all engineering and data science problems:
+We consider three ways: one operation to change a sentence into another related to it, and two operations to combine two or more sentences together. These operations are called [**connectives**]{.blue}; you may have encountered them already in Boolean algebra. Our natural language offers many more operations to combine sentences, but these three connectives turn out to be all we need in virtually all engineering and data-science problems:
 
-:::{.border}
+:::: {.callout-note style="font-size:120%"}
+##
+:::{style="font-size:120%"}
 [Not:\ \ $\lnot$]{.blue}
-: for example,
+: example:
 $$
 \lnot \se{s} = \pr{The component is broken after the shock test}
 $$
 
 [And:\ \ $\land$]{.blue}
-: for example,
+: example:
 $$
 \se{s} \land \se{h} = \pr{The component is whole after the shock and heating tests}
 $$
 
 [Or:\ \ $\lor$]{.blue}
-: for example,
+: example:
 $$
 \se{v}_{90} \lor \se{v}_{110} = \pr{The power-test voltage reading is 90\,mV, or 110\,mV, or both}
 $$
 :::
-\
+::::
 
-The connectives can be applied multiple times, to form increasingly complex sentences.
+These connectives can be applied multiple times, to form increasingly complex sentences.
 
 {{< fa exclamation-circle >}}\ \ Note some important subtleties of the connectives:
 
-- There is no strict correspondence between the words "not", "and", "or" in natural language and the three connectives. For instance the `and` connective could correspond to the words "but" or "whereas", or just to a comma " , ".
+- There is *no strict correspondence* between the words "not", "and", "or" in natural language and the three connectives. For instance the `and` connective could correspond to the words "but" or "whereas", or just to a comma " , ".
 
-- `Not` doesn't mean some kind of complementary quality, but only the negation. For instance,\ \ $\lnot\pr{The chair is black}$\ \ generally does not mean\ \ [$\pr{The chair is white}$ ,]{.together}\ \  although in some situations these two sentences could amount to the same thing.
+- `Not` means not some kind of complementary quality, but the denial. For instance,\ \ $\lnot\pr{The chair is black}$\ \ generally does not mean\ \ [$\pr{The chair is white}$ ,]{.together}\ \  (although in some situations these two sentences could amount to the same thing).
 
-    It's best to always declare explicitly what the `not` of a sentence concretely means. In our example we take
+    It's always best to *declare explicitly what the `not` of a sentence concretely means*. In our example we take
 	$$
-	\lnot\pr{The component is whole} \equiv \pr{The component is broken}
+	\lnot\pr{The component is whole} \coloneqq \pr{The component is broken}
 	$$ 
 	But in other examples the negation of "being whole" could comprise several different conditions. A good guideline is to always state the `not` of a sentence in *positive* terms.
 
@@ -237,68 +228,28 @@ From the last remark we see that the sentence
 $$
 \pr{The power-test voltage reading is 90\,mV or 110\,mV}
 $$
-does *not* correspond to \ \ [$\se{v}_{90} \lor \se{v}_{110}$ .]{.together}\ \ It is implicitly clear that a voltage reading cannot yield two different values at the same time. Convince yourself that the correct way to write that sentence is this:
+does *not* correspond to \ \ [$\se{v}_{90} \lor \se{v}_{110}$ .]{.together}\ \ It is implicitly understood that a voltage reading cannot yield two different values at the same time. Convince yourself that the correct way to write that sentence is this:
 $$
 (\se{v}_{90} \lor \se{v}_{110})
 \land
 \lnot(\se{v}_{90} \land \se{v}_{110})
 $$
 
-Finally, the full data statement of our present example can be written in symbols as follows:
+Finally, the full complex sentence of the present example can be written in symbols as follows:
+
+> "[The electronic component is still whole after the shock test]{.lightblue} and [the subsequent heating test]{.green}. [The voltage reported in the final power test is]{.red} either [90 mV]{.red} or [110 mV]{.purple}."
+
 $$
-\se{s} \land \se{h} \land
-(\se{v}_{90} \lor \se{v}_{110})
+\textcolor[RGB]{102,204,238}{\se{s}} \land \textcolor[RGB]{34,136,51}{\se{h}} \land
+(\textcolor[RGB]{238,102,119}{\se{v}_{90}} \lor \textcolor[RGB]{170,51,119}{\se{v}_{110}})
 \land
-\lnot(\se{v}_{90} \land \se{v}_{110})
+\lnot
+(\textcolor[RGB]{238,102,119}{\se{v}_{90}} \land \textcolor[RGB]{170,51,119}{\se{v}_{110}})
 $$
-
-
-## Distinguishing assumptions and outcomes
-
-Now we know how to represent arbitrarily complex sentences and express them in symbols. Let's introduce a way to clearly distinguish sentences that constitute the *assumptions* from those that constitute the *outcome* in a basic decision problem. In our assembly-line example, suppose that assumptions are the statement discussed in the previous section. The outcome to be inferred is expressed by this sentence:
-$$
-\se{f} \coloneqq \pr{The component will fail within a year}
-$$
-
-To distinguish assumptions and outcomes we can simply use a vertical bar,^[Notation in formal logic uses the symbols\ \ [" $\models$ "]{.together}\ \ or\ \ [" $\vdash$ ",]{.together}\ \ and writes assumptions on the *left*, outcomes on the *right*. We use the notation used in probability logic.] like\ \ ["$\color[RGB]{68,119,170}\pmb{\|[\big]}$" :]{.together}
-
-- on its *left* side we write the sentence representing the *outcome*,
-- on its *right* side we write the sentences that make up our *assumptions*, `and`-ed together:
-
-$$
-\textit{\small outcome} \pmb{\|[\big]} \textit{\small assumptions}
-$$
-
-So in our example we write:
-$$
-f \|[\Big]
-\se{s} \land \se{h} \land
-(\se{v}_{90} \lor \se{v}_{110})
-\land
-\lnot(\se{v}_{90} \land \se{v}_{110})
-$$
-
-The collection of assumptions on the right side of the bar ["$\pmb{\|[\big]}$"]{.together} is called the [**conditional**]{.blue}. The expression above is read\
-["$\se{c}_{2,90}$\ \  *given*\ \  $\se{t}_{1,50} \land \se{t}_{2,50}
-\land\dotsb$"]{.together}\
-or\
-["$\se{c}_{2,90}$\ \  *conditional on*\ \  $\se{t}_{1,50} \land \se{t}_{2,50} \land\dotsb$".]{.together}
 
 \
 
-We are now equipped with all the notions and symbolic notation to deal with our first concrete goal: drawing uncertain inferences.
+---
 
-## Inferences: certain and uncertain
+We are now equipped with all the notions and symbolic notation to deal with our next task: learning the rules for drawing correct inferences.
 
-In a decision problem we have a set of different outcomes that we want to assess given the same assumptions:
-$$\begin{aligned}
-\textit{\small outcome\,1} &\pmb{\|[\big]} \textit{\small assumptions}
-\\
-\textit{\small outcome\,2} &\pmb{\|[\big]} \textit{\small assumptions}
-\\
-\textit{\small outcome\,3} &\pmb{\|[\big]} \textit{\small assumptions}
-\\
-\dotso&
-\end{aligned}$$
-
-The first goal in a decision problem is to assess these outcomes. What do we mean by "assess"? We cannot demand that the truth or falsity of the outcomes be determined with certainty. 
