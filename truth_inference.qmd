@@ -32,6 +32,14 @@ $$
 \end{aligned}
 $$
 
+The inference available to the inspector is this:
+
+- $\yf$
+
+- $\ys$
+
+- $\lnot\yh \lor \lnot\ys \| \yf \land \yI$
+
 The inference that the inspector wants to draw can be compactly written:
 
 :::{.border}
@@ -42,25 +50,61 @@ $$
 
 ## Truth-inference rules
 
-Formal logic gives us sets of rules for correctly drawing sure inferences, that is, inferences where the truth or falsity of the proposal can be exactly determined -- *when such inferences are possible*. These rules can be formulated in different ways, leading to a [wide variety of deduction systems](https://plato.stanford.edu/archives/spr2023/entries/natural-deduction).
-The picture here on the margin, for instance, shows how a proof of how our inference would look like, using the so-called sequent calculus.
+Formal logic gives us a set of rules for correctly drawing sure inferences, that is, inferences where the truth or falsity of the proposal can be exactly determined, *when such inferences are possible*. These rules can be formulated in different ways, leading to a [wide variety of deduction systems](https://plato.stanford.edu/archives/spr2023/entries/natural-deduction).
+The picture on the margin, for instance, shows how a proof of how our inference would look like, using the so-called sequent calculus.
 
 :::{.column-margin}
-![The [bottom formula]{.lightblue} is the desired inference. Each line denotes the application of an inference rule. The two formulae with no line above are the [initial, known inference]{.green}, and a tautology.](failure_sequent.png){width=100%}
+![The [bottom formula]{.lightblue} is the desired inference. Each line denotes the application of an inference rule,. The two formulae with no line above are the [initial, known inference]{.green}, and a tautology.](failure_sequent.png){width=100%}
 :::
 
 \
 
-One important point is that deduction systems don't lead to inferences out of nothing: [*in order to draw an inference, we must always start from some other inferences that are already known*]{.blue}. This is one of the central points of logic, which you may have already heard about. It is sometimes stated in terms of *axioms* and *theorems*: in order to prove some theorem, we must always start from some axioms.^[There actually are "inferences" that can be drawn without requiring other ones; but they are all trivial *tautologies*, such as the conclusion "this component failed early, or it didn't". They are of little use in a real problem; but are important nevertheless, because they reflect the core of the inference rules.]
+One important point is that deduction systems don't lead to inferences out of nothing: [**in order to draw an inference, we must always start from other, known inferences**]{.blue}. This is a central point in logic. It is sometimes stated in terms of *axioms* and *theorems*: in order to prove some theorem, we must always start from some axioms. There are "inferences" -- *tautologies* -- that can be drawn without requiring others; but they are all trivial, such as "this component failed early, or it didn't". They are of little use in a real problem, but are important because they reflect the core of the inference rules.
 
 \
 
-We can compactly encode all inference rules in the following way. First, represent `true` by the number `1`, and `false` by `0`. Second, symbolically write that conclusion $C$ is `true`, given assumptions $A$, as follows:
+We can compactly encode all logical inference rules in the following way. First, represent `true` by the number `1`, and `false` by `0`. Second, symbolically write that the proposal $\yY$ is `true`, given the conditional $\yX$, as follows:
 $$
-\mathrm{T}(C \| A) = 1 \ .
+\mathrm{T}(\yY \| \yX) = 1
 $$
-or with `0` if it's `false`.
+or ["$=0$"]{.together} if it's `false`.
 
+The rules of truth inference are then encoded by the following equations, which must always hold for any sentences $\yX,\yY,\yZ$ (atomic or complex):
+
+::::: {.column-page-inset-right}
+::: {.callout-note}
+##
+::::{style="font-size:120%"}
+Rule for "not":
+: $$\mathrm{T}(\lnot \yX \| \yZ) 
++ \mathrm{T}(\yX \| \yZ)
+= 1$$ {#eq-t-not}
+
+Rule for "and":
+: $$
+\mathrm{T}(\yX \land \yY \| \yZ) 
+= \mathrm{T}(\yX \| \yY \land \yZ) \cdot
+\mathrm{T}(\yY \| \yZ) 
+= \mathrm{T}(\yY \| \yX \land \yZ) \cdot
+\mathrm{T}(\yX \| \yZ)
+$$ {#eq-t-and}
+
+Rule for "or":
+: $$\mathrm{T}(\yX \lor \yY \| \yZ) 
+= \mathrm{T}(\yX \| \yZ) +
+\mathrm{T}(\yY \| \yZ) 
+- \mathrm{T}(\yX \land \yY \| \yZ)
+$$ {#eq-t-or}
+
+Rule of self-consistency:
+: $$\mathrm{T}(\yX \| \yX \land \yZ) 
+= 1
+$$ {#eq-t-unity}
+:::
+:::
+:::::
+
+Let's see, for instance, how
 
 
 What are the data available to the inspector? One is that the component failed, [$\yf$;]{.together} another is that the component passed the shock test, [$\ys$.]{.together} We already included both in the conditional of the inference above. The inspector also has another piece of information, which consists in a *known* inference: "if a component fails early, then it didn't pass either the heating test or the shock test". We write the fact that this inference is known as follows:
@@ -142,12 +186,8 @@ The inspector knows, moreover, this hypothetical consequence:
 
 ## Truth-inference rules
 
-Deduction systems in formal logic give us a set of rules for making correct inferences, that is, for correctly determining whether the conclusions of interest are true or false. These rules are represented in a [wide variety of ways](https://plato.stanford.edu/archives/spr2023/entries/natural-deduction), as steps leading from one conclusion to another one. The picture here on the margin, for instance, shows how a proof of our inference would look like, using the so-called sequent calculus.
+Deduction systems in formal logic give us a set of rules for making correct inferences, that is, for correctly determining whether the conclusions of interest are true or false. These rules are represented in a [wide variety of ways](https://plato.stanford.edu/archives/spr2023/entries/natural-deduction), as steps leading from one conclusion to another one. The picture here on the margin, for instance, shows how a proof of our inference would look like, using the so-called [sequent calculus](https://plato.stanford.edu/archives/sum2023/entries/logic-propositional/#SequCalc).
 
-:::{.column-margin}
-![The bottom formula is our conclusion; the formulae above it represent steps in the proof. Each line denotes the application of an inference rule. The two formulae with no line above are our two assumptions.](failure_sequent.png){width=100%}
-:::
-\
 
 We can compactly encode all inference rules in the following way. First, represent `true` by the number `1`, and `false` by `0`. Second, symbolically write that conclusion $C$ is `true`, given assumptions $A$, as follows:
 $$

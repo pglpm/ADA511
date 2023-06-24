@@ -273,6 +273,12 @@ ul.task-list li input[type="checkbox"] {
 \mathsfit{I}&amp;\coloneqq \textsf{\small (all other implicit background information)}
 \end{aligned}
 \]</span></p>
+<p>The inference available to the inspector is this:</p>
+<ul>
+<li><p><span class="math inline">\(\mathsfit{f}\)</span></p></li>
+<li><p><span class="math inline">\(\mathsfit{s}\)</span></p></li>
+<li><p><span class="math inline">\(\lnot\mathsfit{h}\lor \lnot\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I}\)</span></p></li>
+</ul>
 <p>The inference that the inspector wants to draw can be compactly written:</p>
 <div class="border">
 <p><span class="math display">\[
@@ -282,23 +288,73 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="truth-inference-rules" class="level2 page-columns page-full" data-number="6.3">
 <h2 data-number="6.3" class="anchored" data-anchor-id="truth-inference-rules"><span class="header-section-number">6.3</span> Truth-inference rules</h2>
-<p>Formal logic gives us sets of rules for correctly drawing sure inferences, that is, inferences where the truth or falsity of the proposal can be exactly determined – <em>when such inferences are possible</em>. These rules can be formulated in different ways, leading to a <a href="https://plato.stanford.edu/archives/spr2023/entries/natural-deduction">wide variety of deduction systems</a>. The picture here on the margin, for instance, shows how a proof of how our inference would look like, using the so-called sequent calculus.</p>
+<p>Formal logic gives us a set of rules for correctly drawing sure inferences, that is, inferences where the truth or falsity of the proposal can be exactly determined, <em>when such inferences are possible</em>. These rules can be formulated in different ways, leading to a <a href="https://plato.stanford.edu/archives/spr2023/entries/natural-deduction">wide variety of deduction systems</a>. The picture on the margin, for instance, shows how a proof of how our inference would look like, using the so-called sequent calculus.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="failure_sequent.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption class="figure-caption">The <span class="lightblue">bottom formula</span> is the desired inference. Each line denotes the application of an inference rule. The two formulae with no line above are the <span class="green">initial, known inference</span>, and a tautology.</figcaption>
+<figcaption class="figure-caption">The <span class="lightblue">bottom formula</span> is the desired inference. Each line denotes the application of an inference rule,. The two formulae with no line above are the <span class="green">initial, known inference</span>, and a tautology.</figcaption>
 </figure>
 </div>
 </div></div><p><br>
 </p>
-<div class="page-columns page-full"><p>One important point is that deduction systems don’t lead to inferences out of nothing: <span class="blue"><em>in order to draw an inference, we must always start from some other inferences that are already known</em></span>. This is one of the central points of logic, which you may have already heard about. It is sometimes stated in terms of <em>axioms</em> and <em>theorems</em>: in order to prove some theorem, we must always start from some axioms.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;There actually are “inferences” that can be drawn without requiring other ones; but they are all trivial <em>tautologies</em>, such as the conclusion “this component failed early, or it didn’t”. They are of little use in a real problem; but are important nevertheless, because they reflect the core of the inference rules.</p></li></div></div>
+<p>One important point is that deduction systems don’t lead to inferences out of nothing: <span class="blue"><strong>in order to draw an inference, we must always start from other, known inferences</strong></span>. This is a central point in logic. It is sometimes stated in terms of <em>axioms</em> and <em>theorems</em>: in order to prove some theorem, we must always start from some axioms. There are “inferences” – <em>tautologies</em> – that can be drawn without requiring others; but they are all trivial, such as “this component failed early, or it didn’t”. They are of little use in a real problem, but are important because they reflect the core of the inference rules.</p>
 <p><br>
 </p>
-<p>We can compactly encode all inference rules in the following way. First, represent <code>true</code> by the number <code>1</code>, and <code>false</code> by <code>0</code>. Second, symbolically write that conclusion <span class="math inline">\(C\)</span> is <code>true</code>, given assumptions <span class="math inline">\(A\)</span>, as follows: <span class="math display">\[
-\mathrm{T}(C \nonscript\:\vert\nonscript\:\mathopen{} A) = 1 \ .
-\]</span> or with <code>0</code> if it’s <code>false</code>.</p>
+<p>We can compactly encode all logical inference rules in the following way. First, represent <code>true</code> by the number <code>1</code>, and <code>false</code> by <code>0</code>. Second, symbolically write that the proposal <span class="math inline">\(\mathsfit{Y}\)</span> is <code>true</code>, given the conditional <span class="math inline">\(\mathsfit{X}\)</span>, as follows: <span class="math display">\[
+\mathrm{T}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{X}) = 1
+\]</span> or <span class="together">“<span class="math inline">\(=0\)</span>”</span> if it’s <code>false</code>.</p>
+<p>The rules of truth inference are then encoded by the following equations, which must always hold for any sentences <span class="math inline">\(\mathsfit{X},\mathsfit{Y},\mathsfit{Z}\)</span> (atomic or complex):</p>
+<div class="column-page-inset-right">
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size:120%">
+<dl>
+<dt>Rule for “not”:</dt>
+<dd>
+<span id="eq-t-not"><span class="math display">\[\mathrm{T}(\lnot \mathsfit{X}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z})
++ \mathrm{T}(\mathsfit{X}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z})
+= 1 \tag{6.1}\]</span></span>
+</dd>
+<dt>Rule for “and”:</dt>
+<dd>
+<span id="eq-t-and"><span class="math display">\[
+\mathrm{T}(\mathsfit{X}\land \mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z})
+= \mathrm{T}(\mathsfit{X}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Y}\land \mathsfit{Z}) \cdot
+\mathrm{T}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z})
+= \mathrm{T}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{X}\land \mathsfit{Z}) \cdot
+\mathrm{T}(\mathsfit{X}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z})
+\tag{6.2}\]</span></span>
+</dd>
+<dt>Rule for “or”:</dt>
+<dd>
+<span id="eq-t-or"><span class="math display">\[\mathrm{T}(\mathsfit{X}\lor \mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z})
+= \mathrm{T}(\mathsfit{X}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z}) +
+\mathrm{T}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z})
+- \mathrm{T}(\mathsfit{X}\land \mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z})
+\tag{6.3}\]</span></span>
+</dd>
+<dt>Rule of self-consistency:</dt>
+<dd>
+<span id="eq-t-unity"><span class="math display">\[\mathrm{T}(\mathsfit{X}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{X}\land \mathsfit{Z})
+= 1
+\tag{6.4}\]</span></span>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+<p>Let’s see, for instance, how</p>
 <p>What are the data available to the inspector? One is that the component failed, <span class="together"><span class="math inline">\(\mathsfit{f}\)</span>;</span> another is that the component passed the shock test, <span class="together"><span class="math inline">\(\mathsfit{s}\)</span>.</span> We already included both in the conditional of the inference above. The inspector also has another piece of information, which consists in a <em>known</em> inference: “if a component fails early, then it didn’t pass either the heating test or the shock test”. We write the fact that this inference is known as follows: <span class="math display">\[
 \mathrm{T}(\lnot\mathsfit{h}\lor \lnot\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I}) = 1
 \]</span></p>
@@ -361,17 +417,7 @@ d \land (o \lor r) \land \lnot (o \land r) \land I \ .
 </section>
 <section id="truth-inference-rules-1" class="level2 page-columns page-full" data-number="6.5">
 <h2 data-number="6.5" class="anchored" data-anchor-id="truth-inference-rules-1"><span class="header-section-number">6.5</span> Truth-inference rules</h2>
-<p>Deduction systems in formal logic give us a set of rules for making correct inferences, that is, for correctly determining whether the conclusions of interest are true or false. These rules are represented in a <a href="https://plato.stanford.edu/archives/spr2023/entries/natural-deduction">wide variety of ways</a>, as steps leading from one conclusion to another one. The picture here on the margin, for instance, shows how a proof of our inference would look like, using the so-called sequent calculus.</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="failure_sequent.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption class="figure-caption">The bottom formula is our conclusion; the formulae above it represent steps in the proof. Each line denotes the application of an inference rule. The two formulae with no line above are our two assumptions.</figcaption>
-</figure>
-</div>
-</div></div><p><br>
-</p>
+<p>Deduction systems in formal logic give us a set of rules for making correct inferences, that is, for correctly determining whether the conclusions of interest are true or false. These rules are represented in a <a href="https://plato.stanford.edu/archives/spr2023/entries/natural-deduction">wide variety of ways</a>, as steps leading from one conclusion to another one. The picture here on the margin, for instance, shows how a proof of our inference would look like, using the so-called <a href="https://plato.stanford.edu/archives/sum2023/entries/logic-propositional/#SequCalc">sequent calculus</a>.</p>
 <p>We can compactly encode all inference rules in the following way. First, represent <code>true</code> by the number <code>1</code>, and <code>false</code> by <code>0</code>. Second, symbolically write that conclusion <span class="math inline">\(C\)</span> is <code>true</code>, given assumptions <span class="math inline">\(A\)</span>, as follows: <span class="math display">\[
 \mathrm{T}(C \nonscript\:\vert\nonscript\:\mathopen{} A) = 1 \ .
 \]</span> or with <code>0</code> if it’s <code>false</code>.</p>
@@ -383,7 +429,7 @@ d \land (o \lor r) \land \lnot (o \land r) \land I \ .
 <dd>
 <span id="eq-t-not"><span class="math display">\[\mathrm{T}(\lnot A \nonscript\:\vert\nonscript\:\mathopen{} B)
 + \mathrm{T}(A \nonscript\:\vert\nonscript\:\mathopen{} B)
-= 1 \tag{6.1}\]</span></span>
+= 1 \tag{6.5}\]</span></span>
 </dd>
 <dt>Rule for “and”:</dt>
 <dd>
@@ -393,7 +439,7 @@ d \land (o \lor r) \land \lnot (o \land r) \land I \ .
 \mathrm{T}(B \nonscript\:\vert\nonscript\:\mathopen{} C)
 = \mathrm{T}(B \nonscript\:\vert\nonscript\:\mathopen{} A \land C) \cdot
 \mathrm{T}(A \nonscript\:\vert\nonscript\:\mathopen{} C)
-\tag{6.2}\]</span></span>
+\tag{6.6}\]</span></span>
 </dd>
 <dt>Rule for “or”:</dt>
 <dd>
@@ -401,20 +447,20 @@ d \land (o \lor r) \land \lnot (o \land r) \land I \ .
 = \mathrm{T}(A \nonscript\:\vert\nonscript\:\mathopen{} C) +
 \mathrm{T}(B \nonscript\:\vert\nonscript\:\mathopen{} C)
 - \mathrm{T}(A \land B \nonscript\:\vert\nonscript\:\mathopen{} C)
-\tag{6.3}\]</span></span>
+\tag{6.7}\]</span></span>
 </dd>
 <dt>Rule of self-consistency:</dt>
 <dd>
 <span id="eq-t-unity"><span class="math display">\[\mathrm{T}(A \nonscript\:\vert\nonscript\:\mathopen{} A \land C)
 = 1
-\tag{6.4}\]</span></span>
+\tag{6.8}\]</span></span>
 </dd>
 </dl>
 </div>
 </div>
 <p><br>
 </p>
-<p>Let’s see how the inference rule (<span class="quarto-unresolved-ref">?eq-example-rule</span>), for example, is encoded in these equations. The rule starts with saying that <span class="math inline">\(a \land b\)</span> is <code>true</code> according to <span class="math inline">\(D\)</span>. This means that <span class="math inline">\(\mathrm{T}(a \land b \nonscript\:\vert\nonscript\:\mathopen{} D)=1\)</span>. But, by rule (<a href="#eq-t-and"><span>6.2</span></a>), we must then have <span class="math inline">\(\mathrm{T}(b \nonscript\:\vert\nonscript\:\mathopen{} a \land D) \cdot \mathrm{T}(a \nonscript\:\vert\nonscript\:\mathopen{} D) = 1\)</span>. This can only happen if both <span class="math inline">\(\mathrm{T}(b \nonscript\:\vert\nonscript\:\mathopen{} a \land D)\)</span> and <span class="math inline">\(\mathrm{T}(a \nonscript\:\vert\nonscript\:\mathopen{} D)\)</span> are equal to <span class="math inline">\(1\)</span>. So we can conclude that <span class="math inline">\(\mathrm{T}(a \nonscript\:\vert\nonscript\:\mathopen{} D)=1\)</span>, which is exactly the conclusion under the line in rule (<span class="quarto-unresolved-ref">?eq-example-rule</span>).</p>
+<p>Let’s see how the inference rule (<span class="quarto-unresolved-ref">?eq-example-rule</span>), for example, is encoded in these equations. The rule starts with saying that <span class="math inline">\(a \land b\)</span> is <code>true</code> according to <span class="math inline">\(D\)</span>. This means that <span class="math inline">\(\mathrm{T}(a \land b \nonscript\:\vert\nonscript\:\mathopen{} D)=1\)</span>. But, by rule (<a href="#eq-t-and"><span>6.6</span></a>), we must then have <span class="math inline">\(\mathrm{T}(b \nonscript\:\vert\nonscript\:\mathopen{} a \land D) \cdot \mathrm{T}(a \nonscript\:\vert\nonscript\:\mathopen{} D) = 1\)</span>. This can only happen if both <span class="math inline">\(\mathrm{T}(b \nonscript\:\vert\nonscript\:\mathopen{} a \land D)\)</span> and <span class="math inline">\(\mathrm{T}(a \nonscript\:\vert\nonscript\:\mathopen{} D)\)</span> are equal to <span class="math inline">\(1\)</span>. So we can conclude that <span class="math inline">\(\mathrm{T}(a \nonscript\:\vert\nonscript\:\mathopen{} D)=1\)</span>, which is exactly the conclusion under the line in rule (<span class="quarto-unresolved-ref">?eq-example-rule</span>).</p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -435,7 +481,7 @@ d \land (o \lor r) \land \lnot (o \land r) \land I \ .
 b\nonscript\:\vert\nonscript\:\mathopen{} D
 }
 \]</span></p>
-<p>using the basic rules (<a href="#eq-t-not"><span>6.1</span></a>, <a href="#eq-t-and"><span>6.2</span></a>, <a href="#eq-t-or"><span>6.3</span></a>, <a href="#eq-t-unity"><span>6.4</span></a>). Remember that you can use each rule as many times as you like, and that there is not only one way of constructing a proof.</p>
+<p>using the basic rules (<a href="#eq-t-not"><span>6.5</span></a>, <a href="#eq-t-and"><span>6.6</span></a>, <a href="#eq-t-or"><span>6.7</span></a>, <a href="#eq-t-unity"><span>6.8</span></a>). Remember that you can use each rule as many times as you like, and that there is not only one way of constructing a proof.</p>
 </div>
 </div>
 </section>
@@ -472,7 +518,6 @@ b\nonscript\:\vert\nonscript\:\mathopen{} D
 
 
 </section>
-
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
