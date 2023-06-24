@@ -206,14 +206,16 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#building-blocks" id="toc-building-blocks" class="nav-link active" data-scroll-target="#building-blocks"><span class="header-section-number">6.1</span> Building blocks</a>
+  <li><a href="#a-trivial-inference" id="toc-a-trivial-inference" class="nav-link active" data-scroll-target="#a-trivial-inference"><span class="header-section-number">6.1</span> A trivial inference</a></li>
+  <li><a href="#analysis-and-representation-of-the-problem" id="toc-analysis-and-representation-of-the-problem" class="nav-link" data-scroll-target="#analysis-and-representation-of-the-problem"><span class="header-section-number">6.2</span> Analysis and representation of the problem</a></li>
+  <li><a href="#truth-inference-rules" id="toc-truth-inference-rules" class="nav-link" data-scroll-target="#truth-inference-rules"><span class="header-section-number">6.3</span> Truth-inference rules</a>
   <ul class="collapse">
   <li><a href="#analysis-of-the-problem" id="toc-analysis-of-the-problem" class="nav-link" data-scroll-target="#analysis-of-the-problem">Analysis of the problem</a></li>
   <li><a href="#data-assumptions-desired-conclusions" id="toc-data-assumptions-desired-conclusions" class="nav-link" data-scroll-target="#data-assumptions-desired-conclusions">Data, assumptions, desired conclusions</a></li>
   </ul></li>
-  <li><a href="#background-information-and-conditional" id="toc-background-information-and-conditional" class="nav-link" data-scroll-target="#background-information-and-conditional"><span class="header-section-number">6.2</span> Background information and conditional</a></li>
-  <li><a href="#truth-inference-rules" id="toc-truth-inference-rules" class="nav-link" data-scroll-target="#truth-inference-rules"><span class="header-section-number">6.3</span> Truth-inference rules</a></li>
-  <li><a href="#logical-ai-agents-and-their-limitations" id="toc-logical-ai-agents-and-their-limitations" class="nav-link" data-scroll-target="#logical-ai-agents-and-their-limitations"><span class="header-section-number">6.4</span> Logical AI agents and their limitations</a></li>
+  <li><a href="#background-information-and-conditional" id="toc-background-information-and-conditional" class="nav-link" data-scroll-target="#background-information-and-conditional"><span class="header-section-number">6.4</span> Background information and conditional</a></li>
+  <li><a href="#truth-inference-rules-1" id="toc-truth-inference-rules-1" class="nav-link" data-scroll-target="#truth-inference-rules-1"><span class="header-section-number">6.5</span> Truth-inference rules</a></li>
+  <li><a href="#logical-ai-agents-and-their-limitations" id="toc-logical-ai-agents-and-their-limitations" class="nav-link" data-scroll-target="#logical-ai-agents-and-their-limitations"><span class="header-section-number">6.6</span> Logical AI agents and their limitations</a></li>
   </ul>
 </nav>
 </nav>
@@ -244,9 +246,62 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 
 </div>
-<section id="building-blocks" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="building-blocks"><span class="header-section-number">6.1</span> Building blocks</h2>
-<p>Consider the following trivial problem. An inspector examines an electronic component out of a production line. The information available to the inspector is the following:</p>
+<div class="hidden">
+
+</div>
+<section id="a-trivial-inference" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="a-trivial-inference"><span class="header-section-number">6.1</span> A trivial inference</h2>
+<p>Consider again the assembly-line scenario of <a href="#sec-intro">§&nbsp;<span class="quarto-unresolved-ref ref-noprefix">sec-intro</span></a>, and suppose that an inspector has the following information about an electric component:</p>
+<blockquote class="blockquote">
+<p>This electric component had an early failure (within a year of use). If an electric component fails early, then at production it didn’t pass either the heating test or the shock test. This component passed the shock test.</p>
+</blockquote>
+<p>The inspector wants to assess whether the component did not pass the heating test.</p>
+<p>From these data and information given, the conclusion is that the component <em>for sure</em> did not pass the heating test. This conclusion is certain, and also trivial. But how did we obtain it? Which rules did we follow to arrive at it from the given data?</p>
+<p><span class="blue"><em>Formal logic</em></span>, with its <em>deduction systems</em>, is the huge field that formalizes and makes rigorous the rules that a rational person or an artificial intelligence should use in drawing <em>sure</em> inferences like the one above. We’ll now get a glimpse of it, as a trampoline for jumping towards more general and <em>uncertain</em> inferences.</p>
+</section>
+<section id="analysis-and-representation-of-the-problem" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="analysis-and-representation-of-the-problem"><span class="header-section-number">6.2</span> Analysis and representation of the problem</h2>
+<p>First let’s analyse our simple problem and represent it with more compact symbols.</p>
+<p>We can introduce the following atomic sentences and symbols: <span class="math display">\[
+\begin{aligned}
+\mathsfit{h}&amp;\coloneqq \textsf{\small`The component passed the heating test'}
+\\
+\mathsfit{s}&amp;\coloneqq \textsf{\small`The component passed the shock test'}
+\\
+\mathsfit{f}&amp;\coloneqq \textsf{\small`The component had an early failure'}
+\\
+\mathsfit{I}&amp;\coloneqq \textsf{\small (all other implicit background information)}
+\end{aligned}
+\]</span></p>
+<p>The inference that the inspector wants to draw can be compactly written:</p>
+<div class="border">
+<p><span class="math display">\[
+\lnot\mathsfit{h}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{s}\land \mathsfit{f}\land \mathsfit{I}
+\]</span></p>
+</div>
+</section>
+<section id="truth-inference-rules" class="level2 page-columns page-full" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="truth-inference-rules"><span class="header-section-number">6.3</span> Truth-inference rules</h2>
+<p>Formal logic gives us sets of rules for correctly drawing sure inferences, that is, inferences where the truth or falsity of the proposal can be exactly determined – <em>when such inferences are possible</em>. These rules can be formulated in different ways, leading to a <a href="https://plato.stanford.edu/archives/spr2023/entries/natural-deduction">wide variety of deduction systems</a>. The picture here on the margin, for instance, shows how a proof of how our inference would look like, using the so-called sequent calculus.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="failure_sequent.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">The bottom formula is our conclusion. Each line denotes the application of an inference rule. The two formulae with no line above are our initial, known inference, and a tautology.</figcaption>
+</figure>
+</div>
+</div></div><p><br>
+</p>
+<div class="page-columns page-full"><p>One important point is that deduction systems don’t lead to inferences out of nothing: <span class="blue"><em>in order to draw an inference, we must always start from some other inferences that are already known</em></span>. This is one of the central points of logic, which you may have already heard about. It is sometimes stated in terms of <em>axioms</em> and <em>theorems</em>: in order to prove some theorem, we must always start from some axioms.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;There actually are “inferences” that can be drawn without requiring other ones; but they are all trivial <em>tautologies</em>, such as the conclusion “this component failed early, or it didn’t”. They are of little use in a real problem; but are important nevertheless, because they reflect the core of the inference rules.</p></li></div></div>
+<p><br>
+</p>
+<p>We can compactly encode all inference rules in the following way. First, represent <code>true</code> by the number <code>1</code>, and <code>false</code> by <code>0</code>. Second, symbolically write that conclusion <span class="math inline">\(C\)</span> is <code>true</code>, given assumptions <span class="math inline">\(A\)</span>, as follows: <span class="math display">\[
+\mathrm{T}(C \nonscript\:\vert\nonscript\:\mathopen{} A) = 1 \ .
+\]</span> or with <code>0</code> if it’s <code>false</code>.</p>
+<p>What are the data available to the inspector? One is that the component failed, <span class="together"><span class="math inline">\(\mathsfit{f}\)</span>;</span> another is that the component passed the shock test, <span class="together"><span class="math inline">\(\mathsfit{s}\)</span>.</span> We already included both in the conditional of the inference above. The inspector also has another piece of information, which consists in a <em>known</em> inference: “if a component fails early, then it didn’t pass either the heating test or the shock test”. We write the fact that this inference is known as follows: <span class="math display">\[
+\mathrm{T}(\lnot\mathsfit{h}\lor \lnot\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I}) = 1
+\]</span></p>
 <ul>
 <li><p>The component can either come from the production line in Oslo, or from the one in Rome.</p></li>
 <li><p>If the component is defective, it cannot come from Oslo.</p></li>
@@ -294,8 +349,8 @@ d \land (o \lor r) \land \lnot (o \land r) \land I \ .
 </ul>
 </section>
 </section>
-<section id="background-information-and-conditional" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="background-information-and-conditional"><span class="header-section-number">6.2</span> Background information and conditional</h2>
+<section id="background-information-and-conditional" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="background-information-and-conditional"><span class="header-section-number">6.4</span> Background information and conditional</h2>
 <!-- From this last remark we see that the sentence $\pr{The umbrella is either blue or red}$ does not really correspond to $b \lor r$, because the latter formula includes the possibility that the umbrella could be *both* fully blue *and* fully red. But we are implicitly assuming that this cannot happen; it's physically impossible. We have thus discovered that there is another piece of data hidden in our inference: the umbrella cannot be both blue and red. Convince yourself that we can write such hidden data like this: -->
 <!-- $$ -->
 <!-- \lnot(b \land r) = \pr{The umbrella cannot be both blue and red}\ . -->
@@ -304,8 +359,8 @@ d \land (o \lor r) \land \lnot (o \land r) \land I \ .
 <p><br>
 </p>
 </section>
-<section id="truth-inference-rules" class="level2 page-columns page-full" data-number="6.3">
-<h2 data-number="6.3" class="anchored" data-anchor-id="truth-inference-rules"><span class="header-section-number">6.3</span> Truth-inference rules</h2>
+<section id="truth-inference-rules-1" class="level2 page-columns page-full" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="truth-inference-rules-1"><span class="header-section-number">6.5</span> Truth-inference rules</h2>
 <p>Deduction systems in formal logic give us a set of rules for making correct inferences, that is, for correctly determining whether the conclusions of interest are true or false. These rules are represented in a <a href="https://plato.stanford.edu/archives/spr2023/entries/natural-deduction">wide variety of ways</a>, as steps leading from one conclusion to another one. The picture here on the margin, for instance, shows how a proof of our inference would look like, using the so-called sequent calculus.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -359,7 +414,7 @@ d \land (o \lor r) \land \lnot (o \land r) \land I \ .
 </div>
 <p><br>
 </p>
-<p>Let’s see how the inference rule (<span class="quarto-unresolved-ref">?eq-example-rule</span>), for example, is encoded in these equations. The rule starts with saying that <span class="math inline">\(a \land b\)</span> is <code>true</code> according to <span class="math inline">\(D\)</span>. This means that <span class="math inline">\(\mathrm{T}(a \land b \nonscript\:\vert\nonscript\:\mathopen{} D)=1\)</span>. But, by rule (<a href="#eq-t-and"><span>6.2</span></a>), we must then have <span class="math inline">\(\mathrm{T}(b \nonscript\:\vert\nonscript\:\mathopen{} a \land D) \cdot \mathrm{T}(a \nonscript\:\vert\nonscript\:\mathopen{} D) = 1\)</span>. This can only happen if both <span class="math inline">\(\mathrm{T}(b \nonscript\:\vert\nonscript\:\mathopen{} a \land D)\)</span> and <span class="math inline">\(\mathrm{T}(a \nonscript\:\vert\nonscript\:\mathopen{} D)\)</span> are equal to <span class="math inline">\(1\)</span>. So we can conclude that <span class="math inline">\(\mathrm{T}(a \nonscript\:\vert\nonscript\:\mathopen{} D)=1\)</span>, which is exactly the conclusion under the line in rule (<span class="quarto-unresolved-ref">?eq-example-rule</span>).</p>
+<p>Let’s see how the inference rule (<a href="#eq-example-rule"><span class="quarto-unresolved-ref">eq-example-rule</span></a>), for example, is encoded in these equations. The rule starts with saying that <span class="math inline">\(a \land b\)</span> is <code>true</code> according to <span class="math inline">\(D\)</span>. This means that <span class="math inline">\(\mathrm{T}(a \land b \nonscript\:\vert\nonscript\:\mathopen{} D)=1\)</span>. But, by rule (<a href="#eq-t-and"><span class="quarto-unresolved-ref">eq-t-and</span></a>), we must then have <span class="math inline">\(\mathrm{T}(b \nonscript\:\vert\nonscript\:\mathopen{} a \land D) \cdot \mathrm{T}(a \nonscript\:\vert\nonscript\:\mathopen{} D) = 1\)</span>. This can only happen if both <span class="math inline">\(\mathrm{T}(b \nonscript\:\vert\nonscript\:\mathopen{} a \land D)\)</span> and <span class="math inline">\(\mathrm{T}(a \nonscript\:\vert\nonscript\:\mathopen{} D)\)</span> are equal to <span class="math inline">\(1\)</span>. So we can conclude that <span class="math inline">\(\mathrm{T}(a \nonscript\:\vert\nonscript\:\mathopen{} D)=1\)</span>, which is exactly the conclusion under the line in rule (<a href="#eq-example-rule"><span class="quarto-unresolved-ref">eq-example-rule</span></a>).</p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -380,12 +435,12 @@ d \land (o \lor r) \land \lnot (o \land r) \land I \ .
 b\nonscript\:\vert\nonscript\:\mathopen{} D
 }
 \]</span></p>
-<p>using the basic rules (<a href="#eq-t-not"><span>6.1</span></a>, <a href="#eq-t-and"><span>6.2</span></a>, <a href="#eq-t-or"><span>6.3</span></a>, <a href="#eq-t-unity"><span>6.4</span></a>). Remember that you can use each rule as many times as you like, and that there is not only one way of constructing a proof.</p>
+<p>using the basic rules (<a href="#eq-t-not"><span class="quarto-unresolved-ref">eq-t-not</span></a>, <a href="#eq-t-and"><span class="quarto-unresolved-ref">eq-t-and</span></a>, <a href="#eq-t-or"><span class="quarto-unresolved-ref">eq-t-or</span></a>, <a href="#eq-t-unity"><span class="quarto-unresolved-ref">eq-t-unity</span></a>). Remember that you can use each rule as many times as you like, and that there is not only one way of constructing a proof.</p>
 </div>
 </div>
 </section>
-<section id="logical-ai-agents-and-their-limitations" class="level2" data-number="6.4">
-<h2 data-number="6.4" class="anchored" data-anchor-id="logical-ai-agents-and-their-limitations"><span class="header-section-number">6.4</span> Logical AI agents and their limitations</h2>
+<section id="logical-ai-agents-and-their-limitations" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="logical-ai-agents-and-their-limitations"><span class="header-section-number">6.6</span> Logical AI agents and their limitations</h2>
 <p>The basic rules above are also the rules that a logical artificial-intelligent agent should follow.</p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -417,6 +472,7 @@ b\nonscript\:\vert\nonscript\:\mathopen{} D
 
 
 </section>
+
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
