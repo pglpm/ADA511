@@ -46,7 +46,7 @@ $$
 
 - [**{{< fa bookmark >}} Probabilities are not frequencies**]{.blue}. Consider the fraction of defective mechanical components to total components produced per year in some factory. This quantity can be physically measured and, once measured, would be agreed upon by every agent. It is a *frequency*, not a degree of belief or probability.
 
-    It is important to understand the difference between *probability* and *frequency*: mixing them up may lead to sub-optimal decisions. We shall say more about this difference later.
+    It is important to understand the difference between *probability* and *frequency*: mixing them up may lead to sub-optimal decisions. Later we shall say more about the difference and the precise relations between probability and frequency.
 	
 	Frequencies can be unknown to some agents. Probabilities cannot be "unknown": they can only be difficult to calculate. Be careful when you read authors speaking of an "unknown probability": they actually mean either "unknown frequency", or a probability that has to be calculated (it's "unknown" in the same sense that the value of $1-0.7 \cdot 0.2/(1-0.3)$ is "unknown" to you right now).
 
@@ -64,88 +64,96 @@ $$
 These points listed above are not just a matter of principle. They have important practical consequences. A data scientist who is not attentive to the source of the data (measured? set? reported, and so maybe less trustworthy?), or who does not carefully assess the context of a probability, or who mixes a probability with a frequency, or who does not take advantage (when possible) of the physics involved in the a problem -- such data scientist will design systems with sub-optimal performance^[This fact can be mathematically proven.] -- or even cause deaths.
 
 
+## An unsure inference
 
+Consider now the following variation of the trivial inference problem of [§ @sec-trivial-inference].
 
+> This electric component had an early failure. If an electric component fails early, then at production it either didn't pass the heating test or didn't pass the shock test. However, it cannot be the case that it didn't pass both tests (otherwise it would have been discarded). There's no reason to believe that the component didn't pass the heating test, more than it didn't pass the shock test.
 
-## Probability-inference rules
+The inspector wants to assess, also in this case, whether the component did not pass the heating test.
 
+From the data and information given, the rational conclusion seems to be that the probability that the component didn't pass the heating test is $50\%$.
 
-represents the probability or degree of belief in sentence $a$ in the context of data $D$ and supposing also sentence $b$ to be true. Keep in mind that both $a$ and $b$ could be complex sentences (for instance $a = (\lnot c \lor d) \land e$). Note that truth-values are included as the special cases`1` or `0`:
-$$
-\P(a \| b \land D) = 0\text{ or }1
-\quad\Longleftrightarrow\quad
-\mathrm{T}(a \| b \land D) = 0\text{ or }1
-$$
-
-
-Extending our truth-inference notation to probability-inference notation has been straightforward. But how do we draw inferences when probabilities are involved? 
-
-Consider the inference about my umbrella in a more uncertain situation:
-
-:::{.column-page-inset-right}
-$$
-\frac{
-\P(\pr{My umbrella is either blue or red}\|D)=1\quad
-\P(\pr{My umbrella is not red} \| D)=0.5
-}{
-\P(\pr{My umbrella is blue} \| D) = \mathord{?}
-}
-$$
+:::{.callout-caution}
+## {{< fa pen >}} Exercises
+- Try to argue why a conclusion cannot drawn with certainty in this case. One way to argue this is to present two different scenarios that fit the data given but have opposite conclusions.
+- Try to reason intuitively and see if you reach the same conclusion about the probability.
 :::
 
-or more compactly, using the symbols we introduced earlier,
+
+## Probability notation
+
+For this inference problem we can't find a `true` or `false` final value. The truth-inference rules (@eq-t-not)--(@eq-t-unity) therefore cannot help us here. In fact even the ["$T(\dotso \| \dotso$"]{.together} notation is unsuitable, because it only admits the values $1$ (`true`) and $0$ (`false`).
+
+Let us first generalize this notation in a straightforward way:
+
+First, let's represent the probability or degree of belief of a sentence by a number in the range [$[0,1]$,]{.together} that is, between $\mathbf{1}$ (certainty or `true`) and $\mathbf{0}$ (impossibility or `false`). The value $0.5$ represents that the belief in the truth of the sentence is as strong as that in its falsity.
+
+Second, let's symbolically write that the probability of a proposal $\yY$, given a conditional $\yX$, is some number $p$, as follows:
 $$
-\frac{
-\P\bigl[(b \lor r) \land \lnot (b \land r)\|D\bigr]=1\quad
-\P(\lnot r\| D)=0.5
-}{
-\P( b \| D) = \mathord{?}
-}
+\P(\yY \| \yX) = p
 $$
-This says, above the line, that: according to our data $D$ my umbrella is either blue or red (and can't be both), with full certainty; and according to our data we have no preferential beliefs on whether my umbrella is not red. What should then be the probability of my umbrella being blue, according to our data?
+Note that this notation includes the notation for truth-values as a special case:
+$$
+\P(\yY \| \yX) = 0\text{ or }1
+\quad\Longleftrightarrow\quad
+\mathrm{T}(\yY \| \yX) = 0\text{ or }1
+$$
 
-Intuitively that probability should be $50\%$: $\P( b \| D)=0.5$. But which rules did we follow in arriving at this probability? More generally, which rules should we follow in assigning new probabilities from given ones?
+## Inference rules
 
-The amazing result is that *the rules for truth-inference, formulae (@eq-t-not, @eq-t-or, @eq-t-and, @eq-t-unity), extend also to probability-inference*. The only difference is that they now hold for all values in the range $[0,1]$, rather than only values $0$ and $1$.
+Extending our truth-inference notation to probability-inference notation has been straightforward. But which rules should we use for drawing inferences when probabilities are involved?
 
-This important result was taken more or less for granted at least since Laplace in the 1700s. But was formally proven for the first time in the 1940s by R. T. Cox; the proof has been refined since then. What kind of proof is it? It shows that if we don't follow the rules we arrive at illogical conclusions; we'll show some examples later.
+The amazing result is that *the rules for truth-inference, formulae (@eq-t-not)--(@eq-t-unity), extend also to probability-inference*. The only difference is that they now hold for all values in the range $[0,1]$, rather than for $0$ and $1$ only.
 
-Here are the fundamental rules of probability inference. In these rules, all probabilities can have values in the range $\P() \in [0,1]$, and the symbols $a,b,D$ represent sentences of any complexity:
+This important result was taken more or less for granted at least since Laplace in the 1700s. But was formally proven for the first time in the 1946 by R. T. Cox. The proof has been refined since then. What kind of proof is it? It shows that if we don't follow the rules we are doomed to arrive at illogical conclusions; we'll show some examples later.
 
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+Cox (1946): [*Probability, Frequency, and Reasonable Expectation*](https://hvl.instructure.com/courses/25074/modules/items/660094).
+:::
+::::
 
+\
 
-::::: {.column-page style="color:#4477AA"}
-:::: {.callout-note appearance="default" icon=false style="text-align:center; color:#4477AA"}
-## {{< fa landmark >}}   THE FUNDAMENTAL LAWS OF INFERENCE   {{< fa landmark >}}
+So, finally,
+here are the fundamental rules of all inference. They are encoded by the following equations, which must always hold for any atomic or complex sentences [$\yX,\yY,\yZ$:]{.together}
 
+::::: {.column-page-right}
+:::: {.callout-note style="text-align:center;font-size:120%"}
+## [**{{< fa landmark >}}   THE FUNDAMENTAL LAWS OF INFERENCE   {{< fa landmark >}}**]{.blue style="font-size:120%"}
+
+:::{style="font-size:120%"}
 "Not" $\boldsymbol{\lnot}$ rule
-: $$\P(\lnot a \| D) 
-+ \P(a \| D)
+: $$\P(\lnot \yX \| \yZ) 
++ \P(\yX \| \yZ)
 = 1$$
 \
 
 "And" $\boldsymbol{\land}$ rule
 : $$
-\P(a \land b \| D) 
-= \P(a \| b \land D) \cdot
-\P(b \| D) 
-= \P(b \| a \land D) \cdot
-\P(a \| D) 
+\P(\yX \land \yY \| \yZ) 
+= \P(\yX \| \yY \land \yZ) \cdot
+\P(\yY \| \yZ) 
+= \P(\yY \| \yX \land \yZ) \cdot
+\P(\yX \| \yZ) 
 $$
 \
 
 "Or" $\boldsymbol{\lor}$ rule
-: $$\P(a \lor b \| D) 
-= \P(a \| D) +
-\P(b \| D) 
-- \P(a \land b \| D)
+: $$\P(\yX \lor \yY \| \yZ) 
+= \P(\yX \| \yZ) +
+\P(\yY \| \yZ) 
+- \P(\yX \land \yY \| \yZ)
 $$
 \
 
 Self-consistency rule
-: $$\P(a \| a \land D) 
+: $$\P(\yX \| \yX \land \yZ) 
 = 1
 $$
+:::
 ::::
 :::::
 
