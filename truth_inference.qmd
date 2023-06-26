@@ -2,6 +2,8 @@
 {{< include macros.qmd >}}
 {{< include macros_truth-inference.qmd >}}
 
+Some inferences can be drawn with absolute certainty; that is, we can ascertain for sure the truth or falsity of their proposal. We call this particular kind of inferences *truth inferences*. Mathematical inferences are a typical instance of this kind. You probably have some acquaintance with rules for drawing truth inferences, so we start from these.
+
 ## A trivial inference
 
 Consider again the assembly-line scenario of [§ @sec-intro], and suppose that an inspector has the following information about an electric component:
@@ -10,7 +12,7 @@ Consider again the assembly-line scenario of [§ @sec-intro], and suppose that a
 
 The inspector wants to assess whether the component did not pass the heating test.
 
-From these data and information given, the conclusion is that the component *for sure* did not pass the heating test. This conclusion is certain, and also trivial. But how did we obtain it? Which rules did we follow to arrive at it from the given data?
+From the data and information given, the conclusion is that the component *for sure* did not pass the heating test. This conclusion is certain and somewhat trivial. But how did we obtain it? Which rules did we follow to arrive at it from the given data?
 
 
 [*Formal logic*]{.blue}, with its *deduction systems*, is the huge field that formalizes and makes rigorous the rules that a rational person or an artificial intelligence should use in drawing *sure* inferences like the one above. We'll now get a glimpse of it, as a trampoline for jumping towards more general and *uncertain* inferences.
@@ -18,6 +20,8 @@ From these data and information given, the conclusion is that the component *for
 ## Analysis and representation of the problem
 
 First let's analyse our simple problem and represent it with more compact symbols.
+
+### Atomic sentences
 
 We can introduce the following atomic sentences and symbols:
 $$
@@ -32,13 +36,29 @@ $$
 \end{aligned}
 $$
 
-The inference available to the inspector is this:
+### Proposal
 
-- $\yf$
+The proposal is $\lnot\yh$, but in the present case we could also have chosen $\yh$.
 
-- $\ys$
+### Conditional
 
-- $\lnot\yh \lor \lnot\ys \| \yf \land \yI$
+The bases for the inference are two known facts in the present case: $\ys$ and $\yf$. There may also be other obvious facts implicitly assumed in the inference, which we denote by $\yI$.
+
+### Starting inferences
+
+Let us emphasize again that any inference is drawn from other inferences, which are either taken for granted, or drawn in turn from others. In the present case we are told that if an electric component fails early, then at production it didn't pass either the heating test or the shock test. We write this as
+$$
+\lnot\yh \lor \lnot\ys \| \yf \land \yI
+$$
+and we shall take this to be `true` (that is, to have probability [$100\%$]{.together}).
+
+But our scenario actually has at least one more, hidden, inference. We said that the component failed early, and that it did pass the shock test. This means, in particular, that it must be possible for the component to pass the shock test, even if it fails early. This means that
+$$
+\ys \| \yf \land \yI
+$$
+can*not* be `false`.
+
+### Target inference
 
 The inference that the inspector wants to draw can be compactly written:
 
@@ -50,209 +70,202 @@ $$
 
 ## Truth-inference rules
 
-Formal logic gives us a set of rules for correctly drawing sure inferences, that is, inferences where the truth or falsity of the proposal can be exactly determined, *when such inferences are possible*. These rules can be formulated in different ways, leading to a [wide variety of deduction systems](https://plato.stanford.edu/archives/spr2023/entries/natural-deduction).
-The picture on the margin, for instance, shows how a proof of how our inference would look like, using the so-called sequent calculus.
+### Deduction systems; a specific choice
+
+Formal logic gives us a set of rules for correctly drawing sure inferences, *when such inferences are possible*. These rules can be formulated in different ways, leading to a wide variety of [deduction systems](https://plato.stanford.edu/archives/spr2023/entries/natural-deduction) (each one with a wide variety of possible notations). The picture on the margin, for instance, shows how a proof of how our inference would look like, using the so-called sequent calculus, which consists of a dozen or so inference rules.
 
 :::{.column-margin}
-![The [bottom formula]{.lightblue} is the desired inference. Each line denotes the application of an inference rule,. The two formulae with no line above are the [initial, known inference]{.green}, and a tautology.](failure_sequent.png){width=100%}
+![The [bottom formula]{.red} is the target inference. Each line denotes the application of an inference rule, from one or more inferences above the line, to one below the line. The two formulae with no line above are our [starting inference]{.green}, and a tautology.](failure_sequent_red.png){width=100%}
 :::
 
 \
 
-One important point is that deduction systems don't lead to inferences out of nothing: [**in order to draw an inference, we must always start from other, known inferences**]{.blue}. This is a central point in logic. It is sometimes stated in terms of *axioms* and *theorems*: in order to prove some theorem, we must always start from some axioms. There are "inferences" -- *tautologies* -- that can be drawn without requiring others; but they are all trivial, such as "this component failed early, or it didn't". They are of little use in a real problem, but are important because they reflect the core of the inference rules.
+We choose to compactly encode all truth-inference rules in the following way. 
 
-\
+First, represent `true` by the number [$\mathbf{1}$,]{.together} and `false` by [$\mathbf{0}$.]{.together}
 
-We can compactly encode all logical inference rules in the following way. First, represent `true` by the number `1`, and `false` by `0`. Second, symbolically write that the proposal $\yY$ is `true`, given the conditional $\yX$, as follows:
+Second, symbolically write that a proposal $\yY$ is `true`, given a conditional $\yX$, as follows:
 $$
-\mathrm{T}(\yY \| \yX) = 1
+\tru(\yY \| \yX) = 1
 $$
 or ["$=0$"]{.together} if it's `false`.
 
-The rules of truth inference are then encoded by the following equations, which must always hold for any sentences $\yX,\yY,\yZ$ (atomic or complex):
+The rules of truth-inference are then encoded by the following equations, which must always hold for any atomic or complex sentences [$\yX,\yY,\yZ$:]{.together}
 
 ::::: {.column-page-inset-right}
+:::: {.callout-note}
+##
+:::{style="font-size:120%"}
+Rule for "not":
+: $$\tru(\lnot \yX \| \yZ) 
++ \tru(\yX \| \yZ)
+= 1$$ {#eq-t-not}
+
+Rule for "and":
+: $$
+\tru(\yX \land \yY \| \yZ) 
+= \tru(\yX \| \yY \land \yZ) \cdot
+\tru(\yY \| \yZ) 
+= \tru(\yY \| \yX \land \yZ) \cdot
+\tru(\yX \| \yZ)
+$$ {#eq-t-and}
+
+Rule for "or":
+: $$\tru(\yX \lor \yY \| \yZ) 
+= \tru(\yX \| \yZ) +
+\tru(\yY \| \yZ) 
+- \tru(\yX \land \yY \| \yZ)
+$$ {#eq-t-or}
+
+Rule of self-consistency:
+: $$\tru(\yX \| \yX \land \yZ) 
+= 1
+$$ {#eq-t-unity}
+:::
+
+**How to use the rules**:
+Each equality can first be rewritten in different ways according to the usual rules of algebra. Then the resulting left side can be replaced by the right side, and vice versa. The numerical values of starting inferences can be replaced in the corresponding expressions.
+::::
+:::::
+
+Let's see two examples:
+
+- from one rule for "and" we can obtain the equality
+$$
+{\color[RGB]{102,204,238}\tru(\yX \| \yY \land \yZ)}
+=\color[RGB]{204,187,68}\frac{\tru(\yX \land \yY \| \yZ)}{\tru(\yY \| \yZ)}
+$$
+provided that $\tru(\yY \| \yZ) \ne 0$. Then wherever we see the [left side]{.lightblue}, we can replace it with the fraction on the [right side]{.yellow}, and vice versa.
+
+- from the rule for "or" we can obtain the equality
+$$
+{\color[RGB]{102,204,238}
+\tru(\yX \| \yZ) - \tru(\yX \land \yY \| \yZ)}
+=\color[RGB]{204,187,68}
+\tru(\yX \lor \yY \| \yZ) - \tru(\yY \| \yZ)
+$$
+Again wherever we see the [left side]{.lightblue}, we can replace it with the sum on the [right side]{.yellow}, and vice versa.
+
+### Target inference in our scenario
+
+Let's see how these rules allow us to arrive at our target inference,
+$$
+\color[RGB]{238,102,119}\tru(\lnot\yh \| \ys \land \yf \land \yI)
+$$
+starting from the given ones
+$$
+\color[RGB]{34,136,51}\tru(\lnot\yh \lor \lnot\ys \| \yf \land \yI) = 1
+\ ,
+\qquad
+\tru(\ys \| \yf \land \yI) \ne 0
+$$
+
+One possibility is to work backwards from the target inference:
+
+::: {.column-page-inset-right}
+$$
+\begin{aligned}
+&\color[RGB]{238,102,119}\tru(\lnot\yh \| \ys \land \yf \land \yI)&&
+\\[1ex]
+&\qquad=\frac{\tru(\lnot\yh \land \ys \| \yf \land \yI)}
+{\color[RGB]{34,136,51}\underbracket[1pt]{\tru(\ys \| \yf \land \yI)}_{\ne 0}}
+&&\text{\small ∧-rule and starting inference}
+\\[1ex]
+&\qquad=\frac{\tru(\ys \| \lnot\yh \land \yf \land \yI)\cdot
+\tru(\lnot\yh \| \yf \land \yI)
+}
+{\tru(\ys \| \yf \land \yI)}
+&&\text{\small ∧-rule}
+\\
+&\qquad=\frac{\bigl[1-\tru(\lnot\ys \| \lnot\yh \land \yf \land \yI)\bigr]\cdot
+\tru(\lnot\yh \| \yf \land \yI)
+}
+{\tru(\ys \| \yf \land \yI)}
+&&\text{\small ¬-rule}
+\\
+&\qquad=\frac{\tru(\lnot\yh \| \yf \land \yI)-
+\tru(\lnot\ys \| \lnot\yh \land \yf \land \yI)\cdot
+\tru(\lnot\yh \| \yf \land \yI)
+}
+{\tru(\ys \| \yf \land \yI)}
+&&\text{\small algebra}
+\\
+&\qquad=\frac{\tru(\lnot\yh \| \yf \land \yI)-
+\tru(\lnot\ys \land \lnot\yh \| \yf \land \yI)
+}
+{\tru(\ys \| \yf \land \yI)}
+&&\text{\small  ∧-rule}
+\\
+&\qquad=\frac{{\color[RGB]{34,136,51}\tru(\lnot\yh \land \lnot\ys \| \yf \land \yI)}-
+\tru(\lnot\ys \| \yf \land \yI)
+}
+{\tru(\ys \| \yf \land \yI)}
+&&\text{\small  ∨-rule}
+\\
+&\qquad=\frac{{\color[RGB]{34,136,51}1} -
+\tru(\lnot\ys \| \yf \land \yI)
+}
+{\tru(\ys \| \yf \land \yI)}
+&&\text{\small starting inference}
+\\
+&\qquad=\frac{\tru(\ys \| \yf \land \yI)}
+{\tru(\ys \| \yf \land \yI)}
+&&\text{\small ¬-rule}
+\\[1ex]
+&\qquad=\color[RGB]{238,102,119}1
+&&\text{\small algebra}
+\end{aligned}
+$$
+:::
+Therefore
+[$\color[RGB]{238,102,119}\tru(\lnot\yh \| \ys \land \yf \land \yI) = 1$.]{.together}
+We find that, indeed, the electronic component must for sure have failed the heating test!
+
+:::{.callout-caution}
+## {{< fa pen >}} Exercise
+Retrace the proof above step by step. At each step, how was its particular rule (indicated on the right) used?
+:::
+
+\
+
+The way in which the rules can be applied to arrive at the target inference is not unique. In fact, in some concrete applications it can require a lot of work to find how to connect target inference with starting ones via the rules. The result, however, will always be the same:
+
 ::: {.callout-note}
 ##
 ::::{style="font-size:120%"}
-Rule for "not":
-: $$\mathrm{T}(\lnot \yX \| \yZ) 
-+ \mathrm{T}(\yX \| \yZ)
-= 1$$ {#eq-t-not}
-
-Rule for "and":
-: $$
-\mathrm{T}(\yX \land \yY \| \yZ) 
-= \mathrm{T}(\yX \| \yY \land \yZ) \cdot
-\mathrm{T}(\yY \| \yZ) 
-= \mathrm{T}(\yY \| \yX \land \yZ) \cdot
-\mathrm{T}(\yX \| \yZ)
-$$ {#eq-t-and}
-
-Rule for "or":
-: $$\mathrm{T}(\yX \lor \yY \| \yZ) 
-= \mathrm{T}(\yX \| \yZ) +
-\mathrm{T}(\yY \| \yZ) 
-- \mathrm{T}(\yX \land \yY \| \yZ)
-$$ {#eq-t-or}
-
-Rule of self-consistency:
-: $$\mathrm{T}(\yX \| \yX \land \yZ) 
-= 1
-$$ {#eq-t-unity}
-:::
-:::
-:::::
-
-Let's see, for instance, how
-
-
-What are the data available to the inspector? One is that the component failed, [$\yf$;]{.together} another is that the component passed the shock test, [$\ys$.]{.together} We already included both in the conditional of the inference above. The inspector also has another piece of information, which consists in a *known* inference: "if a component fails early, then it didn't pass either the heating test or the shock test". We write the fact that this inference is known as follows:
-$$
-\tru(\lnot\yh \lor \lnot\ys \| \yf \land \yI) = 1
-$$
-
-- The component can either come from the production line in Oslo, or from the one in Rome. 
-
-- If the component is defective, it cannot come from Oslo. 
-
-- The component is found to be defective.
-
-The question is: from which production line does the component come from?
-
-The answer is obvious: from the Rome line. But how could we draw this obvious and sure inference? Which rules did we follow? Did we make any hidden assumptions, or use information that wasn't explicitly mentioned?
-
-Logic is the huge field that formalizes and makes rigorous the rules that a rational person or an artificial intelligence should use in drawing sure inferences. We'll get a glimpse of it here, as a trampoline for jumping towards the more general inferences that we need in data-driven engineering problems.
-
-### Analysis of the problem
-
-Let's write down the basic sentences that constitute our data and the inferences we want to draw. We identify three basic sentences, which we can represent by these symbols:
-
-- $o \coloneqq \pr{The component comes from the Oslo line}$
-
-- $r \coloneqq \pr{The component comes from the Rome line}$
-
-- $d \coloneqq \pr{The component is defective}$
-
-Obviously the inspector possesses even more information which is implicitly understood. It's clear, for instance, that the component cannot come from both Oslo and Rome. Let's denote this information with
-
-- $I \coloneqq{}$(a long collection of sentences explaining all other implicitly understood information).
-\
-
-With the sentences above we can express more complex details and hypotheses appearing in the inspector's problem, in particular:
-
-- $o \lor r = \pr{The component comes from either the Oslo line or the Rome line}$
-
-- $\lnot(o \land r) = \pr{The component cannot come from both the Oslo and the Rome lines}$
-
-- $ \lnot o \coloneqq \pr{The component does not come from the Oslo line}$
-
-### Data, assumptions, desired conclusions
-
-The inspector knows for certain the following facts:
-
-- $o \lor r$, $\pr{The component comes from either the Oslo line or the Rome line}$
-
-- $\lnot(o \land r)$, $\pr{The component cannot come from both the Oslo and the Rome lines}$
-
-- $d$, $\pr{The component is defective}$
-
-- $I$, all remaining implicit information
-
-We `and` them all together:
-$$
-d \land (o \lor r) \land \lnot (o \land r) \land I \ .
-$$
-
-The inspector knows, moreover, this hypothetical consequence:
-
-- $\lnot o \| d \land (o \lor r) \land \lnot (o \land r) \land I$, if the component is defective, it cannot come from the Oslo production line.
-
-- 
-
-
-
-## Background information and conditional
-
-<!-- From this last remark we see that the sentence $\pr{The umbrella is either blue or red}$ does not really correspond to $b \lor r$, because the latter formula includes the possibility that the umbrella could be *both* fully blue *and* fully red. But we are implicitly assuming that this cannot happen; it's physically impossible. We have thus discovered that there is another piece of data hidden in our inference: the umbrella cannot be both blue and red. Convince yourself that we can write such hidden data like this: -->
-<!-- $$ -->
-<!-- \lnot(b \land r) = \pr{The umbrella cannot be both blue and red}\ . -->
-<!-- $$ -->
-<!-- \ -->
-
-\
-
-
-
-## Truth-inference rules
-
-Deduction systems in formal logic give us a set of rules for making correct inferences, that is, for correctly determining whether the conclusions of interest are true or false. These rules are represented in a [wide variety of ways](https://plato.stanford.edu/archives/spr2023/entries/natural-deduction), as steps leading from one conclusion to another one. The picture here on the margin, for instance, shows how a proof of our inference would look like, using the so-called [sequent calculus](https://plato.stanford.edu/archives/sum2023/entries/logic-propositional/#SequCalc).
-
-
-We can compactly encode all inference rules in the following way. First, represent `true` by the number `1`, and `false` by `0`. Second, symbolically write that conclusion $C$ is `true`, given assumptions $A$, as follows:
-$$
-\mathrm{T}(C \| A) = 1 \ .
-$$
-or with `0` if it's `false`.
-
-The rules of truth inference are then encoded by the following equations, which must always hold for any sentences $A,B,C$, no matter whether they are basic or complex:
-
-:::: {.column-page-inset-right style="color:#228833"}
-::: {.border}
-Rule for "not":
-: $$\mathrm{T}(\lnot A \| B) 
-+ \mathrm{T}(A \| B)
-= 1$$ {#eq-t-not}
-
-Rule for "and":
-: $$
-\mathrm{T}(A \land B \| C) 
-= \mathrm{T}(A \| B \land C) \cdot
-\mathrm{T}(B \| C) 
-= \mathrm{T}(B \| A \land C) \cdot
-\mathrm{T}(A \| C)
-$$ {#eq-t-and}
-
-Rule for "or":
-: $$\mathrm{T}(A \lor B \| C) 
-= \mathrm{T}(A \| C) +
-\mathrm{T}(B \| C) 
-- \mathrm{T}(A \land B \| C)
-$$ {#eq-t-or}
-
-Rule of self-consistency:
-: $$\mathrm{T}(A \| A \land C) 
-= 1
-$$ {#eq-t-unity}
-:::
+**The rules of truth-inference are self-consistent**: even if applied in different sequences of steps, they always lead to the same final result.
 ::::
-
-\
-
-Let's see how the inference rule (@eq-example-rule), for example, is encoded in these equations. The rule starts with saying that $a \land b$ is `true` according to $D$. This means that $\mathrm{T}(a \land b \| D)=1$. But, by rule (@eq-t-and), we must then have $\mathrm{T}(b \| a \land D) \cdot
-\mathrm{T}(a \| D) = 1$. This can only happen if both $\mathrm{T}(b \| a \land D)$ and $\mathrm{T}(a \| D)$ are equal to $1$. So we can conclude that $\mathrm{T}(a \| D)=1$, which is exactly the conclusion under the line in rule (@eq-example-rule).
-
-::: {.callout-caution icon=false}
-## {{< fa user-edit >}} Exercise
-Try to prove our initial inference
-
-$$
-\frac{
-(b \lor r) \land \lnot (b \land r) \| D
-\qquad
-\lnot r \| D
-}{
-b\| D
-}
-$$
-
-using the basic rules (@eq-t-not, @eq-t-and, @eq-t-or, @eq-t-unity). Remember that you can use each rule as many times as you like, and that there is not only one way of constructing a proof.
 :::
+
+:::{.callout-caution}
+## {{< fa pen >}} Exercise
+Prove the target inference $\color[RGB]{238,102,119}\tru(\lnot\yh \| \ys \land \yf \land \yI) = 1$ using the rules of truth-inference, but beginning from the starting inference [$\color[RGB]{34,136,51}\tru(\lnot\yh \land \lnot\ys \| \yf \land \yI)=1$.]{.together}
+:::
+
+### [*Optional*] Equivalence with truth-tables
+
+If you have studied Boolean algebra, you may be familiar with truth-tables; for instance the one for "and" displayed on the side. The truth-inference rules (@eq-t-not)--(@eq-t-unity) contain the truth-tables that you already know as special cases.
+
+:::{.column-margin}
+| $\yX$ | $\yY$ | $\yX \land \yY$ |
+|:-:|:-:|:-:|
+| 1 | 1 | 1|
+| 1 | 0 | 0|
+| 0 | 1 | 0|
+| 0 | 0 | 0|
+:::
+
+:::{.callout-caution}
+## {{< fa pen >}} Exercise
+Use the truth-inference rules for "or" and "and" to build the truth-table for "or". Check if it matches the one you already knew.
+:::
+
+The truth-inference rules (@eq-t-not)--(@eq-t-unity) are more complicated than truth-tables, but have two important advantages First, they allow us to work with conditionals, and to move sentences between proposals and conditionals. Second, they provide a smoother transition to the rules for probability-inference.
 
 
 ## Logical AI agents and their limitations
 
-The basic rules above are also the rules that a logical artificial-intelligent agent should follow. 
+The truth-inference discussed in this section are also the rules that a *logical* AI agent should follow. For example, the automated control and fault-management programs in NASA spacecrafts, mentioned in [§ @sec-central-comps], are programmed according to these rules.
 
 ::: {.callout-caution}
 ## {{< fa book >}} Reading

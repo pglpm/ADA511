@@ -207,15 +207,21 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#a-trivial-inference" id="toc-a-trivial-inference" class="nav-link active" data-scroll-target="#a-trivial-inference"><span class="header-section-number">6.1</span> A trivial inference</a></li>
-  <li><a href="#analysis-and-representation-of-the-problem" id="toc-analysis-and-representation-of-the-problem" class="nav-link" data-scroll-target="#analysis-and-representation-of-the-problem"><span class="header-section-number">6.2</span> Analysis and representation of the problem</a></li>
+  <li><a href="#analysis-and-representation-of-the-problem" id="toc-analysis-and-representation-of-the-problem" class="nav-link" data-scroll-target="#analysis-and-representation-of-the-problem"><span class="header-section-number">6.2</span> Analysis and representation of the problem</a>
+  <ul class="collapse">
+  <li><a href="#atomic-sentences" id="toc-atomic-sentences" class="nav-link" data-scroll-target="#atomic-sentences">Atomic sentences</a></li>
+  <li><a href="#proposal" id="toc-proposal" class="nav-link" data-scroll-target="#proposal">Proposal</a></li>
+  <li><a href="#conditional" id="toc-conditional" class="nav-link" data-scroll-target="#conditional">Conditional</a></li>
+  <li><a href="#starting-inferences" id="toc-starting-inferences" class="nav-link" data-scroll-target="#starting-inferences">Starting inferences</a></li>
+  <li><a href="#target-inference" id="toc-target-inference" class="nav-link" data-scroll-target="#target-inference">Target inference</a></li>
+  </ul></li>
   <li><a href="#truth-inference-rules" id="toc-truth-inference-rules" class="nav-link" data-scroll-target="#truth-inference-rules"><span class="header-section-number">6.3</span> Truth-inference rules</a>
   <ul class="collapse">
-  <li><a href="#analysis-of-the-problem" id="toc-analysis-of-the-problem" class="nav-link" data-scroll-target="#analysis-of-the-problem">Analysis of the problem</a></li>
-  <li><a href="#data-assumptions-desired-conclusions" id="toc-data-assumptions-desired-conclusions" class="nav-link" data-scroll-target="#data-assumptions-desired-conclusions">Data, assumptions, desired conclusions</a></li>
+  <li><a href="#deduction-systems-a-specific-choice" id="toc-deduction-systems-a-specific-choice" class="nav-link" data-scroll-target="#deduction-systems-a-specific-choice">Deduction systems; a specific choice</a></li>
+  <li><a href="#target-inference-in-our-scenario" id="toc-target-inference-in-our-scenario" class="nav-link" data-scroll-target="#target-inference-in-our-scenario">Target inference in our scenario</a></li>
+  <li><a href="#optional-equivalence-with-truth-tables" id="toc-optional-equivalence-with-truth-tables" class="nav-link" data-scroll-target="#optional-equivalence-with-truth-tables">[<em>Optional</em>] Equivalence with truth-tables</a></li>
   </ul></li>
-  <li><a href="#background-information-and-conditional" id="toc-background-information-and-conditional" class="nav-link" data-scroll-target="#background-information-and-conditional"><span class="header-section-number">6.4</span> Background information and conditional</a></li>
-  <li><a href="#truth-inference-rules-1" id="toc-truth-inference-rules-1" class="nav-link" data-scroll-target="#truth-inference-rules-1"><span class="header-section-number">6.5</span> Truth-inference rules</a></li>
-  <li><a href="#logical-ai-agents-and-their-limitations" id="toc-logical-ai-agents-and-their-limitations" class="nav-link" data-scroll-target="#logical-ai-agents-and-their-limitations"><span class="header-section-number">6.6</span> Logical AI agents and their limitations</a></li>
+  <li><a href="#logical-ai-agents-and-their-limitations" id="toc-logical-ai-agents-and-their-limitations" class="nav-link" data-scroll-target="#logical-ai-agents-and-their-limitations"><span class="header-section-number">6.4</span> Logical AI agents and their limitations</a></li>
   </ul>
 </nav>
 </nav>
@@ -249,6 +255,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 
 </div>
+<p>Some inferences can be drawn with absolute certainty; that is, we can ascertain for sure the truth or falsity of their proposal. We call this particular kind of inferences <em>truth inferences</em>. Mathematical inferences are a typical instance of this kind. You probably have some acquaintance with rules for drawing truth inferences, so we start from these.</p>
 <section id="a-trivial-inference" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="a-trivial-inference"><span class="header-section-number">6.1</span> A trivial inference</h2>
 <p>Consider again the assembly-line scenario of <a href="#sec-intro">§&nbsp;<span class="quarto-unresolved-ref ref-noprefix">sec-intro</span></a>, and suppose that an inspector has the following information about an electric component:</p>
@@ -256,12 +263,14 @@ ul.task-list li input[type="checkbox"] {
 <p>This electric component had an early failure (within a year of use). If an electric component fails early, then at production it didn’t pass either the heating test or the shock test. This component passed the shock test.</p>
 </blockquote>
 <p>The inspector wants to assess whether the component did not pass the heating test.</p>
-<p>From these data and information given, the conclusion is that the component <em>for sure</em> did not pass the heating test. This conclusion is certain, and also trivial. But how did we obtain it? Which rules did we follow to arrive at it from the given data?</p>
+<p>From the data and information given, the conclusion is that the component <em>for sure</em> did not pass the heating test. This conclusion is certain and somewhat trivial. But how did we obtain it? Which rules did we follow to arrive at it from the given data?</p>
 <p><span class="blue"><em>Formal logic</em></span>, with its <em>deduction systems</em>, is the huge field that formalizes and makes rigorous the rules that a rational person or an artificial intelligence should use in drawing <em>sure</em> inferences like the one above. We’ll now get a glimpse of it, as a trampoline for jumping towards more general and <em>uncertain</em> inferences.</p>
 </section>
 <section id="analysis-and-representation-of-the-problem" class="level2" data-number="6.2">
 <h2 data-number="6.2" class="anchored" data-anchor-id="analysis-and-representation-of-the-problem"><span class="header-section-number">6.2</span> Analysis and representation of the problem</h2>
 <p>First let’s analyse our simple problem and represent it with more compact symbols.</p>
+<section id="atomic-sentences" class="level3">
+<h3 class="anchored" data-anchor-id="atomic-sentences">Atomic sentences</h3>
 <p>We can introduce the following atomic sentences and symbols: <span class="math display">\[
 \begin{aligned}
 \mathsfit{h}&amp;\coloneqq \textsf{\small`The component passed the heating test'}
@@ -273,12 +282,26 @@ ul.task-list li input[type="checkbox"] {
 \mathsfit{I}&amp;\coloneqq \textsf{\small (all other implicit background information)}
 \end{aligned}
 \]</span></p>
-<p>The inference available to the inspector is this:</p>
-<ul>
-<li><p><span class="math inline">\(\mathsfit{f}\)</span></p></li>
-<li><p><span class="math inline">\(\mathsfit{s}\)</span></p></li>
-<li><p><span class="math inline">\(\lnot\mathsfit{h}\lor \lnot\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I}\)</span></p></li>
-</ul>
+</section>
+<section id="proposal" class="level3">
+<h3 class="anchored" data-anchor-id="proposal">Proposal</h3>
+<p>The proposal is <span class="math inline">\(\lnot\mathsfit{h}\)</span>, but in the present case we could also have chosen <span class="math inline">\(\mathsfit{h}\)</span>.</p>
+</section>
+<section id="conditional" class="level3">
+<h3 class="anchored" data-anchor-id="conditional">Conditional</h3>
+<p>The bases for the inference are two known facts in the present case: <span class="math inline">\(\mathsfit{s}\)</span> and <span class="math inline">\(\mathsfit{f}\)</span>. There may also be other obvious facts implicitly assumed in the inference, which we denote by <span class="math inline">\(\mathsfit{I}\)</span>.</p>
+</section>
+<section id="starting-inferences" class="level3">
+<h3 class="anchored" data-anchor-id="starting-inferences">Starting inferences</h3>
+<p>Let us emphasize again that any inference is drawn from other inferences, which are either taken for granted, or drawn in turn from others. In the present case we are told that if an electric component fails early, then at production it didn’t pass either the heating test or the shock test. We write this as <span class="math display">\[
+\lnot\mathsfit{h}\lor \lnot\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I}
+\]</span> and we shall take this to be <code>true</code> (that is, to have probability <span class="together"><span class="math inline">\(100\%\)</span></span>).</p>
+<p>But our scenario actually has at least one more, hidden, inference. We said that the component failed early, and that it did pass the shock test. This means, in particular, that it must be possible for the component to pass the shock test, even if it fails early. This means that <span class="math display">\[
+\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I}
+\]</span> can<em>not</em> be <code>false</code>.</p>
+</section>
+<section id="target-inference" class="level3">
+<h3 class="anchored" data-anchor-id="target-inference">Target inference</h3>
 <p>The inference that the inspector wants to draw can be compactly written:</p>
 <div class="border">
 <p><span class="math display">\[
@@ -286,26 +309,28 @@ ul.task-list li input[type="checkbox"] {
 \]</span></p>
 </div>
 </section>
+</section>
 <section id="truth-inference-rules" class="level2 page-columns page-full" data-number="6.3">
 <h2 data-number="6.3" class="anchored" data-anchor-id="truth-inference-rules"><span class="header-section-number">6.3</span> Truth-inference rules</h2>
-<p>Formal logic gives us a set of rules for correctly drawing sure inferences, that is, inferences where the truth or falsity of the proposal can be exactly determined, <em>when such inferences are possible</em>. These rules can be formulated in different ways, leading to a <a href="https://plato.stanford.edu/archives/spr2023/entries/natural-deduction">wide variety of deduction systems</a>. The picture on the margin, for instance, shows how a proof of how our inference would look like, using the so-called sequent calculus.</p>
+<section id="deduction-systems-a-specific-choice" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="deduction-systems-a-specific-choice">Deduction systems; a specific choice</h3>
+<p>Formal logic gives us a set of rules for correctly drawing sure inferences, <em>when such inferences are possible</em>. These rules can be formulated in different ways, leading to a wide variety of <a href="https://plato.stanford.edu/archives/spr2023/entries/natural-deduction">deduction systems</a> (each one with a wide variety of possible notations). The picture on the margin, for instance, shows how a proof of how our inference would look like, using the so-called sequent calculus, which consists of a dozen or so inference rules.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="failure_sequent.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption class="figure-caption">The <span class="lightblue">bottom formula</span> is the desired inference. Each line denotes the application of an inference rule,. The two formulae with no line above are the <span class="green">initial, known inference</span>, and a tautology.</figcaption>
+<p><img src="failure_sequent_red.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">The <span class="red">bottom formula</span> is the target inference. Each line denotes the application of an inference rule, from one or more inferences above the line, to one below the line. The two formulae with no line above are our <span class="green">starting inference</span>, and a tautology.</figcaption>
 </figure>
 </div>
 </div></div><p><br>
 </p>
-<p>One important point is that deduction systems don’t lead to inferences out of nothing: <span class="blue"><strong>in order to draw an inference, we must always start from other, known inferences</strong></span>. This is a central point in logic. It is sometimes stated in terms of <em>axioms</em> and <em>theorems</em>: in order to prove some theorem, we must always start from some axioms. There are “inferences” – <em>tautologies</em> – that can be drawn without requiring others; but they are all trivial, such as “this component failed early, or it didn’t”. They are of little use in a real problem, but are important because they reflect the core of the inference rules.</p>
-<p><br>
-</p>
-<p>We can compactly encode all logical inference rules in the following way. First, represent <code>true</code> by the number <code>1</code>, and <code>false</code> by <code>0</code>. Second, symbolically write that the proposal <span class="math inline">\(\mathsfit{Y}\)</span> is <code>true</code>, given the conditional <span class="math inline">\(\mathsfit{X}\)</span>, as follows: <span class="math display">\[
+<p>We choose to compactly encode all truth-inference rules in the following way.</p>
+<p>First, represent <code>true</code> by the number <span class="together"><span class="math inline">\(\mathbf{1}\)</span>,</span> and <code>false</code> by <span class="together"><span class="math inline">\(\mathbf{0}\)</span>.</span></p>
+<p>Second, symbolically write that a proposal <span class="math inline">\(\mathsfit{Y}\)</span> is <code>true</code>, given a conditional <span class="math inline">\(\mathsfit{X}\)</span>, as follows: <span class="math display">\[
 \mathrm{T}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{X}) = 1
 \]</span> or <span class="together">“<span class="math inline">\(=0\)</span>”</span> if it’s <code>false</code>.</p>
-<p>The rules of truth inference are then encoded by the following equations, which must always hold for any sentences <span class="math inline">\(\mathsfit{X},\mathsfit{Y},\mathsfit{Z}\)</span> (atomic or complex):</p>
+<p>The rules of truth-inference are then encoded by the following equations, which must always hold for any atomic or complex sentences <span class="together"><span class="math inline">\(\mathsfit{X},\mathsfit{Y},\mathsfit{Z}\)</span>:</span></p>
 <div class="column-page-inset-right">
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -351,143 +376,191 @@ ul.task-list li input[type="checkbox"] {
 </dd>
 </dl>
 </div>
+<p><strong>How to use the rules</strong>: Each equality can first be rewritten in different ways according to the usual rules of algebra. Then the resulting left side can be replaced by the right side, and vice versa. The numerical values of starting inferences can be replaced in the corresponding expressions.</p>
 </div>
 </div>
 </div>
-<p>Let’s see, for instance, how</p>
-<p>What are the data available to the inspector? One is that the component failed, <span class="together"><span class="math inline">\(\mathsfit{f}\)</span>;</span> another is that the component passed the shock test, <span class="together"><span class="math inline">\(\mathsfit{s}\)</span>.</span> We already included both in the conditional of the inference above. The inspector also has another piece of information, which consists in a <em>known</em> inference: “if a component fails early, then it didn’t pass either the heating test or the shock test”. We write the fact that this inference is known as follows: <span class="math display">\[
-\mathrm{T}(\lnot\mathsfit{h}\lor \lnot\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I}) = 1
+<p>Let’s see two examples:</p>
+<ul>
+<li><p>from one rule for “and” we can obtain the equality <span class="math display">\[
+{\color[RGB]{102,204,238}\mathrm{T}(\mathsfit{X}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Y}\land \mathsfit{Z})}
+=\color[RGB]{204,187,68}\frac{\mathrm{T}(\mathsfit{X}\land \mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z})}{\mathrm{T}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z})}
+\]</span> provided that <span class="math inline">\(\mathrm{T}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z}) \ne 0\)</span>. Then wherever we see the <span class="lightblue">left side</span>, we can replace it with the fraction on the <span class="yellow">right side</span>, and vice versa.</p></li>
+<li><p>from the rule for “or” we can obtain the equality <span class="math display">\[
+{\color[RGB]{102,204,238}
+\mathrm{T}(\mathsfit{X}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z}) - \mathrm{T}(\mathsfit{X}\land \mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z})}
+=\color[RGB]{204,187,68}
+\mathrm{T}(\mathsfit{X}\lor \mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z}) - \mathrm{T}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Z})
+\]</span> Again wherever we see the <span class="lightblue">left side</span>, we can replace it with the sum on the <span class="yellow">right side</span>, and vice versa.</p></li>
+</ul>
+</section>
+<section id="target-inference-in-our-scenario" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="target-inference-in-our-scenario">Target inference in our scenario</h3>
+<p>Let’s see how these rules allow us to arrive at our target inference, <span class="math display">\[
+\color[RGB]{238,102,119}\mathrm{T}(\lnot\mathsfit{h}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{s}\land \mathsfit{f}\land \mathsfit{I})
+\]</span> starting from the given ones <span class="math display">\[
+\color[RGB]{34,136,51}\mathrm{T}(\lnot\mathsfit{h}\lor \lnot\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I}) = 1
+\ ,
+\qquad
+\mathrm{T}(\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I}) \ne 0
 \]</span></p>
-<ul>
-<li><p>The component can either come from the production line in Oslo, or from the one in Rome.</p></li>
-<li><p>If the component is defective, it cannot come from Oslo.</p></li>
-<li><p>The component is found to be defective.</p></li>
-</ul>
-<p>The question is: from which production line does the component come from?</p>
-<p>The answer is obvious: from the Rome line. But how could we draw this obvious and sure inference? Which rules did we follow? Did we make any hidden assumptions, or use information that wasn’t explicitly mentioned?</p>
-<p>Logic is the huge field that formalizes and makes rigorous the rules that a rational person or an artificial intelligence should use in drawing sure inferences. We’ll get a glimpse of it here, as a trampoline for jumping towards the more general inferences that we need in data-driven engineering problems.</p>
-<section id="analysis-of-the-problem" class="level3">
-<h3 class="anchored" data-anchor-id="analysis-of-the-problem">Analysis of the problem</h3>
-<p>Let’s write down the basic sentences that constitute our data and the inferences we want to draw. We identify three basic sentences, which we can represent by these symbols:</p>
-<ul>
-<li><p><span class="math inline">\(o \coloneqq \textsf{\small`The component comes from the Oslo line'}\)</span></p></li>
-<li><p><span class="math inline">\(r \coloneqq \textsf{\small`The component comes from the Rome line'}\)</span></p></li>
-<li><p><span class="math inline">\(d \coloneqq \textsf{\small`The component is defective'}\)</span></p></li>
-</ul>
-<p>Obviously the inspector possesses even more information which is implicitly understood. It’s clear, for instance, that the component cannot come from both Oslo and Rome. Let’s denote this information with</p>
-<ul>
-<li><span class="math inline">\(I \coloneqq{}\)</span>(a long collection of sentences explaining all other implicitly understood information).<br>
-</li>
-</ul>
-<p>With the sentences above we can express more complex details and hypotheses appearing in the inspector’s problem, in particular:</p>
-<ul>
-<li><p><span class="math inline">\(o \lor r = \textsf{\small`The component comes from either the Oslo line or the Rome line'}\)</span></p></li>
-<li><p><span class="math inline">\(\lnot(o \land r) = \textsf{\small`The component cannot come from both the Oslo and the Rome lines'}\)</span></p></li>
-<li><p>$ o $</p></li>
-</ul>
-</section>
-<section id="data-assumptions-desired-conclusions" class="level3">
-<h3 class="anchored" data-anchor-id="data-assumptions-desired-conclusions">Data, assumptions, desired conclusions</h3>
-<p>The inspector knows for certain the following facts:</p>
-<ul>
-<li><p><span class="math inline">\(o \lor r\)</span>, <span class="math inline">\(\textsf{\small`The component comes from either the Oslo line or the Rome line'}\)</span></p></li>
-<li><p><span class="math inline">\(\lnot(o \land r)\)</span>, <span class="math inline">\(\textsf{\small`The component cannot come from both the Oslo and the Rome lines'}\)</span></p></li>
-<li><p><span class="math inline">\(d\)</span>, <span class="math inline">\(\textsf{\small`The component is defective'}\)</span></p></li>
-<li><p><span class="math inline">\(I\)</span>, all remaining implicit information</p></li>
-</ul>
-<p>We <code>and</code> them all together: <span class="math display">\[
-d \land (o \lor r) \land \lnot (o \land r) \land I \ .
+<p>One possibility is to work backwards from the target inference:</p>
+<div class="column-page-inset-right">
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\color[RGB]{238,102,119}\mathrm{T}(\lnot\mathsfit{h}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{s}\land \mathsfit{f}\land \mathsfit{I})&amp;&amp;
+\\[1ex]
+&amp;\qquad=\frac{\mathrm{T}(\lnot\mathsfit{h}\land \mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})}
+{\color[RGB]{34,136,51}\underbracket[1pt]{\mathrm{T}(\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})}_{\ne 0}}
+&amp;&amp;\text{\small ∧-rule and starting inference}
+\\[1ex]
+&amp;\qquad=\frac{\mathrm{T}(\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \lnot\mathsfit{h}\land \mathsfit{f}\land \mathsfit{I})\cdot
+\mathrm{T}(\lnot\mathsfit{h}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})
+}
+{\mathrm{T}(\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})}
+&amp;&amp;\text{\small ∧-rule}
+\\
+&amp;\qquad=\frac{\bigl[1-\mathrm{T}(\lnot\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \lnot\mathsfit{h}\land \mathsfit{f}\land \mathsfit{I})\bigr]\cdot
+\mathrm{T}(\lnot\mathsfit{h}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})
+}
+{\mathrm{T}(\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})}
+&amp;&amp;\text{\small ¬-rule}
+\\
+&amp;\qquad=\frac{\mathrm{T}(\lnot\mathsfit{h}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})-
+\mathrm{T}(\lnot\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \lnot\mathsfit{h}\land \mathsfit{f}\land \mathsfit{I})\cdot
+\mathrm{T}(\lnot\mathsfit{h}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})
+}
+{\mathrm{T}(\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})}
+&amp;&amp;\text{\small algebra}
+\\
+&amp;\qquad=\frac{\mathrm{T}(\lnot\mathsfit{h}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})-
+\mathrm{T}(\lnot\mathsfit{s}\land \lnot\mathsfit{h}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})
+}
+{\mathrm{T}(\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})}
+&amp;&amp;\text{\small  ∧-rule}
+\\
+&amp;\qquad=\frac{{\color[RGB]{34,136,51}\mathrm{T}(\lnot\mathsfit{h}\land \lnot\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})}-
+\mathrm{T}(\lnot\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})
+}
+{\mathrm{T}(\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})}
+&amp;&amp;\text{\small  ∨-rule}
+\\
+&amp;\qquad=\frac{{\color[RGB]{34,136,51}1} -
+\mathrm{T}(\lnot\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})
+}
+{\mathrm{T}(\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})}
+&amp;&amp;\text{\small starting inference}
+\\
+&amp;\qquad=\frac{\mathrm{T}(\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})}
+{\mathrm{T}(\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})}
+&amp;&amp;\text{\small ¬-rule}
+\\[1ex]
+&amp;\qquad=\color[RGB]{238,102,119}1
+&amp;&amp;\text{\small algebra}
+\end{aligned}
 \]</span></p>
-<p>The inspector knows, moreover, this hypothetical consequence:</p>
-<ul>
-<li><p><span class="math inline">\(\lnot o \nonscript\:\vert\nonscript\:\mathopen{} d \land (o \lor r) \land \lnot (o \land r) \land I\)</span>, if the component is defective, it cannot come from the Oslo production line.</p></li>
-<li></li>
-</ul>
-</section>
-</section>
-<section id="background-information-and-conditional" class="level2" data-number="6.4">
-<h2 data-number="6.4" class="anchored" data-anchor-id="background-information-and-conditional"><span class="header-section-number">6.4</span> Background information and conditional</h2>
-<!-- From this last remark we see that the sentence $\pr{The umbrella is either blue or red}$ does not really correspond to $b \lor r$, because the latter formula includes the possibility that the umbrella could be *both* fully blue *and* fully red. But we are implicitly assuming that this cannot happen; it's physically impossible. We have thus discovered that there is another piece of data hidden in our inference: the umbrella cannot be both blue and red. Convince yourself that we can write such hidden data like this: -->
-<!-- $$ -->
-<!-- \lnot(b \land r) = \pr{The umbrella cannot be both blue and red}\ . -->
-<!-- $$ -->
-<!-- \ -->
-<p><br>
-</p>
-</section>
-<section id="truth-inference-rules-1" class="level2 page-columns page-full" data-number="6.5">
-<h2 data-number="6.5" class="anchored" data-anchor-id="truth-inference-rules-1"><span class="header-section-number">6.5</span> Truth-inference rules</h2>
-<p>Deduction systems in formal logic give us a set of rules for making correct inferences, that is, for correctly determining whether the conclusions of interest are true or false. These rules are represented in a <a href="https://plato.stanford.edu/archives/spr2023/entries/natural-deduction">wide variety of ways</a>, as steps leading from one conclusion to another one. The picture here on the margin, for instance, shows how a proof of our inference would look like, using the so-called <a href="https://plato.stanford.edu/archives/sum2023/entries/logic-propositional/#SequCalc">sequent calculus</a>.</p>
-<p>We can compactly encode all inference rules in the following way. First, represent <code>true</code> by the number <code>1</code>, and <code>false</code> by <code>0</code>. Second, symbolically write that conclusion <span class="math inline">\(C\)</span> is <code>true</code>, given assumptions <span class="math inline">\(A\)</span>, as follows: <span class="math display">\[
-\mathrm{T}(C \nonscript\:\vert\nonscript\:\mathopen{} A) = 1 \ .
-\]</span> or with <code>0</code> if it’s <code>false</code>.</p>
-<p>The rules of truth inference are then encoded by the following equations, which must always hold for any sentences <span class="math inline">\(A,B,C\)</span>, no matter whether they are basic or complex:</p>
-<div class="column-page-inset-right" style="color:#228833">
-<div class="border">
-<dl>
-<dt>Rule for “not”:</dt>
-<dd>
-<span id="eq-t-not"><span class="math display">\[\mathrm{T}(\lnot A \nonscript\:\vert\nonscript\:\mathopen{} B)
-+ \mathrm{T}(A \nonscript\:\vert\nonscript\:\mathopen{} B)
-= 1 \tag{6.5}\]</span></span>
-</dd>
-<dt>Rule for “and”:</dt>
-<dd>
-<span id="eq-t-and"><span class="math display">\[
-\mathrm{T}(A \land B \nonscript\:\vert\nonscript\:\mathopen{} C)
-= \mathrm{T}(A \nonscript\:\vert\nonscript\:\mathopen{} B \land C) \cdot
-\mathrm{T}(B \nonscript\:\vert\nonscript\:\mathopen{} C)
-= \mathrm{T}(B \nonscript\:\vert\nonscript\:\mathopen{} A \land C) \cdot
-\mathrm{T}(A \nonscript\:\vert\nonscript\:\mathopen{} C)
-\tag{6.6}\]</span></span>
-</dd>
-<dt>Rule for “or”:</dt>
-<dd>
-<span id="eq-t-or"><span class="math display">\[\mathrm{T}(A \lor B \nonscript\:\vert\nonscript\:\mathopen{} C)
-= \mathrm{T}(A \nonscript\:\vert\nonscript\:\mathopen{} C) +
-\mathrm{T}(B \nonscript\:\vert\nonscript\:\mathopen{} C)
-- \mathrm{T}(A \land B \nonscript\:\vert\nonscript\:\mathopen{} C)
-\tag{6.7}\]</span></span>
-</dd>
-<dt>Rule of self-consistency:</dt>
-<dd>
-<span id="eq-t-unity"><span class="math display">\[\mathrm{T}(A \nonscript\:\vert\nonscript\:\mathopen{} A \land C)
-= 1
-\tag{6.8}\]</span></span>
-</dd>
-</dl>
 </div>
-</div>
-<p><br>
-</p>
-<p>Let’s see how the inference rule (<a href="#eq-example-rule"><span class="quarto-unresolved-ref">eq-example-rule</span></a>), for example, is encoded in these equations. The rule starts with saying that <span class="math inline">\(a \land b\)</span> is <code>true</code> according to <span class="math inline">\(D\)</span>. This means that <span class="math inline">\(\mathrm{T}(a \land b \nonscript\:\vert\nonscript\:\mathopen{} D)=1\)</span>. But, by rule (<a href="#eq-t-and"><span class="quarto-unresolved-ref">eq-t-and</span></a>), we must then have <span class="math inline">\(\mathrm{T}(b \nonscript\:\vert\nonscript\:\mathopen{} a \land D) \cdot \mathrm{T}(a \nonscript\:\vert\nonscript\:\mathopen{} D) = 1\)</span>. This can only happen if both <span class="math inline">\(\mathrm{T}(b \nonscript\:\vert\nonscript\:\mathopen{} a \land D)\)</span> and <span class="math inline">\(\mathrm{T}(a \nonscript\:\vert\nonscript\:\mathopen{} D)\)</span> are equal to <span class="math inline">\(1\)</span>. So we can conclude that <span class="math inline">\(\mathrm{T}(a \nonscript\:\vert\nonscript\:\mathopen{} D)=1\)</span>, which is exactly the conclusion under the line in rule (<a href="#eq-example-rule"><span class="quarto-unresolved-ref">eq-example-rule</span></a>).</p>
+<p>Therefore <span class="together"><span class="math inline">\(\color[RGB]{238,102,119}\mathrm{T}(\lnot\mathsfit{h}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{s}\land \mathsfit{f}\land \mathsfit{I}) = 1\)</span>.</span> We find that, indeed, the electronic component must for sure have failed the heating test!</p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+<i class="fa-solid fa-pen" aria-label="pen"></i> Exercise
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Try to prove our initial inference</p>
-<p><span class="math display">\[
-\frac{
-(b \lor r) \land \lnot (b \land r) \nonscript\:\vert\nonscript\:\mathopen{} D
-\qquad
-\lnot r \nonscript\:\vert\nonscript\:\mathopen{} D
-}{
-b\nonscript\:\vert\nonscript\:\mathopen{} D
-}
-\]</span></p>
-<p>using the basic rules (<a href="#eq-t-not"><span class="quarto-unresolved-ref">eq-t-not</span></a>, <a href="#eq-t-and"><span class="quarto-unresolved-ref">eq-t-and</span></a>, <a href="#eq-t-or"><span class="quarto-unresolved-ref">eq-t-or</span></a>, <a href="#eq-t-unity"><span class="quarto-unresolved-ref">eq-t-unity</span></a>). Remember that you can use each rule as many times as you like, and that there is not only one way of constructing a proof.</p>
+<p>Retrace the proof above step by step. At each step, how was its particular rule (indicated on the right) used?</p>
+</div>
+</div>
+<p><br>
+</p>
+<p>The way in which the rules can be applied to arrive at the target inference is not unique. In fact, in some concrete applications it can require a lot of work to find how to connect target inference with starting ones via the rules. The result, however, will always be the same:</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size:120%">
+<p><strong>The rules of truth-inference are self-consistent</strong>: even if applied in different sequences of steps, they always lead to the same final result.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-pen" aria-label="pen"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Prove the target inference <span class="math inline">\(\color[RGB]{238,102,119}\mathrm{T}(\lnot\mathsfit{h}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{s}\land \mathsfit{f}\land \mathsfit{I}) = 1\)</span> using the rules of truth-inference, but beginning from the starting inference <span class="together"><span class="math inline">\(\color[RGB]{34,136,51}\mathrm{T}(\lnot\mathsfit{h}\land \lnot\mathsfit{s}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{f}\land \mathsfit{I})=1\)</span>.</span></p>
 </div>
 </div>
 </section>
-<section id="logical-ai-agents-and-their-limitations" class="level2" data-number="6.6">
-<h2 data-number="6.6" class="anchored" data-anchor-id="logical-ai-agents-and-their-limitations"><span class="header-section-number">6.6</span> Logical AI agents and their limitations</h2>
-<p>The basic rules above are also the rules that a logical artificial-intelligent agent should follow.</p>
+<section id="optional-equivalence-with-truth-tables" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="optional-equivalence-with-truth-tables">[<em>Optional</em>] Equivalence with truth-tables</h3>
+<p>If you have studied Boolean algebra, you may be familiar with truth-tables; for instance the one for “and” displayed on the side. The truth-inference rules (<a href="#eq-t-not"><span class="quarto-unresolved-ref">eq-t-not</span></a>)–(<a href="#eq-t-unity"><span class="quarto-unresolved-ref">eq-t-unity</span></a>) contain the truth-tables that you already know as special cases.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(\mathsfit{X}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\mathsfit{Y}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\mathsfit{X}\land \mathsfit{Y}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+</div></div><div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-pen" aria-label="pen"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use the truth-inference rules for “or” and “and” to build the truth-table for “or”. Check if it matches the one you already knew.</p>
+</div>
+</div>
+<p>The truth-inference rules (<a href="#eq-t-not"><span class="quarto-unresolved-ref">eq-t-not</span></a>)–(<a href="#eq-t-unity"><span class="quarto-unresolved-ref">eq-t-unity</span></a>) are more complicated than truth-tables, but have two important advantages First, they allow us to work with conditionals, and to move sentences between proposals and conditionals. Second, they provide a smoother transition to the rules for probability-inference.</p>
+</section>
+</section>
+<section id="logical-ai-agents-and-their-limitations" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="logical-ai-agents-and-their-limitations"><span class="header-section-number">6.4</span> Logical AI agents and their limitations</h2>
+<p>The truth-inference discussed in this section are also the rules that a <em>logical</em> AI agent should follow. For example, the automated control and fault-management programs in NASA spacecrafts, mentioned in <a href="#sec-central-comps">§&nbsp;<span class="quarto-unresolved-ref ref-noprefix">sec-central-comps</span></a>, are programmed according to these rules.</p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
