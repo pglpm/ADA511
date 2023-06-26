@@ -249,7 +249,7 @@ $$
 The target probability appears on the left and right side with opposite signs. We can solve for it:
 $$
 \begin{aligned}
-2\,{\color[RGB]{238,102,119}\P(\lnot\yh \| \yf \land \yJ)} &= 1.1
+2\,{\color[RGB]{238,102,119}\P(\lnot\yh \| \yf \land \yJ)} &= 0.1 + 1
 \\[1ex]
 {\color[RGB]{238,102,119}\P(\lnot\yh \| \yf \land \yJ)} &= 0.55
 \end{aligned}
@@ -258,13 +258,16 @@ $$
 So the probability that the component didn't pass the heating test is $55\%$.
 
 :::{.callout-caution}
-## {{< fa user-edit >}} Exercise
-Try to find an intuitive explanation of why the probability is 55%, slightly larger than 50%.
+## {{< fa user-edit >}} Exercises
+- Try to find an intuitive explanation of why the probability is 55%, slightly larger than 50%. If your intuition says this probability is wrong, then
 
-If your intuition says this probability is wrong, then
+    + Check the proof of the inference for mistakes, or try to find a proof with a different path.
+    + Examine your intuition critically and educate it.
 
-- Check the proof of the inference for mistakes, or try to find a proof with a different path.
-- Examine your intuition critically and educate it.
+- Check how the target probability $\P(\lnot\yh \| \yf \land \yJ)$ changes if we change the value of the probability $\P(\lnot\ys \land \lnot\yh \| \yf \land \yJ)$ from $0.1$.
+
+    + What result do we obtain if [$\P(\lnot\ys \land \lnot\yh \| \yf \land \yJ)=0$?]{.together} Can it be intuitively explained?
+    + What if [$\P(\lnot\ys \land \lnot\yh \| \yf \land \yJ)=1$?]{.together} Does the result make sense?
 :::
 
 
@@ -292,9 +295,9 @@ Try to prove the two constraints above.
 
 ### Derived rules
 
-The fundamental rules above are in principle all we need to use to draw inferences from other inferences. But from them it is possible to derive some additional "shortcut" rules.
+The fundamental rules above are in principle all we need to use to draw inferences from other inferences. But from them it is possible to derive some "shortcut" rules.
 
-First, it is possible to show that all rules you may know from Boolean algebra are a consequence of the fundamental rules. For example, we can always make the following convenient replacements anywhere in a probability expression:
+First, it is possible to show that all rules you may know from Boolean algebra *are a consequence of the fundamental rules*. So we can always make the following convenient replacements anywhere in a probability expression:
 
 ::: {.callout-note}
 ## Derived rules: Boolean algebra
@@ -323,13 +326,71 @@ Two other derived rules are used extremely often, so we treat them separately.
 
 ## Law of total probability or "extension of the conversation"
 
+Suppose we have a set of $n$ sentences $\{\yX_1, \yX_2, \dotsc, \yX_n\}$ having these two properties:
 
+- They are [**mutually exclusive**]{.blue}, meaning that the "and" of any two of them is false, given a conditional $\yZ$:
+    $$
+	\P(\yX_1\land\yX_2\|\yZ) = 0\ , \quad
+	\P(\yX_1\land\yX_3\|\yZ) = 0\ , \quad
+\dotsc \ , \quad
+	\P(\yX_{n-1}\land\yX_n\|\yZ) = 0
+	$$
+	
+- They are [**exhaustive**]{.blue}, meaning that the "or" of all of them is true, given a conditional [$\yZ$:]{.together}
+    $$
+	\P(\yX_1\lor \yX_2 \lor \dotsb \lor \yX_n \|\yZ) = 1
+	$$
+	
+Then the probability of a sentence [$\yY$,]{.together} conditional on [$\yZ$,]{.together}, is equal to a combination of probabilities conditional on the single $\yX_1,\yX_2,\dotsc$:
+$$
+\begin{aligned}
+\P(\yY \| \yZ) &=
+\P(\yY \| \yX_1 \land \yZ)\cdot \P(\yX_1 \| \yZ) +{}
+\\&\qquad\P(\yY \| \yX_2 \land \yZ)\cdot \P(\yX_2 \| \yZ) +{}
+\\&\qquad\dotsb +{}
+\\&\qquad\P(\yY \| \yX_n \land \yZ)\cdot \P(\yX_n \| \yZ)
+\end{aligned}
+$$
 
+This rule is useful when it is difficult to assess the probability of a sentence conditional on the background information, but it is easier to assess the probabilities of that sentence conditional on several auxiliary sentences -- often representing hypotheses that exclude one another, and of which we know at least one is true. The name [**extension of the conversation**]{.blue} for this derived rule comes from the fact that we are able to call the additional sentences into play.
+
+This situation occurs very often in concrete applications, especially in problems where the probabilities of several competing hypotheses have to be assessed.
 
 ## Bayes's theorem
 
-:::{.column-margin}
+The probably most famous -- or infamous -- rule derived from the laws of inference is [**Bayes's theorem**]{.blue}. It allows us to relate the probability where two sentences $\yY,\yX$ appear in the proposal and the conditional, with one where they are exchanged:
+$$
+\P(\yY \| \yX \land \yZ) =
+\frac{\P(\yX \| \yY \land \yZ)\cdot \P(\yY \| \yZ)}{\P(\yX \| \yZ)}
+$$
+Obviously this rule can only be used if [$\P(\yX \| \yZ) > 0$,]{.together} that is, if the sentence $\yX$ is not false conditional on [$\yZ$.]{.together}
+
+:::{.column-margin} 
 ![Bayes's theorem guest-starring in [*The Big Bang Theory*](https://www.imdb.com/title/tt0898266/)](bayes_big-bang.jpg)
+:::
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Prove Bayes's theorem from the fundamental rules.
+:::
+
+Bayes's theorem is extremely useful when it is difficult to assess the probability of a sentence -- typically a hypothesis -- given some conditional -- typically data -- but it is easier to assess the probability of the data conditional on the hypothesis. Note, however, that the sentences $\yY$ and $\yX$ in the theorem can be about anything whatsoever: $\yY$ does not always need to be a "hypothesis", and $\yX$ "data".
+
+Bayes's theorem is often proclaimed to be the rule according to which we "update our beliefs". The meaning of this proclamation is the following.
+
+Let's say that at some point $\yZ$ represents all your knowledge. Your degree of belief about some sentence $\yY$ is then (at least in theory) the value of [$\P(\yY \| \yZ)$.]{.together} At some later point, let's say that you get to know -- maybe thanks to a measurement that you made -- that the sentence $\yX$ is true. Your whole knowledge is at that point is represented no longer by [$\yZ$,]{.together} but by [$\yX \land \yZ$.]{.together} Your degree of belief about $\yY$ is then given by the value of [$\P(\yY \| \yX\land\yZ)$.]{.together} Bayes's theorem allows you to find your degree of belief about $\yY$ conditional on your new state of knowledge, from the one conditional on your old state of knowledge.
+
+Note, however, that this chronological element comes only from this particular way of using Bayes's theorem. The theorem can be used to connect any two states of knowledge $\yZ$ and [$\yX\land\yZ$,]{.together} no matter their temporal order, and even if they happen simultaneously.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Using Bayes's theorem and the fundamental laws of inference, prove that if [$\P(\yX \| \yZ)=1$,]{.together} that is, if you already know that $\yX$ is true in your current state of knowledge [$\yZ$,]{.together} then
+$$
+\P(\yY \| \yX \land \yZ) = \P(\yY \| \yZ)
+$$
+that is, your beliefs about $\yY$ don't change.
+
+Is this result reasonable?
 :::
 
 
