@@ -1,26 +1,32 @@
 # Probability inference
 {{< include macros.qmd >}}
+{{< include macros_prob_inference.qmd >}}
 
-## When truth isn't known: probability
+In most engineering and data-science problems we don't know the truth or falsity of outcomes and hypotheses that interest us. But this doesn't mean that nothing can be said or done in such situations. Now we shall finally see how to draw *uncertain* inferences, that is, how to calculate the *probability* of something that interests us, given particular data, information, and assumptions.
 
-In most real-life and engineering situations we don't know the truth or falsity of sentences and hypotheses that interest us. But this doesn't mean that nothing can be said or done in such situations.
+So far we have used the term "probability" somewhat informally and intuitively. It is time to make it more precise and to emphasize some of its most important aspects. Then we'll dive into the rules of probability-inference.
 
-When we cross a busy city street we look left and right to check whether any cars are approaching. We typically don't look up to check whether something is falling from the sky. Yet, couldn't it be `false` that cars are approaching? and couldn't it be `true` that [some object is falling from the sky ](https://www.aerotime.aero/articles/32818-cessna-door-falls-off-lands-in-parking-lot)? Of course both events are possible. Then why do we look left and right, but not up?
 
-The main reason^[We shall see later that one more factor enters the explanation.] is that we *believe strongly* that cars might be approaching, *believe very weakly* that some object might be falling from the sky. In other words, we consider the first occurrence to be very *probable*; the second, extremely improbable.
+## When truth isn't known: probability {#sec-probability-def}
 
-We shall take the notion of **probability** as intuitively understood (just as we did with the notion of truth). Terms equivalent for "probability" are *degree of belief*, *plausibility*, *credibility*.
+When we cross a busy city street we look left and right to check whether any cars are approaching. We typically don't look *up* to check whether something is falling from the sky. Yet, couldn't it be `false` that cars are approaching at that moment? and couldn't it be `true` that [some object is falling from the sky ](https://www.aerotime.aero/articles/32818-cessna-door-falls-off-lands-in-parking-lot)? Of course both events are possible. Then why do we look left and right, but not up?
 
-:::{.callout-important appearance="simple"}
-##
-{{< fa exclamation-circle >}} In technical discourse, *likelihood* means something different and is *not* a synonym of "probability", as we'll explain later.
+The main reason
+<!-- ^[We shall see later that one more factor enters this explanation.] --> 
+is that we *believe strongly* that cars might be approaching, and *believe very weakly* that some object might be falling from the sky. In other words, we consider the first occurrence to be *very probable*, and the second extremely *improbable*.
+
+We shall take the notion of [**probability**]{.blue} as intuitively understood (just as we did with the notion of truth). Terms equivalent for "probability" are [*degree of belief*]{.blue}, [*plausibility*]{.blue}, [*credibility*]{.blue}.
+
+:::{.callout-warning}
+## {{< fa exclamation-circle >}} Avoid *likelihood* as a synonym for *probability*
+In technical discourse, "likelihood" means something different and is *not* a synonym of "probability", as we'll explain later.
 :::
 
-Probabilities are quantified between `0` and `1`, or equivalently between `0%` and `100%`. Assigning to a sentence a probability `1` is the same as saying that it is `true`; and a probability `0`, that it is `false`. A probability of `0.5` represents a belief completely symmetric with respect to truth and falsity.
+Probabilities are quantified between $0$ and $1$, or equivalently between $0\%$ and $100\%$. Assigning to a sentence a probability `1` is the same as saying that it is `true`; and a probability `0`, that it is `false`. A probability of $0.5$ represents a belief completely symmetric with respect to truth and falsity.
 
-It is important to emphasize and agree on some facts about probabilities:
+Let's emphasize and agree on some important facts about probabilities:
 
-- **Probabilities are assigned to *sentences***. Consider an engineer working on a problem of electric-power distribution in a specific geographical region. At a given moment the engineer may believe with `75%` probability that the measured average power output in the next hour will be 100 MW. The `75%` probability is assigned not to the quantity "100 MW", but to the *sentence*
+- [**{{< fa bookmark >}} Probabilities are assigned to *sentences***]{.blue}. We already discussed this point in [§ @sec-sentence-notation], but let's reiterate it. Consider an engineer working on a problem of electric-power distribution in a specific geographical region. At a given moment the engineer may believe with $75\%$ probability that the measured average power output in the next hour will be 100 MW. The $75\%$ probability is assigned not to the quantity "100 MW", but to the *sentence*
 $$
 \pr{The measured average power output in the next hour will be 100\,MW}
 $$
@@ -28,33 +34,42 @@ $$
 $$
 \pr{The average power output in the next hour will be \emph{set} to 100\,MW}
 $$
-	the quantity is the same, but the meaning is very different. The probability can therefore be very different (if the engineer is the person deciding the output, the probability is `100%`). The probability depends not only on a number, but on what it's being done with that number -- measuring, setting, third-party reporting, and so on. Often we still write simply $\pr{\(\mathsf{O = 100\,W}\)}$ or even just $\pr{100\,W}$, provided that the full sentence behind the shorthand is understood.
+	the numerical quantity is the same, but the meaning is very different. The probability can therefore be very different (if the engineer is the person deciding how to set that output, the probability is $100\%$). The probability depends not only on a number, but on what it's being done with that number -- measuring, setting, third-party reporting, and so on. Often we write simply ["$O = \mathrm{100\,W}$"]{.together} provided that the full sentence behind this kind of shorthand is understood.
 	
 
-- **Probabilities are agent- and context-dependent**. A coin is tossed, comes down heads, and is quickly hidden from view. Alice sees that it landed heads-up. Bob instead doesn't manage to see the outcome and has no clue. Alice considers the sentence $\pr{Coin came down heads}$ to be `true`, that is, to have `100%` probability. Bob considers the same sentence to have `50%` probability.
+- [**{{< fa bookmark >}} Probabilities are agent- and context-dependent**]{.blue}. A coin is tossed, comes down heads, and is quickly hidden from view. Alice sees that it landed heads-up. Bob instead doesn't manage to see the outcome and has no clue. Alice considers the sentence $\pr{Coin came down heads}$ to be `true`, that is, to have $100\%$ probability. Bob considers the same sentence to have $50\%$ probability.
 
-    Note how Alice and Bob assign two different probabilities to the same sentence; yet both assignments are completely rational. If Bob assigned `100%` to $\pr{heads}$, we would suspect that he had seen the outcome after all; if he assigned `0%` to $\pr{heads}$, we would consider that groundless and silly. We would be baffled if Alice assigned `50%` to $\pr{heads}$, because she saw the outcome was actually heads; we would hypothesize that she feels unsure about what she saw.
+    Note how Alice and Bob assign two different probabilities to the same sentence; yet both assignments are completely rational. If Bob assigned $100\%$ to $\pr{heads}$, we would suspect that he had seen the outcome after all; if he assigned $0\%$ to $\pr{heads}$, we would consider that groundless and silly. We would be baffled if Alice assigned $50\%$ to $\pr{heads}$, because she saw the outcome was actually heads; we would hypothesize that she feels unsure about what she saw.
 
-    An omniscient agent would know the truth or falsity of every sentence, and assign only probabilities `0` or `1`. Some authors speak of "*actual* (but unknown) probabilities"; if there were "actual" probabilities, they would be all `0` or `1`, and it would be pointless to speak about probabilities at all -- every inference would be a truth inference.
-
-
-- **Probabilities are not frequencies**. The fraction of defective mechanical components to total components produced per year in some factory is a quantity that can be physically measured and would be agreed upon by every agent. It is a *frequency*, not a degree of belief or probability. It is important to understand the difference between them, to avoid making sub-optimal decisions; we shall say more about this difference later. Frequencies can be unknown to some agents, probabilities cannot be unknown (but can be difficult to calculate). Be careful when you read authors speaking of an "unknown probability"; either they actually mean "unknown frequency", or a probability that has to be calculated (it's "unknown" in the same sense that the value of $1-0.7 \cdot 0.2/(1-0.3)$ is unknown to you right now).
+    An omniscient agent would know the truth or falsity of every sentence, and assign only probabilities `0` or `1`. Some authors speak of "*actual* (but unknown) probabilities". But if there were "actual" probabilities, they would be all `0` or `1`, and it would be pointless to speak about probabilities at all -- every inference would be a truth-inference.
 
 
-- **Probabilities are not physical properties**. Whether a tossed coin lands heads up or tails up is fully determined by the initial conditions (position, orientation, momentum, rotational momentum) of the toss and the boundary conditions (air velocity and pressure) during the flight. The same is true for all macroscopic engineering phenomena (even quantum phenomena have never been proved to be non-deterministic, and there are [deterministic and experimentally consistent](https://doi.org/10.48550/arXiv.quant-ph/9504010)  mathematical representations of quantum theory). So we cannot measure a probability using some physical apparatus; and the mechanisms underlying any engineering problem boil down to physical laws, not to probabilities.
+- [**{{< fa bookmark >}} Probabilities are not frequencies**]{.blue}. Consider the fraction of defective mechanical components to total components produced per year in some factory. This quantity can be physically measured and, once measured, would be agreed upon by every agent. It is a *frequency*, not a degree of belief or probability.
+
+    It is important to understand the difference between *probability* and *frequency*: mixing them up may lead to sub-optimal decisions. We shall say more about this difference later.
+	
+	Frequencies can be unknown to some agents. Probabilities cannot be "unknown": they can only be difficult to calculate. Be careful when you read authors speaking of an "unknown probability": they actually mean either "unknown frequency", or a probability that has to be calculated (it's "unknown" in the same sense that the value of $1-0.7 \cdot 0.2/(1-0.3)$ is "unknown" to you right now).
+
+
+- [**{{< fa bookmark >}} Probabilities are not physical properties**]{.blue}. Whether a tossed coin lands heads up or tails up is fully determined by the initial conditions (position, orientation, momentum, rotational momentum) of the toss and the boundary conditions (air velocity and pressure) during the flight. The same is true for all macroscopic engineering phenomena (even quantum phenomena have never been proved to be non-deterministic, and there are [deterministic and experimentally consistent](https://doi.org/10.48550/arXiv.quant-ph/9504010)  mathematical representations of quantum theory). So we cannot measure a probability using some physical apparatus; and the mechanisms underlying any engineering problem boil down to physical laws, not to probabilities.
 
 ::: {.callout-caution}
 ## {{< fa book >}} Reading
-[*Dynamical Bias in the Coin Toss*](https://hvl.instructure.com/courses/25074/modules/items/661553)
+[*Dynamical Bias in the Coin Toss*](https://hvl.instructure.com/courses/25074/modules/items/661553).
 <!-- We conclude that coin tossing is "physics" not "random." -->
 :::
 
-These facts are not just a matter of principle. They have important practical consequences. A data engineer who is not attentive to the source of the data (measured? set? reported, and so maybe less trustworthy?), or who does not carefully assess the context of a probability, or who mixes it up with something else, or who does not take advantage (when possible) of the physics involved in the engineering problem, will design a system with sub-optimal performance^[This fact can be mathematically proven.] -- or even cause deaths.
+\
 
-## No new building blocks
+These points listed above are not just a matter of principle. They have important practical consequences. A data scientist who is not attentive to the source of the data (measured? set? reported, and so maybe less trustworthy?), or who does not carefully assess the context of a probability, or who mixes a probability with a frequency, or who does not take advantage (when possible) of the physics involved in the a problem -- such data scientist will design systems with sub-optimal performance^[This fact can be mathematically proven.] -- or even cause deaths.
 
-In discussing [truth-inference](truth_inference.qmd) we introduced notations such as  $\mathrm{T}(a \| b \land D)$, which stands for the truth-value `0` or `1` of sentence $a$ in the context of data $D$ and supposing (even if only hypothetically) sentence $b$ to be true. We can simply extend this notation to probability-values, using a $\P$ instead of $\mathrm{T}$:
-$$\P(a \| b \land D) \in [0,1]$$
+
+
+
+
+## Probability-inference rules
+
+
 represents the probability or degree of belief in sentence $a$ in the context of data $D$ and supposing also sentence $b$ to be true. Keep in mind that both $a$ and $b$ could be complex sentences (for instance $a = (\lnot c \lor d) \land e$). Note that truth-values are included as the special cases`1` or `0`:
 $$
 \P(a \| b \land D) = 0\text{ or }1
@@ -62,7 +77,6 @@ $$
 \mathrm{T}(a \| b \land D) = 0\text{ or }1
 $$
 
-## Probability-inference rules
 
 Extending our truth-inference notation to probability-inference notation has been straightforward. But how do we draw inferences when probabilities are involved? 
 
@@ -90,7 +104,7 @@ $$
 $$
 This says, above the line, that: according to our data $D$ my umbrella is either blue or red (and can't be both), with full certainty; and according to our data we have no preferential beliefs on whether my umbrella is not red. What should then be the probability of my umbrella being blue, according to our data?
 
-Intuitively that probability should be `50%`: $\P( b \| D)=0.5$. But which rules did we follow in arriving at this probability? More generally, which rules should we follow in assigning new probabilities from given ones?
+Intuitively that probability should be $50\%$: $\P( b \| D)=0.5$. But which rules did we follow in arriving at this probability? More generally, which rules should we follow in assigning new probabilities from given ones?
 
 The amazing result is that *the rules for truth-inference, formulae (@eq-t-not, @eq-t-or, @eq-t-and, @eq-t-unity), extend also to probability-inference*. The only difference is that they now hold for all values in the range $[0,1]$, rather than only values $0$ and $1$.
 
@@ -198,9 +212,9 @@ $$
 
 by following from top to bottom the steps depicted here:
 
-::: {.border}
-![](umbrella_inference2.svg)
-:::
+<!-- ::: {.border} -->
+<!-- ![](umbrella_inference2.svg) -->
+<!-- ::: -->
 
 
 @@ example medical diagnosis
