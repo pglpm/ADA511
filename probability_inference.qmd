@@ -64,7 +64,7 @@ $$
 These points listed above are not just a matter of principle. They have important practical consequences. A data scientist who is not attentive to the source of the data (measured? set? reported, and so maybe less trustworthy?), or who does not carefully assess the context of a probability, or who mixes a probability with a frequency, or who does not take advantage (when possible) of the physics involved in the a problem -- such data scientist will design systems with sub-optimal performance^[This fact can be mathematically proven.] -- or even cause deaths.
 
 
-## An unsure inference
+## An unsure inference {#sec-uncertain-inference}
 
 Consider now the following variation of the trivial inference problem of [§ @sec-trivial-inference].
 
@@ -434,11 +434,11 @@ Is this result reasonable?
 
 ::: {.callout-caution}
 ## {{< fa book >}} Reading
+- §§ 4.1--4.3 in [*Medical Decision Making*](https://hvl.instructure.com/courses/25074/modules/items/671397) give one more point of view on Bayes's theorem.
+
 - A graphical explanation of how Bayes's theorem works mathematically (using a specific interpretation of the theorem):
 
     {{< video https://www.youtube.com/watch?v=HZGCoVF3YvM >}}
-
-- §§ 4.1--4.3 in [*Medical Decision Making*](https://hvl.instructure.com/courses/25074/modules/items/671397) give one more point of view on Bayes's theorem.
 :::
 
 
@@ -452,7 +452,7 @@ Is this result reasonable?
 
 * _Exercise: clinical test & diagnosis_
 
-## Remarks on terminology
+## Remarks on terminology and notation
 
 ### Likelihood
 
@@ -476,19 +476,58 @@ Let's express this also in a different way:
 A priori there is no relation between the probability and the likelihood of a sentence $\yY$: this sentence could have very high probability and very low likelihood, and vice versa.
 :::
 
-In these notes we'll avoid the possibly confusing term "likelihood". All that we need to express can be phrased in terms of "probability".
+In these notes we'll avoid the possibly confusing term "likelihood". All we need to express can be phrased in terms of "probability".
 
-### Invisible background information
+### Omitting background information
 
-@@ omission of conditional
+In the analyses of the inference examples of [§ @sec-trivial-inference] and [§ @sec-uncertain-inference] we defined sentences ($\yI$ and $\yJ$) expressing all background information, and always included these sentences in the conditionals of the inferences -- because those inferences obviously depended on that background information.
+
+In many concrete inference problems the background information usually stays there in the conditional from beginning to end, while the other sentences jump around between conditional and proposal as we apply the rules of inference. For this reason the background information is often omitted from the notation, being implicitly understood. For instance, if the background information is denoted $\yI$, one writes
+
+- "$\P(\yY \|\yX)$"\ \ instead of\ \ $\P(\yY \|\yX \land \yI)$
+
+- "$\P(\yY)$"\ \ instead of\ \ $\P(\yY \|\yI)$
+
+This is what's happening when you see in books probabilities "$P(x)$" without conditional.
+
+Such practice may be convenient, but be wary of it, especially in particular situations:
+
+- In some inference problems we suddenly realize that we must distinguish between cases that depend on hypotheses, say $\yH_1$ and [$\yH_2$,]{.together} that were buried in the background information $\yI$. If the background information $\yI$ is explicitly reported in the notation, this is no problem: we can rewrite it as
+$$ \yI = (\yH_1 \lor \yH_2) \land \yI'$$
+and proceed, for example using the rule of extension of the conversation. If the background information was not explicitly written, this may lead to confusion and mistakes. For instance there may suddenly appear two instances of $\P(\yX)$ with *different* values, just because one of them is invisibly conditional on $\yI$, the other on [$\yI'$.]{.together}
+
+- In some inference problems we are considering *several different* instances of background information -- for example because more than one agent is involved. It's then extremely important to write the background information explicitly, lest we mix up the different agents's degrees of belief.
+
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+A once-famous [paper published the quantum-theory literature](https://hvl.instructure.com/courses/25074/modules/items/672178), arrived at completely wrong results simply by omitting background information, mixing up probabilities having different conditionals.
+:::
+::::
+
+This kind of confusion from poor notation happens more often than one thinks, and even appears in scientific literature.
+
 
 ### "Random variables"
 
-:::{.callout-important appearance="default"}
-## {{< fa exclamation-circle >}} Differences in terminology
-- Some texts speak of the probability of a "random^[What does "random" mean? Good luck finding an understandable and non-circular definition in texts that use that word. In these notes, if the word "random" is ever used, it means "unpredictable" or "unsystematic".] variable", or more precisely of the probability that a random variable takes on a particular value. As you notice, we have just expressed that idea by means of a *sentence*. The viewpoint and terminology of random variables is a special case of that of sentences. As already discussed, in concrete applications it is important to know how a variable "takes on" a value: for example it could be directly measured, indirectly reported, or purposely set. Thinking in terms of sentences, rather than of random variables, allows us to account for these important differences.
+Some texts speak of the probability of a "random variable", or more precisely of the probability "that a random variable takes on a particular value". As you notice, we have just expressed that idea by means of a *sentence*. The viewpoint and terminology of random variables is therefore a special case of that based on sentences, which we use here.
 
-- Some texts speak of the probability of an "event". For all purposes an "event" is just what's expressed in a sentence.
+The dialect of "random variables" does not offer any advantages in concepts, notation, terminology, or calculations, but it has some shortcomings:
+
+- As discussed in [§ @sec-probability-def], in concrete applications it is important to know how a quantity "takes on" a value: for example it could be directly measured, indirectly reported, or purposely set to that specific value. Thinking and working in terms of sentences, rather than of random variables, allows us to account for these important differences.
+
+- Very often the object (proposal) of a probability is not a "variable": it is actually a *constant* value that is simply unknown.
+
+- What does "random" (or "chance") mean? Good luck finding an understandable and non-circular definition in texts that use that word; strangely enough, they never define it. In these notes, if the word "random" is ever used, it stands for "unpredictable" or "unsystematic".
+
+::::{.column-margin}
+![[James Clerk Maxwell](https://clerkmaxwellfoundation.org/html/about_maxwell.html) is one of the main founders of statistical mechanics and kinetic theory (and electromagnetism). Yet he never used the word "random" in his technical writings. Maxwell is known for being very clear and meticulous with explanations and terminology.](maxwell1.jpg){width=100%}
+::::
 
 It's a question for sociology of science why some people keep on using less flexible points of view or terminologies. Probably they just memorize them as students and then a fossilization process sets in.
-:::
+
+\
+
+
+Finally, some texts speak of the probability of an "event". For all purposes an "event" is just what's expressed in a sentence.
