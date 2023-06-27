@@ -41,8 +41,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
-<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -183,7 +181,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./probability_distributions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Allocation of uncertainty among possible data values: probability distributions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Probability distributions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -206,17 +204,22 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#probability-of-data-values" id="toc-probability-of-data-values" class="nav-link active" data-scroll-target="#probability-of-data-values"><span class="header-section-number">8.1</span> Probability of data values</a></li>
-  <li><a href="#kinds-of-data" id="toc-kinds-of-data" class="nav-link" data-scroll-target="#kinds-of-data"><span class="header-section-number">8.2</span> Kinds of data</a>
+  <li><a href="#quantities" id="toc-quantities" class="nav-link active" data-scroll-target="#quantities"><span class="header-section-number">8.1</span> Quantities</a></li>
+  <li><a href="#kinds-of-quantities" id="toc-kinds-of-quantities" class="nav-link" data-scroll-target="#kinds-of-quantities"><span class="header-section-number">8.2</span> Kinds of quantities</a>
   <ul class="collapse">
-  <li><a href="#binary" id="toc-binary" class="nav-link" data-scroll-target="#binary">Binary</a></li>
   <li><a href="#nominal" id="toc-nominal" class="nav-link" data-scroll-target="#nominal">Nominal</a></li>
   <li><a href="#ordinal" id="toc-ordinal" class="nav-link" data-scroll-target="#ordinal">Ordinal</a></li>
-  <li><a href="#continuous" id="toc-continuous" class="nav-link" data-scroll-target="#continuous">Continuous</a></li>
-  <li><a href="#complex-data" id="toc-complex-data" class="nav-link" data-scroll-target="#complex-data">Complex data</a></li>
+  <li><a href="#binary" id="toc-binary" class="nav-link" data-scroll-target="#binary">Binary</a></li>
+  <li><a href="#interval" id="toc-interval" class="nav-link" data-scroll-target="#interval">Interval</a></li>
+  <li><a href="#other-complex-kinds" id="toc-other-complex-kinds" class="nav-link" data-scroll-target="#other-complex-kinds">Other complex kinds</a></li>
+  </ul></li>
+  <li><a href="#other-attributes-of-quantities" id="toc-other-attributes-of-quantities" class="nav-link" data-scroll-target="#other-attributes-of-quantities"><span class="header-section-number">8.3</span> Other attributes of quantities</a>
+  <ul class="collapse">
+  <li><a href="#discrete-vs-continuous" id="toc-discrete-vs-continuous" class="nav-link" data-scroll-target="#discrete-vs-continuous">Discrete vs continuous</a></li>
+  <li><a href="#bounded-vs-unbounded-censored" id="toc-bounded-vs-unbounded-censored" class="nav-link" data-scroll-target="#bounded-vs-unbounded-censored">Bounded vs unbounded, censored</a></li>
   <li><a href="#soft-data" id="toc-soft-data" class="nav-link" data-scroll-target="#soft-data">“Soft” data</a></li>
   </ul></li>
-  <li><a href="#data-transformations" id="toc-data-transformations" class="nav-link" data-scroll-target="#data-transformations"><span class="header-section-number">8.3</span> Data transformations</a></li>
+  <li><a href="#data-transformations" id="toc-data-transformations" class="nav-link" data-scroll-target="#data-transformations"><span class="header-section-number">8.4</span> Data transformations</a></li>
   </ul>
 </nav>
 </nav>
@@ -248,74 +251,71 @@ ul.task-list li input[type="checkbox"] {
 <!-- \definecolor{lightblue}{HTML}{66CCEE} -->
 <!-- \sethlcolor{lightblue} -->
 </div>
+<section id="quantities" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="quantities"><span class="header-section-number">8.1</span> Quantities</h2>
 <p>Most decisions and inferences in engineering and data science involve quantities or entities with some kind of mathematical properties: they can be expressed by a number or – think of images or network graphs – by collections of numbers. The sentences that appear in decision-making and inferences are therefore often of the kind “the quantity <span class="math inline">\(X\)</span> was measured to have value <span class="math inline">\(x\)</span>”. We commonly refer to these values as “data”.</p>
 <p>Data come in many different kinds, with different properties. Some statements only make sense with particular kinds of data. We therefore pay a quick visit to the data zoo, emphasizing aspects that are important for inference and decision-making.</p>
-<section id="probability-of-data-values" class="level2" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="probability-of-data-values"><span class="header-section-number">8.1</span> Probability of data values</h2>
-<p>We shall speak of “quantities”, denoting them by letters such as <span class="math inline">\(X\)</span>. A quantity can be a physical quantity, such as a length, power output, velocity, force; or something more complex like an image, video clip, 3D scan, or a network graph with nodes and links.</p>
-<p>A quantity has a value that must belong to a given set. For instance, a length can have values in the positive real numbers; a force can have values in a 3D vector space; a colour image can have values in the set of all possible <span class="math inline">\(N\times N\)</span> grids of three numbers each, with the numbers in the range <span class="together"><span class="math inline">\([0,1]\)</span>.</span></p>
-<p>We take it for granted that a quantity does have one value, and one value only (even if the value itself can consist of several numbers, for example).</p>
-<p>When we are uncertain about the value of a quantity, we assign a degree of belief to all possible cases. For a length, the cases could be “<span class="midgrey">The length is measured to have value 0.1 m</span>”, “<span class="midgrey">The length is measured to have value 0.2 m</span>”, and so on. We can abbreviate them as <span class="math display">\[
-L = \mathrm{0.1\,m} \ , \qquad
-L = \mathrm{0.2\,m} \ , \qquad
-\dotsc
-\]</span> (in practice the number of possible cases is always finite; but we’ll get back to this point later). We recognize these as <em>mutually exclusive</em> and <em>exhaustive</em> sentences.</p>
-<p>Our belief about the variable is then expressed by a collection of probabilities: <span class="math display">\[
-\mathrm{P}(L \mathord{\,=\,}\mathrm{0.1\,m} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \ , \quad
-\mathrm{P}(L \mathord{\,=\,}\mathrm{0.2\,m} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \ , \quad
-\dotsc
-\]</span> that sum up to one: <span class="math display">\[
-\mathrm{P}(L \mathord{\,=\,}\mathrm{0.1\,m} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) +
-\mathrm{P}(L \mathord{\,=\,}\mathrm{0.2\,m} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) +
-\dotsb
-= 1
-\]</span> This collection is called a <span class="blue"><strong>probability distribution</strong></span>, because we are distributing a unit amount of probability among several sentences.</p>
-<div class="callout callout-style-default callout-caution no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Consider three sentences <span class="math inline">\(\mathsfit{X}_1, \mathsfit{X}_2, \mathsfit{X}_3\)</span> that are mutually exclusive and exhaustive on conditional <span class="together"><span class="math inline">\(\mathsfit{I}\)</span>,</span> that is: <span class="math display">\[
-\begin{gathered}
-\mathrm{P}(\mathsfit{X}_1 \land \mathsfit{X}_2 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) =
-\mathrm{P}(\mathsfit{X}_1 \land \mathsfit{X}_3 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) =
-\mathrm{P}(\mathsfit{X}_2 \land \mathsfit{X}_3 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = 0
-\\
-\mathrm{P}(\mathsfit{X}_1 \lor \mathsfit{X}_2 \lor \mathsfit{X}_3 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = 1
-\end{gathered}
-\]</span> Prove, using the fundamental rules of inferences and any derived rules from <span class="quarto-unresolved-ref">?sec-probability</span>, that we must then have <span class="math display">\[
-\mathrm{P}(\mathsfit{X}_1 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) + \mathrm{P}(\mathsfit{X}_2 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) + \mathrm{P}(\mathsfit{X}_3 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = 1
-\]</span></p>
-</div>
-</div>
+<p>We shall speak of <span class="blue"><strong>quantities</strong></span>, denoting them by letters such as <span class="math inline">\(X\)</span>. A quantity has a value that must belong to a given set called the <span class="blue"><strong>domain</strong></span> of that quantity.</p>
+<p>Examples of quantities:</p>
+<ul>
+<li><p>The distance between two objects (at a specific time). The domain could be, say, all values from <span class="math inline">\(\mathrm{0\,m}\)</span> to <span class="math inline">\(\mathrm{6\cdot10^{12}\,m}\)</span> (<a href="https://solarsystem.nasa.gov/planets/dwarf-planets/pluto">Pluto</a>’s average orbital distance).</p></li>
+<li><p>The number of total views of some video (at a specific time), with a domain, say, from 0 to 20 billions.</p></li>
+<li><p>The force on an object (at a specific time and place). The domain could be, say, 3D vectors with three components in <span class="math inline">\([\mathrm{-100\,N},\,\mathrm{+100\,N}]\)</span>.</p></li>
+<li><p>The image taken by a camera. The domain could be all possible combinations of values in <span class="math inline">\([0,1]\)</span> over three <span class="math inline">\(1280\times 720\)</span> grids (one grid per basic colour).</p></li>
+<li><p>The degree of satisfaction of a in a survey, with five possible values <code>Not at all satisfied</code>, <code>Slightly satisfied</code>, <code>Moderately satisfied</code>, <code>Very satisfied</code>, <code>Extremely satisfied</code>.</p></li>
+<li><p>The graph representing a social network, with domain consisting of all possible graphs with <span class="math inline">\(0\)</span> to <span class="math inline">\(10000\)</span> nodes and all possible combinations of links.</p></li>
+<li><p>A 1-minute audio track recorded by a device. The domain could be all possible combinations of 2 880 000 values in <span class="math inline">\([0,1]\)</span> (sampling frequency of 48 kHz).</p></li>
+<li><p>The subject in an image, with domain of three possible values <code>cat</code>, <code>dog</code>, <code>something else</code>.</p></li>
+<li><p>The <a href="https://www.grc.nasa.gov/www/k-12/rocket/rotations.html">roll, pitch, yaw</a> of a rocket (at a specific time and place), with domain <span class="math inline">\((-180°,+180°]\times(-90°,+90°]\times(-180°,+180°]\)</span>.</p></li>
+</ul>
+<p>We take it for granted that a quantity does have one value, and one value only (even if the value itself can consist of, say, several numbers).</p>
 </section>
-<section id="kinds-of-data" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="kinds-of-data"><span class="header-section-number">8.2</span> Kinds of data</h2>
-<section id="binary" class="level3">
-<h3 class="anchored" data-anchor-id="binary">Binary</h3>
-</section>
+<section id="kinds-of-quantities" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="kinds-of-quantities"><span class="header-section-number">8.2</span> Kinds of quantities</h2>
 <section id="nominal" class="level3">
 <h3 class="anchored" data-anchor-id="nominal">Nominal</h3>
+<p>A <span class="blue"><strong>nominal</strong></span> or <span class="blue"><strong>categorical</strong></span> quantity has a domain with a discrete (usually finite) number of values. The values <span class="blue"><em>are not related by any mathematical property</em></span>, and <span class="blue"><em>do not have any specific order</em></span> (at least not a priori).</p>
+<p>This means that it does not make sense to say, for instance, that some value is “twice” or “1.5 times” another, or “larger” or “later” than another one. Nor does it make sense to “add” two quantities. In particular, <span class="blue"><em>there is no notion of average for a nominal quantity</em></span>.</p>
+<p>An example is the possible breeds of a dog, or the characters of a film.</p>
+<p>It is of course possible to represent the values of a nominal quantity with numbers; say <code>1</code> for <code>Dachshund</code>, <code>2</code> for <code>Labrador</code>, <code>3</code> for <code>Dalmatian</code>, and so on. But that doesn’t mean that “<code>Dalmatian</code><span class="math inline">\({}-{}\)</span><code>Labrador</code><span class="math inline">\({}={}\)</span><code>Labrador</code><span class="math inline">\({}-{}\)</span><code>Dachshund</code>” or similar nonsense.</p>
 </section>
 <section id="ordinal" class="level3">
 <h3 class="anchored" data-anchor-id="ordinal">Ordinal</h3>
+<p>An <span class="blue"><strong>ordinal</strong></span> quantity has a domain with a discrete (usually finite) number of values. The values <span class="blue"><em>are not related by any mathematical property</em></span>, but <span class="blue"><em>do have a specific order</em></span>.</p>
+<p>This means that it does not make sense to say that some value is “twice” or “1.5 times” another, and we cannot “add” two values. But it does make sense to say, for any two values, which one has higher rank; for example “stronger”, or “later”, and similar. Also in this case <span class="blue"><em>there is no notion of average for an ordinal quantity</em></span>.</p>
+<p>An example would be a <a href="https://doi.org/10.1016/j.jpainsymman.2004.08.007">pain-intensity scale</a>: a patient can say whether a pain is stronger than another, but it isn’t clear what a pain “twice as strong” as another would mean (although there’s a lot of research on trying to quantify pain more precisely). Another example could be the “strength of friendship” in a social network: we can say that we have a “stronger friendship” with a person than with another; but it doesn’t make sense to say that we are “four times stronger friends”.</p>
+<p>Also for ordinal quantities it is possible to represent the values with numbers. In this case the numbers can reflect the <em>order</em> of the values. But it’s important to keep in mind that differences or averages of such numbers wouldn’t make sense. Unfortunately the use of numbers can be deceptive in this regard. A less deceptive possibility is to represent ordered values by alphabet letters, for example.</p>
 </section>
-<section id="continuous" class="level3">
-<h3 class="anchored" data-anchor-id="continuous">Continuous</h3>
-<ul>
-<li><p>unbounded</p></li>
-<li><p>bounded</p></li>
-<li><p>censored</p></li>
-</ul>
+<section id="binary" class="level3">
+<h3 class="anchored" data-anchor-id="binary">Binary</h3>
+<p>A <span class="blue"><strong>binary</strong></span> or <span class="blue"><strong>dichotomous</strong></span> quantity has only two possible values. Although it is really a special case of a nominal or ordinal quantity, the fact of having only two values lends it some special properties in inference problems. This is why we list it separately from others.</p>
+<p>Obviously it doesn’t make much sense to speak of the difference or average of the two values; and their ranking is trivial even if it makes sense.</p>
+<p>There’s an abundance of examples of binary quantities: yes/no answers, presence/absence of something, and so on.</p>
 </section>
-<section id="complex-data" class="level3">
-<h3 class="anchored" data-anchor-id="complex-data">Complex data</h3>
-<p>2D, 3D, images, graphs, etc.</p>
+<section id="interval" class="level3">
+<h3 class="anchored" data-anchor-id="interval">Interval</h3>
+<p>An <span class="blue"><strong>interval</strong></span> quantity has a domain that can be discrete or continuous. The values <span class="blue"><em>do admit some mathematical operations</em></span>, at least <em>convex combination</em> and <em>subtraction</em>. They also admit an ordering.</p>
+<p>This means that we can say whether the interval or “distance” between a pair of values is the same, or larger, or smaller than the interval between another pair. For this reason we can also say whether a value is larger than another. We can also take the <em>convex combination</em> of several values, which means we can take a weighted sum of them. Note that simple <em>addition</em> of values may still be meaningless, though.</p>
+<p>Owing to these mathematical properties, <span class="blue"><strong>it does make sense to speak of the average for an interval quantity</strong></span>.</p>
+<p>The number of electronic components produced in a year by an assembly line is an example of a discrete interval quantity. The power output of a nuclear plant at a given time is an example of a continuous one.</p>
+<p>It is also possible to speak of <em>ratio</em> quantities, which are a special case of interval quantities, but we won’t have use of this distinction in the present notes.</p>
+</section>
+<section id="other-complex-kinds" class="level3">
+<h3 class="anchored" data-anchor-id="other-complex-kinds">Other complex kinds</h3>
+<p>The kinds of quantities listed so far are all, in a certain sense, one-dimensional.</p>
+<p>Some complex quantities are simply collections of quantities of the kinds listed above, so their analysis and their main properties reduces somehow to the ones already discussed.</p>
+<p>But there are many quantities whose sets of possible values have particular mathematical properties and operations that cannot be obtained by simply gathering together quantities of a one-dimensional kind. Examples are quantities related to colours, images, audio, video, graphs. For such kinds of complex quantities it is often important to be able to say whether two values are “close” to each other or “far away”. This leads to the introduction of <em>metrics</em> and other mathematical structures on the sets of values. The metrics may also depend on the particular purpose the quantity is used for.</p>
+<p>Some of these kinds of complex quantities will be discussed on a case-by-case basis.</p>
+<p>@@ TODO: add examples for image spaces</p>
+</section>
+</section>
+<section id="other-attributes-of-quantities" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="other-attributes-of-quantities"><span class="header-section-number">8.3</span> Other attributes of quantities</h2>
+<section id="discrete-vs-continuous" class="level3">
+<h3 class="anchored" data-anchor-id="discrete-vs-continuous">Discrete vs continuous</h3>
+</section>
+<section id="bounded-vs-unbounded-censored" class="level3">
+<h3 class="anchored" data-anchor-id="bounded-vs-unbounded-censored">Bounded vs unbounded, censored</h3>
 </section>
 <section id="soft-data" class="level3">
 <h3 class="anchored" data-anchor-id="soft-data">“Soft” data</h3>
@@ -325,8 +325,8 @@ L = \mathrm{0.2\,m} \ , \qquad
 </ul>
 </section>
 </section>
-<section id="data-transformations" class="level2" data-number="8.3">
-<h2 data-number="8.3" class="anchored" data-anchor-id="data-transformations"><span class="header-section-number">8.3</span> Data transformations</h2>
+<section id="data-transformations" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="data-transformations"><span class="header-section-number">8.4</span> Data transformations</h2>
 <ul>
 <li><p>log</p></li>
 <li><p>probit</p></li>
@@ -578,7 +578,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./probability_distributions.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Allocation of uncertainty among possible data values: probability distributions</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Probability distributions</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
