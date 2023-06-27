@@ -41,6 +41,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -61,6 +63,8 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="ada511styles.css">
 </head>
@@ -202,7 +206,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#kinds-of-data" id="toc-kinds-of-data" class="nav-link active" data-scroll-target="#kinds-of-data"><span class="header-section-number">8.1</span> Kinds of data</a>
+  <li><a href="#probability-of-data-values" id="toc-probability-of-data-values" class="nav-link active" data-scroll-target="#probability-of-data-values"><span class="header-section-number">8.1</span> Probability of data values</a></li>
+  <li><a href="#kinds-of-data" id="toc-kinds-of-data" class="nav-link" data-scroll-target="#kinds-of-data"><span class="header-section-number">8.2</span> Kinds of data</a>
   <ul class="collapse">
   <li><a href="#binary" id="toc-binary" class="nav-link" data-scroll-target="#binary">Binary</a></li>
   <li><a href="#nominal" id="toc-nominal" class="nav-link" data-scroll-target="#nominal">Nominal</a></li>
@@ -211,7 +216,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#complex-data" id="toc-complex-data" class="nav-link" data-scroll-target="#complex-data">Complex data</a></li>
   <li><a href="#soft-data" id="toc-soft-data" class="nav-link" data-scroll-target="#soft-data">“Soft” data</a></li>
   </ul></li>
-  <li><a href="#data-transformations" id="toc-data-transformations" class="nav-link" data-scroll-target="#data-transformations"><span class="header-section-number">8.2</span> Data transformations</a></li>
+  <li><a href="#data-transformations" id="toc-data-transformations" class="nav-link" data-scroll-target="#data-transformations"><span class="header-section-number">8.3</span> Data transformations</a></li>
   </ul>
 </nav>
 </nav>
@@ -239,8 +244,58 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="kinds-of-data" class="level2" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="kinds-of-data"><span class="header-section-number">8.1</span> Kinds of data</h2>
+<div class="hidden">
+<!-- \definecolor{lightblue}{HTML}{66CCEE} -->
+<!-- \sethlcolor{lightblue} -->
+</div>
+<p>Most decisions and inferences in engineering and data science involve quantities or entities with some kind of mathematical properties: they can be expressed by a number or – think of images or network graphs – by collections of numbers. The sentences that appear in decision-making and inferences are therefore often of the kind “the quantity <span class="math inline">\(X\)</span> was measured to have value <span class="math inline">\(x\)</span>”. We commonly refer to these values as “data”.</p>
+<p>Data come in many different kinds, with different properties. Some statements only make sense with particular kinds of data. We therefore pay a quick visit to the data zoo, emphasizing aspects that are important for inference and decision-making.</p>
+<section id="probability-of-data-values" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="probability-of-data-values"><span class="header-section-number">8.1</span> Probability of data values</h2>
+<p>We shall speak of “quantities”, denoting them by letters such as <span class="math inline">\(X\)</span>. A quantity can be a physical quantity, such as a length, power output, velocity, force; or something more complex like an image, video clip, 3D scan, or a network graph with nodes and links.</p>
+<p>A quantity has a value that must belong to a given set. For instance, a length can have values in the positive real numbers; a force can have values in a 3D vector space; a colour image can have values in the set of all possible <span class="math inline">\(N\times N\)</span> grids of three numbers each, with the numbers in the range <span class="together"><span class="math inline">\([0,1]\)</span>.</span></p>
+<p>We take it for granted that a quantity does have one value, and one value only (even if the value itself can consist of several numbers, for example).</p>
+<p>When we are uncertain about the value of a quantity, we assign a degree of belief to all possible cases. For a length, the cases could be “<span class="midgrey">The length is measured to have value 0.1 m</span>”, “<span class="midgrey">The length is measured to have value 0.2 m</span>”, and so on. We can abbreviate them as <span class="math display">\[
+L = \mathrm{0.1\,m} \ , \qquad
+L = \mathrm{0.2\,m} \ , \qquad
+\dotsc
+\]</span> (in practice the number of possible cases is always finite; but we’ll get back to this point later). We recognize these as <em>mutually exclusive</em> and <em>exhaustive</em> sentences.</p>
+<p>Our belief about the variable is then expressed by a collection of probabilities: <span class="math display">\[
+\mathrm{P}(L \mathord{\,=\,}\mathrm{0.1\,m} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \ , \quad
+\mathrm{P}(L \mathord{\,=\,}\mathrm{0.2\,m} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \ , \quad
+\dotsc
+\]</span> that sum up to one: <span class="math display">\[
+\mathrm{P}(L \mathord{\,=\,}\mathrm{0.1\,m} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) +
+\mathrm{P}(L \mathord{\,=\,}\mathrm{0.2\,m} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) +
+\dotsb
+= 1
+\]</span> This collection is called a <span class="blue"><strong>probability distribution</strong></span>, because we are distributing unit amount of probability among several sentences.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Consider three sentences <span class="math inline">\(\mathsfit{X}_1, \mathsfit{X}_2, \mathsfit{X}_3\)</span> that are mutually exclusive and exhaustive on conditional <span class="together"><span class="math inline">\(\mathsfit{I}\)</span>,</span> that is: <span class="math display">\[
+\begin{gathered}
+\mathrm{P}(\mathsfit{X}_1 \land \mathsfit{X}_2 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) =
+\mathrm{P}(\mathsfit{X}_1 \land \mathsfit{X}_3 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) =
+\mathrm{P}(\mathsfit{X}_2 \land \mathsfit{X}_3 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = 0
+\\
+\mathrm{P}(\mathsfit{X}_1 \lor \mathsfit{X}_2 \lor \mathsfit{X}_3 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = 1
+\end{gathered}
+\]</span> Prove, using the fundamental rules of inferences and any derived rules from <span class="quarto-unresolved-ref">?sec-probability</span>, that we must then have <span class="math display">\[
+\mathrm{P}(\mathsfit{X}_1 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) + \mathrm{P}(\mathsfit{X}_2 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) + \mathrm{P}(\mathsfit{X}_3 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = 1
+\]</span></p>
+</div>
+</div>
+</section>
+<section id="kinds-of-data" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="kinds-of-data"><span class="header-section-number">8.2</span> Kinds of data</h2>
 <section id="binary" class="level3">
 <h3 class="anchored" data-anchor-id="binary">Binary</h3>
 </section>
@@ -270,8 +325,8 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 </section>
 </section>
-<section id="data-transformations" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="data-transformations"><span class="header-section-number">8.2</span> Data transformations</h2>
+<section id="data-transformations" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="data-transformations"><span class="header-section-number">8.3</span> Data transformations</h2>
 <ul>
 <li><p>log</p></li>
 <li><p>probit</p></li>
