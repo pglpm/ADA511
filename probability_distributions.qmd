@@ -110,24 +110,48 @@ Representation of the same pair of probability distributions with a histogram pl
 
 ## Probability densities
 
-Distributions of probability over continuous domains present several counter-intuitive aspects, which essentially come about because we are dealing with uncountable infinities -- while often still using linguistic expressions that make at most sense for countable infinities. Here we follow a practical and realistic approach for dealing with them.
+Distributions of probability over continuous domains present several counter-intuitive aspects, which essentially come about because we are dealing with uncountable infinities -- while often still using linguistic expressions that make at most sense for countable infinities. Here we follow a practical and realistic approach for working with them.
 
-Consider a quantity $X$ with a theoretically continuous domain. When we say that such a quantity has some value $x$ we really mean that it has a value somewhere between $x -\delta$ and $x+\delta$, where $\delta$ is usually extremely small.
+Consider a quantity $X$ with a theoretically continuous domain. When we say that such a quantity has some value $x$ we really mean that it has a value somewhere in the range $x -\epsilon/2$ to $x+\epsilon/2$, where $\epsilon$ is usually extremely small.
 
+For [`double`-precision values](https://rdrr.io/r/base/double.html) stored in a computer, for example, [$\epsilon \approx 2\cdot 10^{-16}$ :]{.m}
+```r
+> 1.234567890123456 == 1.234567890123455
+[1] FALSE
 
-Quantities with a continuous domain of values are in practice discrete ones with 
-
-```{r}
-1.2345678912345679 == 1.2345678912345671
-
-1.23456789123456789 == 1.23456789123456781
+> 1.2345678901234567 == 1.2345678901234566
+[1] TRUE
 ```
+and a value `1.3` represents a number between
+`1.29999999999999982236431605997495353221893310546875` and `1.300000000000000266453525910037569701671600341796875`, this range coming from the internal binary representation of `1.3`. But often the $\epsilon$ is much larger, coming from the way the value is measured.
 
+Probabilities are therefore effectively assigned to such small ranges, not to single values. Since these ranges are very small, they are also very numerous. The total probability assigned to all of them must still amount to $1$; therefore each small range effectively receives an extremely small amount of probability. A standard Gaussian distribution for a real quantity, for instance, assigns a probability of approximately $8\cdot 10^{-17}$, or $0.00000000000000008$, to a range of width $2\cdot 10^{-16}$ around the value $0$ -- and all other ranges are assigned even smaller probabilities.
 
+In would be impractical to work with such small probabilities. We therefore use [**probability densities**]{.blue} instead. As implied by the term "[density](https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-8)", a probability density is the amount of probability $P$ within a standard range of width $\epsilon$, *divided* by that width.
 
+Probability densities are convenient because they usually do not depend on the range width $\epsilon$, if it's small enough. Owing to physics reasons, we don't expect a situation where $X$ is between $0.9999999999999999$ and $1.0000000000000001$ to be very different from one where $X$ is between $1.0000000000000001$ and $1.0000000000000003$. The probabilities assigned to these two small ranges of width $\epsilon=2\cdot 10^{-16}$ each will therefore be approximately equal, let's say $P$ each. Now if we use a small range of width $\epsilon$ around $X=1$, the probability is $P$, and the probability *density* is $P/\epsilon$. If we consider a range of double width $2\,\epsilon$ around $X=1$, then the probability is $P+P$ instead, but the probability density is still $(P+P)/(2\,\epsilon) = P/\epsilon$.
 
+In these notes we'll denote probability densities with a *lowercase* $\p$ and use the following notation:
+$$
+\underbracket[0ex]{\p}_{\mathclap{\color[RGB]{204,187,68}\textit{lowercase}}}(X\mo x \| \yI) \coloneqq
+\frac{
+\overbracket[0ex]{\P}^{\mathclap{\color[RGB]{204,187,68}\textit{uppercase}}}(\pr{\(X\) has value between \(x-\epsilon/2\) and \(x+\epsilon/2\)} \| \yI)
+}{\epsilon}
+$$
+This definition works even if we don't specify the exact value of $\epsilon$, as long as it's small enough.
 
-## Representation of continuous probability distributions
+:::{.callout-warning}
+## {{< fa exclamation-circle >}} Probability densities are not probabilities
+The expression ["$\p(X\mo 2.5 \| \yI)=0.3$"]{.m} does *not* mean "There is a $0.3$  probability that $X\mo 2.5$". In fact, the probability that $X\mo 2.5$ *exactly* is, if anything, zero.
+
+That expression means "There is a\ \ $0.3\cdot \epsilon$\ \  probability that $X$ is between $2.5-\epsilon/2$ and $2.5+\epsilon/2$, for any $\epsilon$ small enough".
+
+It is important not to mix up probability and probability *densities*: we shall see later that densities have very different properties, for example with respect to maxima and averages.
+:::
+
+A helpful practice (though followed by few texts) is to always write a probability density as\ \ [$\p(X\mo x \| \yI)\,\di x$ ,]{.m}\ \ where ["$\di x$"]{.m} stands for a small range around $x$. This notation is also helpful with integrals. Unfortunately it becomes a little cumbersome when we are dealing with more than one quantity.
+
+## Representation of probability densities
 
 
 * Density function
