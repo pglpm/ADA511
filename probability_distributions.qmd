@@ -104,6 +104,8 @@ Representation of the same pair of probability distributions with a histogram pl
 ![](example_curve_double.png){width=100%}
 :::
 
+
+
 ## Probability distributions over infinite discrete values
 
 @@ TODO
@@ -123,28 +125,30 @@ For [`double`-precision values](https://rdrr.io/r/base/double.html) stored in a 
 [1] TRUE
 ```
 and a value `1.3` represents a number between
-`1.29999999999999982236431605997495353221893310546875` and `1.300000000000000266453525910037569701671600341796875`, this range coming from the internal binary representation of `1.3`. But often the $\epsilon$ is much larger, coming from the way the value is measured.
+[`1.29999999999999982236431605997495353221893310546875`]{.small} and [`1.300000000000000266453525910037569701671600341796875`]{.small}, this range coming from the internal binary representation of `1.3`. But often the $\epsilon$ is much larger, coming from the way the value is measured.
 
-Probabilities are therefore effectively assigned to such small ranges, not to single values. Since these ranges are very small, they are also very numerous. The total probability assigned to all of them must still amount to $1$; therefore each small range effectively receives an extremely small amount of probability. A standard Gaussian distribution for a real quantity, for instance, assigns a probability of approximately $8\cdot 10^{-17}$, or $0.00000000000000008$, to a range of width $2\cdot 10^{-16}$ around the value $0$ -- and all other ranges are assigned even smaller probabilities.
+Probabilities are therefore effectively assigned to such small ranges, not to single values. Since these ranges are very small, they are also very numerous. The total probability assigned to all of them must still amount to $1$; therefore each small range effectively receives an extremely small amount of probability. A standard Gaussian distribution for a real quantity, for instance, assigns a probability of approximately $8\cdot 10^{-17}$, or [$0.00000000000000008$]{.small}, to a range of width $2\cdot 10^{-16}$ around the value $0$ -- and all other ranges are assigned even smaller probabilities.
 
 In would be impractical to work with such small probabilities. We therefore use [**probability densities**]{.blue} instead. As implied by the term "[density](https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-8)", a probability density is the amount of probability $P$ within a standard range of width $\epsilon$, *divided* by that width.
 
-Probability densities are convenient because they usually do not depend on the range width $\epsilon$, if it's small enough. Owing to physics reasons, we don't expect a situation where $X$ is between $0.9999999999999999$ and $1.0000000000000001$ to be very different from one where $X$ is between $1.0000000000000001$ and $1.0000000000000003$. The probabilities assigned to these two small ranges of width $\epsilon=2\cdot 10^{-16}$ each will therefore be approximately equal, let's say $P$ each. Now if we use a small range of width $\epsilon$ around $X=1$, the probability is $P$, and the probability *density* is $P/\epsilon$. If we consider a range of double width $2\,\epsilon$ around $X=1$, then the probability is $P+P$ instead, but the probability density is still $(P+P)/(2\,\epsilon) = P/\epsilon$.
+Probability densities are convenient because they usually do not depend on the range width $\epsilon$, if it's small enough. Owing to physics reasons, we don't expect a situation where $X$ is between [$0.9999999999999999$]{.small} and [$1.0000000000000001$]{.small} to be very different from one where $X$ is between [$1.0000000000000001$]{.small} and [$1.0000000000000003$]{.small}. The probabilities assigned to these two small ranges of width $\epsilon=2\cdot 10^{-16}$ each will therefore be approximately equal, let's say $P$ each. Now if we use a small range of width $\epsilon$ around $X=1$, the probability is $P$, and the probability *density* is $P/\epsilon$. If we consider a range of double width $2\,\epsilon$ around $X=1$, then the probability is $P+P$ instead, but the probability density is still $(P+P)/(2\,\epsilon) = P/\epsilon$.
 
-In these notes we'll denote probability densities with a *lowercase* $\p$ and use the following notation:
+In these notes we'll denote probability densities with a [*lowercase* $\p$]{.blue}, with the following notation:
 $$
-\underbracket[0ex]{\p}_{\mathclap{\color[RGB]{204,187,68}\textit{lowercase}}}(X\mo x \| \yI) \coloneqq
+\underbracket[0ex]{\p}_{\mathrlap{\color[RGB]{119,119,119}\!\uparrow\ \textit{lowercase}}}(X\mo x \| \yI) \coloneqq
 \frac{
-\overbracket[0ex]{\P}^{\mathclap{\color[RGB]{204,187,68}\textit{uppercase}}}(\pr{\(X\) has value between \(x-\epsilon/2\) and \(x+\epsilon/2\)} \| \yI)
+\overbracket[0ex]{\P}^{\mathrlap{\color[RGB]{119,119,119}\!\downarrow\ \textit{uppercase}}}(\pr{\(X\) has value between \(x-\epsilon/2\) and \(x+\epsilon/2\)} \| \yI)
 }{\epsilon}
 $$
 This definition works even if we don't specify the exact value of $\epsilon$, as long as it's small enough.
 
 :::{.callout-warning}
 ## {{< fa exclamation-circle >}} Probability densities are not probabilities
-The expression ["$\p(X\mo 2.5 \| \yI)=0.3$"]{.m} does *not* mean "There is a $0.3$  probability that $X\mo 2.5$". In fact, the probability that $X\mo 2.5$ *exactly* is, if anything, zero.
+The expression ["$\p(X\mo 2.5 \| \yI)=0.3$"]{.m} does *not* mean "There is a $0.3$  probability that $X\mo 2.5$". The probability that $X\mo 2.5$ *exactly* is, if anything, zero.
 
 That expression means "There is a\ \ $0.3\cdot \epsilon$\ \  probability that $X$ is between $2.5-\epsilon/2$ and $2.5+\epsilon/2$, for any $\epsilon$ small enough".
+
+In fact, **probability densities can be larger than 1**, because they are obtained by dividing by a number, the range width, that is in principle arbitrary. This fact shows that they cannot be probabilities.
 
 It is important not to mix up probability and probability *densities*: we shall see later that densities have very different properties, for example with respect to maxima and averages.
 :::
@@ -153,6 +157,24 @@ A helpful practice (though followed by few texts) is to always write a probabili
 
 ## Representation of probability densities
 
+### Curve-based representations
+
+The histogram and the curve representations can be used to represent a one-dimensional probability density, and they become indistinguishable.
+
+If we represent the probability $P$ assigned to a small range as the area of a rectangle, and the width $\epsilon$ of the rectangle is equal to that of the range, then the height $P/\epsilon$ of the rectangle is numerically equal to the probability density. The difference from histograms for discrete quantities lies in the values reported on the vertical axis: they are *probabilities* (the areas of the rectangles) for discrete quantities, but probability *densities* (the heights of the rectangles) for continuous quantities. This is also evident from the fact that the values reported on the vertical axis can be larger than 1, as in the plots on the side.
+
+The rectangles, however, are so thin (usually thinner than a pixel on a screen) that they appear just as vertical lines, and together they look just like a curve with the area underneath coloured. If we don't colour the area underneath we just have a curve-based representation of the probability density.
+
+:::{.column-margin}
+![](example_histo_density_0.08.png){width=100%}
+![](example_histo_density_0.01.png){width=100%}
+![](example_curve_density.png){width=100%}
+As the width $\epsilon$ of the small domain ranges is decreased, a histogram based on these widths become indistinguishable from a curve-based plot
+:::
+
+### Scatter plots
+
+Histogram and curve-based representations can also be generalized to two dimensions
 
 * Density function
 
