@@ -3,7 +3,7 @@
 
 ## Quantities
 
-### Quantities, values, domains
+### Quantities, values, domains {#sec-quant-value-dom}
 
 Most decisions and inferences in engineering and data science involve things or properties of real things. We represent them by mathematical objects -- most often, collections of numbers -- with particular mathematical properties and operations. The mathematical properties reflect the kind of activities that we can do with these things. For instance, colours are represented by particular tuples of numbers, and these tuples can be multiplied by some numeric weights and added, to obtain another tuple. This mathematical operation represents the fact that colours can be obtained by mixing other colours in different proportions. Physics and engineering are founded on this approach.
 
@@ -13,9 +13,9 @@ For instance:
 
 - *quantity*: the image taken by a particular camera at a particular time, represented by a specific collection of numbers (say $128\times128\times3$ integer numbers between $0$ and $255$)
 - *values*: one value is this: ![](cat_image.png){width=2em} (corresponding to a grid of  $128\times128\times3$ *specific* numbers), another is this: ![](saitama_image.png){width=2em} -- and there are many other possible values
-- *domain*: the collection of $256\times3\times128\times128 = 12 582 912$ possible images (corresponding to the collection of possible grids of numeric values)
+- *domain*: the collection of $256^{3\times128\times128} \approx 10^{118 370}$ possible images (corresponding to the collection of possible grids of numeric values)
 
-The vague term "data" typically mean a specific collection of values of a collection of quantities.
+The vague term "data" typically means a specific collection of values of a collection of quantities.
 
 Other examples of quantities and domains:
 
@@ -24,8 +24,6 @@ Other examples of quantities and domains:
 1. The number of total views of some online video (at a specific time), with a domain, say, from 0 to 20 billions.
 
 1. The force on an object (at a specific time and place). The domain could be, say, 3D vectors with components in $[-100\,\mathrm{N},\,+100\,\mathrm{N}]$.
-
-1. The image taken by a camera. The domain could be all possible combinations of values in $[0,1]$ over three $1280\times 720$ grids (one grid per basic colour).
 
 1. The degree of satisfaction in a customer survey, with five possible values `Not at all satisfied`, `Slightly satisfied`, `Moderately satisfied`, `Very satisfied`, `Extremely satisfied`.
 
@@ -63,7 +61,11 @@ This means that it does not make sense to say, for instance, that some value is 
 
 Examples: the possible breeds of a dog, or the characters of a film.
 
-It is of course possible to represent the values of a nominal quantity with numbers; say `1` for `Dachshund`, `2` for `Labrador`, `3` for `Dalmatian`, and so on. But that doesn't mean that "`Dalmatian`${}-{}$`Labrador`${}={}$`Labrador`${}-{}$`Dachshund`", or similar nonsense.
+It is of course possible to represent the values of a nominal quantity with numbers; say `1` for `Dachshund`, `2` for `Labrador`, `3` for `Dalmatian`, and so on. But that doesn't mean that
+\
+`Dalmatian`${}-{}$`Labrador`${}={}$`Labrador`${}-{}$`Dachshund`
+\
+or similar nonsense.
 
 
 ### Ordinal
@@ -131,18 +133,24 @@ Nominal and ordinal quantities have discrete domains. The domain of an interval 
 
 @@ TODO comment on repetition
 
-### Finite vs infinite
+### Bounded vs unbounded
 
-The domain of a discrete quantity can consist of a finite or (at least in theory) an infinite number of possible values. For example, the number of times a link on a webpage has been clicked can in principle be infinite. In some inference and decision-making problems it may be necessary to find a concrete finite maximum number even for a quantity that is in principle infinite.
+Ordinal and interval quantities may have domains with no minimum value, or no maximum value, or neither. Typical terms for these situations are *lower-* or *upper-bounded*, or *left-* or *right-bounded*, and *unbounded*; or similar terms. 
+
+Whether to treat a quantity domain as bounded or unbounded depends on the quantity, the specific problem, and the computational resources. For example, the number of times a link on a webpage has been clicked can in principle be (right-)unbounded. Another example is the distance between two objects: we can consider it unbounded, but in concrete problems might be bounded, say, by the size of a laboratory, or by [Earth](https://solarsystem.nasa.gov/planets/earth)'s circumference, or the [Solar System](https://solarsystem.nasa.gov/solar-system/our-solar-system)'s extension, and so on.
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercises
-If you had to set a maximum number of times a web link can be clicked, which number would you choose? Try to find a reasonable number, considering factors such as how fast a person can repeatedly click on a link, how long can a website (or the Earth?) last, and how many people can live in such an extent of time.
+- If you had to set a maximum number of times a web link can be clicked, what number would you choose? Try to find a reasonable number, considering factors such as how fast a person can repeatedly click on a link, how long can a website (or the Earth?) last, and how many people can live in such an extent of time.
+
+- What about the age of a person? What bound would you set, if you had to treat it as a bounded quantity?
 :::
 
-### Bounded vs unbounded
+### Finite vs infinite
 
-Ordinal and interval quantities may have domains with no minimum value, or no maximum value, or neither. Typical terms for these situations are *lower-* or *upper-bounded*, or *left-* or *right-bounded*, and *unbounded*; or similar terms. A domain can be infinite and yet bounded: consider the numbers in the range $[0,1]$,
+The domain of a discrete quantity can consist of a finite or -- at least in theory -- an infinite number of possible values (the domain of a continuous quantity always has an infinite number of values). A domain can be infinite and yet bounded: consider the numbers in the range $[0,1]$.
+
+Whether to treat a domain as finite or infinite depends on the quantity, the specific problem, and the computational resources. For example, the intensity of a base colour in a pixel of a particular image might really take on 256 discrete steps between $0$ and $1$: [$0, 0.0039215686, 0.0078431373, \dotsc, 1$]{.small}. But in some situations we can treat this domain as practically infinite, with any possible value between $0$ and $1$.
 
 ### Rounded
 
@@ -150,12 +158,12 @@ A continuous interval quantity may be rounded, owing to the way it's measured. I
 
 :::{.column-margin}
 ![](iris_dataset.png){width=100%}
-The *Iris* dataset in its original paper
+The *Iris* dataset from its original paper
 :::
 
 The famous [*Iris* dataset](https://doi.org/10.1111/j.1469-1809.1936.tb02137.x), for instance, consists of several lengths -- continuous interval quantities -- of parts of flowers. All values are rounded to the millimetre, even if in reality the lengths could have intermediate values, of course. The age of a person is another frequent example of an in-principle continuous quantity which is rounded, say to the year or the month.
 
-It is important to be aware of rounding in some situations, because it can lead to two or more quantities to have the same value, whereas in reality they all have different values.
+In some situations it's important to be aware of rounding, because it can lead to quantities with different unrounded values to have identical rounded ones.
 
 ### Censored
 

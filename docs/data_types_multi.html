@@ -41,6 +41,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -61,11 +63,13 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="ada511styles.css">
 </head>
 
-<body class="nav-sidebar docked">
+<body class="nav-sidebar docked slimcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -244,7 +248,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#other-complex-types" id="toc-other-complex-types" class="nav-link active" data-scroll-target="#other-complex-types">Other complex types</a></li>
+  <li><a href="#sec-data-multiv" id="toc-sec-data-multiv" class="nav-link active" data-scroll-target="#sec-data-multiv"><span class="header-section-number">11.1</span> Multivariate quantities</a>
+  <ul class="collapse">
+  <li><a href="#discreteness-boundedness-continuity" id="toc-discreteness-boundedness-continuity" class="nav-link" data-scroll-target="#discreteness-boundedness-continuity">Discreteness, boundedness, continuity</a></li>
+  </ul></li>
+  <li><a href="#sec-data-complex" id="toc-sec-data-complex" class="nav-link" data-scroll-target="#sec-data-complex"><span class="header-section-number">11.2</span> Complex quantities</a></li>
   </ul>
 </nav>
 </nav>
@@ -253,7 +261,7 @@ ul.task-list li input[type="checkbox"] {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -277,15 +285,48 @@ ul.task-list li input[type="checkbox"] {
 <!-- \definecolor{lightblue}{HTML}{66CCEE} -->
 <!-- \sethlcolor{lightblue} -->
 </div>
-<section id="other-complex-types" class="level3">
-<h3 class="anchored" data-anchor-id="other-complex-types">Other complex types</h3>
-<p>The types of quantities listed so far are all, in a certain sense, one-dimensional.</p>
-<p>Some complex quantities can be seen simply as collections of quantities of the types listed above, so their analysis and their main properties reduces somehow to the ones already discussed. For example, data about a customer may consist of the collection of two quantities <em>name</em>, <em>age</em>. The first is a nominal quantity, the second an interval one. The combined quantity “name-age” can be dealt with by considering the two quantities separately.</p>
-<p>But there are many quantities whose sets of possible values have particular mathematical properties and operations that cannot be obtained by simply gathering together quantities of a one-dimensional type. Examples are quantities related to functions, colours, images, audio, video, graphs. For such types of complex quantities it is often important to be able to say whether two values are “close” to each other or “far away”. This leads to the introduction of <em>metrics</em> and other mathematical structures on the sets of values. The metrics may also depend on the particular purpose the quantity is used for.</p>
-<p>Some of these types of complex quantities will be discussed on a case-by-case basis.</p>
+<p>Quantities of more complex types can often be viewed and represented as sets (that is, collections) of quantities of basic and possibly different types. A useful, though approximate, distinction can be made on how these sets of basic quantities are made.</p>
+<section id="sec-data-multiv" class="level2 page-columns page-full" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="sec-data-multiv"><span class="header-section-number">11.1</span> Multivariate quantities</h2>
+<p>Some sets of basic types are just that: sets, in the sense that they do not have new properties or allow for new kinds of operations. We shall call these <span class="blue"><strong>multivariate quantities</strong></span> when necessary, although there’s no standard terminology.</p>
+<p>The values of a multivariate quantity are just tuples of values of its basic component quantities. Their domain is the <a href="https://mathworld.wolfram.com/CartesianProduct.html">Cartesian product</a> of the domains of the basic quantities.</p>
+<div class="page-columns page-full"><p>Consider for instance the age, sex<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, and <a href="https://www.gov.uk/government/publications/nationalities/list-of-nationalities">nationality</a> of a particular individual. They can be represented as an interval-continuous quantity <span class="math inline">\(A\)</span>, a binary one <span class="math inline">\(S\)</span>, and a nominal one <span class="math inline">\(N\)</span>. We can join them together to form the multivariate quantity&nbsp;&nbsp;“(age,&nbsp;sex,&nbsp;nationality)”&nbsp;&nbsp;which can be denoted by&nbsp;&nbsp;<span class="m"><span class="math inline">\((A,S,N)\)</span>.</span>&nbsp;&nbsp;One value of this multivariate quantity is, for example, <span class="m"><span class="math inline">\((25\,\mathrm{y}, \text{\small F}, \text{\small Norwegian})\)</span>.</span> The domain could be <span class="math display">\[
+[0,+\infty)\times
+\{\text{\small F}, \text{\small M}\} \times
+\{\text{\small Afghan}, \text{\small Albanian}, \dotsc, \text{\small Zimbabwean}\}
+\]</span></p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;We define <em>sex</em> by the presence of at least one <a href="https://www.genome.gov/about-genomics/fact-sheets/Y-Chromosome-facts">Y chromosome</a> or not. It is different from <em>gender</em>, which involves how a person identifies.</p></li></div></div>
+<section id="discreteness-boundedness-continuity" class="level3">
+<h3 class="anchored" data-anchor-id="discreteness-boundedness-continuity">Discreteness, boundedness, continuity</h3>
+<p>A multivariate quantity may not be simply characterized as “discrete”, or “bounded”, or “infinite”, and so on. Usually we must specify these characteristics for each of its basic component quantities instead. Sometimes a multivariate quantity is called, for instance, “continuous” if all its basic components are continuous; but other conventions are also used.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercises
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Consider again the examples of <a href="data_types_basic.html#sec-quant-value-dom">§&nbsp;<span>10.1.1</span></a>. Do you find any examples of multivariate quantities?</p>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-data-complex" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="sec-data-complex"><span class="header-section-number">11.2</span> Complex quantities</h2>
+<p>Some complex quantities can be represented as sets of quantities of basic types. These sets, however, are “more than the sum of their parts”: they possess new physical and mathematical properties and operations that do not apply or do not make sense for the single components.</p>
+<p>Familiar examples are vectorial quantities from physics and engineering, such as location, velocity, force, torque. Another example are images, when represented as grids of basic quantities.</p>
+<p>Consider for example a 4 × 4 monochrome image, represented as a grid of 16 binary quantities <span class="math inline">\(0\)</span> or <span class="m"><span class="math inline">\(1\)</span>.</span> Three possible values could be these:</p>
+<p><img src="threegrid1.png" class="img-fluid" style="width:6em">&nbsp;&nbsp;<img src="threegrid2.png" class="img-fluid" style="width:6em">&nbsp;&nbsp;<img src="threegrid3.png" class="img-fluid" style="width:6em"></p>
+<p>represented by the numeric matrices &nbsp;&nbsp;<span class="m"><span class="math inline">\(\begin{psmallmatrix}1&amp;0&amp;0&amp;0\\0&amp;0&amp;0&amp;0\\0&amp;0&amp;0&amp;0\\0&amp;0&amp;0&amp;0\end{psmallmatrix}\)</span>,</span> <span class="m"><span class="math inline">\(\begin{psmallmatrix}0&amp;1&amp;0&amp;0\\0&amp;0&amp;0&amp;0\\0&amp;0&amp;0&amp;0\\0&amp;0&amp;0&amp;0\end{psmallmatrix}\)</span>,</span> <span class="m"><span class="math inline">\(\begin{psmallmatrix}0&amp;0&amp;0&amp;0\\0&amp;0&amp;0&amp;0\\0&amp;0&amp;0&amp;0\\0&amp;0&amp;0&amp;1\end{psmallmatrix}\)</span>.</span><br>
+From the point of view of the individual binary quantities, these three “values” are equally different from one another: where one of them has grid value <span class="math inline">\(1\)</span>, the others have <span class="math inline">\(0\)</span>. But properly considered as images, we can say that the first and the second are somewhat more “similar” or “closer” to each other than the first and the third. This similarity can be represented and quantified by a <a href="https://mathworld.wolfram.com/Metric.html"><em>metric</em></a> over the domain of all such images. This metric involves all basic binary quantities at once; it is not a property of each of them individually.</p>
+<p>More generally, complex quantities have additional, peculiar properties, represented by mathematical structures, which distinguish them from simpler multivariate quantities; although there is not a clear separation between the two.</p>
+<p>These properties and structures are very important for inference problems, and usually make them computationally very hard. The importance of machine-learning methods lies to a great extent in the fact that they allow us to do approximate inference on these kinds of complex data. The peculiar structures of these data, however, are often also the cause of striking failures of some machine-learning methods, for example the reason why <a href="https://towardsdatascience.com/breaking-neural-networks-with-adversarial-attacks-f4290a9a45aa">they may classify incorrectly</a>, or correctly but for the wrong reasons.</p>
 
 
 </section>
+
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
