@@ -59,11 +59,15 @@ $$
 $$
 :::
 
-Let's see how probability distributions can be represented and visualized. We start with probability distributions over discrete values.
+Let's see how probability distributions can be represented and visualized for the basic types of quantities discussed in [§ #sec-data-types-basic]. 
 
-## Representation of discrete probability distributions
+We start with probability distributions over discrete domains.
 
-A probability distribution over a discrete set of values can obviously be displayed in a table of values and their probabilities. For instance
+## Discrete probability distributions
+
+### Tables
+
+A probability distribution over a discrete domain can obviously be displayed as a table of values and their probabilities. For instance
 
 |*value*| 270 K | 271 K | 272 K | ...|
 |-|:-:|:-:|:-:|:-:|
@@ -91,7 +95,7 @@ Nominal quantities do not have any specific order, so their values do not need t
 
 
 
-### Curve-based representations
+### Line-based representations
 
 Histograms give faithful representations of discrete probability distributions. Their graphical bulkiness, however, can be a disadvantage in some situations; for instance when we want to have a clearer idea of how the probability distribution varies across values (for ordinal or interval quantities); or when
 we want to compare several probability distributions over the same values.
@@ -110,14 +114,15 @@ Representation of the same pair of probability distributions with a histogram pl
 
 @@ TODO
 
+
+
 ## Probability densities
 
-Distributions of probability over continuous domains present several counter-intuitive aspects, which essentially come about because we are dealing with uncountable infinities -- while often still using linguistic expressions that make at most sense for countable infinities. Here we follow a practical and realistic approach for working with them.
+Distributions of probability over continuous domains present several counter-intuitive aspects, which essentially arise because we are dealing with uncountable infinities -- while often still using linguistic expressions that make at most sense for countable infinities. Here we follow a practical and realistic approach for working with such distributions.
 
-Consider a quantity $X$ with a theoretically continuous domain. When we say that such a quantity has some value $x$ we really mean that it has a value somewhere in the range $x -\epsilon/2$ to $x+\epsilon/2$, where $\epsilon$ is usually extremely small.
-
-For [`double`-precision values](https://rdrr.io/r/base/double.html) stored in a computer, for example, [$\epsilon \approx 2\cdot 10^{-16}$ :]{.m}
+Consider a quantity $X$ with a continuous domain. When we say that such a quantity has some value $x$ we really mean that it has a value somewhere in the range $x -\epsilon/2$ to $x+\epsilon/2$, where the width $\epsilon$ is usually extremely small. For example, for [double-precision](https://rdrr.io/r/base/double.html) values stored in a computer, the width is [$\epsilon \approx 2\cdot 10^{-16}$ :]{.m}
 ```r
+## R code
 > 1.234567890123456 == 1.234567890123455
 [1] FALSE
 
@@ -125,13 +130,25 @@ For [`double`-precision values](https://rdrr.io/r/base/double.html) stored in a 
 [1] TRUE
 ```
 and a value `1.3` represents a number between
-[`1.29999999999999982236431605997495353221893310546875`]{.small} and [`1.300000000000000266453525910037569701671600341796875`]{.small}, this range coming from the internal binary representation of `1.3`. But often the $\epsilon$ is much larger, coming from the way the value is measured.
+[`1.29999999999999982236431605997495353221893310546875`]{.small} and [`1.300000000000000266453525910037569701671600341796875`]{.small}, this range coming from the internal binary representation of `1.3`. But often the width $\epsilon$ is much larger than the computer's precision, and comes from the precision with which the value is experimentally measured.
 
-Probabilities are therefore effectively assigned to such small ranges, not to single values. Since these ranges are very small, they are also very numerous. The total probability assigned to all of them must still amount to $1$; therefore each small range effectively receives an extremely small amount of probability. A standard Gaussian distribution for a real quantity, for instance, assigns a probability of approximately $8\cdot 10^{-17}$, or [$0.00000000000000008$]{.small}, to a range of width $2\cdot 10^{-16}$ around the value $0$ -- and all other ranges are assigned even smaller probabilities.
+Probabilities are therefore assigned to such small ranges, not to single values. Since these ranges are very small, they are also very numerous. The total probability assigned to all of them must still amount to $1$; therefore each small range receives an extremely small amount of probability. A standard Gaussian distribution for a real quantity, for instance, assigns a probability of approximately $8\cdot 10^{-17}$, or [$0.00000000000000008$]{.small}, to a range of width $2\cdot 10^{-16}$ around the value [$0$.]{.m}  All other ranges are assigned even smaller probabilities.
 
-In would be impractical to work with such small probabilities. We therefore use [**probability densities**]{.blue} instead. As implied by the term "[density](https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-8)", a probability density is the amount of probability $P$ within a standard range of width $\epsilon$, *divided* by that width.
+In would be impractical to work with such small probabilities. We use [**probability densities**]{.blue} instead. As implied by the term "[density](https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-8)", a probability density is the amount of probability $P$ assigned to a standard range of width $\epsilon$, *divided* by that width. For example, if the probability assigned to a range of width\ \ $\epsilon=2\cdot10^{-16}$\ \ around $0$ is\ \ [$P=7.97885\cdot10^{-17}$,]{.m}\ \ then the
+*probability density* around $0$ is 
+$$
+\frac{P}{\epsilon} =
+\frac{7.97885\cdot10^{-17}}{2\cdot10^{-16}} = 0.398942
+$$
+which is a simpler number to work with.
 
-Probability densities are convenient because they usually do not depend on the range width $\epsilon$, if it's small enough. Owing to physics reasons, we don't expect a situation where $X$ is between [$0.9999999999999999$]{.small} and [$1.0000000000000001$]{.small} to be very different from one where $X$ is between [$1.0000000000000001$]{.small} and [$1.0000000000000003$]{.small}. The probabilities assigned to these two small ranges of width $\epsilon=2\cdot 10^{-16}$ each will therefore be approximately equal, let's say $P$ each. Now if we use a small range of width $\epsilon$ around $X=1$, the probability is $P$, and the probability *density* is $P/\epsilon$. If we consider a range of double width $2\,\epsilon$ around $X=1$, then the probability is $P+P$ instead, but the probability density is still $(P+P)/(2\,\epsilon) = P/\epsilon$.
+Probability densities are convenient because they usually do not depend on the range width $\epsilon$, if it's small enough. Owing to physics reasons, we don't expect a situation where $X$ is between [$0.9999999999999999$]{.small} and [$1.0000000000000001$]{.small} to be very different from one where $X$ is between [$1.0000000000000001$]{.small} and [$1.0000000000000003$]{.small}. The probabilities assigned to these two small ranges of width $\epsilon=2\cdot 10^{-16}$ each will therefore be approximately equal, let's say $P$ each. Now if we use a small range of width $\epsilon$ around $X=1$, the probability is $P$, and the probability *density* is $P/\epsilon$. If we consider a range of double width $2\,\epsilon$ around $X=1$, then the probability is $P+P$ instead, but the probability density is still
+$$\frac{P+P}{2\,\epsilon} = 
+\frac{1.59577\cdot10^{-16}}{4\cdot10^{-16}}
+= 0.398942
+$$
+
+\
 
 In these notes we'll denote probability densities with a [*lowercase* $\p$]{.blue}, with the following notation:
 $$
@@ -153,85 +170,60 @@ In fact, **probability densities can be larger than 1**, because they are obtain
 It is important not to mix up probability and probability *densities*: we shall see later that densities have very different properties, for example with respect to maxima and averages.
 :::
 
-A helpful practice (though followed by few texts) is to always write a probability density as\ \ [$\p(X\mo x \| \yI)\,\di x$ ,]{.m}\ \ where ["$\di x$"]{.m} stands for a small range around $x$. This notation is also helpful with integrals. Unfortunately it becomes a little cumbersome when we are dealing with more than one quantity.
+A helpful practice (though followed by few texts) is to always write a probability density as\ \ [$\p(X\mo x \| \yI)\,\di x$ ,]{.m}\ \ where ["$\di x$"]{.m} stands for the width of a small range around $x$. This notation is also helpful with integrals. Unfortunately it becomes a little cumbersome when we are dealing with more than one quantity.
 
 ## Representation of probability densities
 
-### Curve-based representations
+### Line-based representations
 
-The histogram and the curve representations can be used to represent a one-dimensional probability density, and they become indistinguishable.
+The histogram and the line representations become indistinguishable for a probability density.
 
-If we represent the probability $P$ assigned to a small range as the area of a rectangle, and the width $\epsilon$ of the rectangle is equal to that of the range, then the height $P/\epsilon$ of the rectangle is numerically equal to the probability density. The difference from histograms for discrete quantities lies in the values reported on the vertical axis: they are *probabilities* (the areas of the rectangles) for discrete quantities, but probability *densities* (the heights of the rectangles) for continuous quantities. This is also evident from the fact that the values reported on the vertical axis can be larger than 1, as in the plots on the side.
+If we represent the probability $P$ assigned to a small range of width $\epsilon$ as the area of a rectangle, and the width of the rectangle is equal to [$\epsilon$,]{.m} then the height $P/\epsilon$ of the rectangle is numerically equal to the probability density. The difference from histograms for discrete quantities lies in the values reported on the vertical axis: for discrete quantities the values are *probabilities* (the areas of the rectangles), but for continuous quantities they are probability *densities* (the heights of the rectangles). This is also evident from the fact that the values reported on the vertical axis can be larger than 1, as in the plots on the side.
 
-The rectangles, however, are so thin (usually thinner than a pixel on a screen) that they appear just as vertical lines, and together they look just like a curve with the area underneath coloured. If we don't colour the area underneath we just have a curve-based representation of the probability density.
+The rectangles, however, are so thin (usually thinner than a pixel on a screen) that they appear just as vertical lines, and together they look just like a curve delimiting a coloured area. If we don't colour the area underneath we just have a line-based representation of the probability density.
 
 :::{.column-margin}
 ![](example_histo_density_0.08.png){width=100%}
 ![](example_histo_density_0.01.png){width=100%}
 ![](example_curve_density.png){width=100%}
-As the width $\epsilon$ of the small domain ranges is decreased, a histogram based on these widths become indistinguishable from a curve-based plot
+As the width $\epsilon$ of the small ranges is decreased, a histogram based on these widths become indistinguishable from a line plot
 :::
 
 ### Scatter plots
 
-Histogram and curve-based representations can also be generalized to two dimensions
+Line plots of a probability density are very informative, but they can also be slightly deceiving. Try the following experiment.
 
-* Density function
+Consider a continuous quantity $X$ with the following probability density:
 
+![](example_curve_density.png){width=100%}
 
-* Scatter plot
+We want to represent the amount of probability in any small range -- say between $X\mo 0$ and $X\mo 0.1$ -- by drawing in that range a number of short thin lines, the number being proportional to the probability. So a range with 10 lines has twice the probability of a range with 5 lines. The probability density around a value is therefore roughly represented by the density of the lines around that value.
 
-@@ Behaviour of representations under transformations of data.
+Suppose that we have 50 lines available to distribute this way. Where should we place them?
 
+::::{.column-page-right}
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+:::::{style="font-size:110%;"}
+Which of these plots shows the correct placement of the 50 lines? [(NB: the placement of the correct one is determined by a pseudorandom-number generator.)]{.small}
 
+::::::{layout-nrow=2}
+![(A)](example_scatter_densityd_p50.png)
 
-## Summaries of distributions of probability
+![(B)](example_scatter_densitya_p50.png)
 
-### Location
+![(C)](example_scatter_densityb_p50.png)
 
-Median, mean
+![(D)](example_scatter_densityf_p50.png)
+::::::
+:::::
+:::
+::::
 
-### Dispersion or range
+In a [**scatter plot**]{.blue}, the probability density is (approximately) represented by density of lines, or points, or similar objects, as in the examples above (only one above, though, correctly matches the density represented by the curve).
 
-Quantiles & quartiles, interquartile range, median absolute deviation, standard deviation, half-range
+As the experiment and exercise above may have demonstrated, line plots sometimes give us slightly misleading ideas of how the probability is distributed across the domain; for example, peaks at some values make us overestimate the probability density around those values. Scatter plots often give a less misleading representation of the probability density.
 
-### Resolution
+Scatter plots are also useful for representing probability densities in more than one dimension -- sometimes even in infinite dimensions! They can moreover be easier to produce computationally than line plots.
 
-Differential entropy
-
-### Behaviour of summaries under transformations of data and errors in data
-
-
-
-## Outliers and out-of-population data
-
-(Warnings against tail-cutting and similar nonsense-practices)
-
-
-
-## Marginal and conditional distributions of probability
-
-
-
-## Collecting and sampling data
-
-### "Representative" samples
-
-Size of minimal representative sample = (2^entropy)/precision
-
-* _Exercise: data with 14 binary variates, 10000 samples_
-
-### Unavoidable sampling biases
-
-In high dimensions, all datasets are outliers.
-
-Data splits and cross-validation cannot correct sampling biases
-
-
-
-## Quirks and warnings about high-dimensional data
-
-
-
-
-
+@@ TODO Behaviour of representations under transformations of data.
