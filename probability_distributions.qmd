@@ -1,34 +1,39 @@
 # Probability distributions
 {{< include macros.qmd >}}
 
-[*(Make sure you're familiar with [§ @sec-data-types] before you begin.)*]{.small style="color: #EE6677;"}
+[*(Make sure you're familiar with [§ @sec-data-types-basic] before you begin.)*]{.small style="color:#EE6677;"}
 
 ## Distribution of probabilities among values
 
-When an agent is uncertain about the value of a quantity, its uncertainty is expressed and quantified by assigning a degree of belief, conditional on the agent's knowledge, to all the possible cases regarding the true value. For a temperature measurement, for instance, the cases could be "[The temperature is measured to have value 270 K]{.midgrey}", "[The temperature is measured to have value 271 K]{.midgrey}", and so on. We can abbreviate these sentences, denoting the temperature with $T$, as
+When an agent is uncertain about the value of a quantity, its uncertainty is expressed and quantified by assigning a degree of belief, conditional on the agent's knowledge, to all the possible cases regarding the true value. For a temperature measurement, for instance, the cases could be "[The temperature is measured to have value 271 K]{.midgrey}", "[The temperature is measured to have value 271 K]{.midgrey}", and so on up to 275 K. We can abbreviate these sentences, denoting the temperature with $T$, as
 $$
-T = 270\,\mathrm{K} \ , \qquad
-T = 271\,\mathrm{K} \ , \qquad
-T = 272\,\mathrm{K} \ , \qquad
-\dotsc
+T = 271\,\mathrm{K} \ , \quad
+T = 272\,\mathrm{K} \ , \quad
+T = 273\,\mathrm{K} \ , \quad
+T = 274\,\mathrm{K} \ , \quad
+T = 275\,\mathrm{K} \ .
 $$
 We recognize these as *mutually exclusive* and *exhaustive* sentences.
 
-Our belief about the quantity is then expressed by a collection of probabilities, conditional on the agent's state of knowledge $\yI$:
-$$
-\P(T \mo 270\,\mathrm{K} \| \yI) \ , \quad
-\P(T \mo 271\,\mathrm{K} \| \yI) \ , \quad
-\P(T \mo 272\,\mathrm{K} \| \yI) \ , \quad
-\dotsc
-$$
+Our belief about the quantity is then expressed by a collection of probabilities, conditional on the agent's state of knowledge [$\yI$.]{.m} For instance:
+<!-- 4 10 18 28 40 -->
+$$\begin{aligned}
+\P(T \mo 271\,\mathrm{K} \| \yI) &= 0.04 \\[1ex]
+\P(T \mo 272\,\mathrm{K} \| \yI) &= 0.10 \\[1ex]
+\P(T \mo 273\,\mathrm{K} \| \yI) &= 0.18 \\[1ex]
+\P(T \mo 274\,\mathrm{K} \| \yI) &= 0.28 \\[1ex]
+\P(T \mo 275\,\mathrm{K} \| \yI) &= 0.40
+\end{aligned}$$
 that sum up to one:
-$$
-\P(T \mo 270\,\mathrm{K} \| \yI) +
-\P(T \mo 271\,\mathrm{K} \| \yI) +
-\P(T \mo 272\,\mathrm{K} \| \yI) +
-\dotsb
-= 1
-$$
+$$\begin{aligned}
+&\P(T \mo 271\,\mathrm{K} \| \yI) +
+\dotsb +
+\P(T \mo 275\,\mathrm{K} \| \yI) \\
+&\quad{}= 
+0.04+0.10+0.18+0.28+0.40 \\
+&\quad{}=
+1
+\end{aligned}$$
 This collection of probabilities is called a [**probability distribution**]{.blue}.
 
 :::{.callout-warning}
@@ -59,21 +64,31 @@ $$
 $$
 :::
 
-Let's see how probability distributions can be represented and visualized for the basic types of quantities discussed in [§ #sec-data-types-basic]. 
+Let's see how probability distributions can be represented and visualized for the basic types of quantities discussed in [§ @sec-data-types-basic]. 
 
 We start with probability distributions over discrete domains.
 
 ## Discrete probability distributions
 
-### Tables
+### Tables and functions
 
 A probability distribution over a discrete domain can obviously be displayed as a table of values and their probabilities. For instance
 
-|*value*| 270 K | 271 K | 272 K | ...|
-|-|:-:|:-:|:-:|:-:|
-|*probability*|0.1|0.2|0.5|...|
+| *value*       | 271 K | 272 K | 273 K | 274 K | 275 K |
+|---------------|:-----:|:-----:|:-----:|:-----:|-------|
+| *probability* | 0.04  | 0.10  | 0.18  | 0.28  | 0.40  |
 
-But a graphical representation is often helpful to detect features, peculiarities, and even inconsistencies in one or more probability distributions.
+In the case of ordinal or interval quantities it is sometimes possible to express the probability as a *function* of the value. For instance, the probability distribution above could be summarized by the function
+$$
+\P(T \| \yI) = 
+\frac{(T/\textrm{\small K} - 269)^2}{90}
+\quad\text{\small (rounded to two decimals)}
+$$
+
+\
+
+
+A graphical representation is often helpful to detect features, peculiarities, and even inconsistencies in one or more probability distributions.
 
 ### Histograms and area-based representations
 
@@ -205,7 +220,7 @@ Suppose that we have 50 lines available to distribute this way. Where should we 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
 :::::{style="font-size:110%;"}
-Which of these plots shows the correct placement of the 50 lines? [(NB: the placement of the correct one is determined by a pseudorandom-number generator.)]{.small}
+Which of these plots shows the correct placement of the 50 lines? [(NB: the position of the correct answer is determined by a pseudorandom-number generator.)]{.small}
 
 ::::::{layout-nrow=2}
 ![(A)](example_scatter_densityd_p50.png)
@@ -227,3 +242,95 @@ As the experiment and exercise above may have demonstrated, line plots sometimes
 Scatter plots are also useful for representing probability densities in more than one dimension -- sometimes even in infinite dimensions! They can moreover be easier to produce computationally than line plots.
 
 @@ TODO Behaviour of representations under transformations of data.
+
+\
+
+## Combined probabilities
+
+Let's go back to our initial assembly-line scenario from [§ @sec-intro]. The inference problem was to predict whether a specific component would fail within a year or not. Consider the amount of time that will pass from the shipment and sale of the component (if it were accepted) to its failure, and represent it by the quantity $t$ with the following 25 different values, where ["$\mathrm{mo}$"]{.m} stands for "months":
+$$
+0\,\mathrm{mo}, \ 
+1\,\mathrm{mo}, \ 
+2\,\mathrm{mo}, \ 
+\dotsc, \ 
+11\,\mathrm{mo}, \ 
+12\,\mathrm{mo}, \ 
+13\,\mathrm{mo}, \ 
+\dotsc, \ 
+23\,\mathrm{mo}, \ 
+24\,\textrm{mo \small or more}. 
+$$
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+What is the basic type of the quantity $t$? Which other characteristics does it have? for instance discrete? unbounded? rounded? uncensored?
+:::
+
+Suppose that the inspection device -- our agent -- has internally calculated a probability distribution for $t$, conditional on its internal programming and the results of the tests on the component, denoted [$\yI$.]{.m} We can denote the probabilities compactly (omitting also the measurement unit) as
+$$
+\P(0 \|\yI), \quad
+\P(1 \|\yI), \quad
+\dotsc, \ 
+\P(24 \|\yI)
+$$
+
+:::{.column-margin}
+|$t/\textrm{\small mo}$ | $\P(t \|\yI)/\%$|
+|:-:|:-:|
+|0 |1.05|
+|1 |1.09|
+|2 |1.14|
+|3 |1.19|
+|4 |1.25|
+|5 |1.31|
+|6 |1.38|
+|7 |1.46|
+|8 |1.54|
+|9 |1.64|
+|10|1.75| 
+|11|1.87| 
+|12|2.02| 
+|13|2.18| 
+|14|2.38| 
+|15|2.62| 
+|16|2.91| 
+|17|3.28| 
+|18|3.74| 
+|19|4.37| 
+|20|5.24| 
+|21|6.55| 
+|22|8.74| 
+|23|13.1| 
+|24+|26.2|
+:::
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+| $t/\textrm{\small mo}$ | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24+ |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|$\P(t \|\yI)$ |1.05|1.09|1.14|1.19|1.25|1.31|1.38|1.46|1.54|1.64|1.75|1.87|2.02|2.18|2.38|2.62|2.91|3.28|3.74|4.37|5.24|6.55|8.74|13.1|26.2|
+
+
+
+
+@@ TODO
