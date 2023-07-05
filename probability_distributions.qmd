@@ -247,89 +247,87 @@ Scatter plots are also useful for representing probability densities in more tha
 
 ## Combined probabilities
 
-Let's go back to our initial assembly-line scenario from [§ @sec-intro]. The inference problem was to predict whether a specific component would fail within a year or not. Consider the amount of time that will pass from the shipment and sale of the component (if it were accepted) to its failure, and represent it by the quantity $t$ with the following 25 different values, where ["$\mathrm{mo}$"]{.m} stands for "months":
-$$
-0\,\mathrm{mo}, \ 
-1\,\mathrm{mo}, \ 
-2\,\mathrm{mo}, \ 
-\dotsc, \ 
-11\,\mathrm{mo}, \ 
-12\,\mathrm{mo}, \ 
-13\,\mathrm{mo}, \ 
-\dotsc, \ 
-23\,\mathrm{mo}, \ 
-24\,\textrm{mo \small or more}. 
-$$
+A probability distribution is defined over a set of mutually exclusive and exhaustive sentences. In some inference problems, however, we do not need the probability of those sentences, but of some other sentence that can be obtained from them by an `or` operation. The probability of this sentence can then be obtained by a sum, according to the `or`-rule of inference. We can call this a *combined probability*. Let's explain this procedure with an example.
+
+Back to our initial assembly-line scenario from [§ @sec-intro], the inference problem was to predict whether a specific component would fail within a year or not. Consider the time when the component will fail (if sold), and represent it by the quantity $t$ with the following 24 different values, where ["$\mathrm{mo}$"]{.m} stands for "months":
+$$\begin{aligned}
+&\pr{The component will fail during it 1st month of use}\\
+&\pr{The component will fail during it 2nd month of use}\\
+&\dotsc \\
+&\pr{The component will fail during it 23rd month of use}\\
+&\pr{The component will fail during it 24th month of use or after}
+\end{aligned}$$
+which we can shorten to\ \ [$t\mo 1,\ t\mo 2,\ \dotsc,\ t\mo 24$.]{.m} Note the slightly different meaning of the last value.
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
 What is the basic type of the quantity $t$? Which other characteristics does it have? for instance discrete? unbounded? rounded? uncensored?
 :::
 
-Suppose that the inspection device -- our agent -- has internally calculated a probability distribution for $t$, conditional on its internal programming and the results of the tests on the component, denoted [$\yI$.]{.m} We can denote the probabilities compactly (omitting also the measurement unit) as
+Suppose that the inspection device -- our agent -- has internally calculated a probability distribution for $t$, conditional on its internal programming and the results of the tests on the component, collectively denoted [$\yI$.]{.m} The probabilities, compactly written, are
 $$
-\P(0 \|\yI), \quad
 \P(1 \|\yI), \quad
-\dotsc, \ 
+\P(2 \|\yI), \quad
+\dotsc, \quad
 \P(24 \|\yI)
 $$
+Their values are stored in [this `csv` file](failure_probability.csv) and plotted in the histogram on the side.
 
 :::{.column-margin}
-|$t/\textrm{\small mo}$ | $\P(t \|\yI)/\%$|
-|:-:|:-:|
-|0 |1.05|
-|1 |1.09|
-|2 |1.14|
-|3 |1.19|
-|4 |1.25|
-|5 |1.31|
-|6 |1.38|
-|7 |1.46|
-|8 |1.54|
-|9 |1.64|
-|10|1.75| 
-|11|1.87| 
-|12|2.02| 
-|13|2.18| 
-|14|2.38| 
-|15|2.62| 
-|16|2.91| 
-|17|3.28| 
-|18|3.74| 
-|19|4.37| 
-|20|5.24| 
-|21|6.55| 
-|22|8.74| 
-|23|13.1| 
-|24+|26.2|
+![](failure_probabilities.png){width=100%}
+:::
+
+What's important for the agent's decision about rejecting or accepting the component, is not the exact time when it will fail, but only whether it will fail within the first year or not. That is, the agent needs the probability of the sentence $\pr{The component will fail within a year of use}$. But this sentence is just the `or` of the first 12 sentences expressing the values of $t$:
+$$
+\begin{aligned}
+&\pr{The component will fail within a year of use}
+\\&\qquad{}\equiv
+\pr{The component will fail during it 1st month of use}
+\lor{}
+\\&\qquad\qquad
+\pr{The component will fail during it 2nd month of use}
+\lor \dotsb
+\\&\qquad\qquad
+\dotsb \lor
+\pr{The component will fail during it 12th month of use}
+\\[1ex]&\qquad{}\equiv
+(t\mo 1) \lor (t\mo 2) \lor \dotsb \lor (t\mo 12)
+\end{aligned}
+$$
+The probability needed by the agent is therefore
+$$
+\P(1 \lor 2 \lor \dotsb \lor 12\| \yI )
+$$
+which can be calculated using the `or`-rule, considering that the sentences involved are mutually exclusive:
+$$
+\begin{aligned}
+&\P(\pr{The component will fail within a year of use} \| \yI) 
+\\[1ex]&\qquad{}=
+\P(1 \lor 2 \lor \dotsb \lor 12\| \yI )
+\\[1ex]&\qquad{}=
+\P(1 \|\yI) + \P(2 \|\yI) + \dotsb + \P(12 \|\yI)
+\\[1ex]&\qquad{}= \sum_{t=1}^{12} \P(t \| \yI)
+\end{aligned}
+$$
+
+
+
+:::{.callout-note}
+## Sum notation
+We shall often use the $\sum$-notation for sums, as in the example above. A notation like ["$\displaystyle\sum_{i=5}^{20}$"]{.m} means: write multiple copies of what's written on its right side, and in each copy replace the symbol ["$i$"]{.m} with values from $5$ to [$20$,]{.m} in turn; then sum up these copies. The symbol ["$i$"]{.m} is called the *index* of the sum. Sometimes the initial and final values, $5$ and $20$ in the example, are omitted if they are understood from the context, and the sum is written simply ["$\displaystyle\sum_{i}$".]{.m}
 :::
 
 
 
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Using your favourite programming language:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-| $t/\textrm{\small mo}$ | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24+ |
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|$\P(t \|\yI)$ |1.05|1.09|1.14|1.19|1.25|1.31|1.38|1.46|1.54|1.64|1.75|1.87|2.02|2.18|2.38|2.62|2.91|3.28|3.74|4.37|5.24|6.55|8.74|13.1|26.2|
-
+- Load the [`csv` file](failure_probability.csv) containing the probabilities.
+- Inspect this file, find the headers of its columns and so on.
+- Calculate the probability that the component will fail within a year of use.
+- Calculate the probability that the component will fail within two months or use or after a year of use.
+:::
 
 
 
