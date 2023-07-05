@@ -45,17 +45,18 @@ There is a wide variety of ways of representing multivariate probability distrib
 
 When a quantity is *bi*variate and its two component quantities are both discrete and finite, the joint probabilities can be reported as a table.
 
-Example: Consider the next patient that will arrive at a particular hospital. There's the possibility of arrival by `ambulance`, `helicopter`, or `other` means; and the possibility that the patient will need urgent care or `no`t. These can be seen as two quantities $A$ (nominal) and $U$ (binary). When these two quantities are taken together; their joint probability distribution is as follows, conditional on the hospital's data $\yi[H]$:
+Example: Consider the next patient that will arrive at a particular hospital. There's the possibility of arrival by `ambulance`, `helicopter`, or `other` transportation means; and the possibility that the patient will need `urgent` `non-urgent` care. These can be seen as two quantities $A$ (nominal) and $U$ (binary). When these two quantities are taken together; their joint probability distribution is as follows, conditional on the hospital's data $\yi[H]$:
 
 +:---------------:+:---------------:+:---------------:+:---------------:+:---------------:+
 |$\P(A,U\|\yi[H])$|                 |**arrival** $A$                                      |
 +-----------------+-----------------+-----------------+-----------------+-----------------+
 |                 |                 |ambulance        |helicopter       |other            |
 +-----------------+-----------------+-----------------+-----------------+-----------------+
-|**urgent** $U$   |yes              |0.11             |0.04             |0.03             |
+|**urgency** $U$  |urgent           |0.11             |0.04             |0.03             |
 +                 +-----------------+-----------------+-----------------+-----------------+
-|                 |no               |0.17             |0.01             |0.64             |
+|                 |non-urgent       |0.17             |0.01             |0.64             |
 +-----------------+-----------------+-----------------+-----------------+-----------------+
+: Joint probability distribution for transportation at arrival and urgency {#tbl-urgent-arrival}
 
 We see for instance that the most probable possibility is that the next patient will arrive by transportation means other than ambulance and helicopter, and won't require urgent care.
 
@@ -81,5 +82,78 @@ Consider for instance the probability that the next patient who arrives at a par
 @@ TODO work also for 3D
 
 
+\
 
+## Marginal probabilities
+
+In some situations we have the joint probability distribution for a multivariate quantity, but we are interested in the probability for a particular value of one of the component quantities only, or in the probability distribution for that component -- irrespective of what the values for the other components might be.
+
+Consider for instance the joint probability of [table @tbl-urgent-arrival]. We may be interested in the probability that the next patient will need urgent care, *independently of how the patient got to the hospital*. This probability can be found, as usual, by analysing the problem in terms of *sentences* and using the [basic rules of inference from § @sec-fundamental].
+
+The sentence we want is
+$$
+\pr{The next patient will require urgent care}
+$$
+which is equivalent to
+$$
+\pr{The next patient will require urgent care, and will arrive by ambulance, helicopter, or in by other means}
+$$
+This last sentence can be written by means of `and` and `or` connectives:
+$$
+\begin{aligned}
+&\pr{The next patient will require urgent care} \land{}
+\\[1ex]
+&\qquad\bigl(\pr{The next patient will arrive by ambulance} \lor {}
+\\&\qquad\qquad
+\pr{The next patient will arrive by helicopter} \lor {}
+\\&\qquad\qquad
+\pr{The next patient will arrive by other means}\bigr)
+\end{aligned}
+$$
+which we can compactly write as
+$$
+\begin{aligned}
+&\prq{urgent}\land
+(\prq{ambulance} \lor \prq{helicopter} \lor \prq{other})
+\\[1ex]
+&\qquad{}=
+(\prq{urgent}\land \prq{ambulance}) \lor
+(\prq{urgent}\land \prq{helicopter}) \lor
+(\prq{urgent}\land \prq{other})
+\end{aligned}
+$$
+where the second, equivalent form comes from the [derived rules of Boolean algebra of § @sec-boolean].
+
+The last sentence is an `or` of mutually exclusive sentences. Its probability is therefore given by the `or` rule:
+$$
+\begin{aligned}
+&\P\bigl[
+(\prq{urgent}\land \prq{ambulance}) \lor
+(\prq{urgent}\land \prq{helicopter}) \lor
+(\prq{urgent}\land \prq{other})
+\| \yi[H] \bigr]
+\\[1ex]
+&\qquad{}=
+\P(\prq{urgent}\land \prq{ambulance}\| \yi[H] ) +
+\P(\prq{urgent}\land \prq{ambulance}\| \yi[H] ) +
+\P(\prq{urgent}\land \prq{other}\| \yi[H] )
+\end{aligned}
+$$
+
+The probability for a value of the urgency quantity, independently of the value of the arrival-means quantity, can be found by summing all joint probabilities with all possible arrival-means values. Using the $\sum$-notation we can write
+$$
+\P(\prq{urgent} \| \yi[H]) =
+\sum_{\mathclap{A=\prq{ambulance}}}^{\mathclap{\prq{other}}}
+\P(\prq{urgent}, A \| \yi[H])
+$$
+
+This is called a [**marginal probability**]{.blue}.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Using the values from [table @tbl-urgent-arrival], calculate:
+
+- the marginal probability that the next patient will need urgent care
+- the marginal probability that the next patient will arrive by helicopter
+:::
 

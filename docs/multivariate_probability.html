@@ -41,6 +41,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -267,6 +269,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#surface-plots" id="toc-surface-plots" class="nav-link" data-scroll-target="#surface-plots">Surface plots</a></li>
   <li><a href="#scatter-plots" id="toc-scatter-plots" class="nav-link" data-scroll-target="#scatter-plots">Scatter plots</a></li>
   </ul></li>
+  <li><a href="#marginal-probabilities" id="toc-marginal-probabilities" class="nav-link" data-scroll-target="#marginal-probabilities"><span class="header-section-number">9.4</span> Marginal probabilities</a></li>
   </ul>
 </nav>
 </nav>
@@ -329,8 +332,10 @@ ul.task-list li input[type="checkbox"] {
 <section id="tables" class="level3">
 <h3 class="anchored" data-anchor-id="tables">Tables</h3>
 <p>When a quantity is <em>bi</em>variate and its two component quantities are both discrete and finite, the joint probabilities can be reported as a table.</p>
-<p>Example: Consider the next patient that will arrive at a particular hospital. There’s the possibility of arrival by <code>ambulance</code>, <code>helicopter</code>, or <code>other</code> means; and the possibility that the patient will need urgent care or <code>no</code>t. These can be seen as two quantities <span class="math inline">\(A\)</span> (nominal) and <span class="math inline">\(U\)</span> (binary). When these two quantities are taken together; their joint probability distribution is as follows, conditional on the hospital’s data <span class="math inline">\(\mathsfit{I}_{\text{H}}\)</span>:</p>
+<p>Example: Consider the next patient that will arrive at a particular hospital. There’s the possibility of arrival by <code>ambulance</code>, <code>helicopter</code>, or <code>other</code> transportation means; and the possibility that the patient will need <code>urgent</code> <code>non-urgent</code> care. These can be seen as two quantities <span class="math inline">\(A\)</span> (nominal) and <span class="math inline">\(U\)</span> (binary). When these two quantities are taken together; their joint probability distribution is as follows, conditional on the hospital’s data <span class="math inline">\(\mathsfit{I}_{\text{H}}\)</span>:</p>
+<div id="tbl-urgent-arrival" class="anchored">
 <table class="table">
+<caption>Table&nbsp;9.1: Joint probability distribution for transportation at arrival and urgency</caption>
 <colgroup>
 <col style="width: 19%">
 <col style="width: 19%">
@@ -352,20 +357,21 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: center;">other</td>
 </tr>
 <tr class="odd">
-<td rowspan="2" style="text-align: center;"><strong>urgent</strong> <span class="math inline">\(U\)</span></td>
-<td style="text-align: center;">yes</td>
+<td rowspan="2" style="text-align: center;"><strong>urgency</strong> <span class="math inline">\(U\)</span></td>
+<td style="text-align: center;">urgent</td>
 <td style="text-align: center;">0.11</td>
 <td style="text-align: center;">0.04</td>
 <td style="text-align: center;">0.03</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">no</td>
+<td style="text-align: center;">non-urgent</td>
 <td style="text-align: center;">0.17</td>
 <td style="text-align: center;">0.01</td>
 <td style="text-align: center;">0.64</td>
 </tr>
 </tbody>
 </table>
+</div>
 <p>We see for instance that the most probable possibility is that the next patient will arrive by transportation means other than ambulance and helicopter, and won’t require urgent care.</p>
 <p>It is also possible to replace the numerical probability values with graphical representations; for example as shades of a colour, or squares with different areas.</p>
 <p>@@ TODO ref to marginals section</p>
@@ -384,9 +390,78 @@ ul.task-list li input[type="checkbox"] {
 <section id="scatter-plots" class="level3">
 <h3 class="anchored" data-anchor-id="scatter-plots">Scatter plots</h3>
 <p>@@ TODO work also for 3D</p>
-
-
+<p><br>
+</p>
 </section>
+</section>
+<section id="marginal-probabilities" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="marginal-probabilities"><span class="header-section-number">9.4</span> Marginal probabilities</h2>
+<p>In some situations we have the joint probability distribution for a multivariate quantity, but we are interested in the probability for a particular value of one of the component quantities only, or in the probability distribution for that component – irrespective of what the values for the other components might be.</p>
+<p>Consider for instance the joint probability of <a href="#tbl-urgent-arrival">table&nbsp;<span>9.1</span></a>. We may be interested in the probability that the next patient will need urgent care, <em>independently of how the patient got to the hospital</em>. This probability can be found, as usual, by analysing the problem in terms of <em>sentences</em> and using the <a href="probability_inference.html#sec-fundamental">basic rules of inference from §&nbsp;<span>7.4</span></a>.</p>
+<p>The sentence we want is <span class="math display">\[
+\textsf{\small`The next patient will require urgent care'}
+\]</span> which is equivalent to <span class="math display">\[
+\textsf{\small`The next patient will require urgent care, and will arrive by ambulance, helicopter, or in by other means'}
+\]</span> This last sentence can be written by means of <code>and</code> and <code>or</code> connectives: <span class="math display">\[
+\begin{aligned}
+&amp;\textsf{\small`The next patient will require urgent care'} \land{}
+\\[1ex]
+&amp;\qquad\bigl(\textsf{\small`The next patient will arrive by ambulance'} \lor {}
+\\&amp;\qquad\qquad
+\textsf{\small`The next patient will arrive by helicopter'} \lor {}
+\\&amp;\qquad\qquad
+\textsf{\small`The next patient will arrive by other means'}\bigr)
+\end{aligned}
+\]</span> which we can compactly write as <span class="math display">\[
+\begin{aligned}
+&amp;\textsf{\small urgent}\land
+(\textsf{\small ambulance} \lor \textsf{\small helicopter} \lor \textsf{\small other})
+\\[1ex]
+&amp;\qquad{}=
+(\textsf{\small urgent}\land \textsf{\small ambulance}) \lor
+(\textsf{\small urgent}\land \textsf{\small helicopter}) \lor
+(\textsf{\small urgent}\land \textsf{\small other})
+\end{aligned}
+\]</span> where the second, equivalent form comes from the <a href="probability_inference.html#sec-boolean">derived rules of Boolean algebra of §&nbsp;<span>7.7.1</span></a>.</p>
+<p>The last sentence is an <code>or</code> of mutually exclusive sentences. Its probability is therefore given by the <code>or</code> rule: <span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}\bigl[
+(\textsf{\small urgent}\land \textsf{\small ambulance}) \lor
+(\textsf{\small urgent}\land \textsf{\small helicopter}) \lor
+(\textsf{\small urgent}\land \textsf{\small other})
+\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}} \bigr]
+\\[1ex]
+&amp;\qquad{}=
+\mathrm{P}(\textsf{\small urgent}\land \textsf{\small ambulance}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}} ) +
+\mathrm{P}(\textsf{\small urgent}\land \textsf{\small ambulance}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}} ) +
+\mathrm{P}(\textsf{\small urgent}\land \textsf{\small other}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}} )
+\end{aligned}
+\]</span></p>
+<p>The probability for a value of the urgency quantity, independently of the value of the arrival-means quantity, can be found by summing all joint probabilities with all possible arrival-means values. Using the <span class="math inline">\(\sum\)</span>-notation we can write <span class="math display">\[
+\mathrm{P}(\textsf{\small urgent} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}}) =
+\sum_{\mathclap{A=\textsf{\small ambulance}}}^{\mathclap{\textsf{\small other}}}
+\mathrm{P}(\textsf{\small urgent}, A \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+\]</span></p>
+<p>This is called a <span class="blue"><strong>marginal probability</strong></span>.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Using the values from <a href="#tbl-urgent-arrival">table&nbsp;<span>9.1</span></a>, calculate:</p>
+<ul>
+<li>the marginal probability that the next patient will need urgent care</li>
+<li>the marginal probability that the next patient will arrive by helicopter</li>
+</ul>
+</div>
+</div>
+
+
 </section>
 
 </main> <!-- /main -->
