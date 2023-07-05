@@ -30,7 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./inference_exchangeability.html" rel="next">
+<link href="./marginal_conditional.html" rel="next">
 <link href="./probability_distributions.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -67,7 +67,7 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="ada511styles.css">
 </head>
 
-<body class="nav-sidebar docked">
+<body class="nav-sidebar docked slimcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -194,8 +194,14 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./marginal_conditional.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Marginal and conditional probability distributions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./inference_exchangeability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">The most general inference problem</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">The most general inference problem</span></span></a>
   </div>
 </li>
       </ul>
@@ -212,19 +218,19 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./data_types_basic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Basic data types</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Basic data types</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./data_types_multi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Multivariate and complex data types</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Multivariate and complex data types</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./statistics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Statistics</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Statistics</span></span></a>
   </div>
 </li>
       </ul>
@@ -241,7 +247,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./making_decisions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Making decisions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Making decisions</span></span></a>
   </div>
 </li>
       </ul>
@@ -252,8 +258,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#distribution-of-probabilities-for-multiple-quantities" id="toc-distribution-of-probabilities-for-multiple-quantities" class="nav-link active" data-scroll-target="#distribution-of-probabilities-for-multiple-quantities"><span class="header-section-number">9.1</span> Distribution of probabilities for multiple quantities</a></li>
-  <li><a href="#representation-of-multivariate-probability-distributions" id="toc-representation-of-multivariate-probability-distributions" class="nav-link" data-scroll-target="#representation-of-multivariate-probability-distributions"><span class="header-section-number">9.2</span> Representation of multivariate probability distributions</a>
+  <li><a href="#joint-probability-distributions" id="toc-joint-probability-distributions" class="nav-link active" data-scroll-target="#joint-probability-distributions"><span class="header-section-number">9.1</span> Joint probability distributions</a></li>
+  <li><a href="#joint-probability-densities" id="toc-joint-probability-densities" class="nav-link" data-scroll-target="#joint-probability-densities"><span class="header-section-number">9.2</span> Joint probability densities</a></li>
+  <li><a href="#representation-of-joint-probability-distributions" id="toc-representation-of-joint-probability-distributions" class="nav-link" data-scroll-target="#representation-of-joint-probability-distributions"><span class="header-section-number">9.3</span> Representation of joint probability distributions</a>
   <ul class="collapse">
   <li><a href="#tables" id="toc-tables" class="nav-link" data-scroll-target="#tables">Tables</a></li>
   <li><a href="#multi-line-plots" id="toc-multi-line-plots" class="nav-link" data-scroll-target="#multi-line-plots">Multi-line plots</a></li>
@@ -268,7 +275,7 @@ ul.task-list li input[type="checkbox"] {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -293,10 +300,10 @@ ul.task-list li input[type="checkbox"] {
 <!-- \sethlcolor{lightblue} -->
 </div>
 <p>So far we have considered probability distributions for quantities of a basic (nominal, ordinal, binary, interval) type. These distributions have a sort of one-dimensional character and can be represented by ordinary histograms, line plots, and scatter plots. We now consider probability distributions for multivariate quantities.</p>
-<p><span class="small" style="color:#EE6677;"><em>(Make sure you’re familiar with <a href="data_types_multi.html">§&nbsp;<span>12</span></a> before you begin.)</em></span></p>
-<section id="distribution-of-probabilities-for-multiple-quantities" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="distribution-of-probabilities-for-multiple-quantities"><span class="header-section-number">9.1</span> Distribution of probabilities for multiple quantities</h2>
-<p>A multivariate quantity, as discussed in <a href="data_types_multi.html#sec-data-multiv">§&nbsp;<span>12.1</span></a>, is just a collection or set of quantities of basic types. Saying that a multivariate quantity has a particular value means that each basic component quantity has a particular value in its specific domain. This is expressed by an <code>and</code> of sentences.</p>
+<p><span class="small" style="color:#EE6677;"><em>(Make sure you’re familiar with <a href="data_types_multi.html">§&nbsp;<span>13</span></a> before you begin.)</em></span></p>
+<section id="joint-probability-distributions" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="joint-probability-distributions"><span class="header-section-number">9.1</span> Joint probability distributions</h2>
+<p>A multivariate quantity, as discussed in <a href="data_types_multi.html#sec-data-multiv">§&nbsp;<span>13.1</span></a>, is just a collection or set of quantities of basic types. Saying that a multivariate quantity has a particular value means that each basic component quantity has a particular value in its specific domain. This is expressed by an <code>and</code> of sentences.</p>
 <p>Consider for instance the multivariate quantity <span class="math inline">\(X\)</span> consisting of the age <span class="math inline">\(\color[RGB]{102,204,238}A\)</span> and sex <span class="math inline">\(\color[RGB]{34,136,51}S\)</span> of a specific person. The fact that <span class="math inline">\(X\)</span> has a particular value is expressed by a composite sentence such as <span class="math display">\[
 \textsf{\small`The person's age is 25 years and the sex is female'}
 \]</span> which we can compactly write with an <code>and</code>: <span class="math display">\[
@@ -306,24 +313,71 @@ ul.task-list li input[type="checkbox"] {
 \mathrm{P}\bigl[({\color[RGB]{102,204,238}A \mathord{\,=\,}25\,\mathrm{y}}) \land ({\color[RGB]{34,136,51}S\mathord{\,=\,}\mathrm{F}}) \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}\bigr] \ , \qquad
 \mathrm{P}\bigl[({\color[RGB]{102,204,238}A \mathord{\,=\,}31\,\mathrm{y}}) \land ({\color[RGB]{34,136,51}S\mathord{\,=\,}\mathrm{M}}) \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}\bigr] \ , \qquad
 \dotsc
-\]</span> where <span class="math inline">\(\mathsfit{I}\)</span> is the agent’s state of knowledge, and the probabilities sum up to one. Usually these probabilities are written in much abbreviated form, and the <span class="math inline">\(\land\)</span> is represented by a comma; for instance <span class="math display">\[
+\]</span> where <span class="math inline">\(\mathsfit{I}\)</span> is the agent’s state of knowledge, and the probabilities sum up to one. We call this a <span class="blue"><strong>multivariate</strong></span> or <span class="blue"><strong>joint probability distribution</strong></span>. Usually these probabilities are written in much abbreviated form, and the <span class="math inline">\(\land\)</span> is represented by a comma; for instance <span class="math display">\[
 \mathrm{P}({\color[RGB]{102,204,238}25}, {\color[RGB]{34,136,51}\mathrm{F}} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \ , \quad
 \mathrm{P}({\color[RGB]{102,204,238}31}, {\color[RGB]{34,136,51}\mathrm{M}} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \ , \quad
 \dotsc
 \]</span></p>
 </section>
-<section id="representation-of-multivariate-probability-distributions" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="representation-of-multivariate-probability-distributions"><span class="header-section-number">9.2</span> Representation of multivariate probability distributions</h2>
-<p>There is a wide variety of ways of representing multivariate probability distributions, and new ways are invented (and rediscovered) all the time. In some cases, especially when the quantity has more than three component quantities, it can become impossible to graphically represent the probability distribution in a faithful way. Therefore one often tries to represent only some aspects or features of interest from the full distribution. Whenever you see a plot of a multivariate probability distribution, you should carefully read what the plot represents and how it was made.</p>
-<p>Here we only show some examples and ideas of how one could represent multivariate probability distributions</p>
+<section id="joint-probability-densities" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="joint-probability-densities"><span class="header-section-number">9.2</span> Joint probability densities</h2>
+<p>@@ TODO</p>
+</section>
+<section id="representation-of-joint-probability-distributions" class="level2 page-columns page-full" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="representation-of-joint-probability-distributions"><span class="header-section-number">9.3</span> Representation of joint probability distributions</h2>
+<p>There is a wide variety of ways of representing multivariate probability distributions, and new ways are invented (and rediscovered) all the time. In some cases, especially when the quantity has more than three component quantities, it can become impossible to graphically represent the probability distribution in a faithful way. Therefore one often tries to represent only some aspects or features of interest from the full distribution. Whenever you see a plot of a multivariate probability distribution, you should carefully read what the plot shows and how it was made. Here we only illustrate some examples and ideas for representations.</p>
 <section id="tables" class="level3">
 <h3 class="anchored" data-anchor-id="tables">Tables</h3>
-<p>@@ TODO also contingency tables</p>
+<p>When a quantity is <em>bi</em>variate and its two component quantities are both discrete and finite, the joint probabilities can be reported as a table.</p>
+<p>Example: Consider the next patient that will arrive at a particular hospital. There’s the possibility of arrival by <code>ambulance</code>, <code>helicopter</code>, or <code>other</code> means; and the possibility that the patient will need urgent care or <code>no</code>t. These can be seen as two quantities <span class="math inline">\(A\)</span> (nominal) and <span class="math inline">\(U\)</span> (binary). When these two quantities are taken together; their joint probability distribution is as follows, conditional on the hospital’s data <span class="math inline">\(\mathsfit{I}_{\text{H}}\)</span>:</p>
+<table class="table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(\mathrm{P}(A,U\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}_{\text{H}})\)</span></td>
+<td style="text-align: center;"></td>
+<td colspan="3" style="text-align: center;"><strong>arrival</strong> <span class="math inline">\(A\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">ambulance</td>
+<td style="text-align: center;">helicopter</td>
+<td style="text-align: center;">other</td>
+</tr>
+<tr class="odd">
+<td rowspan="2" style="text-align: center;"><strong>urgent</strong> <span class="math inline">\(U\)</span></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">0.11</td>
+<td style="text-align: center;">0.04</td>
+<td style="text-align: center;">0.03</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">no</td>
+<td style="text-align: center;">0.17</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">0.64</td>
+</tr>
+</tbody>
+</table>
+<p>We see for instance that the most probable possibility is that the next patient will arrive by transportation means other than ambulance and helicopter, and won’t require urgent care.</p>
+<p>It is also possible to replace the numerical probability values with graphical representations; for example as shades of a colour, or squares with different areas.</p>
+<p>@@ TODO ref to marginals section</p>
 </section>
-<section id="multi-line-plots" class="level3">
+<section id="multi-line-plots" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="multi-line-plots">Multi-line plots</h3>
-<p>@@ TODO for discrete-continuous distributions</p>
-</section>
+<p>Joint probability distributions over one discrete and one continuous quantity (or ordinal discrete with numerous values) can be represented as a collection of line plots: each line plot represent the probability density for the continuous quantity and a specific value of the discrete quantity.</p>
+<p>Consider for instance the probability that the next patient who arrives at a particular hospital has a given age (continuous quantity) and may require urgent care or not (binary quantity). The joint probability density can be visualized as in the plot in the margin. From the plot we can see that the probability of urgent patients is generally lower than non-urgent ones. A possibly disadvantage of this kind of plots is evident: the details, such as peaks, of the density for some values of the discrete quantity may be barely visible.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><img src="hospital_age_urgent.png" class="img-fluid" style="width:100.0%"></p>
+</div></div></section>
 <section id="surface-plots" class="level3">
 <h3 class="anchored" data-anchor-id="surface-plots">Surface plots</h3>
 </section>
@@ -576,8 +630,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./inference_exchangeability.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">The most general inference problem</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./marginal_conditional.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Marginal and conditional probability distributions</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
