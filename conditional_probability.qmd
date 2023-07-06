@@ -1,6 +1,65 @@
 # Conditional probability distributions
 {{< include macros.qmd >}}
 
-A joint probability distribution quantifies an agent's uncertainty about all the quantities that compose a multivariate quantity. This means that in general the agent has no sure certainty about any of them.
+A joint probability distribution quantifies an agent's uncertainty about all the quantities that compose a multivariate quantity. This means that in general the agent has no sure certainty about any of them (there are of course special cases where probabilities can be $0$ or $1$, but they are not the general case).
 
-@@ TODO because of change in state of knowledge or hypothetical reasoning.
+We consider here two situations:
+
+1. the agent acquires knowledge of the values of one or more of the component quantities, so its state of knowledge changes;
+
+2. for inference purposes, the agents needs to hypothetically assume that the values of one or more component quantities were known;
+
+and in either situation, the agent needs the probability for one or more other component quantities.
+
+Suppose for instance that the agent has a joint probability that the quantity  $X$ has value [$x$,]{.m} and the quantity $Y$ has value [$y$,]{.m} conditional on the state of knowledge [$\yI$.]{.m} This can be written compactly as
+$$
+\P(X\mo x,Y\mo y \|\yI)
+\qquad\text{or even just}\qquad
+\P(X,Y \|\yI)
+$$
+
+:::{.callout-warning}
+##
+{{< fa exclamation-circle >}} Always keep in mind that these are just convenient shorthands for
+$$
+\P(\pr{The quantity \(X\) has value \(x\)} \land 
+\pr{The quantity \(Y\) has value \(y\)}
+\| \yI)
+$$
+:::
+
+Now the agent needs the probability that $Y$ has value [$y$,]{.m}, but conditional on the new state of knowledge where, in addition to [$\yI$,]{.m} the agent also knows that $X$ has value [$x$.]{.m} This is the probability
+$$
+\P(Y\mo y \| X\mo x, \yI)
+$$
+It is usually called a [**conditional probability**]{.blue}. It is somewhat a misnomer, because *all* probabilities are conditional on something. Here the implicit understanding is that *new* information has been added to the conditional with respect to some base state of knowledge.
+
+What is the numerical value of the conditional probability above? We simply use the `and`-rule:
+$$
+\P(Y\mo y \| X\mo x, \yI) =
+\frac{\P(X\mo x,Y\mo y \|\yI)}{\P(X\mo x \| \yI)}
+$$
+The denominator is the *marginal probability* for [$X$,]{.m} which can also be calculated from the joint distribution as discussed in [§ @sec-marginal-probs]:
+$$
+\P(X\mo x \| \yI) = \sum_{y} \P(X\mo x,Y\mo y \|\yI)
+$$
+
+We can thus rewrite the conditional probability as
+$$
+\P(Y\mo y \| X\mo x, \yI) =
+\frac{\P(X\mo x,Y\mo y \|\yI)}{\sum_{y} \P(X\mo x,Y\mo y \|\yI)}
+$$
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Consider the next-patient problem with the joint probability of [table @tbl-urgent-arrival]:
+
+1. Calculate the probability that the next patient needs urgent care, knowing that the patient will arrive by helicopter.
+
+2. Compare the conditional probability you just found with the *marginal* probability that the next patient needs urgent care, independently of transportation means (calculated in a previous exercise). Which is higher? Why?
+
+3. Calculate the probability that the next patient arrives by helicopter, knowing that the patient will need urgent care.
+
+4. Compare the conditional probability from 3. with that from 1. Why are they so different? Why is the probability ["$\prq{helicopter}\|\prq{urgent}$"]{.m} so low, when ["$\prq{urgent}\|\prq{helicopter}$"]{.m} is so high instead? find an intuitive explanation.
+:::
+

@@ -41,6 +41,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -61,6 +63,8 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="ada511styles.css">
 </head>
@@ -94,7 +98,6 @@ ul.task-list li input[type="checkbox"] {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">ADA511: <br>Data science and data-driven engineering</a> 
         <div class="sidebar-tools-main">
-    <a href="./ADA511---br-Data-science-and-data-driven-engineering.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
   <i class="bi"></i>
@@ -282,9 +285,69 @@ ul.task-list li input[type="checkbox"] {
 <!-- \renewcommand*{\prq}[1]{\textsf{\small #1}} -->
 <!-- \definecolor{lightblue}{HTML}{66CCEE} -->
 <!-- \sethlcolor{lightblue} -->
+<!-- \providecommand*{\moo}[1][=]{\mathord{\mkern1.5mu#1\mkern1.5mu}} -->
 </div>
-<p>A joint probability distribution quantifies an agent’s uncertainty about all the quantities that compose a multivariate quantity. This means that in general the agent has no sure certainty about any of them.</p>
-<p>@@ TODO because of change in state of knowledge or hypothetical reasoning.</p>
+<p>A joint probability distribution quantifies an agent’s uncertainty about all the quantities that compose a multivariate quantity. This means that in general the agent has no sure certainty about any of them (there are of course special cases where probabilities can be <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span>, but they are not the general case).</p>
+<p>We consider here two situations:</p>
+<ol type="1">
+<li><p>the agent acquires knowledge of the values of one or more of the component quantities, so its state of knowledge changes;</p></li>
+<li><p>for inference purposes, the agents needs to hypothetically assume that the values of one or more component quantities were known;</p></li>
+</ol>
+<p>and in either situation, the agent needs the probability for one or more other component quantities.</p>
+<p>Suppose for instance that the agent has a joint probability that the quantity <span class="math inline">\(X\)</span> has value <span class="m"><span class="math inline">\(x\)</span>,</span> and the quantity <span class="math inline">\(Y\)</span> has value <span class="m"><span class="math inline">\(y\)</span>,</span> conditional on the state of knowledge <span class="m"><span class="math inline">\(\mathsfit{I}\)</span>.</span> This can be written compactly as <span class="math display">\[
+\mathrm{P}(X\mathrel{\mkern-4mu=\mkern-4mu}x,Y\mathrel{\mkern-4mu=\mkern-4mu}y \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})
+\qquad\text{or even just}\qquad
+\mathrm{P}(X,Y \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})
+\]</span></p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><i class="fa-solid fa-exclamation-circle" aria-label="exclamation-circle"></i> Always keep in mind that these are just convenient shorthands for <span class="math display">\[
+\mathrm{P}(\textsf{\small`The quantity \(X\) has value \(x\)'} \land
+\textsf{\small`The quantity \(Y\) has value \(y\)'}
+\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\]</span></p>
+</div>
+</div>
+<p>Now the agent needs the probability that <span class="math inline">\(Y\)</span> has value <span class="m"><span class="math inline">\(y\)</span>,</span>, but conditional on the new state of knowledge where, in addition to <span class="m"><span class="math inline">\(\mathsfit{I}\)</span>,</span> the agent also knows that <span class="math inline">\(X\)</span> has value <span class="m"><span class="math inline">\(x\)</span>.</span> This is the probability <span class="math display">\[
+\mathrm{P}(Y\mathrel{\mkern-4mu=\mkern-4mu}y \nonscript\:\vert\nonscript\:\mathopen{} X\mathrel{\mkern-4mu=\mkern-4mu}x, \mathsfit{I})
+\]</span> It is usually called a <span class="blue"><strong>conditional probability</strong></span>. It is somewhat a misnomer, because <em>all</em> probabilities are conditional on something. Here the implicit understanding is that <em>new</em> information has been added to the conditional with respect to some base state of knowledge.</p>
+<p>What is the numerical value of the conditional probability above? We simply use the <code>and</code>-rule: <span class="math display">\[
+\mathrm{P}(Y\mathrel{\mkern-4mu=\mkern-4mu}y \nonscript\:\vert\nonscript\:\mathopen{} X\mathrel{\mkern-4mu=\mkern-4mu}x, \mathsfit{I}) =
+\frac{\mathrm{P}(X\mathrel{\mkern-4mu=\mkern-4mu}x,Y\mathrel{\mkern-4mu=\mkern-4mu}y \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})}{\mathrm{P}(X\mathrel{\mkern-4mu=\mkern-4mu}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})}
+\]</span> The denominator is the <em>marginal probability</em> for <span class="m"><span class="math inline">\(X\)</span>,</span> which can also be calculated from the joint distribution as discussed in <a href="multivariate_probability.html#sec-marginal-probs">§&nbsp;<span>9.4</span></a>: <span class="math display">\[
+\mathrm{P}(X\mathrel{\mkern-4mu=\mkern-4mu}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = \sum_{y} \mathrm{P}(X\mathrel{\mkern-4mu=\mkern-4mu}x,Y\mathrel{\mkern-4mu=\mkern-4mu}y \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})
+\]</span></p>
+<p>We can thus rewrite the conditional probability as <span class="math display">\[
+\mathrm{P}(Y\mathrel{\mkern-4mu=\mkern-4mu}y \nonscript\:\vert\nonscript\:\mathopen{} X\mathrel{\mkern-4mu=\mkern-4mu}x, \mathsfit{I}) =
+\frac{\mathrm{P}(X\mathrel{\mkern-4mu=\mkern-4mu}x,Y\mathrel{\mkern-4mu=\mkern-4mu}y \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})}{\sum_{y} \mathrm{P}(X\mathrel{\mkern-4mu=\mkern-4mu}x,Y\mathrel{\mkern-4mu=\mkern-4mu}y \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})}
+\]</span></p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Consider the next-patient problem with the joint probability of <a href="multivariate_probability.html#tbl-urgent-arrival">table&nbsp;<span>9.1</span></a>:</p>
+<ol type="1">
+<li><p>Calculate the probability that the next patient needs urgent care, knowing that the patient will arrive by helicopter.</p></li>
+<li><p>Compare the conditional probability you just found with the <em>marginal</em> probability that the next patient needs urgent care, independently of transportation means (calculated in a previous exercise). Which is higher? Why?</p></li>
+<li><p>Calculate the probability that the next patient arrives by helicopter, knowing that the patient will need urgent care.</p></li>
+<li><p>Compare the conditional probability from 3. with that from 1. Why are they so different? Why is the probability <span class="m">“<span class="math inline">\(\textsf{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{}\textsf{\small urgent}\)</span>”</span> so low, when <span class="m">“<span class="math inline">\(\textsf{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{}\textsf{\small helicopter}\)</span>”</span> is so high instead? find an intuitive explanation.</p></li>
+</ol>
+</div>
+</div>
 
 
 
