@@ -30,7 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./conditional_probability.html" rel="next">
+<link href="./marginal_conditional_probability.html" rel="next">
 <link href="./probability_distributions.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -41,8 +41,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
-<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -195,8 +193,8 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./conditional_probability.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Conditional probability distributions</span></span></a>
+  <a href="./marginal_conditional_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Marginal and conditional probabilities</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -268,7 +266,6 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#surface-plots" id="toc-surface-plots" class="nav-link" data-scroll-target="#surface-plots">Surface plots</a></li>
   <li><a href="#scatter-plots" id="toc-scatter-plots" class="nav-link" data-scroll-target="#scatter-plots">Scatter plots</a></li>
   </ul></li>
-  <li><a href="#sec-marginal-probs" id="toc-sec-marginal-probs" class="nav-link" data-scroll-target="#sec-marginal-probs"><span class="header-section-number">9.4</span> Marginal probabilities</a></li>
   </ul>
 </nav>
 </nav>
@@ -301,6 +298,8 @@ ul.task-list li input[type="checkbox"] {
 <!-- \definecolor{lightblue}{HTML}{66CCEE} -->
 <!-- \sethlcolor{lightblue} -->
 <!-- \providecommand*{\moo}[1][=]{\mathord{\mkern1.5mu#1\mkern1.5mu}} -->
+<!-- \providecommand*{\mo}[1][=]{\mathrel{\mkern-4mu#1\mkern-4mu}} -->
+<!-- \providecommand*{\mo}[1][\textrm{\small=}]{\mathrel{\mkern-4mu#1\mkern-4mu}} -->
 </div>
 <p>So far we have considered probability distributions for quantities of a basic (nominal, ordinal, binary, interval) type. These distributions have a sort of one-dimensional character and can be represented by ordinary histograms, line plots, and scatter plots. We now consider probability distributions for multivariate quantities.</p>
 <p><span class="small" style="color:#EE6677;"><em>(Make sure you’re familiar with <a href="data_types_multi.html">§&nbsp;<span>13</span></a> before you begin.)</em></span></p>
@@ -310,16 +309,18 @@ ul.task-list li input[type="checkbox"] {
 <p>Consider for instance the multivariate quantity <span class="math inline">\(X\)</span> consisting of the age <span class="math inline">\(\color[RGB]{102,204,238}A\)</span> and sex <span class="math inline">\(\color[RGB]{34,136,51}S\)</span> of a specific person. The fact that <span class="math inline">\(X\)</span> has a particular value is expressed by a composite sentence such as <span class="math display">\[
 \textsf{\small`The person's age is 25 years and the sex is female'}
 \]</span> which we can compactly write with an <code>and</code>: <span class="math display">\[
-({\color[RGB]{102,204,238}A\mathrel{\mkern-4mu=\mkern-4mu}25\,\mathrm{y}}) \land ({\color[RGB]{34,136,51}S\mathrel{\mkern-4mu=\mkern-4mu}\mathrm{F}})
+({\color[RGB]{102,204,238}A\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}25\,\mathrm{y}}) \land ({\color[RGB]{34,136,51}S\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\mathrm{f}})
 \]</span> All the possible composite sentences of this kind are <em>mutually exclusive</em> and <em>exhaustive</em>.</p>
 <p>An agent’s uncertainty about <span class="math inline">\(X\)</span>’s true value is therefore represented by a probability distribution over all <code>and</code>-ed sentences of this kind, representing all possible joint values: <span class="math display">\[
-\mathrm{P}\bigl[({\color[RGB]{102,204,238}A \mathrel{\mkern-4mu=\mkern-4mu}25\,\mathrm{y}}) \land ({\color[RGB]{34,136,51}S\mathrel{\mkern-4mu=\mkern-4mu}\mathrm{F}}) \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}\bigr] \ , \qquad
-\mathrm{P}\bigl[({\color[RGB]{102,204,238}A \mathrel{\mkern-4mu=\mkern-4mu}31\,\mathrm{y}}) \land ({\color[RGB]{34,136,51}S\mathrel{\mkern-4mu=\mkern-4mu}\mathrm{M}}) \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}\bigr] \ , \qquad
+\mathrm{P}\bigl[({\color[RGB]{102,204,238}A \mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}25\,\mathrm{y}}) \land ({\color[RGB]{34,136,51}S\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\mathrm{f}}) \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}\bigr] \ , \qquad
+\mathrm{P}\bigl[({\color[RGB]{102,204,238}A \mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}31\,\mathrm{y}}) \land ({\color[RGB]{34,136,51}S\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\mathrm{m}}) \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}\bigr] \ , \qquad
 \dotsc
-\]</span> where <span class="math inline">\(\mathsfit{I}\)</span> is the agent’s state of knowledge, and the probabilities sum up to one. We call this a <span class="blue"><strong>multivariate</strong></span> or <span class="blue"><strong>joint probability distribution</strong></span>. Usually these probabilities are written in much abbreviated form, and the <span class="math inline">\(\land\)</span> is represented by a comma; for instance <span class="math display">\[
-\mathrm{P}({\color[RGB]{102,204,238}25}, {\color[RGB]{34,136,51}\mathrm{F}} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \ , \quad
-\mathrm{P}({\color[RGB]{102,204,238}31}, {\color[RGB]{34,136,51}\mathrm{M}} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \ , \quad
-\dotsc
+\]</span> where <span class="math inline">\(\mathsfit{I}\)</span> is the agent’s state of knowledge, and the probabilities sum up to one. We call this a <span class="blue"><strong>multivariate</strong></span> or <span class="blue"><strong>joint probability distribution</strong></span>. Usually these probabilities are written in much abbreviated form, and the <span class="math inline">\(\land\)</span> is represented by a comma; for instance you can commonly find the following notation: <span class="math display">\[
+\mathrm{P}(A\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}25, S\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\mathrm{f} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \ , \quad
+\mathrm{P}(A\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}31, S\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\mathrm{m} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\]</span> or even just <span class="math display">\[
+\mathrm{P}(25, \mathrm{f} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \ , \quad
+\mathrm{P}(31, \mathrm{m} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \]</span></p>
 </section>
 <section id="joint-probability-densities" class="level2" data-number="9.2">
@@ -337,37 +338,39 @@ ul.task-list li input[type="checkbox"] {
 <table class="table">
 <caption>Table&nbsp;9.1: Joint probability distribution for transportation at arrival and urgency</caption>
 <colgroup>
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 19%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 9%">
 </colgroup>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;"><span class="math inline">\(\mathrm{P}(A,U\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}_{\text{H}})\)</span></td>
-<td style="text-align: center;"></td>
-<td colspan="3" style="text-align: center;"><strong>arrival</strong> <span class="math inline">\(A\)</span></td>
+<td colspan="6"><span class="math inline">\(\mathrm{P}(A\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}a,U\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}u\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}_{\text{H}})\)</span>| |<strong>arrival</strong> <span class="math inline">\(A\)</span></td>
 </tr>
 <tr class="even">
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">ambulance</td>
-<td style="text-align: center;">helicopter</td>
-<td style="text-align: center;">other</td>
+<td></td>
+<td></td>
+<td>ambulance</td>
+<td>helicopter</td>
+<td>other</td>
+<td></td>
 </tr>
 <tr class="odd">
-<td rowspan="2" style="text-align: center;"><strong>urgency</strong> <span class="math inline">\(U\)</span></td>
-<td style="text-align: center;">urgent</td>
-<td style="text-align: center;">0.11</td>
-<td style="text-align: center;">0.04</td>
-<td style="text-align: center;">0.03</td>
+<td rowspan="2"><strong>urgency</strong> <span class="math inline">\(U\)</span></td>
+<td>urgent</td>
+<td>0.11</td>
+<td>0.04</td>
+<td>0.03</td>
+<td></td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">non-urgent</td>
-<td style="text-align: center;">0.17</td>
-<td style="text-align: center;">0.01</td>
-<td style="text-align: center;">0.64</td>
+<td>non-urgent</td>
+<td>0.17</td>
+<td>0.01</td>
+<td>0.64</td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -390,80 +393,9 @@ ul.task-list li input[type="checkbox"] {
 <section id="scatter-plots" class="level3">
 <h3 class="anchored" data-anchor-id="scatter-plots">Scatter plots</h3>
 <p>@@ TODO work also for 3D</p>
-<p><br>
-</p>
-</section>
-</section>
-<section id="sec-marginal-probs" class="level2" data-number="9.4">
-<h2 data-number="9.4" class="anchored" data-anchor-id="sec-marginal-probs"><span class="header-section-number">9.4</span> Marginal probabilities</h2>
-<p>In some situations we have the joint probability distribution for a multivariate quantity, but we are interested in the probability for a particular value of one of the component quantities only, or in the probability distribution for that component – irrespective of what the values for the other components might be.</p>
-<p>Consider for instance the joint probability of <a href="#tbl-urgent-arrival">table&nbsp;<span>9.1</span></a>. We may be interested in the probability that the next patient will need urgent care, <em>independently of how the patient got to the hospital</em>. This probability can be found, as usual, by analysing the problem in terms of <em>sentences</em> and using the <a href="probability_inference.html#sec-fundamental">basic rules of inference from §&nbsp;<span>7.4</span></a>.</p>
-<p>The sentence we want is <span class="math display">\[
-\textsf{\small`The next patient will require urgent care'}
-\]</span> which is equivalent to <span class="math display">\[
-\textsf{\small`The next patient will require urgent care, and will arrive by ambulance, helicopter, or in by other means'}
-\]</span> This last sentence can be written by means of <code>and</code> and <code>or</code> connectives: <span class="math display">\[
-\begin{aligned}
-&amp;\textsf{\small`The next patient will require urgent care'} \land{}
-\\[1ex]
-&amp;\qquad\bigl(\textsf{\small`The next patient will arrive by ambulance'} \lor {}
-\\&amp;\qquad\qquad
-\textsf{\small`The next patient will arrive by helicopter'} \lor {}
-\\&amp;\qquad\qquad
-\textsf{\small`The next patient will arrive by other means'}\bigr)
-\end{aligned}
-\]</span> which we can compactly write as <span class="math display">\[
-\begin{aligned}
-&amp;\textsf{\small urgent}\land
-(\textsf{\small ambulance} \lor \textsf{\small helicopter} \lor \textsf{\small other})
-\\[1ex]
-&amp;\qquad{}=
-(\textsf{\small urgent}\land \textsf{\small ambulance}) \lor
-(\textsf{\small urgent}\land \textsf{\small helicopter}) \lor
-(\textsf{\small urgent}\land \textsf{\small other})
-\end{aligned}
-\]</span> where the second, equivalent form comes from the <a href="probability_inference.html#sec-boolean">derived rules of Boolean algebra of §&nbsp;<span>7.7.1</span></a>.</p>
-<p>The last sentence is an <code>or</code> of mutually exclusive sentences. Its probability is therefore given by the <code>or</code> rule: <span class="math display">\[
-\begin{aligned}
-&amp;\mathrm{P}\bigl[
-(\textsf{\small urgent}\land \textsf{\small ambulance}) \lor
-(\textsf{\small urgent}\land \textsf{\small helicopter}) \lor
-(\textsf{\small urgent}\land \textsf{\small other})
-\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}} \bigr]
-\\[1ex]
-&amp;\qquad{}=
-\mathrm{P}(\textsf{\small urgent}\land \textsf{\small ambulance}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}} ) +
-\mathrm{P}(\textsf{\small urgent}\land \textsf{\small ambulance}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}} ) +
-\mathrm{P}(\textsf{\small urgent}\land \textsf{\small other}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}} )
-\end{aligned}
-\]</span></p>
-<p>The probability for a value of the urgency quantity, independently of the value of the arrival-means quantity, can be found by summing all joint probabilities with all possible arrival-means values. Using the <span class="math inline">\(\sum\)</span>-notation we can write <span class="math display">\[
-\mathrm{P}(\textsf{\small urgent} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}}) =
-\sum_{\mathclap{A=\textsf{\small ambulance}}}^{\mathclap{\textsf{\small other}}}
-\mathrm{P}(\textsf{\small urgent}, A \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
-\]</span></p>
-<p>This is called a <span class="blue"><strong>marginal probability</strong></span>.</p>
-<div class="callout callout-style-default callout-caution no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Using the values from <a href="#tbl-urgent-arrival">table&nbsp;<span>9.1</span></a>, calculate:</p>
-<ul>
-<li>the marginal probability that the next patient will need urgent care</li>
-<li>the marginal probability that the next patient will arrive by helicopter</li>
-</ul>
-</div>
-</div>
-<p>@@ TODO point out connection with <a href="probability_distributions.html#sec-combined-probs">§&nbsp;<span>8.6</span></a></p>
-<p>@@ TODO write general formula for multivariate</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -707,8 +639,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./conditional_probability.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Conditional probability distributions</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./marginal_conditional_probability.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Marginal and conditional probabilities</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

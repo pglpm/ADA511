@@ -15,21 +15,25 @@ $$
 $$
 which we can compactly write with an `and`:
 $$
-({\color[RGB]{102,204,238}A\mo 25\,\mathrm{y}}) \land ({\color[RGB]{34,136,51}S\mo\mathrm{F}})
+({\color[RGB]{102,204,238}A\mo 25\,\mathrm{y}}) \land ({\color[RGB]{34,136,51}S\mo\mathrm{f}})
 $$
 All the possible composite sentences of this kind are *mutually exclusive* and *exhaustive*.
 
 An agent's uncertainty about $X$'s true value is therefore represented by a probability distribution over all `and`-ed sentences of this kind, representing all possible joint values:
 $$
-\P\bigl[({\color[RGB]{102,204,238}A \mo 25\,\mathrm{y}}) \land ({\color[RGB]{34,136,51}S\mo\mathrm{F}}) \| \yI\bigr] \ , \qquad
-\P\bigl[({\color[RGB]{102,204,238}A \mo 31\,\mathrm{y}}) \land ({\color[RGB]{34,136,51}S\mo\mathrm{M}}) \| \yI\bigr] \ , \qquad
+\P\bigl[({\color[RGB]{102,204,238}A \mo 25\,\mathrm{y}}) \land ({\color[RGB]{34,136,51}S\mo\mathrm{f}}) \| \yI\bigr] \ , \qquad
+\P\bigl[({\color[RGB]{102,204,238}A \mo 31\,\mathrm{y}}) \land ({\color[RGB]{34,136,51}S\mo\mathrm{m}}) \| \yI\bigr] \ , \qquad
 \dotsc
 $$
-where $\yI$ is the agent's state of knowledge, and the probabilities sum up to one. We call this a [**multivariate**]{.blue} or [**joint probability distribution**]{.blue}. Usually these probabilities are written in much abbreviated form, and the $\land$ is represented by a comma; for instance
+where $\yI$ is the agent's state of knowledge, and the probabilities sum up to one. We call this a [**multivariate**]{.blue} or [**joint probability distribution**]{.blue}. Usually these probabilities are written in much abbreviated form, and the $\land$ is represented by a comma; for instance you can commonly find the following notation:
 $$
-\P({\color[RGB]{102,204,238}25}, {\color[RGB]{34,136,51}\mathrm{F}} \| \yI) \ , \quad
-\P({\color[RGB]{102,204,238}31}, {\color[RGB]{34,136,51}\mathrm{M}} \| \yI) \ , \quad
-\dotsc
+\P(A\mo25, S\mo\mathrm{f} \| \yI) \ , \quad
+\P(A\mo31, S\mo\mathrm{m} \| \yI)
+$$
+or even just
+$$
+\P(25, \mathrm{f} \| \yI) \ , \quad
+\P(31, \mathrm{m} \| \yI)
 $$
 
 ## Joint probability densities
@@ -48,7 +52,7 @@ When a quantity is *bi*variate and its two component quantities are both discret
 Example: Consider the next patient that will arrive at a particular hospital. There's the possibility of arrival by `ambulance`, `helicopter`, or `other` transportation means; and the possibility that the patient will need `urgent` `non-urgent` care. These can be seen as two quantities $A$ (nominal) and $U$ (binary). When these two quantities are taken together; their joint probability distribution is as follows, conditional on the hospital's data $\yi[H]$:
 
 +:---------------:+:---------------:+:---------------:+:---------------:+:---------------:+
-|$\P(A,U\|\yi[H])$|                 |**arrival** $A$                                      |
+|$\P(A\mo a,U\mo u\|\yi[H])$|                 |**arrival** $A$                                      |
 +-----------------+-----------------+-----------------+-----------------+-----------------+
 |                 |                 |ambulance        |helicopter       |other            |
 +-----------------+-----------------+-----------------+-----------------+-----------------+
@@ -82,81 +86,3 @@ Consider for instance the probability that the next patient who arrives at a par
 @@ TODO work also for 3D
 
 
-\
-
-## Marginal probabilities {#sec-marginal-probs}
-
-In some situations we have the joint probability distribution for a multivariate quantity, but we are interested in the probability for a particular value of one of the component quantities only, or in the probability distribution for that component -- irrespective of what the values for the other components might be.
-
-Consider for instance the joint probability of [table @tbl-urgent-arrival]. We may be interested in the probability that the next patient will need urgent care, *independently of how the patient got to the hospital*. This probability can be found, as usual, by analysing the problem in terms of *sentences* and using the [basic rules of inference from § @sec-fundamental].
-
-The sentence we want is
-$$
-\pr{The next patient will require urgent care}
-$$
-which is equivalent to
-$$
-\pr{The next patient will require urgent care, and will arrive by ambulance, helicopter, or in by other means}
-$$
-This last sentence can be written by means of `and` and `or` connectives:
-$$
-\begin{aligned}
-&\pr{The next patient will require urgent care} \land{}
-\\[1ex]
-&\qquad\bigl(\pr{The next patient will arrive by ambulance} \lor {}
-\\&\qquad\qquad
-\pr{The next patient will arrive by helicopter} \lor {}
-\\&\qquad\qquad
-\pr{The next patient will arrive by other means}\bigr)
-\end{aligned}
-$$
-which we can compactly write as
-$$
-\begin{aligned}
-&\prq{urgent}\land
-(\prq{ambulance} \lor \prq{helicopter} \lor \prq{other})
-\\[1ex]
-&\qquad{}=
-(\prq{urgent}\land \prq{ambulance}) \lor
-(\prq{urgent}\land \prq{helicopter}) \lor
-(\prq{urgent}\land \prq{other})
-\end{aligned}
-$$
-where the second, equivalent form comes from the [derived rules of Boolean algebra of § @sec-boolean].
-
-The last sentence is an `or` of mutually exclusive sentences. Its probability is therefore given by the `or` rule:
-$$
-\begin{aligned}
-&\P\bigl[
-(\prq{urgent}\land \prq{ambulance}) \lor
-(\prq{urgent}\land \prq{helicopter}) \lor
-(\prq{urgent}\land \prq{other})
-\| \yi[H] \bigr]
-\\[1ex]
-&\qquad{}=
-\P(\prq{urgent}\land \prq{ambulance}\| \yi[H] ) +
-\P(\prq{urgent}\land \prq{ambulance}\| \yi[H] ) +
-\P(\prq{urgent}\land \prq{other}\| \yi[H] )
-\end{aligned}
-$$
-
-The probability for a value of the urgency quantity, independently of the value of the arrival-means quantity, can be found by summing all joint probabilities with all possible arrival-means values. Using the $\sum$-notation we can write
-$$
-\P(\prq{urgent} \| \yi[H]) =
-\sum_{\mathclap{A=\prq{ambulance}}}^{\mathclap{\prq{other}}}
-\P(\prq{urgent}, A \| \yi[H])
-$$
-
-This is called a [**marginal probability**]{.blue}.
-
-:::{.callout-caution}
-## {{< fa user-edit >}} Exercise
-Using the values from [table @tbl-urgent-arrival], calculate:
-
-- the marginal probability that the next patient will need urgent care
-- the marginal probability that the next patient will arrive by helicopter
-:::
-
-@@ TODO point out connection with [§ @sec-combined-probs]
-
-@@ TODO write general formula for multivariate
