@@ -409,11 +409,17 @@ tmad <- function(x){mad(x, constant=1, na.rm=TRUE)}
 tsummary <- function(x){
     x <- cbind(x)
     apply(x, 2, function(xx){
-        c(tquant(xx, c(2.5/100,1/8,2/8,4/8,6/8,7/8,97.5/100)), MAD=mad(xx,constant=1,na.rm=T), IQR=IQR(xx,na.rm=T), mean=mean(xx,na.rm=T), sd=sd(xx,na.rm=T), min=min(xx,na.rm=T), max=max(xx,na.rm=T), NAs=sum(is.na(xx)))
+        c(tquant(xx, c(2.5/100,1/8,2/8,4/8,6/8,7/8,97.5/100)), MAD=mad(xx,constant=1,na.rm=T), IQR=IQR(xx,na.rm=T), mean=mean(xx,na.rm=T), sd=sd(xx,na.rm=T), hr=diff(range(xx,na.rm=T))/2, min=min(xx,na.rm=T), max=max(xx,na.rm=T), NAs=sum(is.na(xx)))
     })
 }
 
-
+normalize <- function(x){
+    if(is.null(dim(x))){
+        x/sum(x,na.rm=T)
+    }else{
+        aperm(aperm(x)/c(aperm(cbind(colSums(x,na.rm=T)))))
+    }
+}
 
 
 ## > trythese <- foreach(i=1:1e6, .combine=cbind)%dorng%{tests <- rt(n=4096,df=4); cbind(1-tquant(tests,qlev)/qt(qlev,df=4))*100}
