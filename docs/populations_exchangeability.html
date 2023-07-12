@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ADA511: Data science and data-driven engineering - 15&nbsp; Population inference</title>
+<title>ADA511: Data science and data-driven engineering - 15&nbsp; Populations &amp; exchangeability</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -41,6 +41,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -74,7 +76,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./populations_exchangeability.html">Population inference</a></li><li class="breadcrumb-item"><a href="./populations_exchangeability.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Population inference</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./populations_exchangeability.html">Population inference</a></li><li class="breadcrumb-item"><a href="./populations_exchangeability.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Populations &amp; exchangeability</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -244,7 +246,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./populations_exchangeability.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Population inference</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Populations &amp; exchangeability</span></span></a>
   </div>
 </li>
       </ul>
@@ -272,7 +274,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-exchangeability" id="toc-sec-exchangeability" class="nav-link active" data-scroll-target="#sec-exchangeability"><span class="header-section-number">15.1</span> Exchangeable vs non-exchangeable problems</a></li>
+  <li><a href="#sec-exchangeability" id="toc-sec-exchangeability" class="nav-link active" data-scroll-target="#sec-exchangeability"><span class="header-section-number">15.1</span> Exchangeable vs non-exchangeable inferences</a></li>
   </ul>
 </nav>
 </nav>
@@ -285,7 +287,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Population inference</span></h1>
+<h1 class="title"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Populations &amp; exchangeability</span></h1>
 </div>
 
 
@@ -315,12 +317,33 @@ ul.task-list li input[type="checkbox"] {
 </p>
 <p>We shall now introduce a very rough distinction between two very broad classes of inference problems, and then study the principled solution of one of them, and approximations to this solution.</p>
 <section id="sec-exchangeability" class="level2" data-number="15.1">
-<h2 data-number="15.1" class="anchored" data-anchor-id="sec-exchangeability"><span class="header-section-number">15.1</span> Exchangeable vs non-exchangeable problems</h2>
+<h2 data-number="15.1" class="anchored" data-anchor-id="sec-exchangeability"><span class="header-section-number">15.1</span> Exchangeable vs non-exchangeable inferences</h2>
 <p>Consider these two inference problems:</p>
+<ol type="1">
+<li><p>Assessing the value that a particular investment fund will have in 100 days from now, given the course of that fund in the past 3650 days (10 years).</p></li>
+<li><p>Assessing the failure status of the next 100th electronic component from an assembly line, given the failure status of the last 1000 electronic components already out of the same assembly line.</p></li>
+</ol>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Discuss:</p>
 <ul>
-<li><p>Assessing the value that a particular investment fund will have in 1825 days from now, given the course of that fund in the past 10 years.</p></li>
-<li><p>Assessing the failure status of specific electronic component from an assembly line, given the failure status of 1000 other electronic components from the same assembly line.</p></li>
+<li><p>Which of the two inferences above seems more difficult? Why?</p></li>
+<li><p>Which differences and similarities do you find between the two inferences?</p></li>
+<li><p>Answer the same questions, considering two inference problems that are similar but “backwards in time”:</p>
+<p>1b. Assessing the value that a particular investment fund had in 3750 days ago, given the course of that fund in the past 3650 days.</p>
+<p>2b. Assessing the failure status of the past 1100th electronic component from an assembly line, given the failure status of the last 1000 electronic components already out of the same assembly line.</p></li>
 </ul>
+</div>
+</div>
+<p>The first inference problem seems – and notoriously is – more difficult than the second. But why? The first inference is often categorized as “<a href="https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data">time-series analysis</a>”</p>
 
 
 </section>
