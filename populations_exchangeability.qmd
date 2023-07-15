@@ -15,36 +15,61 @@ We shall now introduce a very rough distinction between two very broad classes o
 
 Consider these two inference problems:
 
-1. Assessing the value that a particular investment fund will have in 100 days from now, given the course of that fund in the past 3650 days (10 years).
+1. In the last 3650 days, the daily change in [closing price](https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price) of a stock was [positive 2774 times]{.green}, and [negative 876 times]{.green} (it is not known which specific days). In which of the next 10 days will the closing-price change be [positive]{.yellow}, and in which [negative]{.yellow}?
 
-2. Assessing the failure status of the 100th electronic component, counting from now, out of an assembly line, given the failure status of the last 1000 electronic components already out of the same assembly line.
+:::{.column-margin}
+![](stock_course.jpg){width=65%}
+:::
+
+
+2. Among the last 1000 patients visiting a hospital and showing a particular symptom, [760 had pneumonia]{.green} and [280 didn't]{.green}. Which of the next 10 patients with the same symptom will have [pneumonia]{.yellow}, and which will be [pneumonia-free]{.yellow}?
+
+:::{.column-margin}
+![](hospital_queue.png){width=65%}
+:::
+
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
 Discuss:
 
-- Which of the two inferences above seems more difficult?
-- Why? Explore and discuss all factors that could make one inference more difficult than the other.
+- Which of the two inferences above seems more difficult?...
+
+- ...Why? Speculate on which factors make one inference more difficult than the other.
+
 - Which differences and similarities do you find between the two inferences?
-- Answer the same questions, considering two inference problems that are similar but "backwards in time":
 
-    1b. Assessing the value that a particular investment fund had in 3750 days ago, given the course of that fund in the past 3650 days.
+- Which additional information could be important for drawing more precise inferences?
 
-    2b. Assessing the failure status of the past 1100th electronic component from an assembly line, given the failure status of the last 1000 electronic components already out of the same assembly line.
+- Which type of quantities appear in the two inferences?
+
+<!-- - Answer the same questions, considering two inference problems that are similar but "backwards in time": -->
+
+<!--     1b. Assessing the value that a particular investment fund had in 3750 days ago, given the course of that fund in the past 3650 days. -->
+
+<!--     2b. Assessing the failure status of the past 1100th electronic component from an assembly line, given the failure status of the last 1000 electronic components already out of the same assembly line. -->
 :::
 
-The first inference problem seems, and notoriously is, more difficult than the second. -- But why? Let's try to find some concrete and, if possible, generalizable aspect that can account for this difference in difficulty.
+Let's explore which aspects are common or different in the two inference problems.
 
-The time factor of the first inference could be a candidate. The first inference is in fact often categorized as a "[time-series analysis](https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data)", because it involves changes in time. Yet, time cannot be the fundamental aspect that makes it more difficult than the second, because the second inference involves time as well: we want to assess the failure status of a future component, given the status of past ones.
+The amount of available data is different in the two inferences. The first inference, which appears more difficult, is conditional on a larger amount of data (3650 binary quantities) than the second (1000 binary quantities). Yet the data in the first inference seems less informative than the data in the second.
 
-An inference is not difficult or easy in itself, but only in relation to the information from which an agent draws it. So let's focus on the *conditionals* of the two inferences. The conditionals have different amounts of data. But this cannot be the aspects that accounts for the greater difficult of the first inference, because its conditional (course of the fund in 3650 days) has actually more data than that of the second (failure status of 1000 components).
+Time appears to be an important aspect of the first inference, which is in fact often categorized as a "[time-series analysis](https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data)". Yet, the second inference involves or could involve time as well: the patients could arrive at the hospital sequentially. It is the time *ordering* that seems more relevant in the first inference than the second. This is also clear because in the first inference we would prefer to know the (unknown) exact order of positive and negative days, more than the exact order of pneumonia and pneumonia-free patients.
 
-In fact, we feel that 3650 days of a fund's course are somehow less informative to forecast is value in 100 days, than the failure status of 1000 components is for forecasting the failure of the 100th component from now.
+\
 
-To see the core of the difference, imagine that someone proposes the following exchange of knowns and unknowns in the two inferences, as schematized in the side figure:
+An important difference between the two inference problems is revealed by consider the following thought-experiments:
+
+- If the given data were shuffled
+
+
+
+. Someone proposes the following exchange of knowns and unknowns in the two inferences, as schematized in the side figure:
 
 :::{.column-margin}
-![Illustration of the inference exchange. "[✓]{.blue}": known, "[?]{.purple}": unknown.](exchange_illustrationv){width=40%}
+![](exchange_illustrationv){width=40%}
+\
+Illustration of the inference exchange. Left: original inference; right: exchanged inference. "[✓]{.blue}": known; "[?]{.purple}": unknown.
 :::
 
 1. Instead of assessing the value (unknown) of the fund in 100 days, given the values (known) in the past 3650 days, you can assess the value (unknown) in one of the 3650 days, given the values (known) in the remaining 3649 days and in the day 100 in the future.
@@ -59,7 +84,9 @@ Discuss:
 - Why?
 :::
 
-In the case of the inference problem about the fund value, the exchanged inference seems much easier. Because we expect known fund values closer to the unknown one to be more informative. In the case of the inference problem about the failure status, the exchanged inference might be slightly easier, but still roughly on the same level of difficulty and the original one.
+In the case of the inference problem about the fund value, the exchanged inference seems much easier. We expect known fund values closer to the unknown one to be more informative. In the case of the inference problem about the failure status, the exchanged inference might be slightly easier, but still roughly on the same level of difficulty and the original one.
+
+\
 
 An inference which remains basically the same if a quantity in the *proposal* is exchanged with a quantity in the *conditional* is called [**exchangeable**]{.blue}.
 
