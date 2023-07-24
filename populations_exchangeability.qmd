@@ -13,37 +13,31 @@ We shall now introduce a very rough distinction between two very broad classes o
 
 ## Exchangeable vs non-exchangeable inferences {#sec-exchangeability}
 
-Consider these two sketches of inference problems about [stock exchange](https://www.britannica.com/money/topic/stock-exchange-finance) and Mars [prospecting](https://www.britannica.com/technology/prospecting-mining):
+### Intuitive understanding
 
-1. In 3650 days, the daily change in [closing price](https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price) of a stock has been [positive 2774 times, and negative 876 times]{.green}, in a particular order. So the data could be of the form
-$$
-\text{day 1:}\, \boldsymbol{+}\ ,
-\quad
-\text{day 2:}\, \boldsymbol{-}\ ,
-\quad\dotso\ ,
-\quad
-\text{day 3650:}\, \boldsymbol{+} \ .
-$$
+Consider these sketches of two inference problems:
 
-    In which of the subsequent 10 days will the closing-price change be [positive]{.yellow}, and in which [negative]{.yellow}?
+- [Stock exchange](https://www.britannica.com/money/topic/stock-exchange-finance)
+: In 100 days, the daily change in [closing price](https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price) of a stock has been [positive 74 times, and negative 26 times]{.green}, according to this sequence, from left to right:
+
+    ![](stock.png){width=100%}
+
+    In which of the subsequent 3 days will the closing-price change be [positive]{.yellow}, and in which [negative]{.yellow}?
 
 :::{.column-margin}
 ![](stock_course.jpg){width=100%}
 :::
 
+\
 
-2. Of the last 1000 similar-sized rocks examined in a large crater on Mars, [760 contained [hematite](https://science.nasa.gov/science-news/science-at-nasa/2001/ast28mar_1), and 280 didn't]{.green}. So the data could be of the form
-$$
-\text{rock \#1:}\, \boldsymbol{-}\ ,
-\quad
-\text{rock \#2:}\, \boldsymbol{+}\ ,
-\quad\dotso\ ,
-\quad
-\text{rock \#1000:}\, \boldsymbol{+} \ .
-$$
-Where ["$+$" and "$-$"]{.m} denote the presence and absence of hematite.
+- Mars [prospecting](https://www.britannica.com/technology/prospecting-mining)
+: Of the last 100 similar-sized rocks examined in a large crater on Mars, [74 contained [hematite](https://science.nasa.gov/science-news/science-at-nasa/2001/ast28mar_1), and 26 didn't]{.green}. The data can be represented as
 
-    Which of the next 10 rocks will contain [hematite]{.yellow}, and which will be [hematite-free]{.yellow}?
+    ![](rock.png){width=100%}
+
+    Where "Y" and "N" denote the presence and absence of hematite.
+
+    Which of the next 3 rocks will contain [hematite]{.yellow}, and which will be [hematite-free]{.yellow}?
 
 :::{.column-margin}
 ![](mars_crater2.jpg){width=100%}
@@ -71,21 +65,40 @@ Discuss:
 <!--     2b. Assessing the failure status of the past 1100th electronic component from an assembly line, given the failure status of the last 1000 electronic components already out of the same assembly line. -->
 :::
 
-Let's explore which aspects are common or different in the two inference problems.
-
-The amount of available data is different in the two inferences. The first inference, which appears more difficult, is conditional on a larger amount of data (3650 binary quantities) than the second (1000 binary quantities). Yet the data in the first inference might be less informative, for inference purposes, than the data in the second.
-
-Time appears to be an important aspect of the first inference, which is in fact often categorized as a "[time-series analysis](https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data)". But the second inference involves or could involve time as well: the rocks could be inspected sequentially. It is the time *ordering* that is more relevant in the first inference than the second. This is also clear because in the first inference we would prefer to know the (unknown) exact order of positive and negative days, more than the exact order of rocks with and without hematite.
-
 \
 
-An important difference between the two inference problems is revealed by consider the following thought-experiments:
-
-- If the given data were shuffled
+The two inference problems differ in some aspects and are similar in others. Time, for example, appears to be an important aspect of the first inference, which is in fact often categorized as a "[time-series analysis](https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data)". But the second inference involves or could involve time as well: the rocks could be inspected sequentially. So more precisely it is the time *ordering* that is more relevant in the first inference than the second.
 
 
+An important difference between the two inference problems is revealed by the following thought-experiments. Consider how you would answer in the stock-exchange case and in the Mars-prospecting case:
 
-. Someone proposes the following exchange of knowns and unknowns in the two inferences, as schematized in the side figure:
+a. *It turns out that there was an error in the sequence of positive and negative datapoints, although not in the total amounts of positive and negative ones.* In the stock-exchange inference, for instance, days 1 and 3 were erroneously swapped, as were days 100 and 85, and many other days; in the Mars-prospecting inference, rocks #1 and #3 were erroneously swapped, as were rocks #100 and #97, and many other rocks.
+
+    Should the final inference about the next 3 datapoints be changed?
+
+
+b. *The information about the exact sequence of data is lost, and only the total amount of positive and negative datapoints is preserved* (74 vs 26).
+
+    Would the final inference about the next 3 datapoints be different,  compared to the situation where the exact data sequence is known?
+
+
+c. *A new inference is requested: not about the 3 datapoints following the known data, but the 3 datapoints preceding the known data*: the day before day 1 and so on, or the rock before rock #1 and so on. (Or, generalizing: an inference about 3 datapoints *interspersed* among the known ones is requested.)
+
+    Would the inference for the preceding 3 datapoints be different from the original one about the subsequent 3 datapoints?
+
+In all these thought-experiments, our intuition is that the inference for the stock-exchange problem would be different, but the one for the Mars-prospecting problem would stay the same or not change appreciably. Swapping days in a stock course, matters; swapping rocks in a crater, doesn't. There are good reasons, based on physics and dynamical-system theory, for this intuition. Our focus, however, is not on the *whys* of this intuition, but on the consequences that it has for inference and probability calculations.
+
+An inference which does not change if data and unknown quantities are freely reordered, like the Mars-prospecting one, is called [**exchangeable**]{.blue}. Whereas an inference in which the ordering of data and unknowns is relevant, like the stock-exchange one, is called **non-exchangeable**. There is not a  dichotomy between the two cases; rather, there are continuous varying degrees of exchangeability or non-exchangeability. But for the moment we shall simplify this gradation into a binary distinction.
+
+
+### Formal definition
+
+*Exchangeability*, properly speaking, is a property of a joint probability distribution over a collection of quantities having the same domain. Call these quantities $X_1$, $X_2$, $X_3$, and so on.
+
+
+
+
+
 
 :::{.column-margin}
 ![](exchange_illustrationv){width=40%}

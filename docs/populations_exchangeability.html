@@ -283,7 +283,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-exchangeability" id="toc-sec-exchangeability" class="nav-link active" data-scroll-target="#sec-exchangeability"><span class="header-section-number">16.1</span> Exchangeable vs non-exchangeable inferences</a></li>
+  <li><a href="#sec-exchangeability" id="toc-sec-exchangeability" class="nav-link active" data-scroll-target="#sec-exchangeability"><span class="header-section-number">16.1</span> Exchangeable vs non-exchangeable inferences</a>
+  <ul class="collapse">
+  <li><a href="#intuitive-understanding" id="toc-intuitive-understanding" class="nav-link" data-scroll-target="#intuitive-understanding">Intuitive understanding</a></li>
+  <li><a href="#formal-definition" id="toc-formal-definition" class="nav-link" data-scroll-target="#formal-definition">Formal definition</a></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -327,32 +331,35 @@ ul.task-list li input[type="checkbox"] {
 <p>We shall now introduce a very rough distinction between two very broad classes of inference problems, and then study the principled solution of one of them, and approximations to this solution.</p>
 <section id="sec-exchangeability" class="level2 page-columns page-full" data-number="16.1">
 <h2 data-number="16.1" class="anchored" data-anchor-id="sec-exchangeability"><span class="header-section-number">16.1</span> Exchangeable vs non-exchangeable inferences</h2>
-<p>Consider these two sketches of inference problems about <a href="https://www.britannica.com/money/topic/stock-exchange-finance">stock exchange</a> and Mars <a href="https://www.britannica.com/technology/prospecting-mining">prospecting</a>:</p>
-<ol type="1">
-<li><p>In 3650 days, the daily change in <a href="https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price">closing price</a> of a stock has been <span class="green">positive 2774 times, and negative 876 times</span>, in a particular order. So the data could be of the form <span class="math display">\[
-\text{day 1:}\, \boldsymbol{+}\ ,
-\quad
-\text{day 2:}\, \boldsymbol{-}\ ,
-\quad\dotso\ ,
-\quad
-\text{day 3650:}\, \boldsymbol{+} \ .
-\]</span></p>
-<p>In which of the subsequent 10 days will the closing-price change be <span class="yellow">positive</span>, and in which <span class="yellow">negative</span>?</p></li>
-</ol>
+<section id="intuitive-understanding" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="intuitive-understanding">Intuitive understanding</h3>
+<p>Consider these sketches of two inference problems:</p>
+<ul>
+<li><dl>
+<dt><a href="https://www.britannica.com/money/topic/stock-exchange-finance">Stock exchange</a></dt>
+<dd>
+In 100 days, the daily change in <a href="https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price">closing price</a> of a stock has been <span class="green">positive 74 times, and negative 26 times</span>, according to this sequence, from left to right:
+</dd>
+</dl>
+<p><img src="stock.png" class="img-fluid" style="width:100.0%"></p>
+<p>In which of the subsequent 3 days will the closing-price change be <span class="yellow">positive</span>, and in which <span class="yellow">negative</span>?</p></li>
+</ul>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><img src="stock_course.jpg" class="img-fluid" style="width:100.0%"></p>
-</div></div><ol start="2" type="1">
-<li><p>Of the last 1000 similar-sized rocks examined in a large crater on Mars, <span class="green">760 contained <a href="https://science.nasa.gov/science-news/science-at-nasa/2001/ast28mar_1">hematite</a>, and 280 didn’t</span>. So the data could be of the form <span class="math display">\[
-\text{rock \#1:}\, \boldsymbol{-}\ ,
-\quad
-\text{rock \#2:}\, \boldsymbol{+}\ ,
-\quad\dotso\ ,
-\quad
-\text{rock \#1000:}\, \boldsymbol{+} \ .
-\]</span> Where <span class="m">“<span class="math inline">\(+\)</span>” and “<span class="math inline">\(-\)</span>”</span> denote the presence and absence of hematite.</p>
-<p>Which of the next 10 rocks will contain <span class="yellow">hematite</span>, and which will be <span class="yellow">hematite-free</span>?</p></li>
-</ol>
+</div></div><p><br>
+</p>
+<ul>
+<li><dl>
+<dt>Mars <a href="https://www.britannica.com/technology/prospecting-mining">prospecting</a></dt>
+<dd>
+Of the last 100 similar-sized rocks examined in a large crater on Mars, <span class="green">74 contained <a href="https://science.nasa.gov/science-news/science-at-nasa/2001/ast28mar_1">hematite</a>, and 26 didn’t</span>. The data can be represented as
+</dd>
+</dl>
+<p><img src="rock.png" class="img-fluid" style="width:100.0%"></p>
+<p>Where “Y” and “N” denote the presence and absence of hematite.</p>
+<p>Which of the next 3 rocks will contain <span class="yellow">hematite</span>, and which will be <span class="yellow">hematite-free</span>?</p></li>
+</ul>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><img src="mars_crater2.jpg" class="img-fluid" style="width:100.0%"></p>
@@ -379,16 +386,24 @@ ul.task-list li input[type="checkbox"] {
 <!--     2b. Assessing the failure status of the past 1100th electronic component from an assembly line, given the failure status of the last 1000 electronic components already out of the same assembly line. -->
 </div>
 </div>
-<p>Let’s explore which aspects are common or different in the two inference problems.</p>
-<p>The amount of available data is different in the two inferences. The first inference, which appears more difficult, is conditional on a larger amount of data (3650 binary quantities) than the second (1000 binary quantities). Yet the data in the first inference might be less informative, for inference purposes, than the data in the second.</p>
-<p>Time appears to be an important aspect of the first inference, which is in fact often categorized as a “<a href="https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data">time-series analysis</a>”. But the second inference involves or could involve time as well: the rocks could be inspected sequentially. It is the time <em>ordering</em> that is more relevant in the first inference than the second. This is also clear because in the first inference we would prefer to know the (unknown) exact order of positive and negative days, more than the exact order of rocks with and without hematite.</p>
 <p><br>
 </p>
-<p>An important difference between the two inference problems is revealed by consider the following thought-experiments:</p>
-<ul>
-<li>If the given data were shuffled</li>
-</ul>
-<p>. Someone proposes the following exchange of knowns and unknowns in the two inferences, as schematized in the side figure:</p>
+<p>The two inference problems differ in some aspects and are similar in others. Time, for example, appears to be an important aspect of the first inference, which is in fact often categorized as a “<a href="https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data">time-series analysis</a>”. But the second inference involves or could involve time as well: the rocks could be inspected sequentially. So more precisely it is the time <em>ordering</em> that is more relevant in the first inference than the second.</p>
+<p>An important difference between the two inference problems is revealed by the following thought-experiments. Consider how you would answer in the stock-exchange case and in the Mars-prospecting case:</p>
+<ol type="a">
+<li><p><em>It turns out that there was an error in the sequence of positive and negative datapoints, although not in the total amounts of positive and negative ones.</em> In the stock-exchange inference, for instance, days 1 and 3 were erroneously swapped, as were days 100 and 85, and many other days; in the Mars-prospecting inference, rocks #1 and #3 were erroneously swapped, as were rocks #100 and #97, and many other rocks.</p>
+<p>Should the final inference about the next 3 datapoints be changed?</p></li>
+<li><p><em>The information about the exact sequence of data is lost, and only the total amount of positive and negative datapoints is preserved</em> (74 vs 26).</p>
+<p>Would the final inference about the next 3 datapoints be different, compared to the situation where the exact data sequence is known?</p></li>
+<li><p><em>A new inference is requested: not about the 3 datapoints following the known data, but the 3 datapoints preceding the known data</em>: the day before day 1 and so on, or the rock before rock #1 and so on. (Or, generalizing: an inference about 3 datapoints <em>interspersed</em> among the known ones is requested.)</p>
+<p>Would the inference for the preceding 3 datapoints be different from the original one about the subsequent 3 datapoints?</p></li>
+</ol>
+<p>In all these thought-experiments, our intuition is that the inference for the stock-exchange problem would be different, but the one for the Mars-prospecting problem would stay the same or not change appreciably. Swapping days in a stock course, matters; swapping rocks in a crater, doesn’t. There are good reasons, based on physics and dynamical-system theory, for this intuition. Our focus, however, is not on the <em>whys</em> of this intuition, but on the consequences that it has for inference and probability calculations.</p>
+<p>An inference which does not change if data and unknown quantities are freely reordered, like the Mars-prospecting one, is called <span class="blue"><strong>exchangeable</strong></span>. Whereas an inference in which the ordering of data and unknowns is relevant, like the stock-exchange one, is called <strong>non-exchangeable</strong>. There is not a dichotomy between the two cases; rather, there are continuous varying degrees of exchangeability or non-exchangeability. But for the moment we shall simplify this gradation into a binary distinction.</p>
+</section>
+<section id="formal-definition" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="formal-definition">Formal definition</h3>
+<p><em>Exchangeability</em>, properly speaking, is a property of a joint probability distribution over a collection of quantities having the same domain. Call these quantities <span style="display:inline-block;"><span class="math inline">\(X_1\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(X_2\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(X_3\)</span>,</span> and so on.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><img src="exchange_illustrationv.png" class="img-fluid" style="width:40.0%"><br>
@@ -420,6 +435,7 @@ Illustration of the inference exchange. Left: original inference; right: exchang
 <p>An inference which remains basically the same if a quantity in the <em>proposal</em> is exchanged with a quantity in the <em>conditional</em> is called <span class="blue"><strong>exchangeable</strong></span>.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
