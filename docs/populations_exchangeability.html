@@ -323,6 +323,9 @@ ul.task-list li input[type="checkbox"] {
 <!-- \providecommand*{\mo}[1][=]{\mathrel{\mkern-4mu#1\mkern-4mu}} -->
 <!-- \providecommand*{\mo}[1][\textrm{\small=}]{\mathrel{\mkern-4mu#1\mkern-4mu}} -->
 </div>
+<div class="hidden">
+
+</div>
 <p>To solve <em>any</em> inference problem, or to design an AI agent for solving an inference problem, all we have to do in principle is to repeatedly use the <a href="probability_inference.html#sec-fundamental">fundamental laws of inference of §&nbsp;<span>7.4</span></a>.</p>
 <p>In many cases an in-principle application of the inference laws is computationally impossible, however. Approximate calculations and premises are then used, sometimes quite drastic. The approximation used depends on the nature of the inference problem. This is why inference problems are often classified in one way or another, and different solution recipes are presented for the different classes.</p>
 <p>For a data-science engineer it is important to keep in mind that these recipes are only approximations, and to keep the principled solution always in sight. Technological advances continually allow us to make computations that were previously impossible – think of “quantum computers” these days. A truly optimal in-principle solution, preferable to a sub-optimal approximation, can suddenly become accessible – to those who know it.</p>
@@ -338,11 +341,11 @@ ul.task-list li input[type="checkbox"] {
 <li><dl>
 <dt><a href="https://www.britannica.com/money/topic/stock-exchange-finance">Stock exchange</a></dt>
 <dd>
-In 100 days, the daily change in <a href="https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price">closing price</a> of a stock has been <span class="green">positive 74 times, and negative 26 times</span>, according to this sequence, from left to right:
+In 100 days, the daily change in <a href="https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price">closing price</a> of a stock has been <span class="green">positive 74 times, and negative 26 times</span>, according a particular sequence. For instance, the data could be:
 </dd>
 </dl>
 <p><img src="stock.png" class="img-fluid" style="width:100.0%"></p>
-<p>In which of the subsequent 3 days will the closing-price change be <span class="yellow">positive</span>, and in which <span class="yellow">negative</span>?</p></li>
+<p>In which of the subsequent 3 days will the closing-price change be positive, and in which negative?</p></li>
 </ul>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -353,12 +356,12 @@ In 100 days, the daily change in <a href="https://www.investor.gov/introduction-
 <li><dl>
 <dt>Mars <a href="https://www.britannica.com/technology/prospecting-mining">prospecting</a></dt>
 <dd>
-Of the last 100 similar-sized rocks examined in a large crater on Mars, <span class="green">74 contained <a href="https://science.nasa.gov/science-news/science-at-nasa/2001/ast28mar_1">hematite</a>, and 26 didn’t</span>. The data can be represented as
+Of the last 100 similar-sized rocks examined in a large crater on Mars, <span class="green">74 contained <a href="https://science.nasa.gov/science-news/science-at-nasa/2001/ast28mar_1">hematite</a>, and 26 didn’t</span>. For instance, the data could be:
 </dd>
 </dl>
 <p><img src="rock.png" class="img-fluid" style="width:100.0%"></p>
-<p>Where “Y” and “N” denote the presence and absence of hematite.</p>
-<p>Which of the next 3 rocks will contain <span class="yellow">hematite</span>, and which will be <span class="yellow">hematite-free</span>?</p></li>
+<p>where “Y” and “N” denote the presence and absence of hematite.</p>
+<p>Which, among the next 3 rocks that will be examined, will contain hematite, and which will be hematite-free?</p></li>
 </ul>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -391,7 +394,7 @@ Of the last 100 similar-sized rocks examined in a large crater on Mars, <span cl
 <p>The two inference problems differ in some aspects and are similar in others. Time, for example, appears to be an important aspect of the first inference, which is in fact often categorized as a “<a href="https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data">time-series analysis</a>”. But the second inference involves or could involve time as well: the rocks could be inspected sequentially. So more precisely it is the time <em>ordering</em> that is more relevant in the first inference than the second.</p>
 <p>An important difference between the two inference problems is revealed by the following thought-experiments. Consider how you would answer in the stock-exchange case and in the Mars-prospecting case:</p>
 <ol type="a">
-<li><p><em>It turns out that there was an error in the sequence of positive and negative datapoints, although not in the total amounts of positive and negative ones.</em> In the stock-exchange inference, for instance, days 1 and 3 were erroneously swapped, as were days 100 and 85, and many other days; in the Mars-prospecting inference, rocks #1 and #3 were erroneously swapped, as were rocks #100 and #97, and many other rocks.</p>
+<li><p><em>It turns out that there was an error in the sequence of positive and negative datapoints, although not in the total amounts of positive and negative ones.</em> In the stock-exchange inference, for instance, days 1 (<span style="display:inline-block;"><span class="math inline">\(-\)</span>)</span> and 3 (<span style="display:inline-block;"><span class="math inline">\(+\)</span>)</span> were erroneously swapped, as were days 100 (<span style="display:inline-block;"><span class="math inline">\(+\)</span>)</span> and 85 (<span style="display:inline-block;"><span class="math inline">\(-\)</span>),</span> and many other days; in the Mars-prospecting inference, rocks #1 (Y) and #3 (N) were erroneously swapped, as were rocks #100 (Y) and #97 (N), and many other rocks.</p>
 <p>Should the final inference about the next 3 datapoints be changed?</p></li>
 <li><p><em>The information about the exact sequence of data is lost, and only the total amount of positive and negative datapoints is preserved</em> (74 vs 26).</p>
 <p>Would the final inference about the next 3 datapoints be different, compared to the situation where the exact data sequence is known?</p></li>
@@ -403,16 +406,46 @@ Of the last 100 similar-sized rocks examined in a large crater on Mars, <span cl
 </section>
 <section id="formal-definition" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="formal-definition">Formal definition</h3>
-<p><em>Exchangeability</em>, properly speaking, is a property of a joint probability distribution over a collection of quantities having the same domain. Call these quantities <span style="display:inline-block;"><span class="math inline">\(X_1\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(X_2\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(X_3\)</span>,</span> and so on.</p>
+<p>Consider a joint probability distribution over a collection of quantities having the same domain, and conditional on some information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>.</span> Call the quantities <span style="display:inline-block;"><span class="math inline">\(X_1\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(X_2\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(X_3\)</span>,</span> and so on. This joint probability distribution is called <span class="blue"><strong>exchangeable</strong></span> if <span class="blue"><em>its values stay the same whenever the values of any two quantities are swapped</em></span>, for example</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}(X_1 \mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{34,136,51}\small Y},\ X_2\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{34,136,51}\small Y},\ X_3\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{238,102,119}\small N},\ \dotsc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex] {}={}&amp;
+\mathrm{P}(X_1 \mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{238,102,119}\small N},\ X_2\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{34,136,51}\small Y},\ X_3\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{34,136,51}\small Y},\ \dotsc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex] {}={}&amp;
+\mathrm{P}(X_1 \mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{34,136,51}\small Y},\ X_2\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{238,102,119}\small N},\ X_3\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{34,136,51}\small Y},\ \dotsc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\end{aligned}
+\]</span></p>
+<p>and so on, <em>no matter how many quantities there are (the dots <span style="display:inline-block;">“<span class="math inline">\(\dotsc\)</span>”</span>)</em>, and <em>for any values the quantities might have</em>.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-circle" aria-label="exclamation-circle"></i>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This does not mean that all probabilities are equal. For instance we can have</p>
+<p><span class="math display">\[
+\mathrm{P}(X_1 \mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{34,136,51}\small Y},\ X_2\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{34,136,51}\small Y},\ X_3\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{238,102,119}\small N},\ X_4\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{238,102,119}\small N}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrel{\boldsymbol{\ne}}
+\mathrm{P}(X_1 \mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{34,136,51}\small Y},\ X_2\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{34,136,51}\small Y},\ X_3\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{238,102,119}\small N},\ X_4\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{34,136,51}\small Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\]</span></p>
+<p>but we must have</p>
+<p><span class="math display">\[
+\mathrm{P}(X_1 \mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{34,136,51}\small Y},\ X_2\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{34,136,51}\small Y},\ X_3\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{238,102,119}\small N},\ X_4\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{238,102,119}\small N}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrel{\boldsymbol{=}}
+\mathrm{P}(X_1 \mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{238,102,119}\small N},\ X_2\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{34,136,51}\small Y},\ X_3\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{238,102,119}\small N},\ X_4\mathord{\mkern 1.5mu\textrm{\small=}\mkern 1.5mu}\textrm{\color[RGB]{34,136,51}\small Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\]</span></p>
+</div>
+</div>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><img src="exchange_illustrationv.png" class="img-fluid" style="width:40.0%"><br>
 Illustration of the inference exchange. Left: original inference; right: exchanged inference. “<span class="blue">✓</span>”: known; “<span class="purple">?</span>”: unknown.</p>
-</div></div><ol type="1">
-<li><p>Instead of assessing the value (unknown) of the fund in 100 days, given the values (known) in the past 3650 days, you can assess the value (unknown) in one of the 3650 days, given the values (known) in the remaining 3649 days and in the day 100 in the future.</p></li>
-<li><p>Instead of assessing the failure status (unknown) of the 100th component from now, given the status (known) of the past 1000 components, you can assess the status (unknown) of one of the 1000 components, given the status (known) of the remaining 999 and of the 100th component from now.</p></li>
-</ol>
-<div class="callout callout-style-default callout-caution no-icon callout-titled">
+</div></div><div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>

@@ -1,5 +1,6 @@
 # Populations & exchangeability
 {{< include macros.qmd >}}
+{{< include macros_populations_exchangeability.qmd >}}
 
 To solve *any* inference problem, or to design an AI agent for solving an inference problem, all we have to do in principle is to repeatedly use the [fundamental laws of inference of § @sec-fundamental].
 
@@ -18,11 +19,11 @@ We shall now introduce a very rough distinction between two very broad classes o
 Consider these sketches of two inference problems:
 
 - [Stock exchange](https://www.britannica.com/money/topic/stock-exchange-finance)
-: In 100 days, the daily change in [closing price](https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price) of a stock has been [positive 74 times, and negative 26 times]{.green}, according to this sequence, from left to right:
+: In 100 days, the daily change in [closing price](https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price) of a stock has been [positive 74 times, and negative 26 times]{.green}, according a particular sequence. For instance, the data could be:
 
     ![](stock.png){width=100%}
 
-    In which of the subsequent 3 days will the closing-price change be [positive]{.yellow}, and in which [negative]{.yellow}?
+    In which of the subsequent 3 days will the closing-price change be positive, and in which negative?
 
 :::{.column-margin}
 ![](stock_course.jpg){width=100%}
@@ -31,13 +32,13 @@ Consider these sketches of two inference problems:
 \
 
 - Mars [prospecting](https://www.britannica.com/technology/prospecting-mining)
-: Of the last 100 similar-sized rocks examined in a large crater on Mars, [74 contained [hematite](https://science.nasa.gov/science-news/science-at-nasa/2001/ast28mar_1), and 26 didn't]{.green}. The data can be represented as
+: Of the last 100 similar-sized rocks examined in a large crater on Mars, [74 contained [hematite](https://science.nasa.gov/science-news/science-at-nasa/2001/ast28mar_1), and 26 didn't]{.green}. For instance, the data could be:
 
     ![](rock.png){width=100%}
 
-    Where "Y" and "N" denote the presence and absence of hematite.
+    where "Y" and "N" denote the presence and absence of hematite.
 
-    Which of the next 3 rocks will contain [hematite]{.yellow}, and which will be [hematite-free]{.yellow}?
+    Which, among the next 3 rocks that will be examined, will contain hematite, and which will be hematite-free?
 
 :::{.column-margin}
 ![](mars_crater2.jpg){width=100%}
@@ -72,7 +73,7 @@ The two inference problems differ in some aspects and are similar in others. Tim
 
 An important difference between the two inference problems is revealed by the following thought-experiments. Consider how you would answer in the stock-exchange case and in the Mars-prospecting case:
 
-a. *It turns out that there was an error in the sequence of positive and negative datapoints, although not in the total amounts of positive and negative ones.* In the stock-exchange inference, for instance, days 1 and 3 were erroneously swapped, as were days 100 and 85, and many other days; in the Mars-prospecting inference, rocks #1 and #3 were erroneously swapped, as were rocks #100 and #97, and many other rocks.
+a. *It turns out that there was an error in the sequence of positive and negative datapoints, although not in the total amounts of positive and negative ones.* In the stock-exchange inference, for instance, days 1 ($-$) and 3 ($+$) were erroneously swapped, as were days 100 ($+$) and 85 ($-$), and many other days; in the Mars-prospecting inference, rocks #1 (Y) and #3 (N) were erroneously swapped, as were rocks #100 (Y) and #97 (N), and many other rocks.
 
     Should the final inference about the next 3 datapoints be changed?
 
@@ -93,7 +94,39 @@ An inference which does not change if data and unknown quantities are freely reo
 
 ### Formal definition
 
-*Exchangeability*, properly speaking, is a property of a joint probability distribution over a collection of quantities having the same domain. Call these quantities $X_1$, $X_2$, $X_3$, and so on.
+Consider a joint probability distribution over a collection of quantities having the same domain, and conditional on some information $\yI$. Call the quantities $X_1$, $X_2$, $X_3$, and so on. This joint probability distribution is called [**exchangeable**]{.blue} if [*its values stay the same whenever the values of any two quantities are swapped*]{.blue}, for example
+
+$$
+\begin{aligned}
+&\P(X_1 \mo \yHg,\ X_2\mo \yHg,\ X_3\mo \yNr,\ \dotsc \| \yI)
+\\[1ex] {}={}&
+\P(X_1 \mo \yNr,\ X_2\mo \yHg,\ X_3\mo \yHg,\ \dotsc \| \yI)
+\\[1ex] {}={}&
+\P(X_1 \mo \yHg,\ X_2\mo \yNr,\ X_3\mo \yHg,\ \dotsc \| \yI)
+\end{aligned}
+$$
+
+and so on, *no matter how many quantities there are (the dots "$\dotsc$")*, and *for any values the quantities might have*.
+
+:::{.callout-warning}
+## {{< fa exclamation-circle >}}
+This does not mean that all probabilities are equal. For instance we can have
+
+$$
+\P(X_1 \mo \yHg,\ X_2\mo \yHg,\ X_3\mo \yNr,\ X_4\mo \yNr \| \yI)
+\mathrel{\boldsymbol{\ne}}
+\P(X_1 \mo \yHg,\ X_2\mo \yHg,\ X_3\mo \yNr,\ X_4\mo \yHg \| \yI)
+$$
+
+but we must have
+
+$$
+\P(X_1 \mo \yHg,\ X_2\mo \yHg,\ X_3\mo \yNr,\ X_4\mo \yNr \| \yI)
+\mathrel{\boldsymbol{=}}
+\P(X_1 \mo \yNr,\ X_2\mo \yHg,\ X_3\mo \yNr,\ X_4\mo \yHg \| \yI)
+$$
+:::
+
 
 
 
@@ -106,9 +139,6 @@ An inference which does not change if data and unknown quantities are freely reo
 Illustration of the inference exchange. Left: original inference; right: exchanged inference. "[✓]{.blue}": known; "[?]{.purple}": unknown.
 :::
 
-1. Instead of assessing the value (unknown) of the fund in 100 days, given the values (known) in the past 3650 days, you can assess the value (unknown) in one of the 3650 days, given the values (known) in the remaining 3649 days and in the day 100 in the future.
-
-2. Instead of assessing the failure status (unknown) of the 100th component from now, given the status (known) of the past 1000 components, you can assess the status (unknown) of one of the 1000 components, given the status (known) of the remaining 999 and of the 100th component from now.
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
