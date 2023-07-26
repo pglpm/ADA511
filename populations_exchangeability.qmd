@@ -87,60 +87,168 @@ c. *A new inference is requested: not about the 3 datapoints following the known
 
     Would the inference for the preceding 3 datapoints be different from the original one about the subsequent 3 datapoints?
 
-In all these thought-experiments, our intuition is that the inference for the stock-exchange problem would be different, but the one for the Mars-prospecting problem would stay the same or not change appreciably. Swapping days in a stock course, matters; swapping rocks in a crater, doesn't. There are good reasons, based on physics and dynamical-system theory, for this intuition. Our focus, however, is not on the *whys* of this intuition, but on the consequences that it has for inference and probability calculations.
+In all these thought-experiments, our intuition is that the inference for the stock-exchange problem would be different, but the one for the Mars-prospecting problem would stay the same or not change appreciably. Swapping days in a stock course, matters; swapping rocks in a crater, doesn't. There are good reasons, based on physics and dynamical-system theory, for this intuition.
 
 An inference which does not change if data and unknown quantities are freely reordered, like the Mars-prospecting one, is called [**exchangeable**]{.blue}. Whereas an inference in which the ordering of data and unknowns is relevant, like the stock-exchange one, is called **non-exchangeable**. There is not a  dichotomy between the two cases; rather, there are continuous varying degrees of exchangeability or non-exchangeability. But for the moment we shall simplify this gradation into a binary distinction.
+
+We shall now make this definition more precise, and then study and exploit the remarkable consequences that it has for an agent's inferences and probability calculations.
 
 
 ### Formal definition
 
-Consider a joint probability distribution over a collection of quantities having the same domain, and conditional on some information $\yI$. Call the quantities $X_1$, $X_2$, $X_3$, and so on. This joint probability distribution is called [**exchangeable**]{.blue} if [*the probabilities are same whenever the values of any two or more quantities are swapped*]{.blue}, for example
+Consider a collection of quantities $X_1, X_2, X_3, \dotsc$$, all having identical domains. For instance, they could all be continuous with values in the real numbers; or all binary, with values $\{\text{\small Yes}, \text{\small No}\}$; or all ordinal, with values $\{\text{\small low}, \text{\small medium}, \text{\small high}\}$; or all join quantities, with the same join domains.
+
+An agent has a joint probability distribution over them, conditional on some state of knowledge $\yI$:
+
+$$
+\P(X_1\mo x_1,\ X_2\mo x_2,\ X_3\mo x_3,\ \dotso \| \yI)
+$$
+
+for all combinations of values $x_1, x_2, x_3, \dotsc$
+
+
+This joint probability distribution is called [**exchangeable**]{.blue} if [*all marginal probabilities ([§ @sec-marginal-probs]) for any sub-collection of quantities remain the same whenever the values are swapped*]{.blue}. For example:
 
 $$
 \begin{aligned}
 &
-\P(X_1 \mo \ya,\ X_2\mo \yb,\ X_3\mo \ya,\ X_4\mo \yc,\ \dotsc \| \yI)
+\P(X_1 \mo \ya,\ X_2\mo \yb \| \yI)
 \\[1ex] {}={}&
-\P(X_1 \mo \yb,\ X_2\mo \ya,\ X_3\mo \yc,\ X_4\mo \ya,\ \dotsc \| \yI)
+\P(X_1 \mo \yb,\ X_2\mo \ya\| \yI)
+\end{aligned}
+\qquad\text{\small and}\qquad
+\begin{aligned}
+&
+\P(X_5 \mo \yc,\ X_{11}\mo \yd \| \yI)
 \\[1ex] {}={}&
-\P(X_1 \mo \yb,\ X_2\mo \yc,\ X_3\mo \ya,\ X_4\mo \ya,\ \dotsc \| \yI)
+\P(X_5 \mo \yd,\ X_{11}\mo \yc\| \yI)
+\end{aligned}
+$$
+
+and also
+
+$$
+\begin{aligned}
+&
+\P(X_1 \mo \ya,\ X_2\mo \yb,\ X_3\mo \yc \| \yI)
+\\[1ex] {}={}&
+\P(X_1 \mo \ya,\ X_2\mo \yc,\ X_3\mo \yb \| \yI)
+\\[1ex] {}={}&
+\P(X_1 \mo \yb,\ X_2\mo \ya,\ X_3\mo \yb \| \yI)
+\\[1ex] {}={}&
+\P(X_1 \mo \yc,\ X_2\mo \yb,\ X_3\mo \ya \| \yI)
+\\[1ex] {}={}&
+\P(X_1 \mo \yc,\ X_2\mo \yb,\ X_3\mo \ya \| \yI)
+\\[1ex] {}={}&
+\P(X_1 \mo \yc,\ X_2\mo \ya,\ X_3\mo \yb \| \yI)
+\end{aligned}
+\qquad\text{\small and}\qquad
+\begin{aligned}
+&
+\P(X_5 \mo \ya,\ X_{11}\mo \yb,\ X_{37}\mo \yc \| \yI)
+\\[1ex] {}={}&
+\P(X_5 \mo \ya,\ X_{11}\mo \yc,\ X_{37}\mo \yb \| \yI)
+\\[1ex] {}={}&
+\P(X_5 \mo \yb,\ X_{11}\mo \ya,\ X_{37}\mo \yb \| \yI)
+\\[1ex] {}={}&
+\P(X_5 \mo \yc,\ X_{11}\mo \yb,\ X_{37}\mo \ya \| \yI)
+\\[1ex] {}={}&
+\P(X_5 \mo \yc,\ X_{11}\mo \yb,\ X_{37}\mo \ya \| \yI)
+\\[1ex] {}={}&
+\P(X_5 \mo \yc,\ X_{11}\mo \ya,\ X_{37}\mo \yb \| \yI)
+\end{aligned}
+$$
+
+and also
+
+$$
+\begin{aligned}
+&
+\P(X_1 \mo \ya,\ X_2\mo \yb,\ X_3\mo \yc,\ X_4\mo \yd\| \yI)
+\\[1ex] {}={}&
+\P(X_1 \mo \yc,\ X_2\mo \ya,\ X_3\mo \yd,\ X_4\mo \yb \| \yI)
+\\[1ex] {}={}&
+\P(X_1 \mo \yd,\ X_2\mo \yc,\ X_3\mo \yb,\ X_4\mo \ya \| \yI)
 \\[1ex] {}={}&\dotso
 \end{aligned}
 $$
 
-and so on, *no matter how many quantities there are* (the dots "$\dotsc$"), and *for any values $\ya,\yb,\yc,\dotsc$ the quantities might have*.
+and so on, no matter how many and which quantities we take, and no matter what the values $\ya,\yb,\yc,\yd\dotsc$ might be.
 
-[Note that the commas just stand for the `and` operation, so thanks to the commutativity of Boolean algebra ([§ @sec-boolean]) the equations above are completely equivalent to
+[Note that the commas just stand for the `and` operation, so thanks to the commutativity of Boolean algebra ([§ @sec-boolean]) we could equivalently write
 $$
 \begin{aligned}
 &
-\P(X_1 \mo \ya,\ X_2\mo \yb,\ X_3\mo \ya,\ X_4\mo \yc,\ \dotsc \| \yI)
+\P(X_1 \mo \ya,\ X_2\mo \yb\| \yI)
 \\[1ex] {}={}&
-\P(X_2 \mo \ya,\ X_1\mo \yb,\ X_4\mo \ya,\ X_3\mo \yc,\ \dotsc \| \yI)
-\\[1ex] {}={}&\dotso
+\P(X_{\underbracket[0ex]{2}_{\uparrow}} \mo \ya,\ X_{\underbracket[0ex]{1}_{\uparrow}}\mo \yb \| \yI)
 \end{aligned}
 $$
 and so on, where the quantities look swapped rather than the values.]{.small}
 
+This definition means that exchangeability is true for all marginal distributions 
+
 :::{.callout-warning}
 ## {{< fa exclamation-circle >}}
-This does not mean that *all* probabilities are equal. For instance we can have the *in*equality
+This does not mean that *all* probabilities need to be equal. For instance, if $\yb\ne\yc$ then we can have the *in*equality
 
 $$
-\P(X_1 \mo \ya,\ X_2\mo \yb,\ X_3\mo \ya,\ X_4\mo \yc \| \yI)
+\P(X_1 \mo \ya,\ X_2\mo \yb \| \yI)
 \mathrel{\boldsymbol{\ne}}
-\P(X_1 \mo \ya,\ X_2\mo \yb,\ X_3\mo \yb,\ X_4\mo \yc \| \yI)
+\P(X_1 \mo \ya,\ X_2\mo \yc \| \yI)
 $$
 :::
 
-
-
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
-Discuss:
 
-- Does the exchanged inference seem less difficult than the original one, in the first inference problem? And in the second?
-- Why?
+Consider the following marginal probability distributions. For each, determine whether the joint probability they come from is *surely **non**-exchangeable*, and explain why:
+
+- $$\begin{aligned}
+&\P(X_1\mo 3,\  X_4\mo 5) = 0.15
+\\
+&\P(X_1\mo 5,\  X_4\mo 3) = 0.15
+\\
+&\P(X_1\mo 7,\  X_4\mo 3) = 0.25
+\\
+&\P(X_1\mo 3,\  X_4\mo 7) = 0.25
+\end{aligned}
+$$
+
+- $$\begin{aligned}
+&\P(Y_1\mo 3,\  Y_4\mo 5) = 0.07
+\\
+&\P(Y_1\mo 5,\  Y_4\mo 3) = 0.07
+\\
+&\P(Y_9\mo 3,\  Y_{21}\mo 5) = 0.4
+\\
+&\P(Y_9\mo 5,\  Y_{21}\mo 3) = 0.4
+\end{aligned}
+$$
+
+- $$\begin{aligned}
+&\P(Z_1\mo \yhi,\  Z_7\mo \ylo,\  Z_{20}\mo \yhi) = 0.11
+\\
+&\P(Z_1\mo \yhi,\  Z_7\mo \yhi,\  Z_{20}\mo \ylo) = 0.35
+\\
+&\P(Z_2\mo \ylo,\  Z_3\mo \ylo,\  Z_9\mo \yhi) = 0
+\\
+&\P(Z_2\mo \yhi,\  Z_3\mo \ylo,\  Z_9\mo \ylo) = 0
+\end{aligned}
+$$
+
+- $$\begin{aligned}
+&\P(U_1\mo 6.4,\  U_2\mo 8.7,\  U_3\mo -0.3) = 0.1
+\\
+&\P(U_1\mo 1.7,\  U_2\mo 0.5,\  U_3\mo -0.3) = 0.1
+\\
+&\P(U_1\mo -0.3,\  U_2\mo 6.4,\  U_3\mo 0.5) = 0.01
+\\
+&\P(U_1\mo -0.3,\  U_2\mo 1.7,\  U_3\mo 0.5) = 0.4
+\end{aligned}
+$$
+
+Note that we can't say that a probability distribution is exchangeable unless we're given *all* its probabilities, for all combinations of quantities and values.
 :::
 
 In the case of the inference problem about the fund value, the exchanged inference seems much easier. We expect known fund values closer to the unknown one to be more informative. In the case of the inference problem about the failure status, the exchanged inference might be slightly easier, but still roughly on the same level of difficulty and the original one.
@@ -150,18 +258,6 @@ In the case of the inference problem about the fund value, the exchanged inferen
 An inference which remains basically the same if a quantity in the *proposal* is exchanged with a quantity in the *conditional* is called [**exchangeable**]{.blue}.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+Our focus, however, is not on the *whys* of this intuition, but on the consequences that it has for inference and probability calculations.
 
 
