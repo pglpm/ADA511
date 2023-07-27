@@ -12,7 +12,7 @@ For a data-science engineer it is important to keep in mind that these recipes a
 
 We shall now introduce a very rough distinction between two very broad classes of inference problems, and then study the principled solution of one of them, and approximations to this solution.
 
-## Exchangeable vs non-exchangeable inferences {#sec-exchangeability}
+## Exchangeable inferences {#sec-exchangeability}
 
 ### Intuitive understanding
 
@@ -96,7 +96,7 @@ We shall now make this definition more precise, and then study and exploit the r
 
 ### Formal definition
 
-Consider a collection of quantities $X_1, X_2, X_3, \dotsc$$, all having identical domains. For instance, they could all be continuous with values in the real numbers; or all binary, with values $\{\text{\small Yes}, \text{\small No}\}$; or all ordinal, with values $\{\text{\small low}, \text{\small medium}, \text{\small high}\}$; or all join quantities, with the same join domains.
+Consider a collection of quantities $X_1, X_2, X_3, \dotsc$, all having identical domains. For instance, they could all be continuous with values in the real numbers; or all binary, with values $\{\text{\small Yes}, \text{\small No}\}$; or all ordinal, with values $\{\text{\small low}, \text{\small medium}, \text{\small high}\}$; or all join quantities, with the same join domains. This collection is in principle infinite: it is always possible to add one more quantity, with the same domain, to the collection.
 
 An agent has a joint probability distribution over them, conditional on some state of knowledge $\yI$:
 
@@ -104,58 +104,48 @@ $$
 \P(X_1\mo x_1,\ X_2\mo x_2,\ X_3\mo x_3,\ \dotso \| \yI)
 $$
 
-for all combinations of values $x_1, x_2, x_3, \dotsc$
+for all combinations of values $x_1, x_2, x_3, \dotsc$.
 
 
-This joint probability distribution is called [**exchangeable**]{.blue} if [*all marginal probabilities ([§ @sec-marginal-probs]) for any sub-collection of quantities remain the same whenever the values are swapped*]{.blue}. For example:
+This joint probability distribution is called [**infinitely exchangeable**]{.blue} if [*all marginal probabilities ([§ @sec-marginal-probs]) for any sub-collection of quantities remain the same whenever the values are swapped among quantities*]{.blue}. For example:
 
 $$
 \begin{aligned}
 &
 \P(X_1 \mo \ya,\ X_2\mo \yb \| \yI)
 \\[1ex] {}={}&
-\P(X_1 \mo \yb,\ X_2\mo \ya\| \yI)
-\end{aligned}
-\qquad\text{\small and}\qquad
-\begin{aligned}
-&
-\P(X_5 \mo \yc,\ X_{11}\mo \yd \| \yI)
+\P(X_2 \mo \ya,\ X_1\mo \yb\| \yI)
 \\[1ex] {}={}&
-\P(X_5 \mo \yd,\ X_{11}\mo \yc\| \yI)
+\P(X_1 \mo \ya,\ X_3\mo \yb \| \yI)
+\\[1ex] {}={}&
+\P(X_3 \mo \ya,\ X_1\mo \yb\| \yI)
+\\[1ex] {}={}&
+\dotso
+\\[1ex] {}={}&
+\P(X_{23} \mo \ya,\ X_{7}\mo \yb\| \yI)
+\\[1ex] {}={}&
+\dotso
 \end{aligned}
 $$
 
-and also
+and so on, and also
 
 $$
 \begin{aligned}
 &
 \P(X_1 \mo \ya,\ X_2\mo \yb,\ X_3\mo \yc \| \yI)
 \\[1ex] {}={}&
-\P(X_1 \mo \ya,\ X_2\mo \yc,\ X_3\mo \yb \| \yI)
+\P(X_2 \mo \ya,\ X_1\mo \yb,\ X_3\mo \yc \| \yI)
 \\[1ex] {}={}&
-\P(X_1 \mo \yb,\ X_2\mo \ya,\ X_3\mo \yb \| \yI)
+\P(X_2 \mo \ya,\ X_3\mo \yb,\ X_1\mo \yc \| \yI)
 \\[1ex] {}={}&
-\P(X_1 \mo \yc,\ X_2\mo \yb,\ X_3\mo \ya \| \yI)
+\P(X_3 \mo \ya,\ X_4\mo \yb,\ X_5\mo \yc \| \yI)
 \\[1ex] {}={}&
-\P(X_1 \mo \yc,\ X_2\mo \yb,\ X_3\mo \ya \| \yI)
+\dotso
 \\[1ex] {}={}&
-\P(X_1 \mo \yc,\ X_2\mo \ya,\ X_3\mo \yb \| \yI)
-\end{aligned}
-\qquad\text{\small and}\qquad
-\begin{aligned}
-&
-\P(X_5 \mo \ya,\ X_{11}\mo \yb,\ X_{37}\mo \yc \| \yI)
+\P(X_{12} \mo \ya,\ X_8\mo \yb,\ X_{47}\mo \yc \| \yI)
 \\[1ex] {}={}&
-\P(X_5 \mo \ya,\ X_{11}\mo \yc,\ X_{37}\mo \yb \| \yI)
-\\[1ex] {}={}&
-\P(X_5 \mo \yb,\ X_{11}\mo \ya,\ X_{37}\mo \yb \| \yI)
-\\[1ex] {}={}&
-\P(X_5 \mo \yc,\ X_{11}\mo \yb,\ X_{37}\mo \ya \| \yI)
-\\[1ex] {}={}&
-\P(X_5 \mo \yc,\ X_{11}\mo \yb,\ X_{37}\mo \ya \| \yI)
-\\[1ex] {}={}&
-\P(X_5 \mo \yc,\ X_{11}\mo \ya,\ X_{37}\mo \yb \| \yI)
+\dotso
 \end{aligned}
 $$
 
@@ -166,96 +156,122 @@ $$
 &
 \P(X_1 \mo \ya,\ X_2\mo \yb,\ X_3\mo \yc,\ X_4\mo \yd\| \yI)
 \\[1ex] {}={}&
-\P(X_1 \mo \yc,\ X_2\mo \ya,\ X_3\mo \yd,\ X_4\mo \yb \| \yI)
+\P(X_3 \mo \ya,\ X_4\mo \yb,\ X_2\mo \yc,\ X_1\mo \yd\| \yI)
 \\[1ex] {}={}&
-\P(X_1 \mo \yd,\ X_2\mo \yc,\ X_3\mo \yb,\ X_4\mo \ya \| \yI)
-\\[1ex] {}={}&\dotso
+\dotso
+\\[1ex] {}={}&
+\P(X_{91} \mo \ya,\ X_{72}\mo \yb,\ X_6\mo \yc,\ X_{13}\mo \yd\| \yI)
+\\[1ex] {}={}&
+\dotso
 \end{aligned}
 $$
 
-and so on, no matter how many and which quantities we take, and no matter what the values $\ya,\yb,\yc,\yd\dotsc$ might be.
+and so on -- no matter how many and which quantities we take, and no matter what the values $\ya,\yb,\yc,\yd\dotsc$ might be.
 
-[Note that the commas just stand for the `and` operation, so thanks to the commutativity of Boolean algebra ([§ @sec-boolean]) we could equivalently write
-$$
-\begin{aligned}
-&
-\P(X_1 \mo \ya,\ X_2\mo \yb\| \yI)
-\\[1ex] {}={}&
-\P(X_{\underbracket[0ex]{2}_{\uparrow}} \mo \ya,\ X_{\underbracket[0ex]{1}_{\uparrow}}\mo \yb \| \yI)
-\end{aligned}
-$$
-and so on, where the quantities look swapped rather than the values.]{.small}
-
-This definition means that exchangeability is true for all marginal distributions 
+In the following we shall simply call this type of probability distribution [**exchangeable**]{.blue}, omitting "infinitely". But keep in mind that there are also **finitely** exchangeable distributions, and *they have different properties*. Here, when we say "exchangeable", we always strictly mean "infinitely exchangeable".
 
 :::{.callout-warning}
 ## {{< fa exclamation-circle >}}
-This does not mean that *all* probabilities need to be equal. For instance, if $\yb\ne\yc$ then we can have the *in*equality
+Exchangeability does not mean that *all* probabilities need to be equal. For instance, if $\yb\ne\yc$ then these probabilities can be different:
 
-$$
+$$\begin{gathered}
 \P(X_1 \mo \ya,\ X_2\mo \yb \| \yI)
 \mathrel{\boldsymbol{\ne}}
 \P(X_1 \mo \ya,\ X_2\mo \yc \| \yI)
+\\
+\P(X_1 \mo \ya,\ X_2\mo \yb \| \yI)
+\mathrel{\boldsymbol{\ne}}
+\P(X_{23} \mo \ya,\ X_7\mo \yc \| \yI)
+\end{gathered}$$
+
+although we must still have
+
+$$
+\P(X_1 \mo \ya,\ X_2\mo \yc \| \yI)
+\mathrel{\boldsymbol{=}}
+\P(X_{23} \mo \ya,\ X_7\mo \yc \| \yI)
 $$
 :::
+
+\
+
+The definition of exchangeability given above can also be put in a different way. For an exchangeable probability distribution, the joint probability of a collection of quantities can only depend on the different values appearing in it and their multiplicities. For instance, the numerical value of the marginal, joint probability
+
+$$
+\P(X_{91} \mo \yb,\ X_{72}\mo \ya,\ X_6\mo \yb,\ X_{13}\mo \yc\| \yI)
+$$
+
+where $\ya,\yb,\yc$ are different from one another, can only depend on the fact that there are the three different values $\ya,\yb,\yc$, and that $\ya$ appears once, $\yb$ twice, and $\yc$ once. So any other marginal, joint probability containing the value $\ya$ once, $\yb$ twice, and $\yc$ once, must be equal to the one above.
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
 
-Consider the following marginal probability distributions. For each, determine whether the joint probability they come from is *surely **non**-exchangeable*, and explain why:
+For each of the marginal probabilities below, determine whether the joint probability they come from is *surely **non**-exchangeable*, and explain why. Note that we can't determine whether a probability distribution is exchangeable unless we're given *all* its probabilities, for all combinations of quantities and values.
+\
 
-- $$\begin{aligned}
-&\P(X_1\mo 3,\  X_4\mo 5) = 0.15
+1. $$\begin{aligned}
+&\P(X_1\mo 3,\  X_4\mo 5\|\yI) = 0.15
 \\
-&\P(X_1\mo 5,\  X_4\mo 3) = 0.15
+&\P(X_1\mo 5,\  X_4\mo 3\|\yI) = 0.15
 \\
-&\P(X_1\mo 7,\  X_4\mo 3) = 0.25
+&\P(X_1\mo 7,\  X_4\mo 3\|\yI) = 0.25
 \\
-&\P(X_1\mo 3,\  X_4\mo 7) = 0.25
+&\P(X_1\mo 3,\  X_4\mo 7\|\yI) = 0.25
 \end{aligned}
 $$
+\
 
-- $$\begin{aligned}
-&\P(Y_1\mo 3,\  Y_4\mo 5) = 0.07
+2. $$\begin{aligned}
+&\P(Y_1\mo 3,\  Y_4\mo 5\|\yI) = 0.07
 \\
-&\P(Y_1\mo 5,\  Y_4\mo 3) = 0.07
+&\P(Y_1\mo 5,\  Y_4\mo 3\|\yI) = 0.07
 \\
-&\P(Y_9\mo 3,\  Y_{21}\mo 5) = 0.4
+&\P(Y_9\mo 3,\  Y_{21}\mo 5\|\yI) = 0.4
 \\
-&\P(Y_9\mo 5,\  Y_{21}\mo 3) = 0.4
+&\P(Y_9\mo 5,\  Y_{21}\mo 3\|\yI) = 0.4
 \end{aligned}
 $$
+\
 
-- $$\begin{aligned}
-&\P(Z_1\mo \yhi,\  Z_7\mo \ylo,\  Z_{20}\mo \yhi) = 0.11
+3. $$\begin{aligned}
+&\P(Z_1\mo \yhi,\  Z_7\mo \ylo,\  Z_{20}\mo \yhi\|\yI) = 0.11
 \\
-&\P(Z_1\mo \yhi,\  Z_7\mo \yhi,\  Z_{20}\mo \ylo) = 0.35
+&\P(Z_1\mo \yhi,\  Z_7\mo \yhi,\  Z_{20}\mo \ylo\|\yI) = 0.35
 \\
-&\P(Z_2\mo \ylo,\  Z_3\mo \ylo,\  Z_9\mo \yhi) = 0
+&\P(Z_2\mo \ylo,\  Z_3\mo \ylo,\  Z_9\mo \yhi\|\yI) = 0
 \\
-&\P(Z_2\mo \yhi,\  Z_3\mo \ylo,\  Z_9\mo \ylo) = 0
+&\P(Z_2\mo \yhi,\  Z_3\mo \ylo,\  Z_9\mo \ylo\|\yI) = 0
 \end{aligned}
 $$
+\
 
-- $$\begin{aligned}
-&\P(U_1\mo 6.4,\  U_2\mo 8.7,\  U_3\mo -0.3) = 0.1
+4. $$\begin{aligned}
+&\P(U_1\mo 6.4,\  U_2\mo 8.7,\  U_3\mo -0.3\|\yI) = 0.1
 \\
-&\P(U_1\mo 1.7,\  U_2\mo 0.5,\  U_3\mo -0.3) = 0.1
+&\P(U_1\mo 1.7,\  U_2\mo 0.5,\  U_3\mo -0.3\|\yI) = 0.1
 \\
-&\P(U_1\mo -0.3,\  U_2\mo 6.4,\  U_3\mo 0.5) = 0.01
+&\P(U_1\mo -0.3,\  U_2\mo 6.4,\  U_3\mo 0.5\|\yI) = 0.01
 \\
-&\P(U_1\mo -0.3,\  U_2\mo 1.7,\  U_3\mo 0.5) = 0.4
+&\P(U_1\mo -0.3,\  U_2\mo 1.7,\  U_3\mo 0.5\|\yI) = 0.4
 \end{aligned}
 $$
-
-Note that we can't say that a probability distribution is exchangeable unless we're given *all* its probabilities, for all combinations of quantities and values.
 :::
-
-In the case of the inference problem about the fund value, the exchanged inference seems much easier. We expect known fund values closer to the unknown one to be more informative. In the case of the inference problem about the failure status, the exchanged inference might be slightly easier, but still roughly on the same level of difficulty and the original one.
 
 \
 
-An inference which remains basically the same if a quantity in the *proposal* is exchanged with a quantity in the *conditional* is called [**exchangeable**]{.blue}.
+### Example
+
+As an example of a fully-specified exchangeable distribution, consider the collection of quantities $X_1, X_2, \dotsc$ with common domain $\set{1,2,3}$
+
+
+
+## Interpretations of exchangeability
+
+
+
+
+
+
 
 
 Our focus, however, is not on the *whys* of this intuition, but on the consequences that it has for inference and probability calculations.
