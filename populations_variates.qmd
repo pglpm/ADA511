@@ -4,7 +4,7 @@
 
 ## Collections of identical quantities
 
-In engineering and data science, we often face inference problems involving not just with one quantity (simple, joint, or complex), but collections of quantities. And often the quantities in the collection have a special property: they have the same domain, so they can somehow be considered as copies of one another. Consider the following examples:
+In engineering and data science, we often face inference problems involving not just with one quantity (simple, joint, or complex), but collections of quantities. And often all quantities in the collection have the same domain, so they can somehow be considered as copies of one another. Consider the following examples:
 
 - [Stock exchange](https://www.britannica.com/money/topic/stock-exchange-finance)
 : We are interested in the daily change in [closing price](https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price) of a stock, during 100 days. Each day the change can be [positive (or zero)]{.green}, or [negative]{.yellow}.
@@ -28,7 +28,7 @@ In engineering and data science, we often face inference problems involving not 
 
 It is easy to think of many other and very diverse examples that are similar to the two above. We shall now try to abstract and generalize this similarity.
 
-## Units and statistical populations
+## Units, variates, statistical populations {#sec-variates-populations}
 
 Consider a large collection of entities that are somehow similar to one another. We call these entities [**units**]{.blue}. These units could be, for instance:
 
@@ -40,7 +40,7 @@ Consider a large collection of entities that are somehow similar to one another.
 - the rolls of a particular die or the tosses of a particular coin;
 - the weather conditions in several days.
 
-These units are similar to one another in that they have some aspect^[The term [*feature*]{.blue} is used in machine learning] common to all. This aspect can present itself in a specific number of different guises, which can be different from unit to unit. For instance, the aspect could be:
+These units are similar to one another in that they have some aspect^[The term [*feature*]{.blue} is used in machine learning] common to all. This aspect can present itself in a specific number of mutually-exclusive guises, which can be different from unit to unit. For instance, the aspect could be:
 
 - "colour", each unit being, say, [green]{.green}, [blue]{.blue}, or [yellow]{.yellow};
 - "mass", each unit having a mass between $0.1\,\mathrm{kg}$ and $10\,\mathrm{kg}$;
@@ -49,18 +49,20 @@ These units are similar to one another in that they have some aspect^[The term [
 - "having a label", each unit having one of the labels `A`, `B`, `C`;
 - a complex combination of several simpler aspects like the ones above.
 
-The units could also have additional aspects, which we simply don't consider or can't measure. We'll discuss this possibility later.
+The units also have additional aspects (they must, otherwise we wouldn't be able to distinguish each unit from all others), which we simply don't consider or can't measure. We'll discuss this possibility later.
 
-From this description it's clear that the aspect of each unit is a *quantity*, as we have defined and discussed in the previous sections. So once the units and their aspect are specified, we have a set of as many quantities as there are units. All these quantities have identical domains.
+From this description it's clear that the aspect of each unit is a *quantity*, as defined in [§ @sec-quant-value-dom]. Once the units and their aspect are specified, we have a set of as many quantities as there are units. All these quantities have identical domains.
+
+A quantity which is an "aspect" of a set of units is called a [**variate**]{.blue}. So when we speak about a variate it is understood that this is a quantity that appears, replicated, in some set of units.
 
 \
 
-We call a collection so defined a [**statistical population**]{.blue}, or just **population** when there's no ambiguity.
+We call a collection of units so defined a [**statistical population**]{.blue}, or just **population** when there's no ambiguity.
 
 The notion of statistical population is extremely general and encompassing -- so many different things can be thought of as a population -- but requires precision. A statistical population has not been specified until two things are precisely given:
 
 - a way to determine whether something is a unit or not
-- a definition of the aspect considered, its possible values, and how it is measured
+- a definition of the variate considered, its possible values, and how it is measured
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
@@ -74,7 +76,29 @@ Which of the following descriptions does define a statistical population? explai
 
 4. The words contained on all websites of the internet.
 
-5. Rocks, of volume between 1 cm³ and 1 m³, found on the [Schiaparelli crater](https://www.esa.int/ESA_Multimedia/Images/2015/11/On_the_rim_of_Schiaparelli_crater) (as defined by contours on a map), and tested to contain hematite, with possible values $\set{\texttt{\small Y}, \texttt{\small N}}$.
+5. Rocks, of volume between 1 cm³ and 1 m³, found in the [Schiaparelli crater](https://www.esa.int/ESA_Multimedia/Images/2015/11/On_the_rim_of_Schiaparelli_crater) (as defined by contours on a map), and tested to contain hematite, with possible values $\set{\texttt{\small Y}, \texttt{\small N}}$.
+:::
+
+:::{.callout-warning}
+## {{< fa exclamation-circle >}} Subtleties in the notion of statistical population
+
+- A statistical population is only a conceptual device to simplify and face some decision or inference problem. There is no objectively-defined population "out there".
+
+    Any entity, object, person, and so on has characteristic that makes it completely unique (say, its space-time coordinates), otherwise we wouldn't be able to distinguish it from others. From this point of view any entity is just be a one-member population in itself. If we consider two or more entities as being "similar" and belonging to the same population, it's because we have decided to disregard some characteristics and focus on some others. This decision is arbitrary, a matter of convention, and depends on the specific inference and decision problem.
+	
+	To "test" whether an entity belong to a given population, means to check if that entity satisfies the agreed-upon definition of that population.
+
+\
+
+- Any physical entity, object, person, etc. can represent different units in different and even non-overlapping statistical populations. For instance, a 100 cm³ rock found in the Schiaparelli crater on Mars could be a unit in these populations:
+
+    a. Rocks, of volume between 1 cm³ and 1 m³, found in the Schiaparelli crater and tested for hematite
+	b. Rocks, of volume between 10 cm³ and 200 cm³, found in the Schiaparelli crater and tested for hematite
+	c. Rocks, of volume between 10 cm³ and 200 m³, found in any crater on any planet of the solar system, and tested for hematite
+    d. Rocks, of volume between 1 cm³ and 1 m³, found in the Schiaparelli crater and measured for the magnitude of their [magnetic field](https://www.feynmanlectures.caltech.edu/II_34.html).
+	
+	Populations a. b. c. above have the same variate but differ in their definition of "unit". Populations a. and d. have the same definition of unit but different variates. Population b. is a subset of population a.: they have the same variate, and any unit in b. is also a unit in a. Populations a. and c. have some overlap: they have the same variate, and some units of a. are also units of c., and vice versa.
+
 :::
 
 
