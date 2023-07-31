@@ -10,7 +10,7 @@ When we have a statistical population with a joint variate, it is often of inter
 Consider for instance the following population, a modified version of the glass-forensics example:
 
 - *units:* glass fragments (collected at specific locations)
-- *variate:* the joint variate $(\textrm{\small Ca}, \textrm{\small Si}, \textrm{\small Type})$ consisting of three simple variates:
+- *variate:* the joint variate $(\vCa, \vSi, \vType)$ consisting of three simple variates:
 	+ weight fraction of **Ca**lcium in the fragment (ordinal variate), with three possible values `low`, `medium`, `high`
 	+ weight fraction of **Si**licon in the fragment (ordinal variate), with three possible values `low`, `medium`, `high`
     + **Type** of glass fragment (nominal variate), with seven possible values `building_windows_float_processed`, `building_windows_non_float_processed`, `containers`, `tableware`, `headlamps`
@@ -33,19 +33,20 @@ Consider for instance the following population, a modified version of the glass-
 
 Let's say we are interested only on those units that have the **Type** variate equal to `tableware`. Discarding all others we obtain a new, smaller population with four units:
 
-| [unit]{.yellow}  |        Ca  |        Si  |                                    Type  |
+| [unit]{.yellow}  |        Ca  |        Si  |                                    $\boldsymbol{\|}$Type  |
 |:----------------:|:----------:|:----------:|:----------------------------------------:|
 |    [3]{.yellow}  |  `medium`  |  `medium`  |                             `tableware`  |
 |    [8]{.yellow}  |     `low`  |    `high`  |                             `tableware`  |
 |    [9]{.yellow}  |  `medium`  |  `medium`  |                             `tableware`  |
 |   [10]{.yellow}  |  `medium`  |  `medium`  |                             `tableware`  |
-: {.sm}
+: Selection according to **Type** {#tbl-glass-tableware .sm}
 
+were a bar "$\boldsymbol{\|}$" indicates the variate used for the selection.
 
 
 As another example, we could be interested instead in those units that have both **Ca** *and* **Si** variates equal to `medium`. We obtain a smaller population with five units:
 
-| [unit]{.yellow}  |        Ca  |        Si  |                                    Type  |
+| [unit]{.yellow}  |        $\boldsymbol{\|}$Ca  |        $\boldsymbol{\|}$Si  |                                    Type  |
 |:----------------:|:----------:|:----------:|:----------------------------------------:|
 |    [3]{.yellow}  |  `medium`  |  `medium`  |                             `tableware`  |
 |    [4]{.yellow}  |  `medium`  |  `medium`  |      `building_windows_float_processed`  |
@@ -73,11 +74,13 @@ Populations formed in this way are called [**subpopulations**]{.blue} of the ori
 :::
 
 
-## Conditional frequencies
+## Associations
 
-The analysis of subpopulations is important because it often reveals peculiar associations among different variates. For instance, if from the population of [table @tbl-glass-simple] we extract the subpopulation having variate **Type** equal to `headlamps`:
+The analysis of subpopulations is important because it often reveals peculiar [*associations*]{.blue} among different variates. Let's illustrate what we mean with "association" -- a term that we'll use loosely, not with a strict technical definition -- with an example.
 
-| [unit]{.yellow}  |        Ca  |        Si  |                                    Type  |
+If we extract the subpopulation having variate **Type** equal to `headlamps` from the population of [table @tbl-glass-simple]:
+
+| [unit]{.yellow}  |        Ca  |        Si  |                                    $\boldsymbol{\|}$Type  |
 |:----------------:|:----------:|:----------:|:----------------------------------------:|
 |    [1]{.yellow}  |     `low`  |    `high`  |                             `headlamps`  |
 |    [5]{.yellow}  |     `low`  |  `medium`  |                             `headlamps`  |
@@ -87,7 +90,7 @@ we notice that all units have variate **Ca** equal to `low`. It is therefore imp
 
 On the other hand, if we extract the subpopulation having variate **Ca** equal to `low` we obtain
 
-| [unit]{.yellow}  |        Ca  |        Si  |                                    Type  |
+| [unit]{.yellow}  |        $\boldsymbol{\|}$Ca  |        Si  |                                    Type  |
 |:----------------:|:----------:|:----------:|:----------------------------------------:|
 |    [1]{.yellow}  |     `low`  |    `high`  |                             `headlamps`  |
 |    [2]{.yellow}  |     `low`  |  `medium`  |  `building_windows_non_float_processed`  |
@@ -96,14 +99,48 @@ On the other hand, if we extract the subpopulation having variate **Ca** equal t
 |    [8]{.yellow}  |     `low`  |    `high`  |                             `tableware`  |
 : {.sm}
 
-so the reverse is *not* true: if **Ca** is equal to `low`, that does *not* mean that it's impossible to observe other **Type** values besides `headlamps`. So in the original population we have, figuratively speaking, that
+so the reverse is *not* true: if **Ca** is equal to `low`, that does *not* mean that it's impossible to observe other **Type** values besides `headlamps`. In the original population we have, figuratively speaking, the following interesting association:
 
 $$
-\text{\small Type}\mo \cat{headlamps}\ \mathrel{\green\Rightarrow}\ 
-\text{\small Ca}\mo \cat{low}
+\vType\mo \cat{headlamps}\ \mathrel{\green\Rightarrow}\ 
+\vCa\mo \cat{low}
 \qquad\text{\small but}\qquad
-\text{\small Ca}\mo \cat{low}\  \mathrel{\red\nRightarrow}\ 
-\text{\small Type}\mo \cat{headlamps}
+\vCa\mo \cat{low}\  \mathrel{\red\nRightarrow}\ 
+\vType\mo \cat{headlamps}
 $$
 
+This kind of associations is often useful. Suppose for instance that you are asked to pick a unit with **Ca** equal to `low` in the original population; but it's difficult to measure a unit's **Ca** value, while it's easy to measure its **Type** value. Then you could instead search for a unit having **Type** equal to `headlamps` (easier search), and you would be sure that the unit you found also has **Ca** equal to `low`.
 
+\
+
+The example above above, where some values of a variate completely exclude some values of another, is extreme. More often, a population can have less extreme but still useful associations. They are best quantified using conditional frequencies.
+
+
+## Conditional frequencies {#sub-conditional-freqs}
+
+Given a statistical population with joint variates ${\green X}, {\red Y}$ (and possibly others), we define the [**conditional frequency**]{.blue} of the value ${\red y}$ of some variate ${\red Y}$, given (or "conditional on") the value ${\green x}$ of another variate ${\green X}$, as the frequency of the value of the first variate in the subpopulation selected by the value of the second variate. This frequency is usually written
+
+$$
+f({\red Y\mo y} \| {\green X\mo x})
+$$
+
+where $f$ is the symbol for the joint frequency of the population.
+
+Consider for instance the glass-fragment population of [table @tbl-glass-simple]. The conditional frequency of ${\red\vCa\mo \cat{low}}$ given ${\green\vType\mo \cat{tableware}}$ is the frequency of $\vCa\mo \cat{low}$ in the subpopulation of [table @tbl-glass-tableware], from which we find
+
+$$
+f({\red \vCa\mo \cat{low}} \| {\green \vType\mo \cat{tableware}}) = \frac{1}{4}
+$$
+
+The collection of these conditional frequencies for all values of ${\red Y}$ constitutes the [conditional-frequency distribution]{.blue} of ${\red Y}$ conditional on ${\green X\mo x}$. In our example this distribution has three conditional frequencies:
+
+$$\begin{aligned}
+&f({\red \vCa\mo \cat{low}} \| {\green \vType\mo \cat{tableware}}) = \frac{1}{4}
+\\
+&f({\red \vCa\mo \cat{medium}} \| {\green \vType\mo \cat{tableware}}) = \frac{3}{4}
+\\
+&f({\red \vCa\mo \cat{high}} \| {\green \vType\mo \cat{tableware}}) = 0
+\end{aligned}$$
+
+
+Conditional 
