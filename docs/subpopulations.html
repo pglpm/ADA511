@@ -41,6 +41,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -71,7 +73,7 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="ada511styles.css">
 </head>
 
-<body class="nav-sidebar docked">
+<body class="nav-sidebar docked slimcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -290,9 +292,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#populations-with-joint-variates" id="toc-populations-with-joint-variates" class="nav-link active" data-scroll-target="#populations-with-joint-variates"><span class="header-section-number">16.1</span> Populations with joint variates</a></li>
-  <li><a href="#joint-frequencies" id="toc-joint-frequencies" class="nav-link" data-scroll-target="#joint-frequencies"><span class="header-section-number">16.2</span> Joint frequencies</a></li>
-  <li><a href="#marginal-populations" id="toc-marginal-populations" class="nav-link" data-scroll-target="#marginal-populations"><span class="header-section-number">16.3</span> Marginal populations</a></li>
+  <li><a href="#sec-subpopulations" id="toc-sec-subpopulations" class="nav-link active" data-scroll-target="#sec-subpopulations"><span class="header-section-number">16.1</span> Subpopulations</a></li>
+  <li><a href="#conditional-frequencies" id="toc-conditional-frequencies" class="nav-link" data-scroll-target="#conditional-frequencies"><span class="header-section-number">16.2</span> Conditional frequencies</a></li>
   </ul>
 </nav>
 </nav>
@@ -301,7 +302,7 @@ ul.task-list li input[type="checkbox"] {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -328,34 +329,31 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 
 </div>
-<section id="populations-with-joint-variates" class="level2" data-number="16.1">
-<h2 data-number="16.1" class="anchored" data-anchor-id="populations-with-joint-variates"><span class="header-section-number">16.1</span> Populations with joint variates</h2>
-<p>The definition of statistical population (<a href="populations_variates.html#sec-variates-populations">§&nbsp;&nbsp;<span>14.2</span></a>) makes it clear that the quantity associated with each unit can be of arbitrary complexity. In particular it could be a joint quantity (<a href="data_types_multi.html#sec-data-multiv">§&nbsp;&nbsp;<span>13.1</span></a>), that is, a collection of quantities of a simpler type.</p>
-<p>As an example, consider the following population, relevant for <a href="https://www.fbi.gov/about-us/lab/forensic-science-communications/fsc/april2009/review/2009_04_review01.htm">glass forensics</a>:</p>
+<section id="sec-subpopulations" class="level2" data-number="16.1">
+<h2 data-number="16.1" class="anchored" data-anchor-id="sec-subpopulations"><span class="header-section-number">16.1</span> Subpopulations</h2>
+<p>When we have a statistical population with a joint variate, it is often of interest to focus on a subset of units that share the same value of a particular variate.</p>
+<p>Consider for instance the following population, a modified version of the glass-forensics example:</p>
 <ul>
 <li><em>units:</em> glass fragments (collected at specific locations)</li>
-<li><em>variate:</em> the joint variate consisting of four simple variates:
+<li><em>variate:</em> the joint variate <span class="math inline">\((\textrm{\small Ca}, \textrm{\small Si}, \textrm{\small Type})\)</span> consisting of three simple variates:
 <ul>
-<li><a href="https://www.feynmanlectures.caltech.edu/I_26.html#Ch26-S2"><strong>R</strong>efractive <strong>I</strong>ndex</a> of the glass fragment (interval continuous variate), with domain from <span class="math inline">\(1\)</span> (included) to <span class="math inline">\(+\infty\)</span></li>
-<li>weight percent of <a href="https://pubchem.ncbi.nlm.nih.gov/element/Calcium"><strong>Ca</strong>lcium</a> in the fragment (interval discrete variate), with domain from <span class="math inline">\(0\)</span> to <span class="math inline">\(100\)</span> in steps of 0.01</li>
-<li>weight percent of <a href="https://pubchem.ncbi.nlm.nih.gov/element/14"><strong>Si</strong>licon</a> in the fragment (interval discrete variate), with domain from <span class="math inline">\(0\)</span> to <span class="math inline">\(100\)</span> in steps of 0.01</li>
-<li><strong>Type</strong> of glass fragment (nominal variate), with seven possible values <code>building_windows_float_processed</code>, <code>building_windows_non_float_processed</code>, <code>vehicle_windows_float_processed</code>, <code>vehicle_windows_non_float_processed</code>, <code>containers</code>, <code>tableware</code>, <code>headlamps</code></li>
+<li>weight fraction of <strong>Ca</strong>lcium in the fragment (ordinal variate), with three possible values <code>low</code>, <code>medium</code>, <code>high</code></li>
+<li>weight fraction of <strong>Si</strong>licon in the fragment (ordinal variate), with three possible values <code>low</code>, <code>medium</code>, <code>high</code></li>
+<li><strong>Type</strong> of glass fragment (nominal variate), with seven possible values <code>building_windows_float_processed</code>, <code>building_windows_non_float_processed</code>, <code>containers</code>, <code>tableware</code>, <code>headlamps</code></li>
 </ul></li>
 </ul>
-<div id="tbl-glass" class="anchored">
+<div id="tbl-glass-simple" class="anchored">
 <table class="table-sm small table">
-<caption>Table&nbsp;16.1: Glass fragments</caption>
+<caption>Table&nbsp;16.1: Glass fragments simplified</caption>
 <colgroup>
-<col style="width: 18%">
-<col style="width: 13%">
-<col style="width: 11%">
-<col style="width: 11%">
-<col style="width: 44%">
+<col style="width: 21%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 50%">
 </colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: center;"><span class="yellow">unit</span></th>
-<th style="text-align: center;">RI</th>
 <th style="text-align: center;">Ca</th>
 <th style="text-align: center;">Si</th>
 <th style="text-align: center;">Type</th>
@@ -364,94 +362,285 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td style="text-align: center;"><span class="yellow">1</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51888\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(9.95\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(72.50\)</span></td>
-<td style="text-align: center;"><code>tableware</code></td>
+<td style="text-align: center;"><code>low</code></td>
+<td style="text-align: center;"><code>high</code></td>
+<td style="text-align: center;"><code>headlamps</code></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><span class="yellow">2</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51556\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(9.41\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(73.23\)</span></td>
-<td style="text-align: center;"><code>headlamps</code></td>
+<td style="text-align: center;"><code>low</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>building_windows_non_float_processed</code></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;"><span class="yellow">3</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51645\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(8.08\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(72.65\)</span></td>
-<td style="text-align: center;"><code>building_windows_non_float_processed</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>tableware</code></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><span class="yellow">4</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.52247\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(9.76\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(70.26\)</span></td>
-<td style="text-align: center;"><code>headlamps</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>building_windows_float_processed</code></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;"><span class="yellow">5</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51909\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(8.78\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(71.81\)</span></td>
-<td style="text-align: center;"><code>building_windows_float_processed</code></td>
+<td style="text-align: center;"><code>low</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>headlamps</code></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><span class="yellow">6</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51590\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(8.22\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(73.10\)</span></td>
-<td style="text-align: center;"><code>building_windows_non_float_processed</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>containers</code></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;"><span class="yellow">7</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51610\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(8.32\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(72.69\)</span></td>
-<td style="text-align: center;"><code>vehicle_windows_float_processed</code></td>
+<td style="text-align: center;"><code>low</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>building_windows_non_float_processed</code></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><span class="yellow">8</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51673\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(8.03\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(72.53\)</span></td>
-<td style="text-align: center;"><code>building_windows_non_float_processed</code></td>
+<td style="text-align: center;"><code>low</code></td>
+<td style="text-align: center;"><code>high</code></td>
+<td style="text-align: center;"><code>tableware</code></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;"><span class="yellow">9</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51915\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(10.09\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(72.69\)</span></td>
-<td style="text-align: center;"><code>containers</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>tableware</code></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><span class="yellow">10</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51651\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(8.48\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(73.61\)</span></td>
-<td style="text-align: center;"><code>headlamps</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>tableware</code></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>The joint variate value for <span class="yellow">unit 4</span>, for instance, is</p>
+<p>Let’s say we are interested only on those units that have the <strong>Type</strong> variate equal to <code>tableware</code>. Discarding all others we obtain a new, smaller population with four units:</p>
+<table class="table-sm small table">
+<caption></caption>
+<colgroup>
+<col style="width: 21%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="yellow">unit</span></th>
+<th style="text-align: center;">Ca</th>
+<th style="text-align: center;">Si</th>
+<th style="text-align: center;">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">3</span></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>tableware</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">8</span></td>
+<td style="text-align: center;"><code>low</code></td>
+<td style="text-align: center;"><code>high</code></td>
+<td style="text-align: center;"><code>tableware</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">9</span></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>tableware</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">10</span></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>tableware</code></td>
+</tr>
+</tbody>
+</table>
+<p>As another example, we could be interested instead in those units that have both <strong>Ca</strong> <em>and</em> <strong>Si</strong> variates equal to <code>medium</code>. We obtain a smaller population with five units:</p>
+<table class="table-sm small table">
+<caption></caption>
+<colgroup>
+<col style="width: 21%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="yellow">unit</span></th>
+<th style="text-align: center;">Ca</th>
+<th style="text-align: center;">Si</th>
+<th style="text-align: center;">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">3</span></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>tableware</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">4</span></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>building_windows_float_processed</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">6</span></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>containers</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">9</span></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>tableware</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">10</span></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>tableware</code></td>
+</tr>
+</tbody>
+</table>
+<p>Populations formed in this way are called <span class="blue"><strong>subpopulations</strong></span> of the original one. They are statistical populations in their own right. The notion of “subpopulation” is a relative notion. Any population can often be considered as a subpopulation of some larger population having additional variates.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>From the population of <a href="#tbl-glass-simple">table&nbsp;&nbsp;<span>16.1</span></a>:
+<ul>
+<li>Construct he <em>marginal</em> population with variate <strong>Ca</strong></li>
+<li>Report the frequency distribution for the marginal population above (remember that <strong>Ca</strong> has <em>three</em> possible values)</li>
+<li>Construct the subpopulation with variate <strong>Si</strong> equal to <code>high</code></li>
+<li>Construct the subpopulation with variate <strong>Type</strong> equal to <code>headlamps</code> and the variate <strong>Si</strong> equal to <code>medium</code></li>
+</ul></li>
+</ul>
+<p><em>Check your understanding of the reasoning behind the notions of marginal population and subpopulation with this exercise:</em></p>
+<ul>
+<li>From the population of <a href="#tbl-glass-simple">table&nbsp;&nbsp;<span>16.1</span></a>, construct the subpopulation with variate <strong>Type</strong> equal to either <code>headlamps</code> <em>or</em> <code>tableware</code>.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="conditional-frequencies" class="level2 page-columns page-full" data-number="16.2">
+<h2 data-number="16.2" class="anchored" data-anchor-id="conditional-frequencies"><span class="header-section-number">16.2</span> Conditional frequencies</h2>
+<p>The analysis of subpopulations is important because it often reveals peculiar associations among different variates. For instance, if from the population of <a href="#tbl-glass-simple">table&nbsp;&nbsp;<span>16.1</span></a> we extract the subpopulation having variate <strong>Type</strong> equal to <code>headlamps</code>:</p>
+<table class="table-sm small table">
+<caption></caption>
+<colgroup>
+<col style="width: 21%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="yellow">unit</span></th>
+<th style="text-align: center;">Ca</th>
+<th style="text-align: center;">Si</th>
+<th style="text-align: center;">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">1</span></td>
+<td style="text-align: center;"><code>low</code></td>
+<td style="text-align: center;"><code>high</code></td>
+<td style="text-align: center;"><code>headlamps</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">5</span></td>
+<td style="text-align: center;"><code>low</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>headlamps</code></td>
+</tr>
+</tbody>
+</table>
+<div class="page-columns page-full"><p>we notice that all units have variate <strong>Ca</strong> equal to <code>low</code>. It is therefore impossible to observe other values of <strong>Ca</strong> in this new population.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;We are not claiming that this fact will be true if new units are considered; this important question will be discussed later.</p></li></div></div>
+<p>On the other hand, if we extract the subpopulation having variate <strong>Ca</strong> equal to <code>low</code> we obtain</p>
+<table class="table-sm small table">
+<caption></caption>
+<colgroup>
+<col style="width: 21%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="yellow">unit</span></th>
+<th style="text-align: center;">Ca</th>
+<th style="text-align: center;">Si</th>
+<th style="text-align: center;">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">1</span></td>
+<td style="text-align: center;"><code>low</code></td>
+<td style="text-align: center;"><code>high</code></td>
+<td style="text-align: center;"><code>headlamps</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">2</span></td>
+<td style="text-align: center;"><code>low</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>building_windows_non_float_processed</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">5</span></td>
+<td style="text-align: center;"><code>low</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>headlamps</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">7</span></td>
+<td style="text-align: center;"><code>low</code></td>
+<td style="text-align: center;"><code>medium</code></td>
+<td style="text-align: center;"><code>building_windows_non_float_processed</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">8</span></td>
+<td style="text-align: center;"><code>low</code></td>
+<td style="text-align: center;"><code>high</code></td>
+<td style="text-align: center;"><code>tableware</code></td>
+</tr>
+</tbody>
+</table>
+<p>so the reverse is <em>not</em> true: if <strong>Ca</strong> is equal to <code>low</code>, that does <em>not</em> mean that it’s impossible to observe other <strong>Type</strong> values besides <code>headlamps</code>. So in the original population we have, figuratively speaking, that</p>
 <p><span class="math display">\[
-\textrm{\small RI}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}1.52247 \land
-\textrm{\small Ca}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}9.76 \land
-\textrm{\small Si}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}70.26 \land
-\textrm{\small Type}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small headlamps}
+\text{\small Type}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small headlamps}\ \mathrel{\color[RGB]{34,136,51}\Rightarrow}\
+\text{\small Ca}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small low}
+\qquad\text{\small but}\qquad
+\text{\small Ca}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small low}\  \mathrel{\color[RGB]{238,102,119}\nRightarrow}\
+\text{\small Type}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small headlamps}
 \]</span></p>
-</section>
-<section id="joint-frequencies" class="level2" data-number="16.2">
-<h2 data-number="16.2" class="anchored" data-anchor-id="joint-frequencies"><span class="header-section-number">16.2</span> Joint frequencies</h2>
-</section>
-<section id="marginal-populations" class="level2" data-number="16.3">
-<h2 data-number="16.3" class="anchored" data-anchor-id="marginal-populations"><span class="header-section-number">16.3</span> Marginal populations</h2>
-<p>When a population has a joint variate, we may be interested in only a subset of the simpler variates that constitute the joint one. In the glass-forensics population above, for instance, we might be interested only in the <strong>Ca</strong>lcium and <strong>Type</strong> variates. These two variates together define what we can call a <span class="blue"><strong>marginal population</strong></span> of the original one. A marginal population has the same units as the original one, but only a subset of the variates of the original. It is a statistical population in its own right.</p>
 
 
 </section>
+
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

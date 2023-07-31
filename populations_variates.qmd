@@ -117,3 +117,90 @@ In studying a particular class of inference problems we shall focus on statistic
 [This is often the case. Consider for example (as in [§ @sec-quant-value-dom]) the collection of all possible 128 × 128 images with 24-bit [colour depth](https://www.cambridgeincolour.com/tutorials/bit-depth.htm). This collection has $2^{24 \times 128 \times 128} \approx 10^{118 370}$ units. Even if we used 100 billions of such images as data, and wanted to draw inferences on another 100 billions, these would constitute only $10^{-118 357}\,\%$ of the whole collection. This collection is practically infinite.]{.small}
 
 When we use the term "population" it will often be understood that we're speaking about a practically infinite statistical population.
+
+
+## Populations with joint variates
+
+The definition of statistical population ([§ @sec-variates-populations]) makes it clear that the quantity associated with each unit can be of arbitrary complexity. In particular it could be a joint quantity ([§ @sec-data-multiv]), that is, a collection of quantities of a simpler type.
+
+As an example, consider the following population, relevant for [glass forensics](https://www.fbi.gov/about-us/lab/forensic-science-communications/fsc/april2009/review/2009_04_review01.htm):
+
+- *units:* glass fragments (collected at specific locations)
+- *variate:* the joint variate $(\textrm{\small RI}, \textrm{\small Ca}, \textrm{\small Si}, \textrm{\small Type})$ consisting of four simple variates:
+    + [**R**efractive **I**ndex](https://www.feynmanlectures.caltech.edu/I_26.html#Ch26-S2) of the glass fragment  (interval continuous variate), with domain from $1$ (included) to $+\infty$
+	+ weight percent of [**Ca**lcium](https://pubchem.ncbi.nlm.nih.gov/element/Calcium) in the fragment (interval discrete variate), with domain from $0$ to $100$ in steps of 0.01
+	+ weight percent of [**Si**licon](https://pubchem.ncbi.nlm.nih.gov/element/14) in the fragment (interval discrete variate), with domain from $0$ to $100$ in steps of 0.01
+    + **Type** of glass fragment (nominal variate), with seven possible values `building_windows_float_processed`, `building_windows_non_float_processed`, `vehicle_windows_float_processed`, `vehicle_windows_non_float_processed`, `containers`, `tableware`, `headlamps`
+
+
+| [unit]{.yellow} |         RI  |       Ca  |       Si  |                                   Type   |
+|:---------------:|:-----------:|:---------:|:---------:|:----------------------------------------:|
+|   [1]{.yellow}  |  $1.51888$  |   $9.95$  |  $72.50$  |                             `tableware`  |
+|   [2]{.yellow}  |  $1.51556$  |   $9.41$  |  $73.23$  |                             `headlamps`  |
+|   [3]{.yellow}  |  $1.51645$  |   $8.08$  |  $72.65$  |  `building_windows_non_float_processed`  |
+|   [4]{.yellow}  |  $1.52247$  |   $9.76$  |  $70.26$  |                             `headlamps`  |
+|   [5]{.yellow}  |  $1.51909$  |   $8.78$  |  $71.81$  |      `building_windows_float_processed`  |
+|   [6]{.yellow}  |  $1.51590$  |   $8.22$  |  $73.10$  |  `building_windows_non_float_processed`  |
+|   [7]{.yellow}  |  $1.51610$  |   $8.32$  |  $72.69$  |       `vehicle_windows_float_processed`  |
+|   [8]{.yellow}  |  $1.51673$  |   $8.03$  |  $72.53$  |  `building_windows_non_float_processed`  |
+|   [9]{.yellow}  |  $1.51915$  |  $10.09$  |  $72.69$  |                            `containers`  |
+|  [10]{.yellow}  |  $1.51651$  |   $9.76$  |  $73.61$  |                             `headlamps`  |
+: Glass fragments {#tbl-glass .sm}
+
+The joint-variate value for [unit 4]{.yellow}, for instance, is
+
+$$
+\textrm{\small RI}_{\yellow4}\mo 1.52247 \land
+\textrm{\small Ca}_{\yellow4}\mo 9.76 \land
+\textrm{\small Si}_{\yellow4}\mo 70.26 \land
+\textrm{\small Type}_{\yellow4}\mo \cat{headlamps}
+$$
+
+:::{.callout-warning}
+## {{< fa exclamation-circle >}}
+The units' IDs don't need to be consecutive numbers; in fact they don't even need to be numbers: any label that completely distinguishes all units will do.
+:::
+
+
+
+### Joint frequencies
+
+The frequency distribution for the joint variate of the population above gives the frequencies of all possible combinations of variate values. In this population, ten joint values appear each only once, and the remaining values never appear; this is because of the population's small size and the large number of possible variate values. Denoting by $f$ the frequency distribution, we have for example^[For the continuous variate $\textrm{\small RI}$, the frequency refers to a small range around the value; see the discussion in (§ @sec-prob-densities). In the present case the range seems to be $\pm 0.000 01$]
+
+$$\begin{aligned}
+&f(\textrm{\small RI}\mo 1.51651 ,
+\textrm{\small Ca}\mo  9.76,
+\textrm{\small Si}\mo 73.61 ,
+\textrm{\small Type}\mo \cat{headlamps}
+) = \frac{1}{10}
+\\
+&f(\textrm{\small RI}\mo 1.0 ,
+\textrm{\small Ca}\mo 50.00 ,
+\textrm{\small Si}\mo 50.00 ,
+\textrm{\small Type}\mo \cat{tableware}
+) = 0
+\end{aligned}$$
+
+
+## Marginal populations
+
+When a population has a joint variate, we may be interested in only a subset of the simpler variates that constitute the joint one. In the glass-forensics population above, for instance, we might be interested only in the **Ca**lcium and **Type** variates. These two variates together are called [**marginal variates**]{.blue} and define what we can call a [**marginal population**]{.blue} of the original one. A marginal population has the same units as the original one, but only a subset of the variates of the original. It is a statistical population in its own right.
+
+The notion of "marginalization" is a relative notion. Any population can often be considered as the marginal of a population with the same units but additional attributes.
+
+## Marginal frequencies
+
+The [**marginal frequency**]{.blue} distribution for the marginal population is obtained from the original frequency distribution by summing over the values of the discarded variates, similarly to marginal probabilities (§ @sec-marginal-probs). Considering the $(\textrm{\small Ca}, \textrm{\small Type})$ marginal population, we obtain for example
+
+$$\begin{aligned}
+&f(\textrm{\small Ca}\mo  9.76,
+\textrm{\small Type}\mo \cat{headlamps}
+) = \frac{2}{10}
+&f(\textrm{\small Ca}\mo  10.09,
+\textrm{\small Type}\mo \cat{containers}
+) = \frac{1}{10}
+&f(\textrm{\small Ca}\mo 50.00 ,
+\textrm{\small Type}\mo \cat{tableware}
+) = 0
+\end{aligned}$$
+
