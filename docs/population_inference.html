@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ADA511: Data science and data-driven engineering - 17&nbsp; Exchangeability</title>
+<title>ADA511: Data science and data-driven engineering - 17&nbsp; Population inference</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -63,6 +63,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet">
@@ -82,7 +85,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./population_inference.html">Population inference</a></li><li class="breadcrumb-item"><a href="./population_inference.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Exchangeability</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./population_inference.html">Population inference</a></li><li class="breadcrumb-item"><a href="./population_inference.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Population inference</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -286,7 +289,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./population_inference.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Exchangeability</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Population inference</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -348,7 +351,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Exchangeability</span></h1>
+<h1 class="title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Population inference</span></h1>
 </div>
 
 
@@ -371,6 +374,31 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 
 </div>
+<p>So far we have been jumping back and forth between “inference” and “data”, keeping the two topics somewhat separated. Now we shall finally use them together in more realistic scenarios. But before continuing let us summarize what we have learned so far; also to motivate why those two topics have been kept separated.</p>
+<p>On the “inference side” we first gave a concrete and operational meaning to “drawing an inference”, as the calculation of the probability – the degree of belief – of some sentence from the probability of others. This means that in principle we can draw inferences and apply probability theory to <em>literally anything</em> that can be expressed by language.</p>
+<p>We also saw the following points:</p>
+<ul>
+<li><p>The calculation of probabilities only uses four fundamental – and mathematically quite simple – rules (<a href="probability_inference.html#sec-fundamental">§&nbsp;&nbsp;<span>7.4</span></a>). Any inference, even those make by the most complex machine-learning algorithms, is just a repeated application of those four rules (sometimes with approximating shortcuts for the sake of speed).</p></li>
+<li><p>No inference can be drawn unless some probabilities are first posited as a starting point. This is just another face of the formal-logic fact that no theorem (besides tautologies) can be derived, unless some axioms are given first.</p></li>
+<li><p>The four fundamental rules are determined by basic requirements of logical consistency. Modifying the rules would lead to inconsistent inferences and sub-optimal decisions.</p></li>
+</ul>
+<p><br>
+</p>
+<p>On the “data side” we introduced a set of notions, such as quantity, having a value, domain, quantity type, population, variate, frequency. We learned how to use them and paid attention to some of their counter-intuitive properties.</p>
+<p>These notions allow us to <em>speak</em>, in a somewhat precise way, about typical situations and problems that arise in engineering and other scientific contexts. In essence all we did was to introduce a particular kind of <em>sentences</em> to express engineering problems – <em>so we can apply the probability calculus to them</em> and draw inferences about them.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  A[data notions] --&gt; B(sentences)
+  B --&gt; C[probability calculus]
+</pre>
+</div>
+</div>
+</div>
+</div>
+<p>In essence what we did</p>
 <p>To solve <em>any</em> inference problem, or to design an AI agent for solving an inference problem, all we have to do in principle is to repeatedly use the <a href="probability_inference.html#sec-fundamental">fundamental laws of inference of §&nbsp;<span>7.4</span></a>.</p>
 <p>In many cases an in-principle application of the inference laws is computationally impossible, however. Approximate calculations and premises are then used, sometimes quite drastic. The approximation used depends on the nature of the inference problem. This is why inference problems are often classified in one way or another, and different solution recipes are presented for the different classes.</p>
 <p>For a data-science engineer it is important to keep in mind that these recipes are only approximations, and to keep the principled solution always in sight. Technological advances continually allow us to make computations that were previously impossible – think of “quantum computers” these days. A truly optimal in-principle solution, preferable to a sub-optimal approximation, can suddenly become accessible – to those who know it.</p>
