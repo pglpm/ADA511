@@ -1,0 +1,339 @@
+# Exchangeability
+{{< include macros.qmd >}}
+{{< include macros_exchangeability.qmd >}}
+
+To solve *any* inference problem, or to design an AI agent for solving an inference problem, all we have to do in principle is to repeatedly use the [fundamental laws of inference of § @sec-fundamental].
+
+In many cases an in-principle application of the inference laws is computationally impossible, however. Approximate calculations and premises are then used, sometimes quite drastic. The approximation used depends on the nature of the inference problem. This is why inference problems are often classified in one way or another, and different solution recipes are presented for the different classes.
+
+For a data-science engineer it is important to keep in mind that these recipes are only approximations, and to keep the principled solution always in sight. Technological advances continually allow us to make computations that were previously impossible -- think of "quantum computers" these days. A truly optimal in-principle solution, preferable to a sub-optimal approximation, can suddenly become accessible -- to those who know it.
+
+\
+
+We shall now introduce a very rough distinction between two very broad classes of inference problems, and then study the principled solution of one of them, and approximations to this solution.
+
+## Exchangeable inferences {#sec-exchangeability}
+
+### Intuitive understanding
+
+Consider these sketches of two inference problems:
+
+- [Stock exchange](https://www.britannica.com/money/topic/stock-exchange-finance)
+: In 100 days, the daily change in [closing price](https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price) of a stock has been [positive 74 times, and negative 26 times]{.green}, according a particular sequence. For instance, the data could be:
+
+    ![](stock.png){width=100%}
+
+    In which of the subsequent 3 days will the closing-price change be positive, and in which negative?
+
+:::{.column-margin}
+![](stock_course.jpg){width=100%}
+:::
+
+\
+
+- Mars [prospecting](https://www.britannica.com/technology/prospecting-mining)
+: Of the last 100 similar-sized rocks examined in a large crater on Mars, [74 contained [hematite](https://science.nasa.gov/science-news/science-at-nasa/2001/ast28mar_1), and 26 didn't]{.green}. For instance, the data could be:
+
+    ![](rock.png){width=100%}
+
+    where "Y" and "N" denote the presence and absence of hematite.
+
+    Which, among the next 3 rocks that will be examined, will contain hematite, and which will be hematite-free?
+
+:::{.column-margin}
+![](mars_crater2.jpg){width=100%}
+:::
+
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Discuss:
+
+- Which of the two inferences above seems more difficult?...
+
+- ...Why? Speculate on which factors make one inference more difficult than the other.
+
+- Which differences and similarities do you find between the two inferences?
+
+- Which additional information could be important for drawing more precise inferences?
+
+- Which type of quantities appear in the two inferences?
+
+<!-- - Answer the same questions, considering two inference problems that are similar but "backwards in time": -->
+
+<!--     1b. Assessing the value that a particular investment fund had in 3750 days ago, given the course of that fund in the past 3650 days. -->
+
+<!--     2b. Assessing the failure status of the past 1100th electronic component from an assembly line, given the failure status of the last 1000 electronic components already out of the same assembly line. -->
+:::
+
+\
+
+The two inference problems differ in some aspects and are similar in others. Time, for example, appears to be an important aspect of the first inference, which is in fact often categorized as a "[time-series analysis](https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data)". But the second inference involves or could involve time as well: the rocks could be inspected sequentially. So more precisely it is the time *ordering* that is more relevant in the first inference than the second.
+
+
+An important difference between the two inference problems is revealed by the following thought-experiments. Consider how you would answer in the stock-exchange case and in the Mars-prospecting case:
+
+a. *It turns out that there was an error in the sequence of positive and negative datapoints, although not in the total amounts of positive and negative ones.* In the stock-exchange inference, for instance, days 1 ($-$) and 3 ($+$) were erroneously swapped, as were days 100 ($+$) and 85 ($-$), and many other days; in the Mars-prospecting inference, rocks #1 (Y) and #3 (N) were erroneously swapped, as were rocks #100 (Y) and #97 (N), and many other rocks.
+
+    Should the final inference about the next 3 datapoints be changed?
+
+
+b. *The information about the exact sequence of data is lost, and only the total amount of positive and negative datapoints is preserved* (74 vs 26).
+
+    Would the final inference about the next 3 datapoints be different,  compared to the situation where the exact data sequence is known?
+
+
+c. *A new inference is requested: not about the 3 datapoints following the known data, but the 3 datapoints preceding the known data*: the day before day 1 and so on, or the rock before rock #1 and so on. (Or, generalizing: an inference about 3 datapoints *interspersed* among the known ones is requested.)
+
+    Would the inference for the preceding 3 datapoints be different from the original one about the subsequent 3 datapoints?
+
+In all these thought-experiments, our intuition is that the inference for the stock-exchange problem would be different, but the one for the Mars-prospecting problem would stay the same or not change appreciably. Swapping days in a stock course, matters; swapping rocks in a crater, doesn't. There are good reasons, based on physics and dynamical-system theory, for this intuition.
+
+An inference which does not change if data and unknown quantities are freely reordered, like the Mars-prospecting one, is called [**exchangeable**]{.blue}. Whereas an inference in which the ordering of data and unknowns is relevant, like the stock-exchange one, is called **non-exchangeable**. There is not a  dichotomy between the two cases; rather, there are continuous varying degrees of exchangeability or non-exchangeability. But for the moment we shall simplify this gradation into a binary distinction.
+
+We shall now make this definition more precise, and then study and exploit the remarkable consequences that it has for an agent's inferences and probability calculations.
+
+
+## Infinitely exchangeable probability distributions
+
+### Definition
+
+Consider a collection of quantities $X_1, X_2, X_3, \dotsc$, all having identical domains. For instance, they could all be continuous with values in the real numbers; or all binary, with values $\set{\cat{Yes}, \cat{No}q}$; or all ordinal, with values $\{\cat{low}, \cat{medium}, \cat{high}\}$; or all join quantities, with the same join domains. This collection is in principle infinite: it is always possible to add one more quantity, with the same domain, to the collection.
+
+An agent has a joint probability distribution over them, conditional on some state of knowledge $\yI$:
+
+$$
+\P(X_1\mo x_1,\ X_2\mo x_2,\ X_3\mo x_3,\ \dotsc \| \yI)
+$$
+
+for all combinations of values $x_1, x_2, x_3, \dotsc$.
+
+
+This joint probability distribution is called [**infinitely exchangeable**]{.blue} if [*all marginal probabilities ([§ @sec-marginal-probs]) for any sub-collection of quantities remain the same whenever the values are swapped among quantities*]{.blue}. For example:
+
+$$
+\begin{aligned}
+&
+\P(X_1 \mo \ya,\ X_2\mo \yb \| \yI)
+\\[1ex] {}={}&
+\P(X_2 \mo \ya,\ X_1\mo \yb\| \yI)
+\\[1ex] {}={}&
+\P(X_1 \mo \ya,\ X_3\mo \yb \| \yI)
+\\[1ex] {}={}&
+\P(X_3 \mo \ya,\ X_1\mo \yb\| \yI)
+\\[1ex] {}={}&
+\dotso
+\\[1ex] {}={}&
+\P(X_{23} \mo \ya,\ X_{7}\mo \yb\| \yI)
+\\[1ex] {}={}&
+\dotso
+\end{aligned}
+$$
+
+and so on, and also
+
+$$
+\begin{aligned}
+&
+\P(X_1 \mo \ya,\ X_2\mo \yb,\ X_3\mo \yc \| \yI)
+\\[1ex] {}={}&
+\P(X_2 \mo \ya,\ X_1\mo \yb,\ X_3\mo \yc \| \yI)
+\\[1ex] {}={}&
+\P(X_2 \mo \ya,\ X_3\mo \yb,\ X_1\mo \yc \| \yI)
+\\[1ex] {}={}&
+\P(X_3 \mo \ya,\ X_4\mo \yb,\ X_5\mo \yc \| \yI)
+\\[1ex] {}={}&
+\dotso
+\\[1ex] {}={}&
+\P(X_{12} \mo \ya,\ X_8\mo \yb,\ X_{47}\mo \yc \| \yI)
+\\[1ex] {}={}&
+\dotso
+\end{aligned}
+$$
+
+and also
+
+$$
+\begin{aligned}
+&
+\P(X_1 \mo \ya,\ X_2\mo \yb,\ X_3\mo \yc,\ X_4\mo \yd\| \yI)
+\\[1ex] {}={}&
+\P(X_3 \mo \ya,\ X_4\mo \yb,\ X_2\mo \yc,\ X_1\mo \yd\| \yI)
+\\[1ex] {}={}&
+\dotso
+\\[1ex] {}={}&
+\P(X_{91} \mo \ya,\ X_{72}\mo \yb,\ X_6\mo \yc,\ X_{13}\mo \yd\| \yI)
+\\[1ex] {}={}&
+\dotso
+\end{aligned}
+$$
+
+and so on -- no matter how many and which quantities we take, and no matter what the values $\ya,\yb,\yc,\yd\dotsc$ might be.
+
+In the following we shall simply call this type of probability distribution [**exchangeable**]{.blue}, omitting "infinitely". But keep in mind that there are also **finitely** exchangeable distributions, and *they have different properties*. Here, when we say "exchangeable", we always strictly mean "infinitely exchangeable".
+
+:::{.callout-warning}
+## {{< fa exclamation-circle >}}
+Exchangeability does not mean that *all* probabilities need to be equal. For instance, if $\yb\ne\yc$ then these probabilities can be different:
+
+$$\begin{gathered}
+\P(X_1 \mo \ya,\ X_2\mo \yb \| \yI)
+\mathrel{\boldsymbol{\ne}}
+\P(X_1 \mo \ya,\ X_2\mo \yc \| \yI)
+\\
+\P(X_1 \mo \ya,\ X_2\mo \yb \| \yI)
+\mathrel{\boldsymbol{\ne}}
+\P(X_{23} \mo \ya,\ X_7\mo \yc \| \yI)
+\end{gathered}$$
+
+although we must still have
+
+$$
+\P(X_1 \mo \ya,\ X_2\mo \yc \| \yI)
+\mathrel{\boldsymbol{=}}
+\P(X_{23} \mo \ya,\ X_7\mo \yc \| \yI)
+$$
+:::
+
+\
+
+The definition of exchangeability given above can also be put in a different way. For an exchangeable probability distribution, the joint probability of a collection of quantities can only depend on the different values appearing in it and their multiplicities. For instance, the numerical value of the marginal, joint probability
+
+$$
+\P(X_{91} \mo \yb,\ X_{72}\mo \ya,\ X_6\mo \yb,\ X_{13}\mo \yc\| \yI)
+$$
+
+where $\ya,\yb,\yc$ are different from one another, can only depend on the fact that there are the three different values $\ya,\yb,\yc$, and that $\ya$ appears once, $\yb$ twice, and $\yc$ once. So any other marginal, joint probability containing the value $\ya$ once, $\yb$ twice, and $\yc$ once, must be equal to the one above.
+
+\
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+
+For each of the marginal probabilities below, determine whether the joint probability they come from is *surely **non**-exchangeable*, and explain why. Note that we can't determine whether a probability distribution is exchangeable unless we're given *all* its probabilities, for all combinations of quantities and values.
+\
+
+1. $$\begin{aligned}
+&\P(X_1\mo 3,\  X_4\mo 5\|\yI) = 0.15
+\\
+&\P(X_1\mo 5,\  X_4\mo 3\|\yI) = 0.15
+\\
+&\P(X_1\mo 7,\  X_4\mo 3\|\yI) = 0.25
+\\
+&\P(X_1\mo 3,\  X_4\mo 7\|\yI) = 0.25
+\end{aligned}
+$$
+\
+
+2. $$\begin{aligned}
+&\P(Y_1\mo 3,\  Y_4\mo 5\|\yI) = 0.07
+\\
+&\P(Y_1\mo 5,\  Y_4\mo 3\|\yI) = 0.07
+\\
+&\P(Y_9\mo 3,\  Y_{21}\mo 5\|\yI) = 0.4
+\\
+&\P(Y_9\mo 5,\  Y_{21}\mo 3\|\yI) = 0.4
+\end{aligned}
+$$
+\
+
+3. $$\begin{aligned}
+&\P(Z_1\mo \yhi,\  Z_7\mo \ylo,\  Z_{20}\mo \yhi\|\yI) = 0.11
+\\
+&\P(Z_1\mo \yhi,\  Z_7\mo \yhi,\  Z_{20}\mo \ylo\|\yI) = 0.35
+\\
+&\P(Z_2\mo \ylo,\  Z_3\mo \ylo,\  Z_9\mo \yhi\|\yI) = 0
+\\
+&\P(Z_2\mo \yhi,\  Z_3\mo \ylo,\  Z_9\mo \ylo\|\yI) = 0
+\end{aligned}
+$$
+\
+
+4. $$\begin{aligned}
+&\P(U_1\mo 6.4,\  U_2\mo 8.7,\  U_3\mo -0.3\|\yI) = 0.1
+\\
+&\P(U_1\mo 1.7,\  U_2\mo 0.5,\  U_3\mo -0.3\|\yI) = 0.1
+\\
+&\P(U_1\mo -0.3,\  U_2\mo 6.4,\  U_3\mo 0.5\|\yI) = 0.01
+\\
+&\P(U_1\mo -0.3,\  U_2\mo 1.7,\  U_3\mo 0.5\|\yI) = 0.4
+\end{aligned}
+$$
+:::
+
+\
+
+#### Example
+
+Consider the collection of quantities $X_1, X_2, \dotsc$ with common domain consisting of three values $\set{\ylo,\yme,\yhi}$. The joint probability distribution for any set of these quantities is given by the function
+
+$$
+\P(X_i\mo x_i,\ X_j\mo x_j,\ \dotsc \| \yI) =
+\frac{2\cdot \#\ylo!\cdot \#\yme!\cdot \#\yhi!}{(\#\ylo+\#\yme+\#\yhi+2)!}
+$$
+
+:::{.column-margin}
+The *factorial* $n!$ is defined by $n! \defd 1\cdot2\cdot\dotsb\cdot (n-1)\cdot n$, and $0!\defd 1$.
+:::
+
+where $\#\ylo$ is the number of times the value $\ylo$ appears among $x_i,x_j,\dotsc$, and similarly for $\#\yme$ and $\#\yhi$. For instance:
+
+$$\begin{aligned}
+\P(X_5\mo\yme,\ X_2\mo\yhi,\ X_{14}\mo\yme \|\yI) &=
+\frac{2\cdot {\green0}!\cdot {\lblue2}!\cdot  {\yellow1}!}{({\green0} + {\lblue2} + {\yellow1} + 2)!}
+\\[1ex]&=
+\frac{2\cdot {\green1}\cdot
+{\lblue2}\cdot
+{\yellow1}}{5!}
+\\&=
+\frac{4}{120}
+\\[1ex]&\approx 0.0333
+\end{aligned}$$
+
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+
+Using the formula above, verify that the marginal probability distribution for two quantities $\P(X_1\mo x_1,\ X_2\mo x_2 \| \yI)$ satisfies
+
+$$
+\sum_{x_1} \sum_{x_2}
+\P(X_1\mo x_1,\ X_2\mo x_2 \| \yI) = 1
+$$
+
+as it should (hint: you have to sum nine terms).
+:::
+
+Why are we focusing on exchangeable probability distributions? Because their mathematical properties have an interesting interpretation, very useful for particular kinds of inferences. We shall now explore this interpretation.
+
+
+
+
+
+### Consequences
+
+The stock-exchange and Mars-prospecting inference problems do not involve simple joint probabilities like
+
+$$\P(X_{101}\mo x_{101},\ X_{102}\mo x_{102},\ \dotsc \| \yI)$$
+
+but conditional probabilities like
+
+$$\P(X_{101}\mo x_{101},\ X_{102}\mo x_{102},\ \dotsc \|
+X_{100}\mo x_{100},\ X_{99}\mo x_{99},\ \dotsc,\ \yI)$$
+
+because the problem is to infer some datapoints given other datapoints. What does exchangeability say about conditional probabilities?
+
+It can be proved that
+
+## Interpretations of exchangeability
+
+
+
+
+
+
+
+
+Our focus, however, is not on the *whys* of this intuition, but on the consequences that it has for inference and probability calculations.
+
+

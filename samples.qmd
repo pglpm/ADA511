@@ -1,0 +1,143 @@
+# Infinite populations and samples
+{{< include macros.qmd >}}
+{{< include macros_statistics.qmd >}}
+
+## Infinite populations {#sec-infinite-populations}
+
+The examples of populations that we explored so far comprised a small number of units, and all their data were exactly and fully known. In concrete inference and decision problems we usually deal with populations that are much larger, and often even potentially infinite; and some of their data might be unknown.
+
+In the glass-forensic example ([table @tbl-glass]), for instance, many more glass fragments could be examined beyond the 10 units reported there, with no clear bound on the total number. We could even extend that population considering glass fragments from past and future crime scenes:
+
+:::{.column-page-right}
+| [unit]{.yellow} |     $\vRI$  |  $\vCa$   |   $\vSi$  |                               $\vType$   | [*notes*]{.small}
+|:--:|:-------:|:-----:|:-----:|:------------------------------------:|:-----------------------:|
+|   [1]{.yellow}  |  $1.51888$  |   $9.95$  |  $72.50$  |                             `tableware`  |
+|   [2]{.yellow}  |  $1.51556$  |   $9.41$  |  $73.23$  |                             `headlamps`  | |
+|   [3]{.yellow}  |  $1.51645$  |   $8.08$  |  $72.65$  |  `building_windows_non_float_processed`  | |
+|   [4]{.yellow}  |  $1.52247$  |   $9.76$  |  $70.26$  |                             `headlamps`  | |
+|   [5]{.yellow}  |  $1.51909$  |   $8.78$  |  $71.81$  |      `building_windows_float_processed`  | |
+|   [6]{.yellow}  |  $1.51590$  |   $8.22$  |  $73.10$  |  `building_windows_non_float_processed`  | |
+|   [7]{.yellow}  |  $1.51610$  |   $8.32$  |  $72.69$  |       `vehicle_windows_float_processed`  | |
+|   [8]{.yellow}  |  $1.51673$  |   $8.03$  |  $72.53$  |  `building_windows_non_float_processed`  | |
+|   [9]{.yellow}  |  $1.51915$  |  $10.09$  |  $72.69$  |                            `containers`  | |
+|  [10]{.yellow}  |  $1.51651$  |   $9.76$  |  $73.61$  |                             `headlamps`  | |
+|     ...         |    ...      |    ...    |    ...    |                                 ...      | ...|
+| [351]{.yellow} |  $1.52101$  |   $8.75$  |  $71.78$  |                                [?]{.red}  | [*from unsolved-crime scene in 1963*]{.small}|
+|     ...         |    ...      |    ...    |    ...    |                                 ...      | ... |
+| [1027]{.yellow} |  $1.51761$  |   $7.83$  |  $72.73$  |                               [?]{.red}  | [*crime scene in 2063*]{.small}|
+|     ...         |    ...      |    ...    |    ...    |                                 ...      |... |
+: Glass fragments, extended {#tbl-glass-ext .sm}
+:::
+
+the imaginary example above also shows that the values of some variates for some units might be unknown; this is a situation we shall discuss in depth later.
+
+\
+
+We shall henceforth focus on statistical populations with a number of units that is *in principle infinite*, or so large that it can be considered *practically infinite*. "Practically" means that the number of units we'll use as data or draw inferences about is a very small fraction, say less than 0.1%, of the total population size.
+
+[This is often the case. Consider for example (as in [§ @sec-quant-value-dom]) the collection of all possible 128 × 128 images with 24-bit [colour depth](https://www.cambridgeincolour.com/tutorials/bit-depth.htm). This collection has $2^{24 \times 128 \times 128} \approx 10^{118 370}$ units. Even if we used 100 billions of such images as data, and wanted to draw inferences on another 100 billions, these would constitute only $10^{-118 357}\,\%$ of the whole collection. This collection is practically infinite.]{.small}
+
+Note that we can't say whether a population, per se, is "practically infinite" or not. It could be practically infinite for a particular inference problem, but not for another.
+
+When we use the term "population" it will often be understood that we're speaking about a statistical population that is practically infinite with respect to the inference or decision problem under consideration.
+
+
+## Samples {#sec-samples}
+
+In the glass-forensic example above ([table @tbl-glass-ext]), the units and data we had initially ([table @tbl-glass]) have been considered as part or a much larger population. Such a part is called a [**population sample**]{.blue} or "sample" for short. Almost all data considered in engineering and data-science problems can be considered to be population samples.
+
+It is extremely important to **specify how a sample is extracted** from a population. For instance, if we consider [table @tbl-glass] to be a full population, we could extract a sample in such a way that $\vType$ only has value $\cat{headlamps}$ (similarly to when we construct a subpopulation, [§ @sec-subpopulations], but for a subpopulation we would select *all* units having that variate value). The marginal frequency of the value $\cat{headlamps}$ in the sample would then be $1$, whereas in the original population it is $3/10 \approx 0.333$ -- two very different frequencies.
+
+
+### "Representative" and biased samples
+
+In inference and decision problems we would like to use samples in which the various frequencies didn't differ very much from those in the original population. Such a sample is called a "[representative sample]{.blue}". This is a difficult notion; the International Organization for Standardization for instance [warns (item 3.1.14)](https://www.iso.org/obp/ui/#iso:std:iso:3534:-4:ed-1:v1:en):
+
+> The notion of representative sample is fraught with controversy, with some survey practitioners rejecting the term altogether.
+
+In many cases it is *impossible* for a sample of given size to be "representative":
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+
+Consider the following population of 16 units, with four binary variates $W,X,Y,Z$, each with values $0$ and $1$:
+
+::::{.columns}
+:::::{.column width="75%"}
+|$W$|$X$|$Y$|$Z$|
+|:-:|:-:|:-:|:-:|
+| 0 | 0 | 0 | 0 |
+| 1 | 0 | 0 | 0 |
+| 0 | 1 | 0 | 0 |
+| 1 | 1 | 0 | 0 |
+| 0 | 0 | 1 | 0 |
+| 1 | 0 | 1 | 0 |
+| 0 | 1 | 1 | 0 |
+| 1 | 1 | 1 | 0 |
+| 0 | 0 | 0 | 1 |
+| 1 | 0 | 0 | 1 |
+| 0 | 1 | 0 | 1 |
+| 1 | 1 | 0 | 1 |
+| 0 | 0 | 1 | 1 |
+| 1 | 0 | 1 | 1 |
+| 0 | 1 | 1 | 1 |
+| 1 | 1 | 1 | 1 |
+: Four-bit population {#tbl-four-bit .sm}
+:::::
+::::
+
+The joint variate $(W,X,Y,Z)$ has 16 possible values, from $(0,0,0,0)$ to $(1,1,1,1)$. Each of these values appear exactly once in the population, so it has frequency $1/16$. The marginal frequency distribution for each binary variate is also uniform, with frequencies of 50% for both $0$ and $1$.
+
+- Extract a **representative** sample of **four** units. In particular, the marginal frequency distributions of the four variates should be as close to 50%/50% as possible.
+:::
+
+\
+
+Obviously we cannot expect a population sample to exactly reflect all frequency distributions -- joint, marginal, conditional -- of the original population; some discrepancy is to be expected. How much discrepancy should be allowed? And what is the minimal size for a sample not to exceed such discrepancy?
+
+Information Theory gives reasonable answers to these questions; we summarize them here.
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+
+- Chapters 1--10 of [*Information Theory, Inference, and Learning Algorithms*](https://hvl.instructure.com/courses/25074/modules/items/660092)
+
+- Video lectures 1--9 from the [*Course on Information Theory, Pattern Recognition, and Neural Networks*](http://videolectures.net/course_information_theory_pattern_recognition/)
+
+:::
+::::
+
+
+First we need to define the [**Shannon entropy**]{.blue} of a discrete frequency distribution. Lets say the distribution is $(f_1,f_2, \dotsc)$. Its Shannon entropy $H(f)$ is then defined as
+
+$$
+H(f) \defd -\sum_{i} f_i\ \log_2 f_i
+\qquad\text{\midgrey\small(with \(0\cdot\log 0 \defd 0\))}
+$$
+
+and is measured in **bits** (when the base of the logarithm is 2).
+
+If we have a population with joint frequency $f$, then a representative sample from it must have at least size
+
+$$
+2^{H(f)} \equiv
+\frac{1}{{f_1}^{f_1}\cdot {f_2}^{f_2}\cdot {f_3}^{f_3}\cdot \dotsb}
+$$
+<!-- \frac{1}{\prod_i{f_i}^{f_i}} = -->
+
+This particular number has important practical consequences; for example it is related to the maximum rate at which a communication channel can send symbols (which can be considered as values of a variate) with an error as low as we please.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+- Calculate the Shannon entropy of the joint frequency distribution for the four-bit population of [table @tbl-four-bit].
+
+- Calculate the minimum representative-sample size according to the Shannon-entropy formula. Is the result intuitive?
+:::
+
+### Biases
+
+For many populations it is difficult or impossible to obtain a "representative" sample, even when the sample is large. As the exercises above show, this impossibility remains even if we extract the sample in an unsystematic and unpredictable way ("random sample"), by shuffling or similar techniques.
+
+A sample that presents some aspects, such as frequency distributions, which are at variance with the original population, is sometimes called [biased]{.blue} (this term is used in many different ways by different authors). Unfortunately, most samples are "biased" in this sense.
+
