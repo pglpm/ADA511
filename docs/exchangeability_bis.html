@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ADA511: Data science and data-driven engineering - 16&nbsp; Infinite populations and samples</title>
+<title>ADA511: Data science and data-driven engineering - 19&nbsp; Infinitely exchangeable probability distributions</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./recap.html" rel="next">
-<link href="./subpopulations.html" rel="prev">
+<link href="./exchangeability.html" rel="next">
+<link href="./population_inference.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -82,7 +82,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./populations_variates.html">Data – II</a></li><li class="breadcrumb-item"><a href="./samples.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Infinite populations and samples</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./recap.html">Population inference</a></li><li class="breadcrumb-item"><a href="./exchangeability_bis.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Infinitely exchangeable probability distributions</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -268,7 +268,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./samples.html" class="sidebar-item-text sidebar-link active">
+  <a href="./samples.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Infinite populations and samples</span></span></a>
   </div>
 </li>
@@ -297,7 +297,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./exchangeability_bis.html" class="sidebar-item-text sidebar-link">
+  <a href="./exchangeability_bis.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Infinitely exchangeable probability distributions</span></span></a>
   </div>
 </li>
@@ -371,12 +371,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-infinite-populations" id="toc-sec-infinite-populations" class="nav-link active" data-scroll-target="#sec-infinite-populations"><span class="header-section-number">16.1</span> Infinite populations</a></li>
-  <li><a href="#sec-samples" id="toc-sec-samples" class="nav-link" data-scroll-target="#sec-samples"><span class="header-section-number">16.2</span> Samples</a>
-  <ul class="collapse">
-  <li><a href="#representative-and-biased-samples" id="toc-representative-and-biased-samples" class="nav-link" data-scroll-target="#representative-and-biased-samples">“Representative” and biased samples</a></li>
-  <li><a href="#biases" id="toc-biases" class="nav-link" data-scroll-target="#biases">Biases</a></li>
-  </ul></li>
+  <li><a href="#definition" id="toc-definition" class="nav-link active" data-scroll-target="#definition">Definition</a></li>
+  <li><a href="#consequences" id="toc-consequences" class="nav-link" data-scroll-target="#consequences">Consequences</a></li>
+  <li><a href="#interpretations-of-exchangeability" id="toc-interpretations-of-exchangeability" class="nav-link" data-scroll-target="#interpretations-of-exchangeability"><span class="header-section-number">19.1</span> Interpretations of exchangeability</a></li>
   </ul>
 </nav>
     </div>
@@ -385,7 +382,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Infinite populations and samples</span></h1>
+<h1 class="title"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Infinitely exchangeable probability distributions</span></h1>
 </div>
 
 
@@ -408,176 +405,122 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 
 </div>
-<section id="sec-infinite-populations" class="level2 page-columns page-full" data-number="16.1">
-<h2 data-number="16.1" class="anchored" data-anchor-id="sec-infinite-populations"><span class="header-section-number">16.1</span> Infinite populations</h2>
-<p>The examples of populations that we explored so far comprised a small number of units, and all their data were exactly and fully known. In concrete inference and decision problems we usually deal with populations that are much larger, and often even potentially infinite; and some of their data might be unknown.</p>
-<p>In the glass-forensic example (<a href="populations_variates.html#tbl-glass">table&nbsp;&nbsp;<span>13.1</span></a>), for instance, many more glass fragments could be examined beyond the 10 units reported there, with no clear bound on the total number. We could even extend that population considering glass fragments from past and future crime scenes:</p>
-<div class="column-page-right">
-<div id="tbl-glass-ext" class="anchored">
-<table class="table-sm small table">
-<caption>Table&nbsp;16.1: Glass fragments, extended</caption>
-<colgroup>
-<col style="width: 4%">
-<col style="width: 10%">
-<col style="width: 7%">
-<col style="width: 7%">
-<col style="width: 42%">
-<col style="width: 27%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;"><span class="yellow">unit</span></th>
-<th style="text-align: center;"><span class="math inline">\(\mathit{RI}\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(\mathit{Ca}\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(\mathit{Si}\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(\mathit{Type}\)</span></th>
-<th style="text-align: center;"><span class="small"><em>notes</em></span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><span class="yellow">1</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51888\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(9.95\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(72.50\)</span></td>
-<td style="text-align: center;"><code>tableware</code></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><span class="yellow">2</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51556\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(9.41\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(73.23\)</span></td>
-<td style="text-align: center;"><code>headlamps</code></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><span class="yellow">3</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51645\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(8.08\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(72.65\)</span></td>
-<td style="text-align: center;"><code>building_windows_non_float_processed</code></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><span class="yellow">4</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.52247\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(9.76\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(70.26\)</span></td>
-<td style="text-align: center;"><code>headlamps</code></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><span class="yellow">5</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51909\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(8.78\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(71.81\)</span></td>
-<td style="text-align: center;"><code>building_windows_float_processed</code></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><span class="yellow">6</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51590\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(8.22\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(73.10\)</span></td>
-<td style="text-align: center;"><code>building_windows_non_float_processed</code></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><span class="yellow">7</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51610\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(8.32\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(72.69\)</span></td>
-<td style="text-align: center;"><code>vehicle_windows_float_processed</code></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><span class="yellow">8</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51673\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(8.03\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(72.53\)</span></td>
-<td style="text-align: center;"><code>building_windows_non_float_processed</code></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><span class="yellow">9</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51915\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(10.09\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(72.69\)</span></td>
-<td style="text-align: center;"><code>containers</code></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><span class="yellow">10</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51651\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(9.76\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(73.61\)</span></td>
-<td style="text-align: center;"><code>headlamps</code></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">…</td>
-<td style="text-align: center;">…</td>
-<td style="text-align: center;">…</td>
-<td style="text-align: center;">…</td>
-<td style="text-align: center;">…</td>
-<td style="text-align: center;">…</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><span class="yellow">351</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.52101\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(8.75\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(71.78\)</span></td>
-<td style="text-align: center;"><span class="red">?</span></td>
-<td style="text-align: center;"><span class="small"><em>from unsolved-crime scene in 1963</em></span></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">…</td>
-<td style="text-align: center;">…</td>
-<td style="text-align: center;">…</td>
-<td style="text-align: center;">…</td>
-<td style="text-align: center;">…</td>
-<td style="text-align: center;">…</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><span class="yellow">1027</span></td>
-<td style="text-align: center;"><span class="math inline">\(1.51761\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(7.83\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(72.73\)</span></td>
-<td style="text-align: center;"><span class="red">?</span></td>
-<td style="text-align: center;"><span class="small"><em>crime scene in 2063</em></span></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">…</td>
-<td style="text-align: center;">…</td>
-<td style="text-align: center;">…</td>
-<td style="text-align: center;">…</td>
-<td style="text-align: center;">…</td>
-<td style="text-align: center;">…</td>
-</tr>
-</tbody>
-</table>
+<div class="hidden">
+
+</div>
+<p>The two inference problems differ in some aspects and are similar in others. Time, for example, appears to be an important aspect of the first inference, which is in fact often categorized as a “<a href="https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data">time-series analysis</a>”. But the second inference involves or could involve time as well: the rocks could be inspected sequentially. So more precisely it is the time <em>ordering</em> that is more relevant in the first inference than the second.</p>
+<p>An important difference between the two inference problems is revealed by the following thought-experiments. Consider how you would answer in the stock-exchange case and in the Mars-prospecting case:</p>
+<ol type="a">
+<li><p><em>It turns out that there was an error in the sequence of positive and negative datapoints, although not in the total amounts of positive and negative ones.</em> In the stock-exchange inference, for instance, days 1 (<span style="display:inline-block;"><span class="math inline">\(-\)</span>)</span> and 3 (<span style="display:inline-block;"><span class="math inline">\(+\)</span>)</span> were erroneously swapped, as were days 100 (<span style="display:inline-block;"><span class="math inline">\(+\)</span>)</span> and 85 (<span style="display:inline-block;"><span class="math inline">\(-\)</span>),</span> and many other days; in the Mars-prospecting inference, rocks #1 (Y) and #3 (N) were erroneously swapped, as were rocks #100 (Y) and #97 (N), and many other rocks.</p>
+<p>Should the final inference about the next 3 datapoints be changed?</p></li>
+<li><p><em>The information about the exact sequence of data is lost, and only the total amount of positive and negative datapoints is preserved</em> (74 vs 26).</p>
+<p>Would the final inference about the next 3 datapoints be different, compared to the situation where the exact data sequence is known?</p></li>
+<li><p><em>A new inference is requested: not about the 3 datapoints following the known data, but the 3 datapoints preceding the known data</em>: the day before day 1 and so on, or the rock before rock #1 and so on. (Or, generalizing: an inference about 3 datapoints <em>interspersed</em> among the known ones is requested.)</p>
+<p>Would the inference for the preceding 3 datapoints be different from the original one about the subsequent 3 datapoints?</p></li>
+</ol>
+<p>In all these thought-experiments, our intuition is that the inference for the stock-exchange problem would be different, but the one for the Mars-prospecting problem would stay the same or not change appreciably. Swapping days in a stock course, matters; swapping rocks in a crater, doesn’t. There are good reasons, based on physics and dynamical-system theory, for this intuition.</p>
+<p>An inference which does not change if data and unknown quantities are freely reordered, like the Mars-prospecting one, is called <span class="blue"><strong>exchangeable</strong></span>. Whereas an inference in which the ordering of data and unknowns is relevant, like the stock-exchange one, is called <strong>non-exchangeable</strong>. There is not a dichotomy between the two cases; rather, there are continuous varying degrees of exchangeability or non-exchangeability. But for the moment we shall simplify this gradation into a binary distinction.</p>
+<p>We shall now make this definition more precise, and then study and exploit the remarkable consequences that it has for an agent’s inferences and probability calculations.</p>
+<section id="definition" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="definition">Definition</h3>
+<p>Consider a collection of quantities <span style="display:inline-block;"><span class="math inline">\(X_1, X_2, X_3, \dotsc\)</span>,</span> all having identical domains. For instance, they could all be continuous with values in the real numbers; or all binary, with values <span style="display:inline-block;"><span class="math inline">\(\set{\texttt{\small Yes}, \texttt{\small No}q}\)</span>;</span> or all ordinal, with values <span style="display:inline-block;"><span class="math inline">\(\{\texttt{\small low}, \texttt{\small medium}, \texttt{\small high}\}\)</span>;</span> or all join quantities, with the same join domains. This collection is in principle infinite: it is always possible to add one more quantity, with the same domain, to the collection.</p>
+<p>An agent has a joint probability distribution over them, conditional on some state of knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>:</span></p>
+<p><span class="math display">\[
+\mathrm{P}(X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_1,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_2,\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_3,\ \dotsc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\]</span></p>
+<p>for all combinations of values <span style="display:inline-block;"><span class="math inline">\(x_1, x_2, x_3, \dotsc\)</span>.</span></p>
+<p>This joint probability distribution is called <span class="blue"><strong>infinitely exchangeable</strong></span> if <span class="blue"><em>all marginal probabilities (<a href="marginal_conditional_probability.html#sec-marginal-probs">§&nbsp;<span>12.1</span></a>) for any sub-collection of quantities remain the same whenever the values are swapped among quantities</em></span>. For example:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex] {}={}&amp;
+\mathrm{P}(X_2 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex] {}={}&amp;
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex] {}={}&amp;
+\mathrm{P}(X_3 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex] {}={}&amp;
+\dotso
+\\[1ex] {}={}&amp;
+\mathrm{P}(X_{23} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_{7}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex] {}={}&amp;
+\dotso
+\end{aligned}
+\]</span></p>
+<p>and so on, and also</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex] {}={}&amp;
+\mathrm{P}(X_2 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex] {}={}&amp;
+\mathrm{P}(X_2 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex] {}={}&amp;
+\mathrm{P}(X_3 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_4\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_5\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex] {}={}&amp;
+\dotso
+\\[1ex] {}={}&amp;
+\mathrm{P}(X_{12} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_8\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_{47}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex] {}={}&amp;
+\dotso
+\end{aligned}
+\]</span></p>
+<p>and also</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c},\ X_4\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{170,51,119}d}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex] {}={}&amp;
+\mathrm{P}(X_3 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_4\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c},\ X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{170,51,119}d}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex] {}={}&amp;
+\dotso
+\\[1ex] {}={}&amp;
+\mathrm{P}(X_{91} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_{72}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_6\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c},\ X_{13}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{170,51,119}d}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex] {}={}&amp;
+\dotso
+\end{aligned}
+\]</span></p>
+<p>and so on – no matter how many and which quantities we take, and no matter what the values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}a},{\color[RGB]{102,204,238}b},{\color[RGB]{204,187,68}c},{\color[RGB]{170,51,119}d}\dotsc\)</span></span> might be.</p>
+<p>In the following we shall simply call this type of probability distribution <span class="blue"><strong>exchangeable</strong></span>, omitting “infinitely”. But keep in mind that there are also <strong>finitely</strong> exchangeable distributions, and <em>they have different properties</em>. Here, when we say “exchangeable”, we always strictly mean “infinitely exchangeable”.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-circle" aria-label="exclamation-circle"></i>
 </div>
 </div>
-<p>the imaginary example above also shows that the values of some variates for some units might be unknown; this is a situation we shall discuss in depth later.</p>
+<div class="callout-body-container callout-body">
+<p>Exchangeability does not mean that <em>all</em> probabilities need to be equal. For instance, if <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}b}\ne{\color[RGB]{204,187,68}c}\)</span></span> then these probabilities can be different:</p>
+<p><span class="math display">\[\begin{gathered}
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrel{\boldsymbol{\ne}}
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrel{\boldsymbol{\ne}}
+\mathrm{P}(X_{23} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_7\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\end{gathered}\]</span></p>
+<p>although we must still have</p>
+<p><span class="math display">\[
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrel{\boldsymbol{=}}
+\mathrm{P}(X_{23} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_7\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\]</span></p>
+</div>
+</div>
 <p><br>
 </p>
-<p>We shall henceforth focus on statistical populations with a number of units that is <em>in principle infinite</em>, or so large that it can be considered <em>practically infinite</em>. “Practically” means that the number of units we’ll use as data or draw inferences about is a very small fraction, say less than 0.1%, of the total population size.</p>
-<p><span class="small">This is often the case. Consider for example (as in <a href="quantities_types.html#sec-quant-value-dom">§&nbsp;<span>8.1.1</span></a>) the collection of all possible 128 × 128 images with 24-bit <a href="https://www.cambridgeincolour.com/tutorials/bit-depth.htm">colour depth</a>. This collection has <span class="math inline">\(2^{24 \times 128 \times 128} \approx 10^{118 370}\)</span> units. Even if we used 100&nbsp;billions of such images as data, and wanted to draw inferences on another 100&nbsp;billions, these would constitute only <span class="math inline">\(10^{-118 357}\,\%\)</span> of the whole collection. This collection is practically infinite.</span></p>
-<p>Note that we can’t say whether a population, per se, is “practically infinite” or not. It could be practically infinite for a particular inference problem, but not for another.</p>
-<p>When we use the term “population” it will often be understood that we’re speaking about a statistical population that is practically infinite with respect to the inference or decision problem under consideration.</p>
-</section>
-<section id="sec-samples" class="level2 page-columns page-full" data-number="16.2">
-<h2 data-number="16.2" class="anchored" data-anchor-id="sec-samples"><span class="header-section-number">16.2</span> Samples</h2>
-<p>In the glass-forensic example above (<a href="#tbl-glass-ext">table&nbsp;&nbsp;<span>16.1</span></a>), the units and data we had initially (<a href="populations_variates.html#tbl-glass">table&nbsp;&nbsp;<span>13.1</span></a>) have been considered as part or a much larger population. Such a part is called a <span class="blue"><strong>population sample</strong></span> or “sample” for short. Almost all data considered in engineering and data-science problems can be considered to be population samples.</p>
-<p>It is extremely important to <strong>specify how a sample is extracted</strong> from a population. For instance, if we consider <a href="populations_variates.html#tbl-glass">table&nbsp;&nbsp;<span>13.1</span></a> to be a full population, we could extract a sample in such a way that <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> only has value <span style="display:inline-block;"><span class="math inline">\(\texttt{\small headlamps}\)</span></span> (similarly to when we construct a subpopulation, <a href="subpopulations.html#sec-subpopulations">§&nbsp;&nbsp;<span>15.1</span></a>, but for a subpopulation we would select <em>all</em> units having that variate value). The marginal frequency of the value <span style="display:inline-block;"><span class="math inline">\(\texttt{\small headlamps}\)</span></span> in the sample would then be <span style="display:inline-block;"><span class="math inline">\(1\)</span>,</span> whereas in the original population it is <span style="display:inline-block;"><span class="math inline">\(3/10 \approx 0.333\)</span></span> – two very different frequencies.</p>
-<section id="representative-and-biased-samples" class="level3 page-columns page-full">
-<h3 class="anchored" data-anchor-id="representative-and-biased-samples">“Representative” and biased samples</h3>
-<p>In inference and decision problems we would like to use samples in which the various frequencies didn’t differ very much from those in the original population. Such a sample is called a “<span class="blue">representative sample</span>”. This is a difficult notion; the International Organization for Standardization for instance <a href="https://www.iso.org/obp/ui/#iso:std:iso:3534:-4:ed-1:v1:en">warns (item&nbsp;3.1.14)</a>:</p>
-<blockquote class="blockquote">
-<p>The notion of representative sample is fraught with controversy, with some survey practitioners rejecting the term altogether.</p>
-</blockquote>
-<p>In many cases it is <em>impossible</em> for a sample of given size to be “representative”:</p>
+<p>The definition of exchangeability given above can also be put in a different way. For an exchangeable probability distribution, the joint probability of a collection of quantities can only depend on the different values appearing in it and their multiplicities. For instance, the numerical value of the marginal, joint probability</p>
+<p><span class="math display">\[
+\mathrm{P}(X_{91} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_{72}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_6\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_{13}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\]</span></p>
+<p>where <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}a},{\color[RGB]{102,204,238}b},{\color[RGB]{204,187,68}c}\)</span></span> are different from one another, can only depend on the fact that there are the three different values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}a},{\color[RGB]{102,204,238}b},{\color[RGB]{204,187,68}c}\)</span>,</span> and that <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}a}\)</span></span> appears once, <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}b}\)</span></span> twice, and <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}c}\)</span></span> once. So any other marginal, joint probability containing the value <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}a}\)</span></span> once, <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}b}\)</span></span> twice, and <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}c}\)</span></span> once, must be equal to the one above.</p>
+<p><br>
+</p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -588,162 +531,79 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Consider the following population of 16 units, with four binary variates <span style="display:inline-block;"><span class="math inline">\(W,X,Y,Z\)</span>,</span> each with values <span style="display:inline-block;"><span class="math inline">\(0\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(1\)</span>:</span></p>
-<div class="columns">
-<div class="column" style="width:75%;">
-<div id="tbl-four-bit" class="anchored">
-<table class="table-sm small table">
-<caption>Table&nbsp;16.2: Four-bit population</caption>
-<thead>
-<tr class="header">
-<th style="text-align: center;"><span class="math inline">\(W\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(X\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(Y\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(Z\)</span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">1</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<p>The joint variate <span style="display:inline-block;"><span class="math inline">\((W,X,Y,Z)\)</span></span> has 16 possible values, from <span style="display:inline-block;"><span class="math inline">\((0,0,0,0)\)</span></span> to <span style="display:inline-block;"><span class="math inline">\((1,1,1,1)\)</span>.</span> Each of these values appear exactly once in the population, so it has frequency <span style="display:inline-block;"><span class="math inline">\(1/16\)</span>.</span> The marginal frequency distribution for each binary variate is also uniform, with frequencies of 50% for both <span style="display:inline-block;"><span class="math inline">\(0\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(1\)</span>.</span></p>
-<ul>
-<li>Extract a <strong>representative</strong> sample of <strong>four</strong> units. In particular, the marginal frequency distributions of the four variates should be as close to 50%/50% as possible.</li>
-</ul>
+<p>For each of the marginal probabilities below, determine whether the joint probability they come from is <em>surely <strong>non</strong>-exchangeable</em>, and explain why. Note that we can’t determine whether a probability distribution is exchangeable unless we’re given <em>all</em> its probabilities, for all combinations of quantities and values.<br>
+</p>
+<ol type="1">
+<li><p><span class="math display">\[\begin{aligned}
+&amp;\mathrm{P}(X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}3,\  X_4\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}5\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.15
+\\
+&amp;\mathrm{P}(X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}5,\  X_4\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}3\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.15
+\\
+&amp;\mathrm{P}(X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}7,\  X_4\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}3\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.25
+\\
+&amp;\mathrm{P}(X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}3,\  X_4\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}7\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.25
+\end{aligned}
+\]</span><br>
+</p></li>
+<li><p><span class="math display">\[\begin{aligned}
+&amp;\mathrm{P}(Y_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}3,\  Y_4\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}5\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.07
+\\
+&amp;\mathrm{P}(Y_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}5,\  Y_4\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}3\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.07
+\\
+&amp;\mathrm{P}(Y_9\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}3,\  Y_{21}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}5\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.4
+\\
+&amp;\mathrm{P}(Y_9\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}5,\  Y_{21}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}3\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.4
+\end{aligned}
+\]</span><br>
+</p></li>
+<li><p><span class="math display">\[\begin{aligned}
+&amp;\mathrm{P}(Z_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high},\  Z_7\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{34,136,51}low},\  Z_{20}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.11
+\\
+&amp;\mathrm{P}(Z_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high},\  Z_7\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high},\  Z_{20}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{34,136,51}low}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.35
+\\
+&amp;\mathrm{P}(Z_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{34,136,51}low},\  Z_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{34,136,51}low},\  Z_9\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0
+\\
+&amp;\mathrm{P}(Z_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high},\  Z_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{34,136,51}low},\  Z_9\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{34,136,51}low}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0
+\end{aligned}
+\]</span><br>
+</p></li>
+<li><p><span class="math display">\[\begin{aligned}
+&amp;\mathrm{P}(U_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}6.4,\  U_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}8.7,\  U_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}-0.3\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.1
+\\
+&amp;\mathrm{P}(U_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}1.7,\  U_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}0.5,\  U_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}-0.3\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.1
+\\
+&amp;\mathrm{P}(U_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}-0.3,\  U_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}6.4,\  U_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}0.5\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.01
+\\
+&amp;\mathrm{P}(U_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}-0.3,\  U_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}1.7,\  U_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}0.5\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.4
+\end{aligned}
+\]</span></p></li>
+</ol>
 </div>
 </div>
 <p><br>
 </p>
-<p>Obviously we cannot expect a population sample to exactly reflect all frequency distributions – joint, marginal, conditional – of the original population; some discrepancy is to be expected. How much discrepancy should be allowed? And what is the minimal size for a sample not to exceed such discrepancy?</p>
-<p>Information Theory gives reasonable answers to these questions; we summarize them here.</p>
+<section id="example" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="example">Example</h4>
+<p>Consider the collection of quantities <span style="display:inline-block;"><span class="math inline">\(X_1, X_2, \dotsc\)</span></span> with common domain consisting of three values <span style="display:inline-block;"><span class="math inline">\(\set{\texttt{\small\color[RGB]{34,136,51}low},\texttt{\small\color[RGB]{102,204,238}med},\texttt{\small\color[RGB]{204,187,68}high}}\)</span>.</span> The joint probability distribution for any set of these quantities is given by the function</p>
+<p><span class="math display">\[
+\mathrm{P}(X_i\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_i,\ X_j\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_j,\ \dotsc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) =
+\frac{2\cdot \#\texttt{\small\color[RGB]{34,136,51}low}!\cdot \#\texttt{\small\color[RGB]{102,204,238}med}!\cdot \#\texttt{\small\color[RGB]{204,187,68}high}!}{(\#\texttt{\small\color[RGB]{34,136,51}low}+\#\texttt{\small\color[RGB]{102,204,238}med}+\#\texttt{\small\color[RGB]{204,187,68}high}+2)!}
+\]</span></p>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<i class="fa-solid fa-rocket" aria-label="rocket"></i> For the extra curious
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul>
-<li><p>Chapters&nbsp;1–10 of <a href="https://hvl.instructure.com/courses/25074/modules/items/660092"><em>Information Theory, Inference, and Learning Algorithms</em></a></p></li>
-<li><p>Video lectures&nbsp;1–9 from the <a href="http://videolectures.net/course_information_theory_pattern_recognition/"><em>Course on Information Theory, Pattern Recognition, and Neural Networks</em></a></p></li>
-</ul>
-</div>
-</div>
-</div></div><p>First we need to define the <span class="blue"><strong>Shannon entropy</strong></span> of a discrete frequency distribution. Lets say the distribution is <span style="display:inline-block;"><span class="math inline">\((f_1,f_2, \dotsc)\)</span>.</span> Its Shannon entropy <span style="display:inline-block;"><span class="math inline">\(H(f)\)</span></span> is then defined as</p>
-<p><span class="math display">\[
-H(f) \coloneqq-\sum_{i} f_i\ \log_2 f_i
-\qquad\text{\color[RGB]{119,119,119}\small(with \(0\cdot\log 0 \coloneqq 0\))}
-\]</span></p>
-<p>and is measured in <strong>bits</strong> (when the base of the logarithm is 2).</p>
-<p>If we have a population with joint frequency <span style="display:inline-block;"><span class="math inline">\(f\)</span>,</span> then a representative sample from it must have at least size</p>
-<p><span class="math display">\[
-2^{H(f)} \equiv
-\frac{1}{{f_1}^{f_1}\cdot {f_2}^{f_2}\cdot {f_3}^{f_3}\cdot \dotsb}
-\]</span> </p>
-<p>This particular number has important practical consequences; for example it is related to the maximum rate at which a communication channel can send symbols (which can be considered as values of a variate) with an error as low as we please.</p>
+<p>The <em>factorial</em> <span style="display:inline-block;"><span class="math inline">\(n!\)</span></span> is defined by <span style="display:inline-block;"><span class="math inline">\(n! \coloneqq 1\cdot2\cdot\dotsb\cdot (n-1)\cdot n\)</span>,</span> and <span style="display:inline-block;"><span class="math inline">\(0!\coloneqq 1\)</span>.</span></p>
+</div></div><p>where <span style="display:inline-block;"><span class="math inline">\(\#\texttt{\small\color[RGB]{34,136,51}low}\)</span></span> is the number of times the value <span style="display:inline-block;"><span class="math inline">\(\texttt{\small\color[RGB]{34,136,51}low}\)</span></span> appears among <span style="display:inline-block;"><span class="math inline">\(x_i,x_j,\dotsc\)</span>,</span> and similarly for <span style="display:inline-block;"><span class="math inline">\(\#\texttt{\small\color[RGB]{102,204,238}med}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\#\texttt{\small\color[RGB]{204,187,68}high}\)</span>.</span> For instance:</p>
+<p><span class="math display">\[\begin{aligned}
+\mathrm{P}(X_5\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{102,204,238}med},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high},\ X_{14}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{102,204,238}med}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) &amp;=
+\frac{2\cdot {\color[RGB]{34,136,51}0}!\cdot {\color[RGB]{102,204,238}2}!\cdot  {\color[RGB]{204,187,68}1}!}{({\color[RGB]{34,136,51}0} + {\color[RGB]{102,204,238}2} + {\color[RGB]{204,187,68}1} + 2)!}
+\\[1ex]&amp;=
+\frac{2\cdot {\color[RGB]{34,136,51}1}\cdot
+{\color[RGB]{102,204,238}2}\cdot
+{\color[RGB]{204,187,68}1}}{5!}
+\\&amp;=
+\frac{4}{120}
+\\[1ex]&amp;\approx 0.0333
+\end{aligned}\]</span></p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -754,20 +614,32 @@ H(f) \coloneqq-\sum_{i} f_i\ \log_2 f_i
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ul>
-<li><p>Calculate the Shannon entropy of the joint frequency distribution for the four-bit population of <a href="#tbl-four-bit">table&nbsp;&nbsp;<span>16.2</span></a>.</p></li>
-<li><p>Calculate the minimum representative-sample size according to the Shannon-entropy formula. Is the result intuitive?</p></li>
-</ul>
+<p>Using the formula above, verify that the marginal probability distribution for two quantities <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_1,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_2 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span></span> satisfies</p>
+<p><span class="math display">\[
+\sum_{x_1} \sum_{x_2}
+\mathrm{P}(X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_1,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_2 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = 1
+\]</span></p>
+<p>as it should (hint: you have to sum nine terms).</p>
 </div>
 </div>
+<p>Why are we focusing on exchangeable probability distributions? Because their mathematical properties have an interesting interpretation, very useful for particular kinds of inferences. We shall now explore this interpretation.</p>
 </section>
-<section id="biases" class="level3">
-<h3 class="anchored" data-anchor-id="biases">Biases</h3>
-<p>For many populations it is difficult or impossible to obtain a “representative” sample, even when the sample is large. As the exercises above show, this impossibility remains even if we extract the sample in an unsystematic and unpredictable way (“random sample”), by shuffling or similar techniques.</p>
-<p>A sample that presents some aspects, such as frequency distributions, which are at variance with the original population, is sometimes called <span class="blue">biased</span> (this term is used in many different ways by different authors). Unfortunately, most samples are “biased” in this sense.</p>
+</section>
+<section id="consequences" class="level3">
+<h3 class="anchored" data-anchor-id="consequences">Consequences</h3>
+<p>The stock-exchange and Mars-prospecting inference problems do not involve simple joint probabilities like</p>
+<p><span class="math display">\[\mathrm{P}(X_{101}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_{101},\ X_{102}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_{102},\ \dotsc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\]</span></p>
+<p>but conditional probabilities like</p>
+<p><span class="math display">\[\mathrm{P}(X_{101}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_{101},\ X_{102}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_{102},\ \dotsc \nonscript\:\vert\nonscript\:\mathopen{}
+X_{100}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_{100},\ X_{99}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_{99},\ \dotsc,\ \mathsfit{I})\]</span></p>
+<p>because the problem is to infer some datapoints given other datapoints. What does exchangeability say about conditional probabilities?</p>
+<p>It can be proved that</p>
+</section>
+<section id="interpretations-of-exchangeability" class="level2" data-number="19.1">
+<h2 data-number="19.1" class="anchored" data-anchor-id="interpretations-of-exchangeability"><span class="header-section-number">19.1</span> Interpretations of exchangeability</h2>
+<p>Our focus, however, is not on the <em>whys</em> of this intuition, but on the consequences that it has for inference and probability calculations.</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1006,13 +878,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./subpopulations.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Subpopulations and conditional frequencies</span></span>
+      <a href="./population_inference.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Population inference</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./recap.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Recap</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./exchangeability.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Exchangeability</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
