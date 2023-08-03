@@ -1,4 +1,4 @@
-# Population inference
+# Inference and populations
 {{< include macros.qmd >}}
 {{< include macros_population_inference.qmd >}}
 
@@ -55,7 +55,7 @@ We shall now see how this is done in a quantitative manner with the probability 
 
 
 
-## Inferences and populations {#sec-exchangeability}
+## Inferences and populations {#sec-two-populations}
 
 ### Stock exchange and Mars prospecting, again
 
@@ -188,47 +188,95 @@ Would you define these two populations in a different way? Do you think other va
 
 ### Desired probabilities
 
-With the representation above, it seems that the desired inference would consist in the calculation of these probabilities, which exhaust the 2³ = 8 possibilities for the three unknown units, in the stock-exchange case:
+The stock-exchange  problem asks "In which of the subsequent 3 days will the closing-price change be positive, and in which negative?". In terms of the populations just introduced, this can be translated into:
+\
+\
+"will the $C$ variate for units #101, #102, #103 have value $\ypl$ or $\ymi$?"
 
-:::{.column-page-right}
+In other words, we are asking which of the two following mutually exclusive sentences, expressed symbolically, will be true:
+
+$$
+C_{101}\mo\ypl \qquad C_{101}\mo\ymi
+$$
+
+Since one of them must be true, their probabilities form a probability distribution ([§ @sec-prob-distribs]), in which for the moment we omit the conditional:
+
+$$
+\P\bigl(C_{101}\mo\ypl \|[\big]  \quad\quad
+\P\bigl(C_{101}\mo\ymi \|[\big]
+$$
+
+Analogously for units #102 and #103, leading to two more probability distributions.
+
+When we `and` together sentences for the three units we obtain a joint probability distribution ([§ @sec-prob-joint]) over 2³ = 8 mutually exclusive and exhaustive composite sentences:
+
 $$\begin{aligned}
-&\P(C_{101}\mo\ypl,\ C_{102}\mo\ypl,\ C_{103}\mo\ypl
-\| C_{100}\mo\ypl,\ C_{99}\mo\ypl,\ \dotsc,\ 
-C_{3}\mo\ypl,\ C_{2}\mo\ymi,\ C_{1}\mo\ymi,\ \yi[s] )
+&\P\bigl(C_{101}\mo\ypl,\ C_{102}\mo\ypl,\ C_{103}\mo\ypl
+\|[\big]
 \\[1ex]
-&\P(C_{101}\mo\ymi,\ C_{102}\mo\ypl,\ C_{103}\mo\ypl
-\| C_{100}\mo\ypl,\ C_{99}\mo\ypl,\ \dotsc,\ 
-C_{3}\mo\ypl,\ C_{2}\mo\ymi,\ C_{1}\mo\ymi,\ \yi[s] )
+&\P\bigl(C_{101}\mo\ymi,\ C_{102}\mo\ypl,\ C_{103}\mo\ypl
+\|[\big]
 \\[1ex]
 &\dotso
 \\[1ex]
-&\P(C_{101}\mo\ymi,\ C_{102}\mo\ymi,\ C_{103}\mo\ymi
-\| C_{100}\mo\ypl,\ C_{99}\mo\ypl,\ \dotsc,\ 
-C_{3}\mo\ypl,\ C_{2}\mo\ymi,\ C_{1}\mo\ymi,\ \yi[s] )
+&\P\bigl(C_{101}\mo\ymi,\ C_{102}\mo\ymi,\ C_{103}\mo\ymi
+\|[\big]
 \end{aligned}$$
-:::
 
-where $\yi[s]$ represent the state of knowledge in the stock-exchange scenario.
-Similarly in the mars-prospecting one, with state of knowledge $\yi[M]$:
+Note that we are denoting `and` by the more compact comma "$,$" rather than the larger "$\land$" symbol.
+
+\
+
+Now let's focus on the conditional. The information we are given consists of the values of the $C$ variate for units #1 to #100, which we can `and` together. We must  also `and` all other information implicit in the stock-exchange problem, which we denote $\yi[s]$:
+
+$$
+ \|[\big] C_{100}\mo\ypl,\ C_{99}\mo\ypl,\ \dotsc,\ 
+C_{3}\mo\ypl,\ C_{2}\mo\ymi,\ C_{1}\mo\ymi,\ \yi[s] \bigr)
+$$
+
+
+We finally arrive at the eight probabilities (which constitute a probability distribution) that we want to calculate:
 
 :::{.column-page-right}
 $$\begin{aligned}
-&\P(H_{101}\mo\yy,\ H_{102}\mo\yy,\ H_{103}\mo\yy
-\| H_{100}\mo\yy,\ H_{99}\mo\yy,\ \dotsc,\ 
-H_{3}\mo\yn,\ H_{2}\mo\yy,\ H_{1}\mo\yy,\ \yi[M] )
+&\P\bigl(C_{101}\mo\ypl,\ C_{102}\mo\ypl,\ C_{103}\mo\ypl
+\|[\big] C_{100}\mo\ypl,\ C_{99}\mo\ypl,\ \dotsc,\ 
+C_{3}\mo\ypl,\ C_{2}\mo\ymi,\ C_{1}\mo\ymi,\ \yi[s] \bigr)
 \\[1ex]
-&\P(H_{101}\mo\yn,\ H_{102}\mo\yy,\ H_{103}\mo\yy
-\| H_{100}\mo\yy,\ H_{99}\mo\yy,\ \dotsc,\ 
-H_{3}\mo\yn,\ H_{2}\mo\yy,\ H_{1}\mo\yy,\ \yi[M] )
+&\P\bigl(C_{101}\mo\ymi,\ C_{102}\mo\ypl,\ C_{103}\mo\ypl
+\|[\big] C_{100}\mo\ypl,\ C_{99}\mo\ypl,\ \dotsc,\ 
+C_{3}\mo\ypl,\ C_{2}\mo\ymi,\ C_{1}\mo\ymi,\ \yi[s] \bigr)
 \\[1ex]
 &\dotso
 \\[1ex]
-&\P(H_{101}\mo\yn,\ H_{102}\mo\yn,\ H_{103}\mo\yn
-\| H_{100}\mo\yy,\ H_{99}\mo\yy,\ \dotsc,\ 
-H_{3}\mo\yn,\ H_{2}\mo\yy,\ H_{1}\mo\yy,\ \yi[M] )
+&\P\bigl(C_{101}\mo\ymi,\ C_{102}\mo\ymi,\ C_{103}\mo\ymi
+\|[\big] C_{100}\mo\ypl,\ C_{99}\mo\ypl,\ \dotsc,\ 
+C_{3}\mo\ypl,\ C_{2}\mo\ymi,\ C_{1}\mo\ymi,\ \yi[s] \bigr)
 \end{aligned}$$
 :::
 
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Do a similar analysis for the Mars-prospecting problem, and write down the final probability distribution that we wish to calculate.
+:::
+
+<!-- :::{.column-page-right} -->
+<!-- $$\begin{aligned} -->
+<!-- &\P(H_{101}\mo\yy,\ H_{102}\mo\yy,\ H_{103}\mo\yy -->
+<!-- \| H_{100}\mo\yy,\ H_{99}\mo\yy,\ \dotsc,\  -->
+<!-- H_{3}\mo\yn,\ H_{2}\mo\yy,\ H_{1}\mo\yy,\ \yi[M] ) -->
+<!-- \\[1ex] -->
+<!-- &\P(H_{101}\mo\yn,\ H_{102}\mo\yy,\ H_{103}\mo\yy -->
+<!-- \| H_{100}\mo\yy,\ H_{99}\mo\yy,\ \dotsc,\  -->
+<!-- H_{3}\mo\yn,\ H_{2}\mo\yy,\ H_{1}\mo\yy,\ \yi[M] ) -->
+<!-- \\[1ex] -->
+<!-- &\dotso -->
+<!-- \\[1ex] -->
+<!-- &\P(H_{101}\mo\yn,\ H_{102}\mo\yn,\ H_{103}\mo\yn -->
+<!-- \| H_{100}\mo\yy,\ H_{99}\mo\yy,\ \dotsc,\  -->
+<!-- H_{3}\mo\yn,\ H_{2}\mo\yy,\ H_{1}\mo\yy,\ \yi[M] ) -->
+<!-- \end{aligned}$$ -->
+<!-- ::: -->
 
 \
 

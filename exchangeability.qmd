@@ -2,90 +2,25 @@
 {{< include macros.qmd >}}
 {{< include macros_exchangeability.qmd >}}
 
-To solve *any* inference problem, or to design an AI agent for solving an inference problem, all we have to do in principle is to repeatedly use the [fundamental laws of inference of § @sec-fundamental].
 
-In many cases an in-principle application of the inference laws is computationally impossible, however. Approximate calculations and premises are then used, sometimes quite drastic. The approximation used depends on the nature of the inference problem. This is why inference problems are often classified in one way or another, and different solution recipes are presented for the different classes.
-
-For a data-science engineer it is important to keep in mind that these recipes are only approximations, and to keep the principled solution always in sight. Technological advances continually allow us to make computations that were previously impossible -- think of "quantum computers" these days. A truly optimal in-principle solution, preferable to a sub-optimal approximation, can suddenly become accessible -- to those who know it.
-
-\
-
-We shall now introduce a very rough distinction between two very broad classes of inference problems, and then study the principled solution of one of them, and approximations to this solution.
-
-## Exchangeable inferences {#sec-exchangeability}
-
-### Intuitive understanding
-
-Consider these sketches of two inference problems:
-
-- [Stock exchange](https://www.britannica.com/money/topic/stock-exchange-finance)
-: In 100 days, the daily change in [closing price](https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price) of a stock has been [positive 74 times, and negative 26 times]{.green}, according a particular sequence. For instance, the data could be:
-
-    ![](stock.png){width=100%}
-
-    In which of the subsequent 3 days will the closing-price change be positive, and in which negative?
-
-:::{.column-margin}
-![](stock_course.jpg){width=100%}
-:::
-
-\
-
-- Mars [prospecting](https://www.britannica.com/technology/prospecting-mining)
-: Of the last 100 similar-sized rocks examined in a large crater on Mars, [74 contained [hematite](https://science.nasa.gov/science-news/science-at-nasa/2001/ast28mar_1), and 26 didn't]{.green}. For instance, the data could be:
-
-    ![](rock.png){width=100%}
-
-    where "Y" and "N" denote the presence and absence of hematite.
-
-    Which, among the next 3 rocks that will be examined, will contain hematite, and which will be hematite-free?
-
-:::{.column-margin}
-![](mars_crater2.jpg){width=100%}
-:::
-
-
-:::{.callout-caution}
-## {{< fa user-edit >}} Exercise
-Discuss:
-
-- Which of the two inferences above seems more difficult?...
-
-- ...Why? Speculate on which factors make one inference more difficult than the other.
-
-- Which differences and similarities do you find between the two inferences?
-
-- Which additional information could be important for drawing more precise inferences?
-
-- Which type of quantities appear in the two inferences?
-
-<!-- - Answer the same questions, considering two inference problems that are similar but "backwards in time": -->
-
-<!--     1b. Assessing the value that a particular investment fund had in 3750 days ago, given the course of that fund in the past 3650 days. -->
-
-<!--     2b. Assessing the failure status of the past 1100th electronic component from an assembly line, given the failure status of the last 1000 electronic components already out of the same assembly line. -->
-:::
-
-\
-
-The two inference problems differ in some aspects and are similar in others. Time, for example, appears to be an important aspect of the first inference, which is in fact often categorized as a "[time-series analysis](https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data)". But the second inference involves or could involve time as well: the rocks could be inspected sequentially. So more precisely it is the time *ordering* that is more relevant in the first inference than the second.
+The stock-exchange and Mars-prospecting inference problems of [§ @sec-two-populations] differ in some aspects and are similar in others. Time, for example, appears to be an important aspect of the first inference, which is in fact often categorized as a "[time-series analysis](https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data)". But the second inference involves or could involve time as well: the rocks could be inspected sequentially. So more precisely it is the time *ordering* that is more relevant in the first inference than the second.
 
 
 An important difference between the two inference problems is revealed by the following thought-experiments. Consider how you would answer in the stock-exchange case and in the Mars-prospecting case:
 
-a. *It turns out that there was an error in the sequence of positive and negative datapoints, although not in the total amounts of positive and negative ones.* In the stock-exchange inference, for instance, days 1 ($-$) and 3 ($+$) were erroneously swapped, as were days 100 ($+$) and 85 ($-$), and many other days; in the Mars-prospecting inference, rocks #1 (Y) and #3 (N) were erroneously swapped, as were rocks #100 (Y) and #97 (N), and many other rocks.
+a. [*It turns out that there was an error in the sequence of positive and negative datapoints, although not in the total amounts of positive and negative ones.*]{.green} In the stock-exchange inference, for instance, days 1 ($-$) and 3 ($+$) were erroneously swapped, as were days 100 ($+$) and 85 ($-$), and many other days; in the Mars-prospecting inference, rocks #1 (Y) and #3 (N) were erroneously swapped, as were rocks #100 (Y) and #97 (N), and many other rocks.
 
-    Should the final inference about the next 3 datapoints be changed?
-
-
-b. *The information about the exact sequence of data is lost, and only the total amount of positive and negative datapoints is preserved* (74 vs 26).
-
-    Would the final inference about the next 3 datapoints be different,  compared to the situation where the exact data sequence is known?
+    - *Should the final inference about the next 3 datapoints be changed?*
 
 
-c. *A new inference is requested: not about the 3 datapoints following the known data, but the 3 datapoints preceding the known data*: the day before day 1 and so on, or the rock before rock #1 and so on. (Or, generalizing: an inference about 3 datapoints *interspersed* among the known ones is requested.)
+b. [*The information about the exact sequence of data is lost, and only the total amount of positive and negative datapoints is preserved*]{.green} (74 vs 26).
 
-    Would the inference for the preceding 3 datapoints be different from the original one about the subsequent 3 datapoints?
+    - *Would the final inference about the next 3 datapoints be different,  compared to the situation where the exact data sequence is known?*
+
+
+c. [*A new inference is requested: not about the 3 datapoints following the known data, but the 3 datapoints preceding the known data*]{.green}: the day before day 1 and so on, or the rock before rock #1 and so on. (Or, generalizing: an inference about 3 datapoints *interspersed* among the known ones is requested.)
+
+    - *Would the inference for the preceding 3 datapoints be different from the original one about the subsequent 3 datapoints?*
 
 In all these thought-experiments, our intuition is that the inference for the stock-exchange problem would be different, but the one for the Mars-prospecting problem would stay the same or not change appreciably. Swapping days in a stock course, matters; swapping rocks in a crater, doesn't. There are good reasons, based on physics and dynamical-system theory, for this intuition.
 
