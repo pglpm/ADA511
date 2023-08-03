@@ -3,8 +3,9 @@
 {{< include macros_exchangeability.qmd >}}
 
 
-The stock-exchange and Mars-prospecting inference problems of [§ @sec-two-populations] differ in some aspects and are similar in others. Time, for example, appears to be an important aspect of the first inference, which is in fact often categorized as a "[time-series analysis](https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data)". But the second inference involves or could involve time as well: the rocks could be inspected sequentially. So more precisely it is the time *ordering* that is more relevant in the first inference than the second.
-
+The stock-exchange and Mars-prospecting inference problems of [§ @sec-two-populations] differ in some aspects and are similar in others. Time, for example, seems an important aspect of the first inference.
+<!-- , which is in fact often categorized as a "[time-series analysis](https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data)".  -->
+Yet, the second inference involves or could involve time as well: the rocks could be inspected sequentially. So more precisely it is the time *ordering* that seems more relevant in the first inference than the second.
 
 An important difference between the two inference problems is revealed by the following thought-experiments. Consider how you would answer in the stock-exchange case and in the Mars-prospecting case:
 
@@ -29,20 +30,218 @@ An inference which does not change if data and unknown quantities are freely reo
 We shall now make this definition more precise, and then study and exploit the remarkable consequences that it has for an agent's inferences and probability calculations.
 
 
-## Infinitely exchangeable probability distributions
+## Infinitely exchangeable populations
 
 ### Definition
 
-Consider a collection of quantities $X_1, X_2, X_3, \dotsc$, all having identical domains. For instance, they could all be continuous with values in the real numbers; or all binary, with values $\set{\cat{Yes}, \cat{No}q}$; or all ordinal, with values $\{\cat{low}, \cat{medium}, \cat{high}\}$; or all join quantities, with the same join domains. This collection is in principle infinite: it is always possible to add one more quantity, with the same domain, to the collection.
+Consider a (practically) infinite statistical population with variate $X$. This variate could be a joint one, consisting of variates $U,V,W,\dots$ of arbitrary types. For simplicity let's assume that the domain of this variate is discrete. For instance, the variate could be of a binary type with domain $\set{\cat{Yes}, \cat{No}}$; or it could be the combination of such a binary variate and an another ordinal variate with domain $\set{\cat{low}, \cat{medium}, \cat{high}}$; so the domain of the joint variable would be the set of 2 × 3 values $\set[\big]{(\cat{Yes}, \cat{low}),\ (\cat{No}, \cat{low}),\ \dotsc,\ (\cat{No},\cat{high})}$.
 
-An agent has a joint probability distribution over them, conditional on some state of knowledge $\yI$:
+This variate associates a quantity to each unit in the population. We denote by $X_1$ the variate for unit #1, and so on.
+
+Now consider an agent, with background knowledge $\yI$, which must draw  inferences about some population units.
+
+\
+
+We call the infinite population [**exchangeable**]{.blue} if [the agent's inferences are unaffected by the units' identities, and only depend on the units' variate values]{.blue}. Said otherwise, [exchanges among the units' identities don't matter for inference purposes]{.blue}.
+
+Let's make this clear with a simplified version of the Mars-prospecting example.
+
+Suppose the agent knows the values of units #95--#99, and needs the probability that unit #101 has variate value $\yn$, unit #102 value $\yy$, and unit #103 value $\yn$, as schematized below:
+
+:::{.columns}
+::::{.column width=30%}
+::::
+
+::::{.column width=30%}
+|  [unit]{.yellow}  | $H$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [1]{.yellow}      | $\yy$           |
+| [2]{.yellow}      | $\yy$           |
+| [3]{.yellow}      | $\yn$           |
+| [4]{.yellow}      | $\yy$           |
+| [5]{.yellow}      | $\yy$           |
+| [6]{.yellow}      | $\yy$           |
+| [7]{.yellow}      | $\yy$           |
+| [8]{.yellow}      | $\yn$           |
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [95]{.yellow}     | $\yn$ $\condi$  |
+| [96]{.yellow}     | $\yy$ $\condi$  |
+| [97]{.yellow}     | $\yn$ $\condi$  |
+| [98]{.yellow}     | $\yy$ $\condi$  |
+| [99]{.yellow}     | $\yy$ $\condi$  |
+| [100]{.yellow}    | $\yy$           |
+| [101]{.yellow}    | $\yn$ $\suppo$  |
+| [102]{.yellow}    | $\yy$ $\suppo$  |
+| [103]{.yellow}    | $\yn$ $\suppo$  |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: {.sm}
+::::
+
+::::{.column width=40%}
+::::
+:::
+
+$$
+\P\bigl(H_{101}\mo\yn,\ H_{102}\mo\yy,\ H_{103}\mo\yn
+\|[\big]
+H_{99}\mo\yy,\ H_{98}\mo\yy,\ 
+H_{97}\mo\yn,\ H_{96}\mo\yy,\ 
+H_{95}\mo\yn,\ \yI \bigr)
+$$
+
+\
+
+If the population is exchangeable, then the inference above is exactly the same -- the probability values are identical -- as the following one:
+
+:::{.columns}
+::::{.column width=30%}
+::::
+
+::::{.column width=30%}
+|  [unit]{.yellow}  | $H$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [1]{.yellow}      | $\yy$ $\condi$  |
+| [2]{.yellow}      | $\yy$           |
+| [3]{.yellow}      | $\yn$ $\suppo$  |
+| [4]{.yellow}      | $\yy$           |
+| [5]{.yellow}      | $\yy$ $\condi$  |
+| [6]{.yellow}      | $\yy$ $\condi$  |
+| [7]{.yellow}      | $\yy$ $\suppo$  |
+| [8]{.yellow}      | $\yn$           |
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [95]{.yellow}     | $\yn$ $\condi$  |
+| [96]{.yellow}     | $\yy$           |
+| [97]{.yellow}     | $\yn$ $\suppo$  |
+| [98]{.yellow}     | $\yy$           |
+| [99]{.yellow}     | $\yy$           |
+| [100]{.yellow}    | $\yy$           |
+| [101]{.yellow}    | $\yn$           |
+| [102]{.yellow}    | $\yy$           |
+| [103]{.yellow}    | $\yn$ $\condi$  |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: {.sm}
+::::
+
+::::{.column width=40%}
+::::
+:::
+
+$$
+\P\bigl(H_{3}\mo\yn,\ H_{7}\mo\yy,\ H_{97}\mo\yn
+\|[\big]
+H_{1}\mo\yy,\ H_{5}\mo\yy,\ 
+H_{95}\mo\yn,\ H_{6}\mo\yy,\ 
+H_{103}\mo\yn,\ \yI \bigr)
+$$
+
+Why? Because both inferences have [one $\yy$]{.green} and [two $\yn$]{.red} in their supposals, and both have [three $\yy$]{.green} and [two $\yn$]{.red} in their conditionals. Or, from a different point of view, both inferences look the same if we reorder the units (each keeping its value), as shown below:
+
+::::::{.column-page-right}
+
+:::{.columns}
+
+::::{.column width=20%}
+|  [unit]{.yellow}  | $H$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [1]{.yellow}      | $\yy$ $\Condi$  |
+| [2]{.yellow}      | $\yy$           |
+| [3]{.yellow}      | $\yn$ $\Suppo$  |
+| [4]{.yellow}      | $\yy$           |
+| [5]{.yellow}      | $\yy$ $\Condi$  |
+| [6]{.yellow}      | $\yy$ $\Condi$  |
+| [7]{.yellow}      | $\yy$ $\Suppo$  |
+| [8]{.yellow}      | $\yn$           |
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [95]{.yellow}     | $\yn$ $\Condi$  |
+| [96]{.yellow}     | $\yy$           |
+| [97]{.yellow}     | $\yn$ $\Suppo$  |
+| [98]{.yellow}     | $\yy$           |
+| [99]{.yellow}     | $\yy$           |
+| [100]{.yellow}    | $\yy$           |
+| [101]{.yellow}    | $\yn$           |
+| [102]{.yellow}    | $\yy$           |
+| [103]{.yellow}    | $\yn$ $\Condi$  |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: 2nd inference {.sm}
+::::
+
+::::{.column width=13%}
+::::
+
+::::{.column width=20%}
+|  [unit]{.yellow}  | $H$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [99]{.yellow}     | $\yy$           |
+| [2]{.yellow}      | $\yy$           |
+| [101]{.yellow}    | $\yn$           |
+| [4]{.yellow}      | $\yy$           |
+| [98]{.yellow}     | $\yy$           |
+| [96]{.yellow}     | $\yy$           |
+| [102]{.yellow}    | $\yy$           |
+| [8]{.yellow}      | $\yn$           |
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [95]{.yellow}     | $\yn$ $\Condi$  |
+| [6]{.yellow}      | $\yy$ $\Condi$  |
+| [103]{.yellow}    | $\yn$ $\Condi$  |
+| [5]{.yellow}      | $\yy$ $\Condi$  |
+| [1]{.yellow}      | $\yy$ $\Condi$  |
+| [100]{.yellow}    | $\yy$           |
+| [3]{.yellow}      | $\yn$ $\Suppo$  |
+| [7]{.yellow}      | $\yy$ $\Suppo$  |
+| [97]{.yellow}     | $\yn$ $\Suppo$  |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: 2nd inference reordered {.sm}
+::::
+
+::::{.column width=13%}
+::::
+
+::::{.column width=20%}
+|  [unit]{.yellow}  | $H$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [1]{.yellow}      | $\yy$           |
+| [2]{.yellow}      | $\yy$           |
+| [3]{.yellow}      | $\yn$           |
+| [4]{.yellow}      | $\yy$           |
+| [5]{.yellow}      | $\yy$           |
+| [6]{.yellow}      | $\yy$           |
+| [7]{.yellow}      | $\yy$           |
+| [8]{.yellow}      | $\yn$           |
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [95]{.yellow}     | $\yn$ $\Condi$  |
+| [96]{.yellow}     | $\yy$ $\Condi$  |
+| [97]{.yellow}     | $\yn$ $\Condi$  |
+| [98]{.yellow}     | $\yy$ $\Condi$  |
+| [99]{.yellow}     | $\yy$ $\Condi$  |
+| [100]{.yellow}    | $\yy$           |
+| [101]{.yellow}    | $\yn$ $\Suppo$  |
+| [102]{.yellow}    | $\yy$ $\Suppo$  |
+| [103]{.yellow}    | $\yn$ $\Suppo$  |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: 1st inference {.sm}
+::::
+:::
+
+::::{.column width=14%}
+::::
+
+
+::::::
+
+Now consider an agent, with background knowledge $\yI$, which assigns a joint probability distribution over all the quantities $X_1, X_2, X_3, \dotsc$:
 
 $$
 \P(X_1\mo x_1,\ X_2\mo x_2,\ X_3\mo x_3,\ \dotsc \| \yI)
 $$
 
-for all combinations of values $x_1, x_2, x_3, \dotsc$.
+for all possible combinations of values $x_1, x_2, x_3, \dotsc$.
 
+\
 
 This joint probability distribution is called [**infinitely exchangeable**]{.blue} if [*all marginal probabilities ([§ @sec-marginal-probs]) for any sub-collection of quantities remain the same whenever the values are swapped among quantities*]{.blue}. For example:
 
@@ -65,7 +264,7 @@ $$
 \end{aligned}
 $$
 
-and so on, and also
+and so on (they could all be equal to, say, $0.012$); and also
 
 $$
 \begin{aligned}
@@ -86,7 +285,7 @@ $$
 \end{aligned}
 $$
 
-and also
+and so on (all equal to, say, $0.003$); and also
 
 $$
 \begin{aligned}
@@ -105,11 +304,11 @@ $$
 
 and so on -- no matter how many and which quantities we take, and no matter what the values $\ya,\yb,\yc,\yd\dotsc$ might be.
 
-In the following we shall simply call this type of probability distribution [**exchangeable**]{.blue}, omitting "infinitely". But keep in mind that there are also **finitely** exchangeable distributions, and *they have different properties*. Here, when we say "exchangeable", we always strictly mean "infinitely exchangeable".
+In the following we shall simply call this type of probability distribution [**exchangeable**]{.blue}, omitting "infinitely". But keep in mind that there are also **finitely** exchangeable distributions, and they have different properties from the infinitely exchangeable ones. <!-- Here, when we say "exchangeable", we always strictly mean "infinitely exchangeable". -->
 
 :::{.callout-warning}
 ## {{< fa exclamation-circle >}}
-Exchangeability does not mean that *all* probabilities need to be equal. For instance, if $\yb\ne\yc$ then these probabilities can be different:
+Exchangeability does not mean that **all** probabilities need to be equal. For instance, if $\yb\ne\yc$ then these probabilities can be different:
 
 $$\begin{gathered}
 \P(X_1 \mo \ya,\ X_2\mo \yb \| \yI)
@@ -130,9 +329,11 @@ $$
 $$
 :::
 
+We shall give a concrete example of exchangeable distribution in a moment. As you realize, we are speaking of a distribution over an *infinite* number of quantities, so its values cannot be simply listed down, but must be given by a formula.
+
 \
 
-The definition of exchangeability given above can also be put in a different way. For an exchangeable probability distribution, the joint probability of a collection of quantities can only depend on the different values appearing in it and their multiplicities. For instance, the numerical value of the marginal, joint probability
+The definition of exchangeability given above can also be put in a different way. For an exchangeable probability distribution, [*the joint probability of a collection of quantities can only depend on the different values appearing in the collection and on and their multiplicities*]{.blue}. For instance, the numerical value of the marginal, joint probability
 
 $$
 \P(X_{91} \mo \yb,\ X_{72}\mo \ya,\ X_6\mo \yb,\ X_{13}\mo \yc\| \yI)
@@ -198,9 +399,9 @@ $$
 
 \
 
-#### Example
+### Example
 
-Consider the collection of quantities $X_1, X_2, \dotsc$ with common domain consisting of three values $\set{\ylo,\yme,\yhi}$. The joint probability distribution for any set of these quantities is given by the function
+Consider the collection of ordinal quantities $X_1, X_2, \dotsc$ with common domain of three values $\set{\ylo,\yme,\yhi}$. The joint probability distribution for any set of these quantities is given by the formula
 
 $$
 \P(X_i\mo x_i,\ X_j\mo x_j,\ \dotsc \| \yI) =
@@ -213,8 +414,11 @@ The *factorial* $n!$ is defined by $n! \defd 1\cdot2\cdot\dotsb\cdot (n-1)\cdot 
 
 where $\#\ylo$ is the number of times the value $\ylo$ appears among $x_i,x_j,\dotsc$, and similarly for $\#\yme$ and $\#\yhi$. For instance:
 
+<!-- X_5\mo\underbracket[0ex]{\yme}_{\mathllap{\lblue\text{appears twice} \boldsymbol{\uparrow}}},\  -->
+<!-- X_2\mo\underbracket[0ex]{\yhi}_{\mathrlap{\yellow\boldsymbol{\uparrow} \text{appears once}}},\ -->
 $$\begin{aligned}
-\P(X_5\mo\yme,\ X_2\mo\yhi,\ X_{14}\mo\yme \|\yI) &=
+\P( X_5\mo\yme,\ X_2\mo\yhi,\ 
+X_{14}\mo\yme \|\yI) &=
 \frac{2\cdot {\green0}!\cdot {\lblue2}!\cdot  {\yellow1}!}{({\green0} + {\lblue2} + {\yellow1} + 2)!}
 \\[1ex]&=
 \frac{2\cdot {\green1}\cdot
@@ -225,11 +429,17 @@ $$\begin{aligned}
 \\[1ex]&\approx 0.0333
 \end{aligned}$$
 
+:::{.column-margin}
+[$\ylo$ doesn't appear]{.green}\
+[$\yme$ appears twice]{.lightblue}\
+[$\yhi$ appears once]{.yellow}
+:::
+
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
 
-Using the formula above, verify that the marginal probability distribution for two quantities $\P(X_1\mo x_1,\ X_2\mo x_2 \| \yI)$ satisfies
+Using the formula above, verify that the marginal probability distribution for two units $\P(X_1\mo x_1,\ X_2\mo x_2 \| \yI)$, where $x_1, x_2$ can each take on the values $\ylo, \yme, \yhi$, satisfies
 
 $$
 \sum_{x_1} \sum_{x_2}

@@ -359,9 +359,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#infinitely-exchangeable-probability-distributions" id="toc-infinitely-exchangeable-probability-distributions" class="nav-link active" data-scroll-target="#infinitely-exchangeable-probability-distributions"><span class="header-section-number">19.1</span> Infinitely exchangeable probability distributions</a>
+  <li><a href="#infinitely-exchangeable-populations" id="toc-infinitely-exchangeable-populations" class="nav-link active" data-scroll-target="#infinitely-exchangeable-populations"><span class="header-section-number">19.1</span> Infinitely exchangeable populations</a>
   <ul class="collapse">
   <li><a href="#definition" id="toc-definition" class="nav-link" data-scroll-target="#definition">Definition</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example">Example</a></li>
   <li><a href="#consequences" id="toc-consequences" class="nav-link" data-scroll-target="#consequences">Consequences</a></li>
   </ul></li>
   <li><a href="#interpretations-of-exchangeability" id="toc-interpretations-of-exchangeability" class="nav-link" data-scroll-target="#interpretations-of-exchangeability"><span class="header-section-number">19.2</span> Interpretations of exchangeability</a></li>
@@ -396,7 +397,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 
 </div>
-<p>The stock-exchange and Mars-prospecting inference problems of <a href="population_inference.html#sec-two-populations">§&nbsp;&nbsp;<span>18.2</span></a> differ in some aspects and are similar in others. Time, for example, appears to be an important aspect of the first inference, which is in fact often categorized as a “<a href="https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data">time-series analysis</a>”. But the second inference involves or could involve time as well: the rocks could be inspected sequentially. So more precisely it is the time <em>ordering</em> that is more relevant in the first inference than the second.</p>
+<p>The stock-exchange and Mars-prospecting inference problems of <a href="population_inference.html#sec-two-populations">§&nbsp;&nbsp;<span>18.2</span></a> differ in some aspects and are similar in others. Time, for example, seems an important aspect of the first inference. Yet, the second inference involves or could involve time as well: the rocks could be inspected sequentially. So more precisely it is the time <em>ordering</em> that seems more relevant in the first inference than the second.</p>
 <p>An important difference between the two inference problems is revealed by the following thought-experiments. Consider how you would answer in the stock-exchange case and in the Mars-prospecting case:</p>
 <ol type="a">
 <li><p><span class="green"><em>It turns out that there was an error in the sequence of positive and negative datapoints, although not in the total amounts of positive and negative ones.</em></span> In the stock-exchange inference, for instance, days 1 (<span style="display:inline-block;"><span class="math inline">\(-\)</span>)</span> and 3 (<span style="display:inline-block;"><span class="math inline">\(+\)</span>)</span> were erroneously swapped, as were days 100 (<span style="display:inline-block;"><span class="math inline">\(+\)</span>)</span> and 85 (<span style="display:inline-block;"><span class="math inline">\(-\)</span>),</span> and many other days; in the Mars-prospecting inference, rocks #1 (Y) and #3 (N) were erroneously swapped, as were rocks #100 (Y) and #97 (N), and many other rocks.</p>
@@ -415,16 +416,529 @@ ul.task-list li input[type="checkbox"] {
 <p>In all these thought-experiments, our intuition is that the inference for the stock-exchange problem would be different, but the one for the Mars-prospecting problem would stay the same or not change appreciably. Swapping days in a stock course, matters; swapping rocks in a crater, doesn’t. There are good reasons, based on physics and dynamical-system theory, for this intuition.</p>
 <p>An inference which does not change if data and unknown quantities are freely reordered, like the Mars-prospecting one, is called <span class="blue"><strong>exchangeable</strong></span>. Whereas an inference in which the ordering of data and unknowns is relevant, like the stock-exchange one, is called <strong>non-exchangeable</strong>. There is not a dichotomy between the two cases; rather, there are continuous varying degrees of exchangeability or non-exchangeability. But for the moment we shall simplify this gradation into a binary distinction.</p>
 <p>We shall now make this definition more precise, and then study and exploit the remarkable consequences that it has for an agent’s inferences and probability calculations.</p>
-<section id="infinitely-exchangeable-probability-distributions" class="level2 page-columns page-full" data-number="19.1">
-<h2 data-number="19.1" class="anchored" data-anchor-id="infinitely-exchangeable-probability-distributions"><span class="header-section-number">19.1</span> Infinitely exchangeable probability distributions</h2>
+<section id="infinitely-exchangeable-populations" class="level2 page-columns page-full" data-number="19.1">
+<h2 data-number="19.1" class="anchored" data-anchor-id="infinitely-exchangeable-populations"><span class="header-section-number">19.1</span> Infinitely exchangeable populations</h2>
 <section id="definition" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="definition">Definition</h3>
-<p>Consider a collection of quantities <span style="display:inline-block;"><span class="math inline">\(X_1, X_2, X_3, \dotsc\)</span>,</span> all having identical domains. For instance, they could all be continuous with values in the real numbers; or all binary, with values <span style="display:inline-block;"><span class="math inline">\(\set{\texttt{\small Yes}, \texttt{\small No}q}\)</span>;</span> or all ordinal, with values <span style="display:inline-block;"><span class="math inline">\(\{\texttt{\small low}, \texttt{\small medium}, \texttt{\small high}\}\)</span>;</span> or all join quantities, with the same join domains. This collection is in principle infinite: it is always possible to add one more quantity, with the same domain, to the collection.</p>
-<p>An agent has a joint probability distribution over them, conditional on some state of knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>:</span></p>
+<p>Consider a (practically) infinite statistical population with variate <span style="display:inline-block;"><span class="math inline">\(X\)</span>.</span> This variate could be a joint one, consisting of variates <span style="display:inline-block;"><span class="math inline">\(U,V,W,\dots\)</span></span> of arbitrary types. For simplicity let’s assume that the domain of this variate is discrete. For instance, the variate could be of a binary type with domain <span style="display:inline-block;"><span class="math inline">\(\set{\texttt{\small Yes}, \texttt{\small No}}\)</span>;</span> or it could be the combination of such a binary variate and an another ordinal variate with domain <span style="display:inline-block;"><span class="math inline">\(\set{\texttt{\small low}, \texttt{\small medium}, \texttt{\small high}}\)</span>;</span> so the domain of the joint variable would be the set of 2 × 3 values <span style="display:inline-block;"><span class="math inline">\(\set[\big]{(\texttt{\small Yes}, \texttt{\small low}),\ (\texttt{\small No}, \texttt{\small low}),\ \dotsc,\ (\texttt{\small No},\texttt{\small high})}\)</span>.</span></p>
+<p>This variate associates a quantity to each unit in the population. We denote by <span style="display:inline-block;"><span class="math inline">\(X_1\)</span></span> the variate for unit #1, and so on.</p>
+<p>Now consider an agent, with background knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> which must draw inferences about some population units.</p>
+<p><br>
+</p>
+<p>We call the infinite population <span class="blue"><strong>exchangeable</strong></span> if <span class="blue">the agent’s inferences are unaffected by the units’ identities, and only depend on the units’ variate values</span>. Said otherwise, <span class="blue">exchanges among the units’ identities don’t matter for inference purposes</span>.</p>
+<p>Let’s make this clear with a simplified version of the Mars-prospecting example.</p>
+<p>Suppose the agent knows the values of units #95–#99, and needs the probability that unit&nbsp;#101 has variate value <span style="display:inline-block;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span>,</span> unit&nbsp;#102 value <span style="display:inline-block;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span>,</span> and unit&nbsp;#103 value <span style="display:inline-block;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span>,</span> as schematized below:</p>
+<div class="columns">
+<div class="column" style="width:30%;">
+
+</div><div class="column" style="width:30%;">
+<table class="table-sm small table">
+<caption></caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="yellow">unit</span></th>
+<th style="text-align: center;"><span class="math inline">\(H\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">1</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">2</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">3</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">4</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">5</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">6</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">7</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">8</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">95</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{given}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">96</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{given}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">97</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{given}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">98</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{given}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">99</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{given}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">100</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">101</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{?}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">102</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{?}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">103</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{?}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:40%;">
+
+</div>
+</div>
+<p><span class="math display">\[
+\mathrm{P}\bigl(H_{101}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{238,102,119}N},\ H_{102}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{34,136,51}Y},\ H_{103}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{238,102,119}N}
+\nonscript\:\big\vert\nonscript\:\mathopen{}
+H_{99}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{34,136,51}Y},\ H_{98}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{34,136,51}Y},\
+H_{97}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{238,102,119}N},\ H_{96}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{34,136,51}Y},\
+H_{95}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{238,102,119}N},\ \mathsfit{I}\bigr)
+\]</span></p>
+<p><br>
+</p>
+<p>If the population is exchangeable, then the inference above is exactly the same – the probability values are identical – as the following one:</p>
+<div class="columns">
+<div class="column" style="width:30%;">
+
+</div><div class="column" style="width:30%;">
+<table class="table-sm small table">
+<caption></caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="yellow">unit</span></th>
+<th style="text-align: center;"><span class="math inline">\(H\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">1</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{given}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">2</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">3</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{?}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">4</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">5</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{given}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">6</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{given}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">7</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{?}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">8</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">95</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{given}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">96</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">97</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{?}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">98</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">99</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">100</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">101</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">102</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">103</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\qquad\textbf{given}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:40%;">
+
+</div>
+</div>
+<p><span class="math display">\[
+\mathrm{P}\bigl(H_{3}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{238,102,119}N},\ H_{7}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{34,136,51}Y},\ H_{97}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{238,102,119}N}
+\nonscript\:\big\vert\nonscript\:\mathopen{}
+H_{1}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{34,136,51}Y},\ H_{5}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{34,136,51}Y},\
+H_{95}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{238,102,119}N},\ H_{6}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{34,136,51}Y},\
+H_{103}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small \color[RGB]{238,102,119}N},\ \mathsfit{I}\bigr)
+\]</span></p>
+<p>Why? Because both inferences have <span class="green">one <span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></span> and <span class="red">two <span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span></span> in their supposals, and both have <span class="green">three <span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></span> and <span class="red">two <span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span></span> in their conditionals. Or, from a different point of view, both inferences look the same if we reorder the units (each keeping its value), as shown below:</p>
+<div class="column-page-right">
+<div class="columns">
+<div class="column" style="width:20%;">
+<table class="table-sm small table">
+<caption>2nd inference</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="yellow">unit</span></th>
+<th style="text-align: center;"><span class="math inline">\(H\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">1</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{given}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">2</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">3</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{?}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">4</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">5</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{given}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">6</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{given}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">7</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{?}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">8</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">95</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{given}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">96</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">97</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{?}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">98</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">99</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">100</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">101</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">102</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">103</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{given}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:13%;">
+
+</div><div class="column" style="width:20%;">
+<table class="table-sm small table">
+<caption>2nd inference reordered</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="yellow">unit</span></th>
+<th style="text-align: center;"><span class="math inline">\(H\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">99</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">2</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">101</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">4</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">98</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">96</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">102</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">8</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">95</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{given}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">6</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{given}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">103</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{given}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">5</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{given}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">1</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{given}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">100</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">3</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{?}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">7</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{?}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">97</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{?}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:13%;">
+
+</div><div class="column" style="width:20%;">
+<table class="table-sm small table">
+<caption>1st inference</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="yellow">unit</span></th>
+<th style="text-align: center;"><span class="math inline">\(H\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">1</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">2</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">3</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">4</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">5</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">6</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">7</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">8</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">95</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{given}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">96</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{given}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">97</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{given}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">98</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{given}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">99</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{given}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">100</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">101</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{?}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">102</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{34,136,51}Y}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{?}}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">103</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small \color[RGB]{238,102,119}N}\)</span> <span class="math inline">\(\mathrlap{\quad\quad\textbf{?}}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="column" style="width:14%;">
+
+</div>
+</div>
+<p>Now consider an agent, with background knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> which assigns a joint probability distribution over all the quantities <span style="display:inline-block;"><span class="math inline">\(X_1, X_2, X_3, \dotsc\)</span>:</span></p>
 <p><span class="math display">\[
 \mathrm{P}(X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_1,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_2,\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_3,\ \dotsc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \]</span></p>
-<p>for all combinations of values <span style="display:inline-block;"><span class="math inline">\(x_1, x_2, x_3, \dotsc\)</span>.</span></p>
+<p>for all possible combinations of values <span style="display:inline-block;"><span class="math inline">\(x_1, x_2, x_3, \dotsc\)</span>.</span></p>
+<p><br>
+</p>
 <p>This joint probability distribution is called <span class="blue"><strong>infinitely exchangeable</strong></span> if <span class="blue"><em>all marginal probabilities (<a href="marginal_conditional_probability.html#sec-marginal-probs">§&nbsp;<span>12.1</span></a>) for any sub-collection of quantities remain the same whenever the values are swapped among quantities</em></span>. For example:</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -444,7 +958,7 @@ ul.task-list li input[type="checkbox"] {
 \dotso
 \end{aligned}
 \]</span></p>
-<p>and so on, and also</p>
+<p>and so on (they could all be equal to, say, <span style="display:inline-block;"><span class="math inline">\(0.012\)</span>);</span> and also</p>
 <p><span class="math display">\[
 \begin{aligned}
 &amp;
@@ -463,7 +977,7 @@ ul.task-list li input[type="checkbox"] {
 \dotso
 \end{aligned}
 \]</span></p>
-<p>and also</p>
+<p>and so on (all equal to, say, <span style="display:inline-block;"><span class="math inline">\(0.003\)</span>);</span> and also</p>
 <p><span class="math display">\[
 \begin{aligned}
 &amp;
@@ -479,7 +993,7 @@ ul.task-list li input[type="checkbox"] {
 \end{aligned}
 \]</span></p>
 <p>and so on – no matter how many and which quantities we take, and no matter what the values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}a},{\color[RGB]{102,204,238}b},{\color[RGB]{204,187,68}c},{\color[RGB]{170,51,119}d}\dotsc\)</span></span> might be.</p>
-<p>In the following we shall simply call this type of probability distribution <span class="blue"><strong>exchangeable</strong></span>, omitting “infinitely”. But keep in mind that there are also <strong>finitely</strong> exchangeable distributions, and <em>they have different properties</em>. Here, when we say “exchangeable”, we always strictly mean “infinitely exchangeable”.</p>
+<p>In the following we shall simply call this type of probability distribution <span class="blue"><strong>exchangeable</strong></span>, omitting “infinitely”. But keep in mind that there are also <strong>finitely</strong> exchangeable distributions, and they have different properties from the infinitely exchangeable ones. </p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -490,7 +1004,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Exchangeability does not mean that <em>all</em> probabilities need to be equal. For instance, if <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}b}\ne{\color[RGB]{204,187,68}c}\)</span></span> then these probabilities can be different:</p>
+<p>Exchangeability does not mean that <strong>all</strong> probabilities need to be equal. For instance, if <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}b}\ne{\color[RGB]{204,187,68}c}\)</span></span> then these probabilities can be different:</p>
 <p><span class="math display">\[\begin{gathered}
 \mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \mathrel{\boldsymbol{\ne}}
@@ -508,9 +1022,10 @@ ul.task-list li input[type="checkbox"] {
 \]</span></p>
 </div>
 </div>
+<p>We shall give a concrete example of exchangeable distribution in a moment. As you realize, we are speaking of a distribution over an <em>infinite</em> number of quantities, so its values cannot be simply listed down, but must be given by a formula.</p>
 <p><br>
 </p>
-<p>The definition of exchangeability given above can also be put in a different way. For an exchangeable probability distribution, the joint probability of a collection of quantities can only depend on the different values appearing in it and their multiplicities. For instance, the numerical value of the marginal, joint probability</p>
+<p>The definition of exchangeability given above can also be put in a different way. For an exchangeable probability distribution, <span class="blue"><em>the joint probability of a collection of quantities can only depend on the different values appearing in the collection and on and their multiplicities</em></span>. For instance, the numerical value of the marginal, joint probability</p>
 <p><span class="math display">\[
 \mathrm{P}(X_{91} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_{72}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_6\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_{13}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \]</span></p>
@@ -578,9 +1093,10 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <p><br>
 </p>
-<section id="example" class="level4 page-columns page-full">
-<h4 class="anchored" data-anchor-id="example">Example</h4>
-<p>Consider the collection of quantities <span style="display:inline-block;"><span class="math inline">\(X_1, X_2, \dotsc\)</span></span> with common domain consisting of three values <span style="display:inline-block;"><span class="math inline">\(\set{\texttt{\small\color[RGB]{34,136,51}low},\texttt{\small\color[RGB]{102,204,238}med},\texttt{\small\color[RGB]{204,187,68}high}}\)</span>.</span> The joint probability distribution for any set of these quantities is given by the function</p>
+</section>
+<section id="example" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="example">Example</h3>
+<p>Consider the collection of ordinal quantities <span style="display:inline-block;"><span class="math inline">\(X_1, X_2, \dotsc\)</span></span> with common domain of three values <span style="display:inline-block;"><span class="math inline">\(\set{\texttt{\small\color[RGB]{34,136,51}low},\texttt{\small\color[RGB]{102,204,238}med},\texttt{\small\color[RGB]{204,187,68}high}}\)</span>.</span> The joint probability distribution for any set of these quantities is given by the formula</p>
 <p><span class="math display">\[
 \mathrm{P}(X_i\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_i,\ X_j\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_j,\ \dotsc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) =
 \frac{2\cdot \#\texttt{\small\color[RGB]{34,136,51}low}!\cdot \#\texttt{\small\color[RGB]{102,204,238}med}!\cdot \#\texttt{\small\color[RGB]{204,187,68}high}!}{(\#\texttt{\small\color[RGB]{34,136,51}low}+\#\texttt{\small\color[RGB]{102,204,238}med}+\#\texttt{\small\color[RGB]{204,187,68}high}+2)!}
@@ -590,7 +1106,8 @@ ul.task-list li input[type="checkbox"] {
 <p>The <em>factorial</em> <span style="display:inline-block;"><span class="math inline">\(n!\)</span></span> is defined by <span style="display:inline-block;"><span class="math inline">\(n! \coloneqq 1\cdot2\cdot\dotsb\cdot (n-1)\cdot n\)</span>,</span> and <span style="display:inline-block;"><span class="math inline">\(0!\coloneqq 1\)</span>.</span></p>
 </div></div><p>where <span style="display:inline-block;"><span class="math inline">\(\#\texttt{\small\color[RGB]{34,136,51}low}\)</span></span> is the number of times the value <span style="display:inline-block;"><span class="math inline">\(\texttt{\small\color[RGB]{34,136,51}low}\)</span></span> appears among <span style="display:inline-block;"><span class="math inline">\(x_i,x_j,\dotsc\)</span>,</span> and similarly for <span style="display:inline-block;"><span class="math inline">\(\#\texttt{\small\color[RGB]{102,204,238}med}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\#\texttt{\small\color[RGB]{204,187,68}high}\)</span>.</span> For instance:</p>
 <p><span class="math display">\[\begin{aligned}
-\mathrm{P}(X_5\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{102,204,238}med},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high},\ X_{14}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{102,204,238}med}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) &amp;=
+\mathrm{P}( X_5\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{102,204,238}med},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high},\
+X_{14}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{102,204,238}med}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) &amp;=
 \frac{2\cdot {\color[RGB]{34,136,51}0}!\cdot {\color[RGB]{102,204,238}2}!\cdot  {\color[RGB]{204,187,68}1}!}{({\color[RGB]{34,136,51}0} + {\color[RGB]{102,204,238}2} + {\color[RGB]{204,187,68}1} + 2)!}
 \\[1ex]&amp;=
 \frac{2\cdot {\color[RGB]{34,136,51}1}\cdot
@@ -600,7 +1117,12 @@ ul.task-list li input[type="checkbox"] {
 \frac{4}{120}
 \\[1ex]&amp;\approx 0.0333
 \end{aligned}\]</span></p>
-<div class="callout callout-style-default callout-caution no-icon callout-titled">
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><span class="green"><span class="math inline">\(\texttt{\small\color[RGB]{34,136,51}low}\)</span> doesn’t appear</span><br>
+<span class="lightblue"><span class="math inline">\(\texttt{\small\color[RGB]{102,204,238}med}\)</span> appears twice</span><br>
+<span class="yellow"><span class="math inline">\(\texttt{\small\color[RGB]{204,187,68}high}\)</span> appears once</span></p>
+</div></div><div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
@@ -610,7 +1132,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Using the formula above, verify that the marginal probability distribution for two quantities <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_1,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_2 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span></span> satisfies</p>
+<p>Using the formula above, verify that the marginal probability distribution for two units <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_1,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_2 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>,</span> where <span style="display:inline-block;"><span class="math inline">\(x_1, x_2\)</span></span> can each take on the values <span style="display:inline-block;"><span class="math inline">\(\texttt{\small\color[RGB]{34,136,51}low}, \texttt{\small\color[RGB]{102,204,238}med}, \texttt{\small\color[RGB]{204,187,68}high}\)</span>,</span> satisfies</p>
 <p><span class="math display">\[
 \sum_{x_1} \sum_{x_2}
 \mathrm{P}(X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_1,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_2 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = 1
@@ -619,7 +1141,6 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <p>Why are we focusing on exchangeable probability distributions? Because their mathematical properties have an interesting interpretation, very useful for particular kinds of inferences. We shall now explore this interpretation.</p>
-</section>
 </section>
 <section id="consequences" class="level3">
 <h3 class="anchored" data-anchor-id="consequences">Consequences</h3>
