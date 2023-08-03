@@ -326,6 +326,35 @@ ul.task-list li input[type="checkbox"] {
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text">Machine learning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine_learning_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Machine learning - an introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./decision_trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Decision trees</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural_networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Neural networks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -336,16 +365,17 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-exchangeability" id="toc-sec-exchangeability" class="nav-link active" data-scroll-target="#sec-exchangeability"><span class="header-section-number">18.1</span> Exchangeable inferences</a>
+  <li><a href="#induction" id="toc-induction" class="nav-link active" data-scroll-target="#induction"><span class="header-section-number">18.1</span> Induction</a></li>
+  <li><a href="#sec-exchangeability" id="toc-sec-exchangeability" class="nav-link" data-scroll-target="#sec-exchangeability"><span class="header-section-number">18.2</span> Exchangeable inferences</a>
   <ul class="collapse">
   <li><a href="#intuitive-understanding" id="toc-intuitive-understanding" class="nav-link" data-scroll-target="#intuitive-understanding">Intuitive understanding</a></li>
   </ul></li>
-  <li><a href="#infinitely-exchangeable-probability-distributions" id="toc-infinitely-exchangeable-probability-distributions" class="nav-link" data-scroll-target="#infinitely-exchangeable-probability-distributions"><span class="header-section-number">18.2</span> Infinitely exchangeable probability distributions</a>
+  <li><a href="#infinitely-exchangeable-probability-distributions" id="toc-infinitely-exchangeable-probability-distributions" class="nav-link" data-scroll-target="#infinitely-exchangeable-probability-distributions"><span class="header-section-number">18.3</span> Infinitely exchangeable probability distributions</a>
   <ul class="collapse">
   <li><a href="#definition" id="toc-definition" class="nav-link" data-scroll-target="#definition">Definition</a></li>
   <li><a href="#consequences" id="toc-consequences" class="nav-link" data-scroll-target="#consequences">Consequences</a></li>
   </ul></li>
-  <li><a href="#interpretations-of-exchangeability" id="toc-interpretations-of-exchangeability" class="nav-link" data-scroll-target="#interpretations-of-exchangeability"><span class="header-section-number">18.3</span> Interpretations of exchangeability</a></li>
+  <li><a href="#interpretations-of-exchangeability" id="toc-interpretations-of-exchangeability" class="nav-link" data-scroll-target="#interpretations-of-exchangeability"><span class="header-section-number">18.4</span> Interpretations of exchangeability</a></li>
   </ul>
 </nav>
     </div>
@@ -381,13 +411,45 @@ ul.task-list li input[type="checkbox"] {
 <p>In many cases an in-principle application of the inference laws is computationally impossible, however. Approximate calculations and premises are then used, which are sometimes quite drastic. The approximations used depend on the nature of the inference problem. This leads to many “recipes”, which may look extremely different from one another, being used in specialized fields and applications. People working in those fields are trained to use those recipes.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p><a href="https://www.flickr.com/photos/ibm_research_zurich/52714013388/"><img src="ibm_quantum.jpg" class="img-fluid" style="width:100.0%"></a> Technological advances such as quantum computing may make the use of more powerful exact inference methods possible – for those who know them</p>
+<p><a href="https://www.flickr.com/photos/ibm_research_zurich/52714013388/"><img src="ibm_quantum.jpg" class="img-fluid" style="width:100.0%"></a> Technological advances such as quantum computing may make the use of more powerful exact inference methods possible – for those who know them.</p>
 </div></div><p>For a data-science engineer it is important to keep in mind that these recipes are only approximations, and that there are only a couple of principles underlying all of them, despite their diversity. The principled, maximally optimal solution should always be kept in sight. Technological advances continually allow us to make computations that were previously impossible – think of “quantum computers” these days. A truly optimal in-principle solution, preferable to a sub-optimal approximation, can suddenly become accessible – to those who know it!</p>
 <p><br>
 </p>
 <p>We shall now introduce a very broad class of inference problems, then study the principled solution to it, and approximations to this solution.</p>
-<section id="sec-exchangeability" class="level2 page-columns page-full" data-number="18.1">
-<h2 data-number="18.1" class="anchored" data-anchor-id="sec-exchangeability"><span class="header-section-number">18.1</span> Exchangeable inferences</h2>
+<section id="induction" class="level2 page-columns page-full" data-number="18.1">
+<h2 data-number="18.1" class="anchored" data-anchor-id="induction"><span class="header-section-number">18.1</span> Induction</h2>
+<p>It is a fact of everyday experience that we expect things to happen in particular ways because of our previous experience with similar things. If we observe that ten electronic components in a row come out damaged from an assembly line, then we expect that the next one will be damaged as well. If you regularly go hiking in a particular area and often see deer, and sometimes hares, then you think it likely to see deer also at your next hike and, if you’re lucky, a hare. You would probably be surprised to see a moose if you had never seen one in those areas. This doesn’t only concern the future: if someone asks you whether you saw a deer during a hike from long time ago, which you don’t quite remember anymore, you’d say “probably I did”.</p>
+<p>This familiar experience is called <a href="https://plato.stanford.edu/entries/induction-problem/"><em>induction</em></a>, especially in the philosophical literature. It has generated a lot of thought and research since the times of <a href="https://plato.stanford.edu/entries/hume/">Hume</a> (18th century), who apparently was the first to ask how and why this experience is possible.</p>
+<p>But this kind of regularities does not have clear-cut circumstances. In some cases it is not clear what should be considered “similar” things – in fact, sometimes we circularly reverse the reasoning: if something does not respect an observed regularity then we say it wasn’t “similar”. Also the circumstances in which this regularity should occur are often not-well-defined: should you expect to see deer if you hike in a somewhat different area?</p>
+<p>And sometimes this kind of regularities simply fails. Something expected doesn’t happen any longer, even if the circumstances and the “similarity” are clearly the same. Jeffreys aptly said:</p>
+<blockquote class="blockquote">
+<p><span class="small">A common argument for induction is that induction has always worked in the past and therefore may be expected to hold in the future. It has been objected that this is itself an inductive argumentand cannot be used in support of induction. What is hardly ever mentioned is that induction has often failed in the past and that progress in science is very largely the consequence of direct attention to instances where the inductive method has led to incorrect predictions.</span></p>
+</blockquote>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-rocket" aria-label="rocket"></i> For the extra curious
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Chapter I of <a href="https://hvl.instructure.com/courses/25074/modules/items/678374"><em>Scientific Inference</em></a></p>
+</div>
+</div>
+</div></div><p><br>
+</p>
+<p>Induction, with the mentioned caveats that accompany it, is at the basis of how we approach and solve many engineering problems, and at the heart of data science: from data about particular things or phenomena we try to infer new or old instances of “similar” things or phenomena.</p>
+<p>We shall now see how this is done in a quantitative manner with the probability calculus. It is important to clarify what the probability calculus, and all approximate inference methods derived from it, can and cannot do:</p>
+<ul>
+<li></li>
+</ul>
+</section>
+<section id="sec-exchangeability" class="level2 page-columns page-full" data-number="18.2">
+<h2 data-number="18.2" class="anchored" data-anchor-id="sec-exchangeability"><span class="header-section-number">18.2</span> Exchangeable inferences</h2>
 <section id="intuitive-understanding" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="intuitive-understanding">Intuitive understanding</h3>
 <p>Consider these sketches of two inference problems:</p>
@@ -457,8 +519,8 @@ Of the last 100 similar-sized rocks examined in a large crater on Mars, <span cl
 <p>We shall now make this definition more precise, and then study and exploit the remarkable consequences that it has for an agent’s inferences and probability calculations.</p>
 </section>
 </section>
-<section id="infinitely-exchangeable-probability-distributions" class="level2 page-columns page-full" data-number="18.2">
-<h2 data-number="18.2" class="anchored" data-anchor-id="infinitely-exchangeable-probability-distributions"><span class="header-section-number">18.2</span> Infinitely exchangeable probability distributions</h2>
+<section id="infinitely-exchangeable-probability-distributions" class="level2 page-columns page-full" data-number="18.3">
+<h2 data-number="18.3" class="anchored" data-anchor-id="infinitely-exchangeable-probability-distributions"><span class="header-section-number">18.3</span> Infinitely exchangeable probability distributions</h2>
 <section id="definition" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="definition">Definition</h3>
 <p>Consider a collection of quantities <span style="display:inline-block;"><span class="math inline">\(X_1, X_2, X_3, \dotsc\)</span>,</span> all having identical domains. For instance, they could all be continuous with values in the real numbers; or all binary, with values <span style="display:inline-block;"><span class="math inline">\(\set{\texttt{\small Yes}, \texttt{\small No}q}\)</span>;</span> or all ordinal, with values <span style="display:inline-block;"><span class="math inline">\(\{\texttt{\small low}, \texttt{\small medium}, \texttt{\small high}\}\)</span>;</span> or all join quantities, with the same join domains. This collection is in principle infinite: it is always possible to add one more quantity, with the same domain, to the collection.</p>
@@ -674,8 +736,8 @@ X_{100}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_{100},\ X_{99}\mathre
 <p>It can be proved that</p>
 </section>
 </section>
-<section id="interpretations-of-exchangeability" class="level2" data-number="18.3">
-<h2 data-number="18.3" class="anchored" data-anchor-id="interpretations-of-exchangeability"><span class="header-section-number">18.3</span> Interpretations of exchangeability</h2>
+<section id="interpretations-of-exchangeability" class="level2" data-number="18.4">
+<h2 data-number="18.4" class="anchored" data-anchor-id="interpretations-of-exchangeability"><span class="header-section-number">18.4</span> Interpretations of exchangeability</h2>
 <p>Our focus, however, is not on the <em>whys</em> of this intuition, but on the consequences that it has for inference and probability calculations.</p>
 
 
