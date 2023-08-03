@@ -1,6 +1,6 @@
 # Population inference
 {{< include macros.qmd >}}
-{{< include macros_exchangeability.qmd >}}
+{{< include macros_population_inference.qmd >}}
 
 
 To solve *any* inference problem, or to design an AI agent for solving an inference problem, all we have to do in principle is to repeatedly use the [fundamental laws of inference of § @sec-fundamental].
@@ -55,11 +55,9 @@ We shall now see how this is done in a quantitative manner with the probability 
 
 
 
-## Exchangeable inferences {#sec-exchangeability}
+## Inferences and populations {#sec-exchangeability}
 
-### Intuitive understanding
-
-Consider the following sketches of two inference problems from the scenarios of [§ @sec-collections]:
+Consider the following two sketches of inference problems, related to the scenarios of [§ @sec-collections]:
 
 - Stock exchange
 : In 100 days, the daily change in closing price of a stock has been `positive` 74 times, and `negative` 26 times, according a particular sequence; for instance:
@@ -72,14 +70,12 @@ Consider the following sketches of two inference problems from the scenarios of 
 ![](stock_course.jpg){width=100%}
 :::
 
-\
+\ 
 
 - Mars prospecting
-: Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 contained `hematite`, and 26 did `not`. For instance, the data could be:
+: Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 contained hematite (`Y`), and 26 did not (`N`). For instance, the data could be:
 
     ![](rock.png){width=100%}
-
-    where "Y" and "N" denote the presence and absence of hematite.
 
     Which, among the next 3 rocks that will be examined, will contain hematite, and which will be hematite-free?
 
@@ -110,6 +106,123 @@ Discuss:
 :::
 
 \
+
+Let us remember [chapter @sec-probability] that in order to set up and solve an inference problem we must first define appropriate *sentences* which we'll use in probability supposals and conditionals.
+
+For the two problems above it looks obvious that we can use sentences involving the language of statistical populations. We must then try to define the units and the variates. *Tentatively* let's try the following definitions:
+
+Stock exchange
+: - *Units:* the problem is only sketched, so let's assume that a precise definition can be found somewhere. There are at least 100 + 3 units, but the problem suggests that we might consider an infinite population.
+    - *Variates:* the change in closing price seems an obvious binary variate for the population. Let's denote it $\red C$, with domain $\set{\ypl,\ymi}$.
+
+
+Mars prospecting
+: - *Units:* again the problem is only sketched, so let's assume that a precise description exists of how the rocks to be examined should be chosen. There are at least 100 + 3 units, but the problem suggests that we might consider a practically infinite population.
+    - *Variates:* the presence of hematite is an obvious binary variate. Let's denote it with $\red H$, with domain $\set{\yy,\yn}$.
+
+
+The population data can be represented as follows, where question marks `?` indicate the units about which we want to draw inferences, and the ellipses "[...]{.midgrey}" indicate that the populations extend to possibly infinite other units.
+
+
+
+::::{.columns}
+
+:::::{.column width="40%"}
+| [*unit*]{.yellow} | $C$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [1]{.yellow}      | $\ymi$          |
+| [2]{.yellow}      | $\ymi$          |
+| [3]{.yellow}      | $\ypl$          |
+| [4]{.yellow}      | $\ymi$          |
+| [5]{.yellow}      | $\ypl$          |
+| [6]{.yellow}      | $\ymi$          |
+|[(omitted)]{.grey .small}|[(omitted)]{.grey .small}|
+| [95]{.yellow}     | $\ypl$          |
+| [96]{.yellow}     | $\ypl$          |
+| [97]{.yellow}     | $\ypl$          |
+| [98]{.yellow}     | $\ypl$          |
+| [99]{.yellow}     | $\ypl$          |
+| [100]{.yellow}    | $\ypl$          |
+| [101]{.yellow}    | `?`             |
+| [102]{.yellow}    | `?`             |
+| [103]{.yellow}    | `?`             |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: Stock exchange {#tbl-stock .sm .striped}
+:::::
+
+:::::{.column width="20%"}
+
+:::::
+
+:::::{.column width="40%"}
+| [*unit*]{.yellow} | $H$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [1]{.yellow}      | $\yy$           |
+| [2]{.yellow}      | $\yy$           |
+| [3]{.yellow}      | $\yn$           |
+| [4]{.yellow}      | $\yy$           |
+| [5]{.yellow}      | $\yy$           |
+| [6]{.yellow}      | $\yy$           |
+|[(omitted)]{.grey .small}|[(omitted)]{.grey .small}|
+| [95]{.yellow}     | $\yn$           |
+| [96]{.yellow}     | $\yy$           |
+| [97]{.yellow}     | $\yn$           |
+| [98]{.yellow}     | $\yy$           |
+| [99]{.yellow}     | $\yy$           |
+| [100]{.yellow}    | $\yy$           |
+| [101]{.yellow}    | `?`             |
+| [102]{.yellow}    | `?`             |
+| [103]{.yellow}    | `?`             |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: Mars prospecting {#tbl-mars .sm .striped}
+
+:::::
+::::
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Would you define these two populations in a different way? Do you think other variates should be included, for example?
+:::
+
+With the representation above, 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 The two inference problems differ in some aspects and are similar in others. Time, for example, appears to be an important aspect of the first inference, which is in fact often categorized as a "[time-series analysis](https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data)". But the second inference involves or could involve time as well: the rocks could be inspected sequentially. So more precisely it is the time *ordering* that is more relevant in the first inference than the second.
 

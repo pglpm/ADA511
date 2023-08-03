@@ -369,10 +369,7 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#induction-and-data-science" id="toc-induction-and-data-science" class="nav-link" data-scroll-target="#induction-and-data-science">Induction and data science</a></li>
   </ul></li>
-  <li><a href="#sec-exchangeability" id="toc-sec-exchangeability" class="nav-link" data-scroll-target="#sec-exchangeability"><span class="header-section-number">18.2</span> Exchangeable inferences</a>
-  <ul class="collapse">
-  <li><a href="#intuitive-understanding" id="toc-intuitive-understanding" class="nav-link" data-scroll-target="#intuitive-understanding">Intuitive understanding</a></li>
-  </ul></li>
+  <li><a href="#sec-exchangeability" id="toc-sec-exchangeability" class="nav-link" data-scroll-target="#sec-exchangeability"><span class="header-section-number">18.2</span> Inferences and populations</a></li>
   <li><a href="#infinitely-exchangeable-probability-distributions" id="toc-infinitely-exchangeable-probability-distributions" class="nav-link" data-scroll-target="#infinitely-exchangeable-probability-distributions"><span class="header-section-number">18.3</span> Infinitely exchangeable probability distributions</a>
   <ul class="collapse">
   <li><a href="#definition" id="toc-definition" class="nav-link" data-scroll-target="#definition">Definition</a></li>
@@ -456,10 +453,8 @@ ul.task-list li input[type="checkbox"] {
 </section>
 </section>
 <section id="sec-exchangeability" class="level2 page-columns page-full" data-number="18.2">
-<h2 data-number="18.2" class="anchored" data-anchor-id="sec-exchangeability"><span class="header-section-number">18.2</span> Exchangeable inferences</h2>
-<section id="intuitive-understanding" class="level3 page-columns page-full">
-<h3 class="anchored" data-anchor-id="intuitive-understanding">Intuitive understanding</h3>
-<p>Consider the following sketches of two inference problems from the scenarios of <a href="populations_variates.html#sec-collections">§&nbsp;&nbsp;<span>13.1</span></a>:</p>
+<h2 data-number="18.2" class="anchored" data-anchor-id="sec-exchangeability"><span class="header-section-number">18.2</span> Inferences and populations</h2>
+<p>Consider the following two sketches of inference problems, related to the scenarios of <a href="populations_variates.html#sec-collections">§&nbsp;&nbsp;<span>13.1</span></a>:</p>
 <ul>
 <li><dl>
 <dt>Stock exchange</dt>
@@ -473,17 +468,15 @@ In 100 days, the daily change in closing price of a stock has been <code>positiv
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><img src="stock_course.jpg" class="img-fluid" style="width:100.0%"></p>
-</div></div><p><br>
-</p>
+</div></div><p>&nbsp;</p>
 <ul>
 <li><dl>
 <dt>Mars prospecting</dt>
 <dd>
-Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 contained <code>hematite</code>, and 26 did <code>not</code>. For instance, the data could be:
+Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 contained hematite (<code>Y</code>), and 26 did not (<code>N</code>). For instance, the data could be:
 </dd>
 </dl>
 <p><img src="rock.png" class="img-fluid" style="width:100.0%"></p>
-<p>where “Y” and “N” denote the presence and absence of hematite.</p>
 <p>Which, among the next 3 rocks that will be examined, will contain hematite, and which will be hematite-free?</p></li>
 </ul>
 
@@ -511,6 +504,216 @@ Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 conta
 </div>
 <p><br>
 </p>
+<p>Let us remember <a href="probability_inference.html">chapter&nbsp;<span>7</span></a> that in order to set up and solve an inference problem we must first define appropriate <em>sentences</em> which we’ll use in probability supposals and conditionals.</p>
+<p>For the two problems above it looks obvious that we can use sentences involving the language of statistical populations. We must then try to define the units and the variates. <em>Tentatively</em> let’s try the following definitions:</p>
+<dl>
+<dt>Stock exchange</dt>
+<dd>
+<ul>
+<li><em>Units:</em> the problem is only sketched, so let’s assume that a precise definition can be found somewhere. There are at least 100 + 3 units, but the problem suggests that we might consider an infinite population.</li>
+<li><em>Variates:</em> the change in closing price seems an obvious binary variate for the population. Let’s denote it <span class="math inline">\(\color[RGB]{238,102,119}C\)</span>, with domain <span class="math inline">\(\set{\texttt{\small +},\texttt{\small -}}\)</span>.</li>
+</ul>
+</dd>
+<dt>Mars prospecting</dt>
+<dd>
+<ul>
+<li><em>Units:</em> again the problem is only sketched, so let’s assume that a precise description exists of how the rocks to be examined should be chosen. There are at least 100 + 3 units, but the problem suggests that we might consider a practically infinite population.</li>
+<li><em>Variates:</em> the presence of hematite is an obvious binary variate. Let’s denote it with <span class="math inline">\(\color[RGB]{238,102,119}H\)</span>, with domain <span class="math inline">\(\set{\texttt{\small Y},\texttt{\small N}}\)</span>.</li>
+</ul>
+</dd>
+</dl>
+<p>The population data can be represented as follows, where question marks <code>?</code> indicate the units about which we want to draw inferences, and the ellipses “<span class="midgrey">…</span>” indicate that the populations extend to possibly infinite other units.</p>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div id="tbl-stock" class="anchored">
+<table class="table-sm table-striped small table">
+<caption>Table&nbsp;18.1: Stock exchange</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="yellow"><em>unit</em></span></th>
+<th style="text-align: center;"><span class="math inline">\(C\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">1</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small -}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">2</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small -}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">3</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small +}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">4</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small -}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">5</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small +}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">6</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small -}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="grey small">(omitted)</span></td>
+<td style="text-align: center;"><span class="grey small">(omitted)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">95</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small +}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">96</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small +}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">97</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small +}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">98</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small +}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">99</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small +}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">100</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small +}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">101</span></td>
+<td style="text-align: center;"><code>?</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">102</span></td>
+<td style="text-align: center;"><code>?</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">103</span></td>
+<td style="text-align: center;"><code>?</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div><div class="column" style="width:20%;">
+
+</div><div class="column" style="width:40%;">
+<div id="tbl-mars" class="anchored">
+<table class="table-sm table-striped small table">
+<caption>Table&nbsp;18.2: Mars prospecting</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="yellow"><em>unit</em></span></th>
+<th style="text-align: center;"><span class="math inline">\(H\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">1</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">2</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">3</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small N}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">4</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">5</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">6</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="grey small">(omitted)</span></td>
+<td style="text-align: center;"><span class="grey small">(omitted)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">95</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small N}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">96</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">97</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small N}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">98</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">99</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small Y}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">100</span></td>
+<td style="text-align: center;"><span class="math inline">\(\texttt{\small Y}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">101</span></td>
+<td style="text-align: center;"><code>?</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="yellow">102</span></td>
+<td style="text-align: center;"><code>?</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="yellow">103</span></td>
+<td style="text-align: center;"><code>?</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+<td style="text-align: center;"><span class="midgrey">…</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Would you define these two populations in a different way? Do you think other variates should be included, for example?</p>
+</div>
+</div>
+<p>With the representation above,</p>
 <p>The two inference problems differ in some aspects and are similar in others. Time, for example, appears to be an important aspect of the first inference, which is in fact often categorized as a “<a href="https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data">time-series analysis</a>”. But the second inference involves or could involve time as well: the rocks could be inspected sequentially. So more precisely it is the time <em>ordering</em> that is more relevant in the first inference than the second.</p>
 <p>An important difference between the two inference problems is revealed by the following thought-experiments. Consider how you would answer in the stock-exchange case and in the Mars-prospecting case:</p>
 <ol type="a">
@@ -524,7 +727,6 @@ Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 conta
 <p>In all these thought-experiments, our intuition is that the inference for the stock-exchange problem would be different, but the one for the Mars-prospecting problem would stay the same or not change appreciably. Swapping days in a stock course, matters; swapping rocks in a crater, doesn’t. There are good reasons, based on physics and dynamical-system theory, for this intuition.</p>
 <p>An inference which does not change if data and unknown quantities are freely reordered, like the Mars-prospecting one, is called <span class="blue"><strong>exchangeable</strong></span>. Whereas an inference in which the ordering of data and unknowns is relevant, like the stock-exchange one, is called <strong>non-exchangeable</strong>. There is not a dichotomy between the two cases; rather, there are continuous varying degrees of exchangeability or non-exchangeability. But for the moment we shall simplify this gradation into a binary distinction.</p>
 <p>We shall now make this definition more precise, and then study and exploit the remarkable consequences that it has for an agent’s inferences and probability calculations.</p>
-</section>
 </section>
 <section id="infinitely-exchangeable-probability-distributions" class="level2 page-columns page-full" data-number="18.3">
 <h2 data-number="18.3" class="anchored" data-anchor-id="infinitely-exchangeable-probability-distributions"><span class="header-section-number">18.3</span> Infinitely exchangeable probability distributions</h2>
@@ -540,17 +742,17 @@ Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 conta
 <p><span class="math display">\[
 \begin{aligned}
 &amp;
-\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \\[1ex] {}={}&amp;
-\mathrm{P}(X_2 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_2 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \\[1ex] {}={}&amp;
-\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \\[1ex] {}={}&amp;
-\mathrm{P}(X_3 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_3 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \\[1ex] {}={}&amp;
 \dotso
 \\[1ex] {}={}&amp;
-\mathrm{P}(X_{23} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_{7}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_{23} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_{7}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \\[1ex] {}={}&amp;
 \dotso
 \end{aligned}
@@ -559,17 +761,17 @@ Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 conta
 <p><span class="math display">\[
 \begin{aligned}
 &amp;
-\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb,\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \\[1ex] {}={}&amp;
-\mathrm{P}(X_2 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_2 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb,\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \\[1ex] {}={}&amp;
-\mathrm{P}(X_2 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_2 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb,\ X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \\[1ex] {}={}&amp;
-\mathrm{P}(X_3 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_4\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_5\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_3 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_4\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb,\ X_5\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \\[1ex] {}={}&amp;
 \dotso
 \\[1ex] {}={}&amp;
-\mathrm{P}(X_{12} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_8\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_{47}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_{12} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_8\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb,\ X_{47}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \\[1ex] {}={}&amp;
 \dotso
 \end{aligned}
@@ -578,18 +780,18 @@ Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 conta
 <p><span class="math display">\[
 \begin{aligned}
 &amp;
-\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c},\ X_4\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{170,51,119}d}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb,\ X_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yc,\ X_4\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yd\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \\[1ex] {}={}&amp;
-\mathrm{P}(X_3 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_4\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c},\ X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{170,51,119}d}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_3 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_4\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yc,\ X_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yd\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \\[1ex] {}={}&amp;
 \dotso
 \\[1ex] {}={}&amp;
-\mathrm{P}(X_{91} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_{72}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_6\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c},\ X_{13}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{170,51,119}d}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_{91} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_{72}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb,\ X_6\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yc,\ X_{13}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yd\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \\[1ex] {}={}&amp;
 \dotso
 \end{aligned}
 \]</span></p>
-<p>and so on – no matter how many and which quantities we take, and no matter what the values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}a},{\color[RGB]{102,204,238}b},{\color[RGB]{204,187,68}c},{\color[RGB]{170,51,119}d}\dotsc\)</span></span> might be.</p>
+<p>and so on – no matter how many and which quantities we take, and no matter what the values <span style="display:inline-block;"><span class="math inline">\(\ya,\yb,\yc,\yd\dotsc\)</span></span> might be.</p>
 <p>In the following we shall simply call this type of probability distribution <span class="blue"><strong>exchangeable</strong></span>, omitting “infinitely”. But keep in mind that there are also <strong>finitely</strong> exchangeable distributions, and <em>they have different properties</em>. Here, when we say “exchangeable”, we always strictly mean “infinitely exchangeable”.</p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -601,21 +803,21 @@ Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 conta
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Exchangeability does not mean that <em>all</em> probabilities need to be equal. For instance, if <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}b}\ne{\color[RGB]{204,187,68}c}\)</span></span> then these probabilities can be different:</p>
+<p>Exchangeability does not mean that <em>all</em> probabilities need to be equal. For instance, if <span style="display:inline-block;"><span class="math inline">\(\yb\ne\yc\)</span></span> then these probabilities can be different:</p>
 <p><span class="math display">\[\begin{gathered}
-\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \mathrel{\boldsymbol{\ne}}
-\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \\
-\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \mathrel{\boldsymbol{\ne}}
-\mathrm{P}(X_{23} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_7\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_{23} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_7\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \end{gathered}\]</span></p>
 <p>although we must still have</p>
 <p><span class="math display">\[
-\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_1 \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \mathrel{\boldsymbol{=}}
-\mathrm{P}(X_{23} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_7\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_{23} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_7\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \]</span></p>
 </div>
 </div>
@@ -623,9 +825,9 @@ Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 conta
 </p>
 <p>The definition of exchangeability given above can also be put in a different way. For an exchangeable probability distribution, the joint probability of a collection of quantities can only depend on the different values appearing in it and their multiplicities. For instance, the numerical value of the marginal, joint probability</p>
 <p><span class="math display">\[
-\mathrm{P}(X_{91} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_{72}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{34,136,51}a},\ X_6\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{102,204,238}b},\ X_{13}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}{\color[RGB]{204,187,68}c}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\mathrm{P}(X_{91} \mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb,\ X_{72}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ya,\ X_6\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yb,\ X_{13}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yc\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \]</span></p>
-<p>where <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}a},{\color[RGB]{102,204,238}b},{\color[RGB]{204,187,68}c}\)</span></span> are different from one another, can only depend on the fact that there are the three different values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}a},{\color[RGB]{102,204,238}b},{\color[RGB]{204,187,68}c}\)</span>,</span> and that <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}a}\)</span></span> appears once, <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}b}\)</span></span> twice, and <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}c}\)</span></span> once. So any other marginal, joint probability containing the value <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}a}\)</span></span> once, <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}b}\)</span></span> twice, and <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}c}\)</span></span> once, must be equal to the one above.</p>
+<p>where <span style="display:inline-block;"><span class="math inline">\(\ya,\yb,\yc\)</span></span> are different from one another, can only depend on the fact that there are the three different values <span style="display:inline-block;"><span class="math inline">\(\ya,\yb,\yc\)</span>,</span> and that <span style="display:inline-block;"><span class="math inline">\(\ya\)</span></span> appears once, <span style="display:inline-block;"><span class="math inline">\(\yb\)</span></span> twice, and <span style="display:inline-block;"><span class="math inline">\(\yc\)</span></span> once. So any other marginal, joint probability containing the value <span style="display:inline-block;"><span class="math inline">\(\ya\)</span></span> once, <span style="display:inline-block;"><span class="math inline">\(\yb\)</span></span> twice, and <span style="display:inline-block;"><span class="math inline">\(\yc\)</span></span> once, must be equal to the one above.</p>
 <p><br>
 </p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
@@ -664,13 +866,13 @@ Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 conta
 \]</span><br>
 </p></li>
 <li><p><span class="math display">\[\begin{aligned}
-&amp;\mathrm{P}(Z_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high},\  Z_7\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{34,136,51}low},\  Z_{20}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.11
+&amp;\mathrm{P}(Z_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yhi,\  Z_7\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ylo,\  Z_{20}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yhi\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.11
 \\
-&amp;\mathrm{P}(Z_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high},\  Z_7\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high},\  Z_{20}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{34,136,51}low}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.35
+&amp;\mathrm{P}(Z_1\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yhi,\  Z_7\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yhi,\  Z_{20}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ylo\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0.35
 \\
-&amp;\mathrm{P}(Z_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{34,136,51}low},\  Z_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{34,136,51}low},\  Z_9\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0
+&amp;\mathrm{P}(Z_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ylo,\  Z_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ylo,\  Z_9\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yhi\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0
 \\
-&amp;\mathrm{P}(Z_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high},\  Z_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{34,136,51}low},\  Z_9\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{34,136,51}low}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0
+&amp;\mathrm{P}(Z_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yhi,\  Z_3\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ylo,\  Z_9\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\ylo\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) = 0
 \end{aligned}
 \]</span><br>
 </p></li>
@@ -691,17 +893,17 @@ Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 conta
 </p>
 <section id="example" class="level4 page-columns page-full">
 <h4 class="anchored" data-anchor-id="example">Example</h4>
-<p>Consider the collection of quantities <span style="display:inline-block;"><span class="math inline">\(X_1, X_2, \dotsc\)</span></span> with common domain consisting of three values <span style="display:inline-block;"><span class="math inline">\(\set{\texttt{\small\color[RGB]{34,136,51}low},\texttt{\small\color[RGB]{102,204,238}med},\texttt{\small\color[RGB]{204,187,68}high}}\)</span>.</span> The joint probability distribution for any set of these quantities is given by the function</p>
+<p>Consider the collection of quantities <span style="display:inline-block;"><span class="math inline">\(X_1, X_2, \dotsc\)</span></span> with common domain consisting of three values <span style="display:inline-block;"><span class="math inline">\(\set{\ylo,\yme,\yhi}\)</span>.</span> The joint probability distribution for any set of these quantities is given by the function</p>
 <p><span class="math display">\[
 \mathrm{P}(X_i\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_i,\ X_j\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}x_j,\ \dotsc \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) =
-\frac{2\cdot \#\texttt{\small\color[RGB]{34,136,51}low}!\cdot \#\texttt{\small\color[RGB]{102,204,238}med}!\cdot \#\texttt{\small\color[RGB]{204,187,68}high}!}{(\#\texttt{\small\color[RGB]{34,136,51}low}+\#\texttt{\small\color[RGB]{102,204,238}med}+\#\texttt{\small\color[RGB]{204,187,68}high}+2)!}
+\frac{2\cdot \#\ylo!\cdot \#\yme!\cdot \#\yhi!}{(\#\ylo+\#\yme+\#\yhi+2)!}
 \]</span></p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>The <em>factorial</em> <span style="display:inline-block;"><span class="math inline">\(n!\)</span></span> is defined by <span style="display:inline-block;"><span class="math inline">\(n! \coloneqq 1\cdot2\cdot\dotsb\cdot (n-1)\cdot n\)</span>,</span> and <span style="display:inline-block;"><span class="math inline">\(0!\coloneqq 1\)</span>.</span></p>
-</div></div><p>where <span style="display:inline-block;"><span class="math inline">\(\#\texttt{\small\color[RGB]{34,136,51}low}\)</span></span> is the number of times the value <span style="display:inline-block;"><span class="math inline">\(\texttt{\small\color[RGB]{34,136,51}low}\)</span></span> appears among <span style="display:inline-block;"><span class="math inline">\(x_i,x_j,\dotsc\)</span>,</span> and similarly for <span style="display:inline-block;"><span class="math inline">\(\#\texttt{\small\color[RGB]{102,204,238}med}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\#\texttt{\small\color[RGB]{204,187,68}high}\)</span>.</span> For instance:</p>
+</div></div><p>where <span style="display:inline-block;"><span class="math inline">\(\#\ylo\)</span></span> is the number of times the value <span style="display:inline-block;"><span class="math inline">\(\ylo\)</span></span> appears among <span style="display:inline-block;"><span class="math inline">\(x_i,x_j,\dotsc\)</span>,</span> and similarly for <span style="display:inline-block;"><span class="math inline">\(\#\yme\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\#\yhi\)</span>.</span> For instance:</p>
 <p><span class="math display">\[\begin{aligned}
-\mathrm{P}(X_5\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{102,204,238}med},\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{204,187,68}high},\ X_{14}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\texttt{\small\color[RGB]{102,204,238}med}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) &amp;=
+\mathrm{P}(X_5\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yme,\ X_2\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yhi,\ X_{14}\mathrel{\mkern-2.5mu\textrm{\small=}\mkern-2.5mu}\yme \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) &amp;=
 \frac{2\cdot {\color[RGB]{34,136,51}0}!\cdot {\color[RGB]{102,204,238}2}!\cdot  {\color[RGB]{204,187,68}1}!}{({\color[RGB]{34,136,51}0} + {\color[RGB]{102,204,238}2} + {\color[RGB]{204,187,68}1} + 2)!}
 \\[1ex]&amp;=
 \frac{2\cdot {\color[RGB]{34,136,51}1}\cdot
