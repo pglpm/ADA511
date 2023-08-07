@@ -1,31 +1,83 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="generator" content="quarto-1.3.433">
 
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.433">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-<meta name="author" content="Steffen Mæland">
-<meta name="author" content="PierGianLuca Porta Mana">
-<meta name="dcterms.date" content="2023-08-07">
-
-<title>ADA511 0.1 Data science and data-driven engineering</title>
-<style>
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
-  vertical-align: middle;
-}
-</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
+    <title>ADA511 [0.1]{.small .grey} &lt;br&gt;Data science and data-driven engineering – over_and_underfitting</title>    <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      ul.task-list{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+        vertical-align: middle;
+      }
+      /* CSS for syntax highlighting */
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+    </style>
+    <style>
+      .quarto-embed-header {
+        height: 3em;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: solid 1px;
+      }
+      .quarto-embed-header h6 {
+        font-size: 1em;
+        padding-top: 0.6em;
+        margin-left: 1em;
+        margin-right: 1em;
+        font-weight: 300;
+      }
+      .quarto-embed-header a.quarto-download-embed {
+        font-size: 0.7em;
+        margin-top: 1em;
+        margin-bottom: 1em;
+        margin-left: 1em;
+        margin-right: 1em;
+      }
+    </style>
+    
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
@@ -33,7 +85,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./preface.html" rel="next">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -43,9 +94,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
-<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
-<script id="quarto-search-options" type="application/json">{
+     <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -64,30 +113,26 @@ ul.task-list li input[type="checkbox"] {
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+}</script>  <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet">
-
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<link rel="stylesheet" href="ada511styles.css">
-</head>
-
-<body class="nav-sidebar docked slimcontent">
-
-<div id="quarto-search-results"></div>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet">  
+        <link rel="stylesheet" href="ada511styles.css">
+      </head>
+  <body class="nav-sidebar docked quarto-notebook">
+    <div class="quarto-embed-header">
+      <h6><i class="bi bi-journal-code"></i> over_and_underfitting.ipynb</h6>
+      <a href="./over_and_underfitting.ipynb" class="btn btn-primary quarto-download-embed" download="over_and_underfitting.ipynb">Download Notebook</a>
+    </div>
+     <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Dear student<br> and aspiring data engineer</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
+      ADA511 [0.1]{.small .grey} &lt;br&gt;Data science and data-driven engineering
+      </li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -124,7 +169,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Dear student<br> and aspiring data engineer</span></a>
   </div>
 </li>
@@ -390,234 +435,151 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#dear-student-and-aspiring-data-engineer" id="toc-dear-student-and-aspiring-data-engineer" class="nav-link active" data-scroll-target="#dear-student-and-aspiring-data-engineer">Dear student<br> and aspiring data engineer</a>
-  <ul class="collapse">
-  <li><a href="#your-role-in-the-course-bugs-features" id="toc-your-role-in-the-course-bugs-features" class="nav-link" data-scroll-target="#your-role-in-the-course-bugs-features">Your role in the course <br>Bugs &amp; features</a></li>
-  <li><a href="#course-structure" id="toc-course-structure" class="nav-link" data-scroll-target="#course-structure">Course structure</a></li>
-  </ul></li>
-  </ul>
-</nav>
+        
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">ADA511 <span class="small grey">0.1</span> <br>Data science and data-driven engineering</h1>
+<main class="content page-columns page-full" id="quarto-document-content">    <div class="cell-container column-page-left"><div class="cell-decorator"><pre>In [53]:</pre></div><div class="cell" data-execution_count="53">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div>
+<div class="cell-container column-page-left"><div class="cell-decorator"><pre>In [33]:</pre></div><div class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#xs = np.array([0., 2.67, 5.33, 8., 10.67, 13.33, 16., 18.67, 21.33, 24.])</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#ys = 13 + 3*np.sin((np.pi/12)*xs - 0.5*np.pi - 0.7) + np.random.normal(scale=0.35, size=len(xs))</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ys)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[11.02009692  9.75446417 10.85681075 12.20683728 14.21325614 15.39737946
+ 15.92441522 14.63696274 12.14172256 10.43248343]</code></pre>
 </div>
-
-
-
-<div class="quarto-title-meta">
-
-    <div>
-    <div class="quarto-title-meta-heading">Authors</div>
-    <div class="quarto-title-meta-contents">
-             <p>Steffen Mæland </p>
-             <p>PierGianLuca Porta Mana </p>
-          </div>
-  </div>
-    
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">2023-08-07</p>
-    </div>
-  </div>
-  
-    
-  </div>
-  
-
-</header>
-
-<p><img src="ada511logo8b.png" title="ADA511 [0.1]{.small .grey} <br>Data science and data-driven engineering" class="quarto-cover-image img-fluid"></p>
-<div class="hidden">
-<p><span class="math display">\[
-\DeclarePairedDelimiters{\set}{\{}{\}}
-\]</span></p>
-</div>
-<p><em>If you can’t join ’em,<br>
-beat ’em.</em><br>
-<span style="text-align:right;font-size:75%">(<a href="https://www.nobelprize.org/prizes/physics/1965/schwinger/biographical/">J. Schwinger</a>)</span></p>
-<section id="dear-student-and-aspiring-data-engineer" class="level1 unnumbered page-columns page-full">
-<h1 class="unnumbered">Dear student<br> and aspiring data engineer</h1>
-<p>The goal of this course is not to help you learn how to tune the parameters of the latest kind of deep network, or how to efficiently handle large amounts of data, or how to do cross-validation in the fastest way, or what is the latest improvement in random-forest algorithms.</p>
-<p>The goal of this course is to help you learn the principles to build the machine-learning algorithms and AI devices <em>of the future</em>. And, as a side effect, at the end of the course you’ll also be able to concretely improve present-day algorithms.</p>
-<p>How can such a goal be achieved?</p>
-<p>There is a small set of rules and one method that are <em>mathematically guaranteed</em> to output the optimal solution of any inference, prediction, classification, regression, and decision problem. You can think of this as the “unbeatable universal machine”. Or, from an AI point of view, you can think of these rules and method as the “laws of robotics” that should govern any ideal AI designed to draw inferences and make decisions.</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p><span style="font-size:60%;"><span class="math display">\[
-\begin{aligned}
-&amp;\color[RGB]{68,119,170}\mathrm{P}(\lnot\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X}) = 1 - \mathrm{P}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X})
-\\[0.5ex]
-&amp;\color[RGB]{68,119,170}\mathrm{P}(\mathsfit{Z}\land\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X}) =
-\mathrm{P}(\mathsfit{Z} \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{Y}\land\mathsfit{X})\cdot \mathrm{P}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{X})
-\\[0.5ex]
-&amp;\color[RGB]{68,119,170}\mathrm{P}(\mathsfit{Z}\lor\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X}) =
-\mathrm{P}(\mathsfit{Z} \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X}) + \mathrm{P}(\mathsfit{Y} \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X}) - \mathrm{P}(\mathsfit{Z}\land\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X})
-\\[1ex]
-&amp;\color[RGB]{34,136,51}\texttt{\small choose }\ \arg\max_{\mathsfit{D}} \mathrm{U}(\mathsfit{D} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{Y}\land \mathsfit{X})\cdot \mathrm{P}(\mathsfit{Y} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D} \land\mathsfit{X})
-\end{aligned}
-\]</span></span></p>
-</div></div><div class="page-columns page-full"><p>These rules and method are quite easy to grasp and understand, but are computationally extremely expensive; the more so, the more data points and data dimensions we need to deal with. Current machine-learning algorithms, from deep networks to large language models (chatGPT), are all <em>approximations</em> to this ideal universal method; each one uses a different kind of approximation. The upside of these approximations is that they allow for much faster computations; their downside is that they give <em>sub-optimal</em> results.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;Is a suboptimality of, say, just 0.1% important? In a life-or-death situation for 1 000 000 people, 0.1% means 1000 more deaths.</p></li></div></div>
-<p>Approximations evolve toward the maximally optimal ideal method. The approximations used at any given time in history exploit the computational technologies then available. Deep networks, for instance, would have been a useless approximation 50 years ago, before the introduction of Graphical Processing Units.</p>
-<p>Every new technological advance (think of possibly forthcoming quantum computers) opens up possibilities for new approximations that get us closer to the ideal optimum. To <em>see</em> and <em>realize</em> these possibilities, a data scientist needs at the very least:</p>
-<p><span class="blue">- <i class="fa-solid fa-rocket" aria-label="rocket"></i>&nbsp;&nbsp;to know the exact, universal, maximally optimal method</span></p>
-<p><span class="green">- <i class="fa-solid fa-box-open" aria-label="box-open"></i>&nbsp;&nbsp;to think outside the box</span></p>
-<p>Without the first requirement, how do you know what is <em>the target</em> to approximate towards, and how far you are from it? You risk: 1. making an approximation that leads to worse results than before; 2. evaluating the approximation in the wrong way, so you don’t even realize it’s worse than before.</p>
-<p>Without the second requirement you risk missing to take full advantage of the new technological possibilities. Consider the evolution of transportation: if you keep thinking in terms of how to improve a horse’s hoofs, you’ll never conceive a combustion engine; if you keep thinking in terms of how to improve combustion fuel, you’ll never conceive an electric motor. Existing approximations may of course be good starting points; but you need to clearly understand how they approximate the ideal optimum – so we’re back to the first requirement.</p>
-<p>If you want to make advances in machine learning and AI, you must know how the ideal universal algorithm looks like, and you must not limit yourself to thinking of “training sets”, “cross-validation”, “supervised learning”, “models”, and similar notions. In this course you’ll see for yourself that such notions are anchored to the present-day box of approximations.</p>
-<p>And we want to think outside that box.</p>
-<p>But don’t worry: this course does not only want to prepare you for the future. With the knowledge and insights acquired, you will be able to <em>propose and implement concrete improvements</em> to present-day methods as well.</p>
-<section id="your-role-in-the-course-bugs-features" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="your-role-in-the-course-bugs-features">Your role in the course <br>Bugs &amp; features</h2>
-<p>This course is still in an experimental, “alpha” version. So you will not only learn something from it (hopefully), but also test it together with us, and help improving it for future students. Thank you for this in advance!</p>
-<p>For this reason it’s good to clarify some goals and guidelines of this course: </p>
-<dl class="page-columns page-full">
-<dt><span class="green"><i class="fa-solid fa-square-root-alt" aria-label="square-root-alt"></i>&nbsp;&nbsp;Light maths requirements</span></dt>
-<dd>
-We believe that the fundamental rules and methods can be understood and also used (at least in not too complex applications) without complex mathematics. Indeed the basic laws of inference and decision-making involve only the four basic operations <span class="green"><span class="math inline">\(+ - \times /\)</span></span>. So this course only requires maths at a beginning first-year undergraduate level.<br>
-<br>
-
-</dd>
-<dt><span class="green"><i class="fa-solid fa-coffee" aria-label="coffee"></i>&nbsp;&nbsp;Informal style</span></dt>
-<dd>
-The course notes are written in an informal style; for example they are not developed along “definitions”, “lemmata”, “theorems”. This does not mean that they are inexact. We will warn you about parts that are oversimplified or that only cover special contexts.<br>
-<br>
-
-</dd>
-<dt><span class="green"><i class="fa-solid fa-language" aria-label="language"></i>&nbsp;&nbsp;Names don’t constitute knowledge</span></dt>
-<dd class="page-columns page-full">
-
-<div class="no-row-height column-margin column-container"><div class="">
-<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/lFIYKmos3-s" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
-</div></div><div class="page-columns page-full"><p>In these course notes you’ll often stumble upon <span class="blue"><strong>terms in blue bold</strong></span> and <span class="blue"><em>definitions in blue Italics</em></span>. This typographic emphasis does <span class="red"><strong>not</strong></span> mean that those terms and definitions should be <span class="red"><strong>memorized</strong></span>: rather, it means that there are important <span class="green"><strong>ideas</strong></span> around there which you must try to <span class="green"><strong>understand</strong></span> and <span class="green"><strong>use</strong></span>. In fact we don’t care which terminology you adopt. Instead of the term <span class="blue"><strong>statistical population</strong></span>, feel free to use the term <span class="blue"><strong>pink apple</strong></span> if you like, as long you explain the terms you use by means of a discussion and examples.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> What’s important is that you know, can recognize, and can correctly use the ideas behind technical terms.<br>
-<span class="small midgrey">Memorizing terms, definitions, and where to use them, is how large language models (like chatGPT) operate. If your study is just memorization of terms, you’ll have difficulties finding jobs in the future, because there will be algorithms that can do that better and at a cheaper cost than you.</span><br>
-</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;Some standard technical terms are no better. The common term <em>random variable</em>, for instance, often denotes something that is actually <em>not “random”</em> and <em>not variable</em>. Go figure. Using the term <em>green banana</em> would be less misleading!</p></li></div></div>
-</dd>
-<dt><span class="green"><i class="fa-solid fa-book" aria-label="book"></i>&nbsp;&nbsp;Diverse textbooks</span></dt>
-<dd>
-This course does not have only one textbook: it refers to and merges together parts from several books and articles. You will notice that most of these works adopt quite different terminologies, employ different symbolic notations, and give different definitions for similar ideas.<br>
-<span class="yellow"><em>These differences and contrasts are a feature, not a bug!</em></span><br>
-You might think that this makes studying more difficult; but it actually helps you to really understand an idea and acquire real knowledge, because it forces you to go <em>beyond</em> words, symbols, and specific examples. This connects with the previous point, “names don’t constitute knowledge”. The present course notes will help you build comprehension bridges across those books.<br>
-<br>
-
-</dd>
-<dt><span class="green"><i class="fa-solid fa-robot" aria-label="robot"></i>&nbsp;&nbsp;Artificial intelligence</span></dt>
-<dd class="page-columns page-full">
-<p>In order to grasp and use the fundamental laws of inference and decision-making, we shall use notions that are also at the foundations of Artificial Intelligence (and less common in present-day machine learning). So you’ll also get a light introduction to AI for free. Indeed, a textbook that we’ll draw frequently from is Russell &amp; Norvig’s <em>Artificial Intelligence: A Modern Approach</em> (we’ll avoid part&nbsp;V on machine learning, which is really poorly explained and written).</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p><img src="AI_a_modern_approach.jpg" class="img-fluid" style="width:60.0%"></p>
-</div></div></dd>
-<dt><span class="green"><i class="fa-solid fa-wrench" aria-label="wrench"></i>&nbsp;&nbsp;Concrete examples</span></dt>
-<dd>
-Some students find it easier to grasp an idea by starting from an abstract description and then examining concrete examples; some find it easier the other way around. We try to make both happy by alternating between the two approaches. Ideas and notions are always accompanied by examples that we try to keep simple yet realistic, drawing from scenarios ranging from glass forensics to hotel booking.<br>
-<br>
-
-</dd>
-<dt><span class="green"><i class="fa-solid fa-rocket" aria-label="rocket"></i>&nbsp;&nbsp;Extra material</span></dt>
-<dd class="page-columns page-full">
-<p>The course has strong connections with many other disciplines, such as <span class="yellow">formal logic</span>, <span class="yellow">proof theory</span>, <span class="yellow">psychology</span>, <span class="yellow">philosophy</span>, <span class="yellow">physics</span>, and <span class="yellow">environmental sciences</span>. We have tried to provide a lot of extra reading material in “For the extra curious” side boxes, for those who want to deepen their understanding of topics covered or just connected to the present course. Maybe you’ll stumble into a new passion or even into your life call?</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<i class="fa-solid fa-rocket" aria-label="rocket"></i> For the extra curious
+</div></div>
+<div class="cell-container column-page-left"><div class="cell-decorator"><pre>In [56]:</pre></div><div class="cell" data-execution_count="56">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> np.array([<span class="fl">0.</span>, <span class="fl">2.67</span>, <span class="fl">5.33</span>, <span class="fl">8.</span>, <span class="fl">10.67</span>, <span class="fl">13.33</span>, <span class="fl">16.</span>, <span class="fl">18.67</span>, <span class="fl">21.33</span>, <span class="fl">24.</span>])</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> np.array([<span class="fl">10.49007708</span>, <span class="fl">9.95383366</span>, <span class="fl">10.51591666</span>, <span class="fl">13.15859659</span>, <span class="fl">13.6407803</span>, <span class="fl">15.89547831</span>, <span class="fl">15.82021445</span>, <span class="fl">14.36672616</span>, <span class="fl">12.67044056</span>, <span class="fl">10.95573422</span>])</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>plt.scatter(xs, ys, marker<span class="op">=</span><span class="st">'o'</span>, s<span class="op">=</span><span class="dv">80</span>, facecolors<span class="op">=</span><span class="st">'none'</span>, edgecolors<span class="op">=</span><span class="st">'tab:blue'</span>, linewidths<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>plt.ylim((<span class="dv">7</span>, <span class="dv">17</span>))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Time [hours]'</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Temp [°C]'</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-simple-measurements" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="over_and_underfitting_files/figure-html/fig-simple-measurements-output-1.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;1: Temperature measurements over the course of 24 hours.</figcaption>
+</figure>
 </div>
 </div>
-<div class="callout-body-container callout-body">
+</div></div>
+<div class="page-columns page-full">
 
+<div class="cell-container column-page-left"><div class="cell-decorator"><pre>In [37]:</pre></div><div><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_plot(polyn_order):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    plt.scatter(xs, ys, marker<span class="op">=</span><span class="st">'o'</span>, s<span class="op">=</span><span class="dv">80</span>, facecolors<span class="op">=</span><span class="st">'none'</span>, edgecolors<span class="op">=</span><span class="st">'tab:blue'</span>, linewidths<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    poly <span class="op">=</span> np.polynomial.Polynomial.fit(xs, ys, deg<span class="op">=</span>polyn_order, domain<span class="op">=</span>(xs[<span class="dv">0</span>], xs[<span class="op">-</span><span class="dv">1</span>]))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    xf, yf <span class="op">=</span> poly.linspace()</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    plt.plot(xf, yf, color<span class="op">=</span><span class="st">'tab:red'</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    plt.ylim((<span class="dv">7</span>, <span class="dv">17</span>))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">'Time [hours]'</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">'Temp [°C]'</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    plt.text(<span class="dv">15</span>, <span class="dv">9</span>, <span class="st">"$M = </span><span class="sc">{}</span><span class="st">$"</span>.<span class="bu">format</span>(polyn_order))</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> m <span class="kw">in</span> [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">9</span>]:</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    create_plot(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div><div id="fig-polynomial-fit" class="cell quarto-layout-panel" data-execution_count="37">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-polynomial-fit-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="over_and_underfitting_files/figure-html/fig-polynomial-fit-output-1.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit"></p>
+<figcaption class="figure-caption">(a) Zeroth-order polymonial</figcaption>
+</figure>
 </div>
 </div>
-</div></div></dd>
-</dl>
-</section>
-<section id="course-structure" class="level2">
-<h2 class="anchored" data-anchor-id="course-structure">Course structure</h2>
-<p>The course structure reflects the way in which the ideal universal decision-making machine works. It can be roughly divided into three or four parts, illustrated as follows (this is just a caricature, don’t take this diagram too literally):</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<div>
-<pre class="mermaid mermaid-js">flowchart TB
-  P{{probability}} --o Z[/max expected utility\]
-  subgraph probability [ ]
-  S([sentences]) --&gt; P
-  end
-  subgraph data [ ]
-  A[quantity] --o S
-%%  D[value] --o S
-  E[population] --o S
-  F[...] -.-o S
-  end
-  G[(problem)] --x A &amp; E %% &amp; D
-  G -.-x F
-  U{{utility}} --o Z
-  subgraph utility [ ]
-  C[decisions] --o S
-  S --&gt; U
-  T([gains]) --&gt; U
-  Q([costs]) --&gt; U
-  end
-  G --x C &amp; T &amp; Q
-  subgraph exp [ ]
-  Z --&gt; W(optimal solution)
-  end
-  %%
-  style G fill:#e67
-  style A fill:#cb4,stroke-width:0pt
-%%  style D fill:#cb4,stroke-width:0pt
-  style E fill:#cb4,stroke-width:0pt
-  style F fill:#cb4,stroke-width:0pt
-  style S fill:#283,color:#fff
-  style P fill:#283,stroke-width:3pt,color:#fff
-  style C fill:#6ce,stroke-width:0pt
-  style T fill:#6ce,stroke-width:0pt
-  style Q fill:#6ce,stroke-width:0pt
-  style U fill:#6ce,stroke-width:3pt
-  style Z fill:#47a,color:#fff,stroke-width:0pt,color:#fff
-  style W fill:#47a,color:#fff,stroke-width:0pt,color:#fff
-  style probability fill:#fff,stroke:#283,stroke-width:1px
-  style data fill:#fff,stroke:#cb4,stroke-width:1px
-  style utility fill:#fff,stroke:#6ce,stroke-width:1px
-  style exp fill:#fff,stroke:#47a,stroke-width:1px
-</pre>
+<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-polynomial-fit-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="over_and_underfitting_files/figure-html/fig-polynomial-fit-output-2.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit"></p>
+<figcaption class="figure-caption">(b) First-order polymonial</figcaption>
+</figure>
 </div>
 </div>
 </div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-polynomial-fit-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="over_and_underfitting_files/figure-html/fig-polynomial-fit-output-3.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit"></p>
+<figcaption class="figure-caption">(c) Fourth-order polymonial</figcaption>
+</figure>
 </div>
-<ul>
-<li><p><span class="green"><strong>Inference</strong></span> parts develop the “inference engine” of the machine. Here you will learn ideas at the foundation of AI; and you will also meet probability, but from a point of view that may be quite novel to you – and much more fun.</p></li>
-<li><p><span class="yellow"><strong>Data</strong></span> parts develop the language in which a <span class="red"><strong>problem</strong></span> can be fed into the inference engine. Here you will also learn about important pitfalls in handling data.</p></li>
-</ul>
-<p>These two parts will alternate so that their development proceeds almost in parallel.</p>
-<ul>
-<li><p>The <span class="lightblue"><strong>utility</strong></span> part develops the “decision engine” of the machine. Here you will meet several ideas that will probably be quite new to you – but also very simple and intuitive.</p></li>
-<li><p>The final <span class="blue"><strong>solution</strong></span> part simply shows how the inference and utility engines combine together to yield the optimal solution to the problem. This part is simple, short, intuitive; it will be a breeze.</p></li>
-</ul>
-<p><br>
-</p>
-<p>As soon as the <span class="green">inference</span> and <span class="yellow">data</span> parts are complete, you will be able to apply the machine to real inference problems, and also learn how the solution is approximated in some popular machine-learning algorithms.</p>
-<p>These applications will immediately extend to decision problems as the short <span class="lightblue">utility</span> and <span class="blue">solution</span> part are covered. Again you will also see how this solution is approximated in other machine-learning algorithms, classification and regression ones.</p>
+</div>
+<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-polynomial-fit-4" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="over_and_underfitting_files/figure-html/fig-polynomial-fit-output-4.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit"></p>
+<figcaption class="figure-caption">(d) Ninth-order polymonial</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Fitting polymonials of different orders to the set of measurements.</figcaption><p></p>
+</figure>
+</div></div></div>
+</div>
+<div class="page-columns page-full">
+
+<div class="cell-container column-page-left"><div class="cell-decorator"><pre>In [67]:</pre></div><div><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_test_plot(polyn_order):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    plt.scatter(xs, ys, marker<span class="op">=</span><span class="st">'o'</span>, s<span class="op">=</span><span class="dv">80</span>, facecolors<span class="op">=</span><span class="st">'none'</span>, edgecolors<span class="op">=</span><span class="st">'tab:blue'</span>, linewidths<span class="op">=</span><span class="fl">1.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create new random data, fit a model</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">#xs_new = np.random.uniform(0, 24, size=24)</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        ys_new <span class="op">=</span> <span class="dv">13</span> <span class="op">+</span> <span class="dv">3</span><span class="op">*</span>np.sin((np.pi<span class="op">/</span><span class="dv">12</span>)<span class="op">*</span>xs <span class="op">-</span> <span class="fl">0.5</span><span class="op">*</span>np.pi <span class="op">-</span> <span class="fl">0.7</span>) <span class="op">+</span> np.random.normal(scale<span class="op">=</span><span class="fl">0.35</span>, size<span class="op">=</span><span class="bu">len</span>(xs))</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        poly <span class="op">=</span> np.polynomial.Polynomial.fit(xs, ys_new, deg<span class="op">=</span>polyn_order, domain<span class="op">=</span>(xs[<span class="dv">0</span>], xs[<span class="op">-</span><span class="dv">1</span>]))</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">#plt.scatter(xs_test, ys_test, marker='o', s=80, facecolors='none', edgecolors='tab:red', linewidths=1.5)</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        xf, yf <span class="op">=</span> poly.linspace()</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        plt.plot(xf, yf, color<span class="op">=</span><span class="st">'tab:red'</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    plt.ylim((<span class="dv">7</span>, <span class="dv">17</span>))</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">'Time [hours]'</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">'Temp [°C]'</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    plt.text(<span class="dv">15</span>, <span class="dv">9</span>, <span class="st">"$M = </span><span class="sc">{}</span><span class="st">$"</span>.<span class="bu">format</span>(polyn_order))</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> m <span class="kw">in</span> [<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">9</span>]:</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    create_test_plot(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div><div id="fig-bias-variance-tradeoff" class="cell quarto-layout-panel" data-execution_count="67">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-bias-variance-tradeoff-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="over_and_underfitting_files/figure-html/fig-bias-variance-tradeoff-output-1.png" class="img-fluid figure-img" data-ref-parent="fig-bias-variance-tradeoff"></p>
+<figcaption class="figure-caption">(a) Caption 1</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-bias-variance-tradeoff-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="over_and_underfitting_files/figure-html/fig-bias-variance-tradeoff-output-2.png" class="img-fluid figure-img" data-ref-parent="fig-bias-variance-tradeoff"></p>
+<figcaption class="figure-caption">(b) Caption 2</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-bias-variance-tradeoff-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="over_and_underfitting_files/figure-html/fig-bias-variance-tradeoff-output-3.png" class="img-fluid figure-img" data-ref-parent="fig-bias-variance-tradeoff"></p>
+<figcaption class="figure-caption">(c)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: Caption 1</figcaption><p></p>
+</figure>
+</div></div></div>
+</div>
 
 
-</section>
-</section>
-
-
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+     </main> <!-- /main -->  <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -849,18 +811,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-  </div>
-  <div class="nav-page nav-page-next">
-      <a href="./preface.html" class="pagination-link">
-        <span class="nav-page-text">Preface</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
-  </div>
-</nav>
-</div> <!-- /content -->
-
-
+</script>  </div> <!-- /content --> 
+  
 
 </body></html>

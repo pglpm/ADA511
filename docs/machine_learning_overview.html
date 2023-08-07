@@ -383,7 +383,14 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#hyperparameters-and-model-complexity" id="toc-hyperparameters-and-model-complexity" class="nav-link active" data-scroll-target="#hyperparameters-and-model-complexity"><span class="header-section-number">1</span> Hyperparameters and model complexity</a></li>
+  <li><a href="#model-selection-in-practice" id="toc-model-selection-in-practice" class="nav-link" data-scroll-target="#model-selection-in-practice"><span class="header-section-number">2</span> Model selection in practice</a></li>
+  </ul>
+<div class="quarto-alternate-notebooks"><h2>Notebooks</h2><ul><li><a href="over_and_underfitting.ipynb.html"><i class="bi bi-journal-code"></i>over_and_underfitting.ipynb</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -410,20 +417,129 @@ ul.task-list li input[type="checkbox"] {
 \DeclarePairedDelimiters{\set}{\{}{\}}
 \]</span></p>
 </div>
-<p>So far we have learned about concepts of doing inference, and about various properties of data. Now it is time to combine the two, and create a mathematical <em>model</em> that can use data from the past to make predictions about the unknown. Machine learning methods can be wildly different both in terms of operation and complexity, but they all behave as functions that take in a data point <span style="display:inline-block;"><span class="math inline">\(\mathbf{x}\)</span>,</span> a set of values <span style="display:inline-block;"><span class="math inline">\(\theta\)</span></span> which we call <em>parameters</em>, and returns the prediction <span style="display:inline-block;"><span class="math inline">\(y\)</span>:</span></p>
+<p>So far we have learned about concepts of doing inference, and about various properties of data. Now it is time to combine the two, and create a mathematical <em>model</em> that can use data from the past to make predictions about the unknown. Machine learning methods can be wildly different both in terms of operation and complexity, but they all behave as functions that take in a data point <span style="display:inline-block;"><span class="math inline">\(\mathbf{x}\)</span>,</span> a set of values <span style="display:inline-block;"><span class="math inline">\(\theta\)</span></span> which we call <strong>parameters</strong>, and returns the prediction <span style="display:inline-block;"><span class="math inline">\(y\)</span>:</span></p>
 <p><span class="math display">\[
     y = f(\mathbf{x}, \theta).
 \]</span></p>
 <p>The prediction <span style="display:inline-block;"><span class="math inline">\(y\)</span></span> can be any quantity discussed in <a href="quantities_types.html#sec-basic-types">§&nbsp;<span>9.2</span></a> – most commonly we want to classify the data (and we say we are doing <em>classification</em>), or we want to estimate some value (in which case we call it <em>regression</em>).</p>
 <p>As engineers, when faced with the task of using data to model the behaviour of some system, our job is twofold. First, we need to select a suitable method to serve as the function <span style="display:inline-block;"><span class="math inline">\(f\)</span>,</span> and second, we need to find the optimal values for the parameters <span style="display:inline-block;"><span class="math inline">\(\theta\)</span>.</span> In <a href="https://www.hvl.no/en/studies-at-hvl/study-programmes/courses/2023/ADA501">ADA501</a> we will see how to choose an analytical <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> that corresponds to certain physical systems, while in our course, we will look at methods where <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> can be practically anything. In fact, we will not even require <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> to be a deterministic function – consider for instance generative models like ChatGPT or DALL-E, which creates different outputs for the same input, each time it is run.</p>
-<p>Finding the parameters <span style="display:inline-block;"><span class="math inline">\(\theta\)</span></span> is what takes us from a general method, to the specific solution to a problem. As we will see, the way of finding them differs between the various machine learning methods, but the principle is always the same: We need to choose a <em>loss function</em>, and then iteratively adjust <span style="display:inline-block;"><span class="math inline">\(\theta\)</span></span> so that the loss, when computed on known data, becomes as small as possible. The loss function should represent the difference between what the model outputs, and the correct answer – the better the model, the smaller the difference. The choice of this loss function depends on what kind of problem we wish to solve, and we will look at the common ones shortly. But at this point we can already define the three main types of machine learning:</p>
+<p>Finding the parameters <span style="display:inline-block;"><span class="math inline">\(\theta\)</span></span> is what takes us from a general method, to the specific solution to a problem. As we will see, the way of finding them differs between the various machine learning methods, but the principle is always the same: We need to choose a <strong>loss function</strong>, and then iteratively adjust <span style="display:inline-block;"><span class="math inline">\(\theta\)</span></span> so that the loss, when computed on known data, becomes as small as possible. The loss function should represent the difference between what the model outputs, and the correct answer – the better the model, the smaller the difference. The choice of this loss function depends on what kind of problem we wish to solve, and we will look at the common ones shortly. But at this point we can already define the three main types of machine learning:</p>
 <ul>
 <li>If we know the “correct answers” (the labels) for all entries in our data set, this is what the model should aim to learn, and we call it <strong>supervised learning</strong>.</li>
 <li>If we do not have the data labels, we can still write a loss function corresponding to what we want the model to do with the data. Most commonly, we want to find groups, or <em>clusters</em>, of similar-looking data points. If we provide a way of computing scores for good clusters, the model is left to find cluster labels by it self, and we call it <strong>unsupervised learning</strong>.</li>
 <li>If the decision of a model on one data point affects the value of future data points, like for a self-driving car that may turn left and crash, or turn right and follow the road, we need a loss function that penalises certain actions and rewards others. This is called <strong>reinforcement learning</strong>.</li>
 </ul>
+<p>Having decided on a method to represent <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> and found a set of parameters <span style="display:inline-block;"><span class="math inline">\(\theta\)</span>,</span> we say that these combined constitute our <strong>model</strong>. The model should have internalised the important correlations in the data and thereby allows us to make predictions, i.e.&nbsp;do <em>modelling</em>. If we do decision-making based on the output of the model as well, we typically call in an <strong>agent</strong>, since there is now some level of autonomy involved. In this chapter, however, we will stick to modelling problems in a supervised fashion.</p>
+<section id="hyperparameters-and-model-complexity" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="hyperparameters-and-model-complexity"><span class="header-section-number">1</span> Hyperparameters and model complexity</h2>
+<p>You may have heard the quote by statistician George Box:</p>
+<blockquote class="blockquote">
+<p>All models are wrong, but some are useful.</p>
+</blockquote>
+<p>Although coming off as a somewhat negative view on things, the quote still captures an important point about statistical modelling – our goal is not to make a complete, 100% accurate description of reality, but rather a simplified description that is meaningful in the context of our task at hand. The “correct” level of simplicity, in other words the optimal number of parameters <span style="display:inline-block;"><span class="math inline">\(\theta\)</span>,</span> can be hard to find. Often it will be influenced by practical considerations such as time and computing power, but it is <em>always</em> governed by the amount of data we have available. We will look at the theory of model selection later, but let us first consider a visual example, from which we can define some important concepts.</p>
+<p>Imagine that you don’t have a thermometer that shows the outside temperature. Never knowing whether you should wear a jacket or not when leaving the house, you finally have an idea: If you can construct a mathematical model for the outside temperature as a function of the time of day, then a look at the clock yould be enough to decide for or against bringing a jacket. You manage to borrow a thermometer for a day, and make ten measurements at different times, which will form the basis for the model:</p>
+<div class="quarto-embed-nb-cell">
+<div class="cell" data-execution_count="56">
+<div class="cell-output cell-output-display">
+<div id="fig-simple-measurements" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="machine_learning_overview_files/figure-html/fig-simple-measurements-output-1.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;1: Temperature measurements over the course of 24 hours.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<a class="quarto-notebook-link" id="nblink-1" href="over_and_underfitting.ipynb.html">Source: over_and_underfitting.ipynb</a></div>
+<p>The next step is to choose a function <span style="display:inline-block;"><span class="math inline">\(f\)</span>.</span> For one-dimensional data like this, we could for instance select among the group of polynomials, of the form <span style="display:inline-block;"><span class="math display">\[
+    y (x, \mathbf{w}) = w_0 + w_1 x + w_2 x^2 + \dots + w_M x^M = \sum_{j=0}^{M} w_j x^j \,,
+\]</span></span> where <span style="display:inline-block;"><span class="math inline">\(M\)</span></span> is the order of the polynomial. Recall that a zero’th order polymonial is just a constant value, so such a model would be represented with one single parameter. A first-order polynomial is a linear function (two parameters), and the higher in order (and number of parameters) we go, the more “curves” the function can have. This already presents us with a problem. Which order polynomial (i.e.&nbsp;which value of <span style="display:inline-block;"><span class="math inline">\(M\)</span>)</span> should we choose? Let us try different ones, and for each case, <em>fit</em> the parameters, meaning we find the parameter values that yield the smallest difference from the measured data points:</p>
+<div class="quarto-embed-nb-cell">
+<div id="fig-polynomial-fit" class="cell quarto-layout-panel" data-execution_count="37">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-polynomial-fit-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="machine_learning_overview_files/figure-html/fig-polynomial-fit-output-1.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit"></p>
+<figcaption class="figure-caption">(a) Zeroth-order polymonial</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-polynomial-fit-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="machine_learning_overview_files/figure-html/fig-polynomial-fit-output-2.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit"></p>
+<figcaption class="figure-caption">(b) First-order polymonial</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-polynomial-fit-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="machine_learning_overview_files/figure-html/fig-polynomial-fit-output-3.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit"></p>
+<figcaption class="figure-caption">(c) Fourth-order polymonial</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-polynomial-fit-4" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="machine_learning_overview_files/figure-html/fig-polynomial-fit-output-4.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit"></p>
+<figcaption class="figure-caption">(d) Ninth-order polymonial</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Fitting polymonials of different orders to the set of measurements.</figcaption><p></p>
+</figure>
+</div>
+<a class="quarto-notebook-link" id="nblink-2" href="over_and_underfitting.ipynb.html#fig-polynomial-fit">Source: over_and_underfitting.ipynb</a></div>
+<p>Obviously, the constant function does a poor job of describing our data, and likewise for the linear function. A fourth-order polynomial, on the other hand, looks very reasonable. Now consider the ninth-order polynomial: it matches the measurements <em>perfectly</em>, but surely, this does not match our expectation for what the temperature should look like.</p>
+<p>We say that the first and second model <strong>underfit</strong> the data. This can happen for two reasons: Either the model has too little complexity to be able to describe the data (which is the case in this example), or, potentially, the optimal parameter values have not been found. The opposite case is <strong>overfitting</strong>, as shown for the last model, where the complexity is too high and the model adapts to artifacts in the data.</p>
+<p>This concept is also called the <strong>bias-variance tradeoff</strong>. We will not go into too much detail on this yet, but qualitatively, we can say that <em>bias</em> (used in this setting) is the difference between the predicted value and the true value, when averaging over different data sets. <em>Variance</em> (again when used in this setting) indicates how big the change in parameters, and hence in model predictions, we get from fitting to different data sets. Let us say you measure the temperature on ten different days, and for each day, you fit a model, like before. These may be the results:</p>
+<div class="quarto-embed-nb-cell">
+<div id="fig-bias-variance-tradeoff" class="cell quarto-layout-panel" data-execution_count="67">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-bias-variance-tradeoff-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="machine_learning_overview_files/figure-html/fig-bias-variance-tradeoff-output-1.png" class="img-fluid figure-img" data-ref-parent="fig-bias-variance-tradeoff"></p>
+<figcaption class="figure-caption">(a) Caption 1</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-bias-variance-tradeoff-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="machine_learning_overview_files/figure-html/fig-bias-variance-tradeoff-output-2.png" class="img-fluid figure-img" data-ref-parent="fig-bias-variance-tradeoff"></p>
+<figcaption class="figure-caption">(b) Caption 2</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
+<div id="fig-bias-variance-tradeoff-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="machine_learning_overview_files/figure-html/fig-bias-variance-tradeoff-output-3.png" class="img-fluid figure-img" data-ref-parent="fig-bias-variance-tradeoff"></p>
+<figcaption class="figure-caption">(c) <strong>?(caption)</strong></figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: Caption 1</figcaption><p></p>
+</figure>
+</div>
+<a class="quarto-notebook-link" id="nblink-3" href="over_and_underfitting.ipynb.html#fig-bias-variance-tradeoff">Source: over_and_underfitting.ipynb</a></div>
+<p>The blue dots are our “original” data points, plotted for reference, while the red lines corresponds to models fitted for each day’s measurements. Due to fluctuations in the measurements, they are different, but note how the difference is related to the model complexity. Our linear models (<span style="display:inline-block;"><span class="math inline">\(M=1\)</span>)</span> are all quite similar, but neither capture the pattern in the data very well, so they all have high bias. The overly complex models (<span style="display:inline-block;"><span class="math inline">\(M=9\)</span>)</span> have zero bias on their repective dataset, but high variance. The optimal choice is likely somewhere in-between (hence the <em>tradeoff</em>), as for the <span style="display:inline-block;"><span class="math inline">\(M=4\)</span></span> models, which perform well without being overly sensitive to fluctuations in data. Since the value of <span style="display:inline-block;"><span class="math inline">\(M\)</span></span> is chosen by us, we call it a <strong>hyperparameter</strong>, to separate it from the regular parameters which are optimised by minimising the loss function.</p>
+</section>
+<section id="model-selection-in-practice" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="model-selection-in-practice"><span class="header-section-number">2</span> Model selection in practice</h2>
+<p>Move or delete ??</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
