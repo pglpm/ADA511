@@ -1,3 +1,116 @@
 # Decision trees
 {{< include macros.qmd >}}
 
+Decision trees are simple and intuitive machine learning models, that can be expanded and elaborated into a surprisingly powerful and general method for both classification and regression. They are based on the idea of performing a series of yes-or-no tests on the data, which finally lead to decision. 
+
+## Decision trees for categorical classification
+
+For a trivial example, lets us say you want to go and spend the day at the beach. There are certain criteria that should be fullfilled for that to be a good idea, and some of them depend on each other. A decision tree could look like this:
+
+```{dot}
+//| label: fig-simple-decision-tree
+//| fig-cap: A very simple decision tree.
+digraph G {
+    fontname="Helvetica,Arial,sans-serif";
+    fontsize=15;
+    node [fontname="Helvetica,Arial,sans-serif", penwidth=0.75, style="filled"];
+    edge [fontname="Helvetica,Arial,sans-serif"];
+
+    A[shape=box, label="  Go to the beach?  ", fillcolor="#edc6f5"];
+    B[shape=diamond, label="Workday?", fillcolor="#eeeeee", height=0.7, width=1];
+    C[shape=box, label="Don't go", fillcolor="#ffaaaa"];
+    D[shape=diamond, label="Sunny?", fillcolor="#eeeeee", height=0.7, width=1];
+    E[shape=diamond, label="Temp > 18 C", fillcolor="#eeeeee", height=0.7, width=1];
+    F[shape=diamond, label="Temp > 23 C", fillcolor="#eeeeee", height=0.7, width=1];
+    G[shape=box, label=" Go to the beach ", fillcolor="#aaffaa"];
+    H[shape=box, label=" Don't go ", fillcolor="#ffaaaa"];
+    I[shape=box, label=" Go to the beach ", fillcolor="#aaffaa"];
+    J[shape=box, label=" Don't go ", fillcolor="#ffaaaa"];
+
+    A -> B [style="invis"];
+    B -> C [label="Yes"];
+    B -> D [label="No"];
+    D -> E [label="Yes"];
+    D -> F [label="No"];
+    E -> G [label="Yes"];
+    E -> H [label="No"];
+    F -> I [label="Yes"];
+    F -> J [label="No"];
+}
+```
+
+Depending on input data such as the weather, we end up following a certain path from the *root* node, along the *branches*, down to the *leaf* node, which returns the final decision for these given observations. The botany analogies are not strictly necessary, but at least we see where the name decision *tree* comes from. 
+
+Studying the above tree structure more closely, we see that there are several possible ways of structuring it, that would lead to the same outcome. We can choose to first split on the `Sunny` node, and split on `Workday` afterwards. Drawing it out on paper, however, would show that this structure needs a larger total number of nodes, since we always need to split on `Workday`. Hence, the most efficient tree is the one that steps through the observables in order of descending importance. 
+
+
+The basic algorithm for buiding a decision tree (or *growing* it, if you prefer) on categorical data, can be written out quite compactly. Consider the following pseudo-code:
+(ref https://www.cs.cmu.edu/~tom/files/MachineLearningTomMitchell.pdf) 
+
+*TODO rename attributes into features?*
+
+<pre><code>
+<b>function</b> BuildTree(<i>examples, target_attribute, attributes</i>)
+  <i>tree</i> ← a single node, so far without any label
+  <b>if</b> all <i>examples</i> are of the same classification <b>then 
+    give <i>tree</i> a label equal to the classification
+    return</b> <i>tree</i>
+  <b>else if</b> <i>attributes</i> is empty <b>then</b>
+    give <i>tree</i> a label equal the most common value of <i>target_attribute</i> in <i>examples</i>
+    <b>return</b> <i>tree</i>
+  <b>else</b>
+    A ← the attribute from <i>attributes</i> with highest Importance(<i>examples</i>)
+
+    <b>for each</b> value <i>v</i> of <i>A</i> <b>do</b>
+      <i>Examples_v</i> ← the subset of examples where <i>A</i> has the value <i>v</i>
+      <i>subtree</i> ← BuildTree(<i>Examples_v</i>, <i>Target_attributes</i>, <i>Attributes</i> - <i>{A}</i>)
+      add a branch with label (<i>A = v</i>) to <i>tree</i>, and below it, add the tree <i>subtree</i>
+    
+    <b>return</b> <i>tree</i>
+</code></pre>
+
+This is the original **ID3** algorithm [@quinlan1986induction]. Note how it works recursively -- for each new feature, the function calls itself to build a subtree. 
+
+:::{.column-margin}
+The same algorithm is shown and explained in section 19.3 in Russell and Norvig, although they fail to specify that this is ID3.
+:::
+
+We start by creating a node, which becomes a *leaf* node either if it classifies all examples correctly (no reason to split), or if there are no more features left (not possible to split). Otherwise, we find the most important feature by calling `Importance(examples)`, and proceed to make all possible splits. Now, the magic happens in the `Importance` function. How can we quantify which feature is best to discriminate on? We have in @sec-infinite-populations met a useful definition from information theory, which was the **Shannon entropy**:
+$$
+    H(f) \defd -\sum_{i} f_i\ \log_2 f_i
+    \qquad\text{\midgrey\small(with \(0\cdot\log 0 \defd 0\))}
+$$
+
+where the $f_i$ are frequency distributions. If we stick to the simple example of our target features being "yes" or "no", we can write out the summation like so:
+
+$$
+    H() = - f_{\mathrm{yes}} \log_2 f_{\mathrm{yes}} - f_{\mathrm{no}} \log_2 f_{\mathrm{no}}
+$$
+
+Let us compute the entropy for two different cases, to see how it works. In the first case, we have 10 examples: 6 corresponding to "yes", and four corresponding to "no". The entropy is then
+
+$$
+    H() = - (6/10) \log_2 (6/10) - (4/10) \log_2 (4/10) = 0.97
+$$
+
+In the second case, we still have 10 examples, but nearly all of the same class: 9 examples are "yes", and 1 is "no":
+
+$$
+    H() = - (9/10) \log_2 (9/10) - (1/10) \log_2 (1/10) = 0.47
+$$
+
+Interpreting the entropy as a measure of impurity in the set of examples, we can guess (or compute, using $0\cdot \log_2 0 = 0$) that the lowest possible entropy occurs for a set where all are of the same class. When doing classification, this is of course what we aim for -- separating all examples into those corresponding to "yes" and those corresponding to "no". A way of selecting the most important feature is then to choose the one where we expect the highest reduction in entropy, caused by splitting on this feature. This is called the **information gain**, and is generally defined as
+
+$$
+    Gain(A, S) \defd H(S) - \sum_{v \in Values(A)} \frac{|S_v|}{|S|} H(S_v) \,,
+$$
+where $A$ is the feature under consideration, $Values(A)$ are all the possible values that $A$ can have. Futher, $S$ is the set of examples, and $S_v$ is the subset containing examples where $A$ has the value $v$. Looking again at the binary yes/no case, it looks a little simpler. Using the feature `Sunny` as $A$, we get:
+
+$$
+    Gain(\texttt{Sunny}, S) = H(S) - \left(\frac{S_{\texttt{Sunny=yes}}}{S} H(S_{\texttt{Sunny=yes}}) + \frac{S_{\texttt{Sunny=no}}}{S} H(S_{\texttt{Sunny=no}})\right) \,.
+$$
+
+This equation can be read as "gain equals the original entropy *before* splitting on `Sunny`, minus the weighted entropy *after* splitting", which is what we were after. 
+
+
+
