@@ -35,6 +35,10 @@ finfo <- function(data, metadata){
     alphas
 }
 
+fprobability1D <- function(finfo, prob, log=FALSE){
+    extraDistr::ddirichlet(x=prob, alpha=rbind(finfo), log=log)
+}
+
 fmarginal <- function(finfo, variates){
     whichvars <- match(variates, attr(finfo,'variates'))
     temp <- apply(finfo, whichvars,
@@ -49,12 +53,13 @@ fmarginal <- function(finfo, variates){
     temp
 }
 
-fconditional <- function(finfo, conditional){
-    conditional <- rbind(conditional)
-    ncond <- match(colnames(conditional), attr(finfo,'variates'))
+fconditional <- function(finfo, unitdata){
+    unitdata <- rbind(unitdata)
+    ncond <- match(colnames(unitdata), attr(finfo,'variates'))
     totake <- as.list(rep(TRUE, length(dim(finfo))))
-    totake[ncond] <- conditional
+    totake[ncond] <- unitdata
     alphas <- do.call('[', c(list(finfo), totake))
+    alphas <- alphas*sum(finfo)/sum(alphas)
     if(is.null(dim(alphas))){
         tempnames <- names(alphas)
         dim(alphas) <- length(alphas)
@@ -99,7 +104,7 @@ plotsamples1D <- function(finfo, n=100, predict=TRUE){
     if(predict){
         fmean <- fpredict(finfo=finfo)
         tplot(y=fmean, x=1:ncol(samples), type='b',
-              lty=1, lwd=3, pch=18, col=1, alpha=0.25, cex=1, add=T
+              lty=1, lwd=4, pch=18, col=1, alpha=0.25, cex=1, add=T
               )
     }
 }

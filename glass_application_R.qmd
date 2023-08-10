@@ -7,6 +7,8 @@ jupyter: ir
 
 # The universal exchangeable-inference machine in action
 
+## Example population and data
+
 Consider the following population, which we consider to be exchangeable:
 
 - [*Units*: glass fragments collected at particularly defined crime scenes.]{.small}
@@ -40,6 +42,8 @@ We have a sample of 214 units from this population; their variate values are sto
 
 Now we imagine to be an agent who wants to make inferences about the full population -- which also means fragments from *future* or *unsolved* crime scenes. The agent uses -- or is the embodiment of -- the universal exchangeable-inference machine.
 
+## The agent's initial state of knowledge
+
 ### Load the machine's apparatus
 
 We load several `R` functions that implement the universal machine: they draw inferences, calculate marginal and conditional probabilities, and plot probability distributions:
@@ -48,21 +52,21 @@ We load several `R` functions that implement the universal machine: they draw in
 source('code/universal_exch-inference_machine.R')
 ```
 
-### The agent learns the background information
+### Learning the background information
 
 
 Our agent at the moment doesn't know anything at all, not even about the existence of the population above. If we were to ask it anything, we would just get a blank stare back.
 
-Let us give it basic background information about the population: its variates and the variates' domains. We do this through the function `finfo()`: it has a `data` argument, which we omit for the moment, and a `metadata` argument. The latter can simply be the name of the file containing the metadata (NB: this file must have a specific format):
+Let us give it the basic background information about the population: the variates' names and domains. We do this through the function `finfo()`: it has a `data` argument, which we omit for the moment, and a `metadata` argument. The latter can simply be the name of the file containing the metadata (NB: this file must have a specific format):
 
 ```{r}
-priorinfo <- finfo(metadata='datasets/glass_metadata-5_lev.csv')
+priorknowledge <- finfo(metadata='datasets/glass_metadata-5_lev.csv')
 ```
 
-The agent now possesses this basic background information, encoded in the `priorinfo` object. The encoding uses a particular mathematical representation which, however, is of no interest to us^[If you're curious you can have a glimpse at it with the command `str(priorinfo)`, which displays structural information about an object.]. Other representations could also be used, but the information would be the same. Think of this as encoding an image into a `png` or other lossless format: the representation of the image would be different, but the image would be the same.
+The agent now possesses this basic background knowlege, encoded in the `priorknowledge` object. The encoding uses a particular mathematical representation which, however, is of no interest to us^[If you're curious you can have a glimpse at it with the command `str(priorknowledge)`, which displays structural information about an object.]. Other representations could also be used, but the knowledge would be the same. Think of this as encoding an image into a `png` or other lossless format: the representation of the image would be different, but the image would be the same.
 
 
-### The agent makes some preliminary inferences and predictions
+### Preliminary inferences about the population
 
 Now the agent knows about the population, variates, and domains. But it has not seen any data, that is, the variate values for some units. Yet we can ask it some questions and to draw some inferences. Remember that *the answer to a question* is not just a value: it *is the collection of all possible values, with a probability assigned to each*. If the actual value is known, then it will have probability `1`, and all others probability `0`.
 
@@ -71,11 +75,11 @@ Let's ask the agent: what is the marginal frequency distribution for the variate
 This probability distribution for the $\vType$ variate is calculated by the function `fmarginal()`. It has arguments `finfo`: the agent's information; and `variates`: the names of the variates of which we want the marginal frequencies:
 
 ```{r}
-priorinfo_type <- fmarginal(finfo=priorinfo, variates='Type')
+priorknowledge_type <- fmarginal(finfo=priorknowledge, variates='Type')
 
 ```
 
-The answer is stored in the object `priorinfo_type`, which now contains only information pertinent to the $\vType$ variate.
+The answer is stored in the object `priorknowledge_type`, which now contains only information pertinent to the $\vType$ variate.
 
 We would like to visualize this probability distribution over marginal frequency distributions. A complication is that we would need infinite dimensions to visualize this faithfully. One approximate way to represent this probability distribution is by showing, say, 100 representative samples from it. The idea is the same as for a scatter plot ([§ @sec-represent-probs]). In this case we would then have 100 different frequency distributions for the variate $\vType$.
 
@@ -84,11 +88,122 @@ The function `plotsamples1D()` does this kind of visual representation. It has a
 How do you think this probability distribution will look like? what kind of marginal frequencies we do expect in the full population?
 
 ```{r}
-plotsamples1D(finfo=priorinfo_type, n=100, predict=FALSE)
+plotsamples1D(finfo=priorknowledge_type, n=100, predict=FALSE)
 ```
 
 You see that anything goes: Some frequency distributions give frequency almost `1` to a specific value, and almost `0` to the others. Other frequency distributions spread out the frequencies more evenly, with some peaks here or there.
 
 This is a meaningful answer, because the agent hasn't seen any data. From its point of view, everything is possible in this population.
+
+@@ TODO: add representation as quantiles
+
+### Preliminary inferences about units
+
+Up to now the agent has drawn an inference regarding the full population, not regarding any specific unit. Now let's ask it: what will be the value of the $\vType$ variate in the next unit, or glass fragment, we observe? As usual, an answer consists in a probability distribution over all possible values.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Before continuing, ask yourself the same question: which probabilities would you give to the $\vType$ values for the next unit, given that you only know that this quantity has seven possible values?
+:::
+
+The agent's answer this time is a probability distribution over seven values, which we can draw faithfully. The function `plotsamples1D()` can draw this probability as well, if we give the argument `predict=TRUE` (default):
+
+```{r}
+plotsamples1D(finfo=priorknowledge_type)
+```
+
+This plot shows the [probability distribution]{.blue} for the next unit in [blue]{.blue}, together with a sample of 100 possible frequency distributions for the $\vType$ variate over the full population. Note that samples are drawn anew every time, so they can look somewhat differently from time to time.^[To have reproducible plots, use `set.seed(314)` (or any integer you like) before calling the plot function.]
+
+The agent's answer is that in the next unit we can observe any $\vType$ value with equal probability. Do you think this is a reasonable answer?
+
+The plot above and the information is represents are a very useful for inference purposes: not only it gives the probability for the next observation, but it also gives an idea of how such a probability could change in the future, as more data are collected and knowledge of the population's frequency distribution becomes more precise.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Inspect the agent's inferences for other variates.
+:::
+
+
+## The agent learns from the sample data
+
+### Learning from the sample data
+
+Now let's give the agent the data from the sample of 214 glass fragments. This is done again with the `finfo()` function, but providing the `data` argument, which can be the name of the data file:
+
+```{r}
+postknowledge <- finfo(data='datasets/glass_data-5_lev.csv', metadata='datasets/glass_metadata-5_lev.csv')
+```
+
+The `postknowledge` object contains the agent's knowledge from the metadata and the sample data. This object can be used in the same way as the object representing the agent's background knowledge.
+
+### Inferences about the population
+
+Now that the agent has learned from the data, we can ask it again what is the marginal frequency distribution for the variate $\vType$, in the full population.
+
+We calculate the probability for the possible marginal frequency distributions, and then plot it as a set of 100 representative samples:
+
+```{r}
+postknowledge_type <- fmarginal(finfo=postknowledge, variates='Type')
+
+plotsamples1D(finfo=postknowledge_type, predict=FALSE)
+```
+
+This plot shows two important aspects of this probability distribution and of the agent's current state of knowledge:
+
+- Not anything goes anymore. Some frequency distributions are clearly "excluded", or more precisely they are *extremely* improbable. The most probable frequency distributions have a maximum at the $\cat{T2}$ value, another lower peak for the value $\cat{T4}$, and several other qualitative features that can be glimpsed from the plot.
+
+- Yet, the agent still has a degree of uncertainty, qualitatively shown by the width of the "bands" of frequency distributions. For example, the frequency for the $\cat{T2}$ value could be $0.40$ as well as $0.30$
+
+And there are other more specific aspects that can be found by visual inspection. For instance:
+
+- Some frequency distributions have their absolute maximum at $\cat{T1}$, and a lower frequency at $\cat{T2}$. Others have their absolute maximum at $\cat{T2}$ and a lower value at $\cat{T1}$. So there's still uncertainty as to which value is the most frequent in the full population.
+
+- The agent gives a very small but non-zero frequency to the value $\cat{T7}$. Yet, the data **have no units at all with the $\cat{T7}$ value**. Even if the agent has never seen this value in the data it was given, it knows nevertheless, from the metadata, that this is a possible value. So the agent doesn't dogmatically say that its frequency in the full population should be zero (as in the sample); only that it should be extremely low.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Given that the value $\cat{T7}$ has not been observed in 214 units, what approximate upper bound to its frequency would you give? Does the agent inference agree with your intuition?
+:::
+
+### Inferences about units
+
+Finally we ask the agent what $\vType$ value we should observe in the next glass fragment. The probability distribution answering this question is plotted by the same function with the argument `predict=TRUE` (default), as before:
+
+```{r}
+plotsamples1D(finfo=postknowledge_type)
+```
+
+
+## Conditional or "supervised" inferences
+
+The inferences about a new units that the agent has made so far were of an "unsupervised" or "generative" kind ([§ sec-2nd-connection-ML]): the agent did not receive or use any partial information about a new unit.
+
+Let's now imagine that we are at a new crime scene, a glass fragment is recovered, and tests are made about its refractive index and chemical composition. The following values are found, referred to the levels of our variates:
+
+```{r}
+newfragment <- c(RI=2, Na=2,  Mg=4,  Al=3,  Si=3,  K=1, Ca=2,  Ba=1,  Fe=1)
+```
+
+The detectives would like to know what's the possible origin of this fragment, that is, its $\vType$. Our agent can draw this inference.
+
+First, the agent can calculate the probability distribution over the *conditional frequencies* ([§ @sec-conditional-freqs]) of the $\vType$ values for the subpopulation ([§ @sec-subpopulations]) of units having the specific variate values above. This calculation is done with the function `fconditional()`, with arguments `finfo`: the agent's current knowledge, and `unitdata`: the partial data obtained from the unit.
+
+```{r}
+condknowledge <- fconditional(finfo=postknowledge, unitdata=newfragment)
+```
+
+The `condknowledge` object contains the agent's knowledge conditional on the variates given; this knowledge is about the remaining variates, which in this case are the single variate $\vType$ (so we don't need to calculate any marginal distributions).
+
+Second, the agent can calculate the probability distribution for the $\vType$ values of this particular glass fragment, given the above information.
+
+Both inferences can be visualized in the usual way:
+
+```{r}
+plotsamples1D(finfo=condknowledge)
+```
+
+The agent thus gives a probability around $87.5\%$ to the fragment's being of $\cat{T2}$ type, and around $7.5\%$ each of being $\cat{T1}$ or $\cat{T6}$ type. It also shows that further training data could change these probabilities by around $\pm 2.5\%$.
+
+Should the crime investigation proceed on the assumption that the fragment is of $\cat{T2}$ type? No, not necessarily. The best decision depends on the gains and costs involves in making correct or wrong assumptions. To this last decision-making problem we turn next.
 
 
