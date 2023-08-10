@@ -97,7 +97,7 @@ plotsamples1D <- function(finfo, n=100, predict=TRUE){
     ##
     tplot(y=t(samples), x=1:ncol(samples), type='b',
       xticks=1:ncol(samples), xlabels=dimnames(samples)[[2]],
-      xlab=attr(samples,'variates'), ylab='probability',
+      xlab=attr(samples,'variates'), ylab='frequency',
       ylim=c(0,NA),
       lty=1, lwd=1, pch=16, col=7, alpha=0.5, cex=0.75
       )
