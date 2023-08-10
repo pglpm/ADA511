@@ -510,16 +510,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="2" class="anchored" data-anchor-id="the-agents-initial-state-of-knowledge"><span class="header-section-number">2</span> The agent’s initial state of knowledge</h2>
 <section id="load-the-machines-apparatus" class="level3">
 <h3 class="anchored" data-anchor-id="load-the-machines-apparatus">Load the machine’s apparatus</h3>
-<p>We load several <code>R</code> functions that implement the universal machine: they draw inferences, calculate marginal and conditional probabilities, and plot probability distributions:</p>
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/universal_exch-inference_machine.R'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<p>The call</p>
+<pre><code>source('code/universal_exch-inference_machine.R')</code></pre>
+<p>at the beginning of this chapter loaded several <code>R</code> functions that implement the universal machine: they draw inferences, calculate marginal and conditional probabilities, and plot probability distributions.</p>
 </section>
 <section id="learning-the-background-information" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="learning-the-background-information">Learning the background information</h3>
 <p>Our agent at the moment doesn’t know anything at all, not even about the existence of the population above. If we were to ask it anything, we would just get a blank stare back.</p>
 <p>Let us give it the basic background information about the population: the variates’ names and domains. We do this through the function <code>finfo()</code>: it has a <code>data</code> argument, which we omit for the moment, and a <code>metadata</code> argument. The latter can simply be the name of the file containing the metadata (NB: this file must have a specific format):</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>priorknowledge <span class="ot">&lt;-</span> <span class="fu">finfo</span>(<span class="at">metadata=</span><span class="st">'datasets/glass_metadata-5_lev.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="page-columns page-full"><p>The agent now possesses this basic background knowlege, encoded in the <code>priorknowledge</code> object. The encoding uses a particular mathematical representation which, however, is of no interest to us<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Other representations could also be used, but the knowledge would be the same. Think of this as encoding an image into a <code>png</code> or other lossless format: the representation of the image would be different, but the image would be the same.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;If you’re curious you can have a glimpse at it with the command <code>str(priorknowledge)</code>, which displays structural information about an object.</p></li></div></div>
@@ -529,17 +528,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Now the agent knows about the population, variates, and domains. But it has not seen any data, that is, the variate values for some units. Yet we can ask it some questions and to draw some inferences. Remember that <em>the answer to a question</em> is not just a value: it <em>is the collection of all possible values, with a probability assigned to each</em>. If the actual value is known, then it will have probability <code>1</code>, and all others probability <code>0</code>.</p>
 <p>Let’s ask the agent: what is the marginal frequency distribution for the variate <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span>,</span> in the <em>full</em> (infinite!) population? Obviously the agent doesn’t know what the actual distribution is, nor do we. It will calculate a probability distribution over all possible marginal frequency distributions.</p>
 <p>This probability distribution for the <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> variate is calculated by the function <code>fmarginal()</code>. It has arguments <code>finfo</code>: the agent’s information; and <code>variates</code>: the names of the variates of which we want the marginal frequencies:</p>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>priorknowledge_type <span class="ot">&lt;-</span> <span class="fu">fmarginal</span>(<span class="at">finfo=</span>priorknowledge, <span class="at">variates=</span><span class="st">'Type'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The answer is stored in the object <code>priorknowledge_type</code>, which now contains only information pertinent to the <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> variate.</p>
 <p>We would like to visualize this probability distribution over marginal frequency distributions. A complication is that we would need infinite dimensions to visualize this faithfully. One approximate way to represent this probability distribution is by showing, say, 100 representative samples from it. The idea is the same as for a scatter plot (<a href="probability_distributions.html#sec-represent-probs">§&nbsp;&nbsp;<span>11.5</span></a>). In this case we would then have 100 different frequency distributions for the variate <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span>.</span></p>
 <p>The function <code>plotsamples1D()</code> does this kind of visual representation. It has arguments <code>finfo</code>: the object encoding the probability distribution; <code>n</code> (default 100): the number of samples to show; and <code>predict</code>, which for the moment we set to <code>FALSE</code> and discuss in a moment.</p>
 <p>How do you think this probability distribution will look like? what kind of marginal frequencies we do expect in the full population?</p>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotsamples1D</span>(<span class="at">finfo=</span>priorknowledge_type, <span class="at">n=</span><span class="dv">100</span>, <span class="at">predict=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="glass_application_R_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
+<p><img src="glass_application_R_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>You see that anything goes: Some frequency distributions give frequency almost <code>1</code> to a specific value, and almost <code>0</code> to the others. Other frequency distributions spread out the frequencies more evenly, with some peaks here or there.</p>
@@ -563,10 +562,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The agent’s answer this time is a probability distribution over seven values, which we can draw faithfully. The function <code>plotsamples1D()</code> can draw this probability as well, if we give the argument <code>predict=TRUE</code> (default):</p>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotsamples1D</span>(<span class="at">finfo=</span>priorknowledge_type)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="glass_application_R_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
+<p><img src="glass_application_R_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <div class="page-columns page-full"><p>This plot shows the <span class="blue">probability distribution</span> for the next unit in <span class="blue">blue</span>, together with a sample of 100 possible frequency distributions for the <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> variate over the full population. Note that samples are drawn anew every time, so they can look somewhat differently from time to time.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;To have reproducible plots, use <code>set.seed(314)</code> (or any integer you like) before calling the plot function.</p></li></div></div>
@@ -592,7 +591,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="learning-from-the-sample-data" class="level3">
 <h3 class="anchored" data-anchor-id="learning-from-the-sample-data">Learning from the sample data</h3>
 <p>Now let’s give the agent the data from the sample of 214 glass fragments. This is done again with the <code>finfo()</code> function, but providing the <code>data</code> argument, which can be the name of the data file:</p>
-<div class="cell" data-execution_count="9">
+<div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>postknowledge <span class="ot">&lt;-</span> <span class="fu">finfo</span>(<span class="at">data=</span><span class="st">'datasets/glass_data-5_lev.csv'</span>, <span class="at">metadata=</span><span class="st">'datasets/glass_metadata-5_lev.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>postknowledge</code> object contains the agent’s knowledge from the metadata and the sample data. This object can be used in the same way as the object representing the agent’s background knowledge.</p>
@@ -601,12 +600,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="inferences-about-the-population">Inferences about the population</h3>
 <p>Now that the agent has learned from the data, we can ask it again what is the marginal frequency distribution for the variate <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span>,</span> in the full population.</p>
 <p>We calculate the probability for the possible marginal frequency distributions, and then plot it as a set of 100 representative samples:</p>
-<div class="cell" data-execution_count="10">
+<div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>postknowledge_type <span class="ot">&lt;-</span> <span class="fu">fmarginal</span>(<span class="at">finfo=</span>postknowledge, <span class="at">variates=</span><span class="st">'Type'</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plotsamples1D</span>(<span class="at">finfo=</span>postknowledge_type, <span class="at">predict=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="glass_application_R_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
+<p><img src="glass_application_R_files/figure-html/cell-10-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>This plot shows two important aspects of this probability distribution and of the agent’s current state of knowledge:</p>
@@ -636,10 +635,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="inferences-about-units" class="level3">
 <h3 class="anchored" data-anchor-id="inferences-about-units">Inferences about units</h3>
 <p>Finally we ask the agent what <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> value we should observe in the next glass fragment. The probability distribution answering this question is plotted by the same function with the argument <code>predict=TRUE</code> (default), as before:</p>
-<div class="cell" data-execution_count="11">
+<div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotsamples1D</span>(<span class="at">finfo=</span>postknowledge_type)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="glass_application_R_files/figure-html/cell-12-output-1.png" class="img-fluid"></p>
+<p><img src="glass_application_R_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 </section>
@@ -651,22 +650,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><img src="glass_crimescene.jpg" class="img-fluid" style="width:100.0%"></p>
-</div></div><div class="cell" data-execution_count="12">
+</div></div><div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>newfragment <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">RI=</span><span class="dv">2</span>, <span class="at">Na=</span><span class="dv">2</span>,  <span class="at">Mg=</span><span class="dv">4</span>,  <span class="at">Al=</span><span class="dv">3</span>,  <span class="at">Si=</span><span class="dv">3</span>,  <span class="at">K=</span><span class="dv">1</span>, <span class="at">Ca=</span><span class="dv">2</span>,  <span class="at">Ba=</span><span class="dv">1</span>,  <span class="at">Fe=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The detectives would like to know what’s the possible origin of this fragment, that is, its <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span>.</span> Our agent can draw this inference.</p>
 <p>First, the agent can calculate the probability distribution over the <em>conditional frequencies</em> (<a href="subpopulations.html#sec-conditional-freqs">§&nbsp;&nbsp;<span>17.2</span></a>) of the <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> values for the subpopulation (<a href="subpopulations.html#sec-subpopulations">§&nbsp;&nbsp;<span>17.1</span></a>) of units having the specific variate values above. This calculation is done with the function <code>fconditional()</code>, with arguments <code>finfo</code>: the agent’s current knowledge, and <code>unitdata</code>: the partial data obtained from the unit.</p>
-<div class="cell" data-execution_count="13">
+<div class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>condknowledge <span class="ot">&lt;-</span> <span class="fu">fconditional</span>(<span class="at">finfo=</span>postknowledge, <span class="at">unitdata=</span>newfragment)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>condknowledge_type <span class="ot">&lt;-</span> <span class="fu">fmarginal</span>(<span class="at">finfo=</span>condknowledge, <span class="at">variates=</span><span class="st">'Type'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>condknowledge</code> object contains the agent’s knowledge conditional on the variates given; this knowledge is about the remaining variates, which in this case are the single variate <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> (so the <code>fmarginal()</code> calculation is actually redundant in this case).</p>
 <p>Second, the agent can calculate the probability distribution for the <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> values of this particular glass fragment, given the above information.</p>
 <p>Both inferences can be visualized in the usual way:</p>
-<div class="cell" data-execution_count="14">
+<div class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotsamples1D</span>(<span class="at">finfo=</span>condknowledge_type)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="glass_application_R_files/figure-html/cell-15-output-1.png" class="img-fluid"></p>
+<p><img src="glass_application_R_files/figure-html/cell-14-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>The agent thus gives a probability around <span style="display:inline-block;"><span class="math inline">\(87.5\%\)</span></span> to the fragment’s being of <span style="display:inline-block;"><span class="math inline">\(\texttt{\small T2}\)</span></span> type, and around <span style="display:inline-block;"><span class="math inline">\(7.5\%\)</span></span> each of being <span style="display:inline-block;"><span class="math inline">\(\texttt{\small T1}\)</span></span> or <span style="display:inline-block;"><span class="math inline">\(\texttt{\small T6}\)</span></span> type. It also shows that further training data could change these probabilities by around <span style="display:inline-block;"><span class="math inline">\(\pm 2.5\%\)</span>.</span></p>
