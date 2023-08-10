@@ -102,7 +102,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="ada511styles.css">
 </head>
 
-<body class="nav-sidebar docked">
+<body class="nav-sidebar docked slimcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -418,12 +418,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#load-the-machine" id="toc-load-the-machine" class="nav-link active" data-scroll-target="#load-the-machine">Load the machine</a></li>
+  <li><a href="#load-the-machines-apparatus" id="toc-load-the-machines-apparatus" class="nav-link active" data-scroll-target="#load-the-machines-apparatus">Load the machine’s apparatus</a></li>
+  <li><a href="#the-agent-learns-the-background-information" id="toc-the-agent-learns-the-background-information" class="nav-link" data-scroll-target="#the-agent-learns-the-background-information">The agent learns the background information</a></li>
+  <li><a href="#the-agent-makes-some-preliminary-inferences-and-predictions" id="toc-the-agent-makes-some-preliminary-inferences-and-predictions" class="nav-link" data-scroll-target="#the-agent-makes-some-preliminary-inferences-and-predictions">The agent makes some preliminary inferences and predictions</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -563,15 +565,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><br>
 </p>
 <p>Now we imagine to be an agent who wants to make inferences about the full population – which also means fragments from <em>future</em> or <em>unsolved</em> crime scenes. The agent uses – or is the embodiment of – the universal exchangeable-inference machine.</p>
-<section id="load-the-machine" class="level3">
-<h3 class="anchored" data-anchor-id="load-the-machine">Load the machine</h3>
-<p>We load several <code>R</code> functions that draw inferences, calculate marginal and conditional probabilities, and plot them:</p>
+<section id="load-the-machines-apparatus" class="level3">
+<h3 class="anchored" data-anchor-id="load-the-machines-apparatus">Load the machine’s apparatus</h3>
+<p>We load several <code>R</code> functions that implement the universal machine: they draw inferences, calculate marginal and conditional probabilities, and plot probability distributions:</p>
 <div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/universal_exch-inference_machine.R'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="the-agent-learns-the-background-information" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="the-agent-learns-the-background-information">The agent learns the background information</h3>
+<p>Our agent at the moment doesn’t know anything at all, not even about the existence of the population above. If we were to ask it anything, we would just get a blank stare back.</p>
+<p>Let us give it basic background information about the population: its variates and the variates’ domains. We do this through the function <code>finfo()</code>: it has a <code>data</code> argument, which we omit for the moment, and a <code>metadata</code> argument. The latter can simply be the name of the file containing the metadata (NB: this file must have a specific format):</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>priorinfo <span class="ot">&lt;-</span> <span class="fu">finfo</span>(<span class="at">metadata=</span><span class="st">'datasets/glass_metadata-5_lev.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="page-columns page-full"><p>The agent now possesses this basic background information, encoded in the <code>priorinfo</code> object. The encoding uses a particular mathematical representation which, however, is of no interest to us<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Other representations could also be used, but the information would be the same. Think of this as encoding an image into a <code>png</code> or other lossless format: the representation of the image would be different, but the image would be the same.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;If you’re curious you can have a glimpse at it with the command <code>str(priorinfo)</code>, which displays structural information about an object.</p></li></div></div>
+</section>
+<section id="the-agent-makes-some-preliminary-inferences-and-predictions" class="level3">
+<h3 class="anchored" data-anchor-id="the-agent-makes-some-preliminary-inferences-and-predictions">The agent makes some preliminary inferences and predictions</h3>
+<p>Now the agent knows about the population, variates, and domains. But it has not seen any data, that is, the variate values for some units. Yet we can ask it some questions and to draw some inferences. Remember that <em>the answer to a question</em> is not just a value: it <em>is the collection of all possible values, with a probability assigned to each</em>. If the actual value is known, then it will have probability <code>1</code>, and all others probability <code>0</code>.</p>
+<p>Let’s ask the agent: what is the marginal frequency distribution for the variate <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span>,</span> in the <em>full</em> (infinite!) population? Obviously the agent doesn’t know what the actual distribution is, nor do we. It will calculate a probability distribution over all possible marginal frequency distributions.</p>
+<p>This probability distribution for the <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> variate is calculated by the function <code>fmarginal()</code>. It has arguments <code>finfo</code>: the agent’s information; and <code>variates</code>: the names of the variates of which we want the marginal frequencies:</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>priorinfo_type <span class="ot">&lt;-</span> <span class="fu">fmarginal</span>(<span class="at">finfo=</span>priorinfo, <span class="at">variates=</span><span class="st">'Type'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The answer is stored in the object <code>priorinfo_type</code>, which now contains only information pertinent to the <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> variate.</p>
+<p>We would like to visualize this probability distribution over marginal frequency distributions. A complication is that we would need infinite dimensions to visualize this faithfully. One approximate way to represent this probability distribution is by showing, say, 100 representative samples from it. The idea is the same as for a scatter plot (<a href="probability_distributions.html#sec-represent-probs">§&nbsp;&nbsp;<span>11.5</span></a>). In this case we would then have 100 different frequency distributions for the variate <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span>.</span></p>
+<p>The function <code>plotsamples1D()</code> does this kind of visual representation. It has arguments <code>finfo</code>: the object encoding the probability distribution; <code>n</code> (default 100): the number of samples to show; and <code>predict</code>, which for the moment we set to <code>FALSE</code> and discuss in a moment.</p>
+<p>How do you think this probability distribution will look like? what kind of marginal frequencies we do expect in the full population?</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotsamples1D</span>(<span class="at">finfo=</span>priorinfo_type, <span class="at">n=</span><span class="dv">100</span>, <span class="at">predict=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="glass_application_R_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>You see that anything goes: Some frequency distributions give frequency almost <code>1</code> to a specific value, and almost <code>0</code> to the others. Other frequency distributions spread out the frequencies more evenly, with some peaks here or there.</p>
+<p>This is a meaningful answer, because the agent hasn’t seen any data. From its point of view, everything is possible in this population.</p>
 
 
 </section>
+
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -40,13 +40,55 @@ We have a sample of 214 units from this population; their variate values are sto
 
 Now we imagine to be an agent who wants to make inferences about the full population -- which also means fragments from *future* or *unsolved* crime scenes. The agent uses -- or is the embodiment of -- the universal exchangeable-inference machine.
 
-### Load the machine
+### Load the machine's apparatus
 
-We load several `R` functions that draw inferences, calculate marginal and conditional probabilities, and plot them:
+We load several `R` functions that implement the universal machine: they draw inferences, calculate marginal and conditional probabilities, and plot probability distributions:
 
 ```{r}
 source('code/universal_exch-inference_machine.R')
 ```
 
+### The agent learns the background information
+
+
+Our agent at the moment doesn't know anything at all, not even about the existence of the population above. If we were to ask it anything, we would just get a blank stare back.
+
+Let us give it basic background information about the population: its variates and the variates' domains. We do this through the function `finfo()`: it has a `data` argument, which we omit for the moment, and a `metadata` argument. The latter can simply be the name of the file containing the metadata (NB: this file must have a specific format):
+
+```{r}
+priorinfo <- finfo(metadata='datasets/glass_metadata-5_lev.csv')
+```
+
+The agent now possesses this basic background information, encoded in the `priorinfo` object. The encoding uses a particular mathematical representation which, however, is of no interest to us^[If you're curious you can have a glimpse at it with the command `str(priorinfo)`, which displays structural information about an object.]. Other representations could also be used, but the information would be the same. Think of this as encoding an image into a `png` or other lossless format: the representation of the image would be different, but the image would be the same.
+
+
+### The agent makes some preliminary inferences and predictions
+
+Now the agent knows about the population, variates, and domains. But it has not seen any data, that is, the variate values for some units. Yet we can ask it some questions and to draw some inferences. Remember that *the answer to a question* is not just a value: it *is the collection of all possible values, with a probability assigned to each*. If the actual value is known, then it will have probability `1`, and all others probability `0`.
+
+Let's ask the agent: what is the marginal frequency distribution for the variate $\vType$, in the *full* (infinite!) population? Obviously the agent doesn't know what the actual distribution is, nor do we. It will calculate a probability distribution over all possible marginal frequency distributions.
+
+This probability distribution for the $\vType$ variate is calculated by the function `fmarginal()`. It has arguments `finfo`: the agent's information; and `variates`: the names of the variates of which we want the marginal frequencies:
+
+```{r}
+priorinfo_type <- fmarginal(finfo=priorinfo, variates='Type')
+
+```
+
+The answer is stored in the object `priorinfo_type`, which now contains only information pertinent to the $\vType$ variate.
+
+We would like to visualize this probability distribution over marginal frequency distributions. A complication is that we would need infinite dimensions to visualize this faithfully. One approximate way to represent this probability distribution is by showing, say, 100 representative samples from it. The idea is the same as for a scatter plot ([§ @sec-represent-probs]). In this case we would then have 100 different frequency distributions for the variate $\vType$.
+
+The function `plotsamples1D()` does this kind of visual representation. It has arguments `finfo`: the object encoding the probability distribution; `n` (default 100): the number of samples to show; and `predict`, which for the moment we set to `FALSE` and discuss in a moment.
+
+How do you think this probability distribution will look like? what kind of marginal frequencies we do expect in the full population?
+
+```{r}
+plotsamples1D(finfo=priorinfo_type, n=100, predict=FALSE)
+```
+
+You see that anything goes: Some frequency distributions give frequency almost `1` to a specific value, and almost `0` to the others. Other frequency distributions spread out the frequencies more evenly, with some peaks here or there.
+
+This is a meaningful answer, because the agent hasn't seen any data. From its point of view, everything is possible in this population.
 
 
