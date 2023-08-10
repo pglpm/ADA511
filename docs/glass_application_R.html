@@ -434,7 +434,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#inferences-about-the-population" id="toc-inferences-about-the-population" class="nav-link" data-scroll-target="#inferences-about-the-population">Inferences about the population</a></li>
   <li><a href="#inferences-about-units" id="toc-inferences-about-units" class="nav-link" data-scroll-target="#inferences-about-units">Inferences about units</a></li>
   </ul></li>
-  <li><a href="#conditional-or-supervised-inferences" id="toc-conditional-or-supervised-inferences" class="nav-link" data-scroll-target="#conditional-or-supervised-inferences"><span class="header-section-number">4</span> Conditional or “supervised” inferences</a></li>
+  <li><a href="#conditional-discriminative-or-supervised-learning-inferences" id="toc-conditional-discriminative-or-supervised-learning-inferences" class="nav-link" data-scroll-target="#conditional-discriminative-or-supervised-learning-inferences"><span class="header-section-number">4</span> Conditional, “discriminative” or “supervised-learning” inferences</a></li>
   </ul>
 </nav>
     </div>
@@ -720,29 +720,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="conditional-or-supervised-inferences" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="conditional-or-supervised-inferences"><span class="header-section-number">4</span> Conditional or “supervised” inferences</h2>
-<p>The inferences about a new units that the agent has made so far were of an “unsupervised” or “generative” kind ([§&nbsp;sec-2nd-connection-ML]): the agent did not receive or use any partial information about a new unit.</p>
-<p>Let’s now imagine that we are at a new crime scene, a glass fragment is recovered, and tests are made about its refractive index and chemical composition. The following values are found, referred to the levels of our variates:</p>
+<section id="conditional-discriminative-or-supervised-learning-inferences" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="conditional-discriminative-or-supervised-learning-inferences"><span class="header-section-number">4</span> Conditional, “discriminative” or “supervised-learning” inferences</h2>
+<p>The inferences about a new units that the agent has made so far were of an “unsupervised-learning” or “generative” kind ([§&nbsp;sec-2nd-connection-ML]): the agent did not receive or use any partial information about a new unit. Let’s now try a “supervised-learning” or “generative” kind of inference.</p>
+<p>Imagine that we are at a new crime scene, a glass fragment is recovered, and tests are made about its refractive index and chemical composition. The following values are found, referred to the levels of our variates:</p>
 <div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>newfragment <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">RI=</span><span class="dv">2</span>, <span class="at">Na=</span><span class="dv">2</span>,  <span class="at">Mg=</span><span class="dv">4</span>,  <span class="at">Al=</span><span class="dv">3</span>,  <span class="at">Si=</span><span class="dv">3</span>,  <span class="at">K=</span><span class="dv">1</span>, <span class="at">Ca=</span><span class="dv">2</span>,  <span class="at">Ba=</span><span class="dv">1</span>,  <span class="at">Fe=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The detectives would like to know what’s the possible origin of this fragment, that is, its <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span>.</span> Our agent can draw this inference.</p>
 <p>First, the agent can calculate the probability distribution over the <em>conditional frequencies</em> (<a href="subpopulations.html#sec-conditional-freqs">§&nbsp;&nbsp;<span>17.2</span></a>) of the <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> values for the subpopulation (<a href="subpopulations.html#sec-subpopulations">§&nbsp;&nbsp;<span>17.1</span></a>) of units having the specific variate values above. This calculation is done with the function <code>fconditional()</code>, with arguments <code>finfo</code>: the agent’s current knowledge, and <code>unitdata</code>: the partial data obtained from the unit.</p>
 <div class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>condknowledge <span class="ot">&lt;-</span> <span class="fu">fconditional</span>(<span class="at">finfo=</span>postknowledge, <span class="at">unitdata=</span>newfragment)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>condknowledge <span class="ot">&lt;-</span> <span class="fu">fconditional</span>(<span class="at">finfo=</span>postknowledge, <span class="at">unitdata=</span>newfragment)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>condknowledge_type <span class="ot">&lt;-</span> <span class="fu">fmarginal</span>(<span class="at">finfo=</span>condknowledge, <span class="at">variates=</span><span class="st">'Type'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The <code>condknowledge</code> object contains the agent’s knowledge conditional on the variates given; this knowledge is about the remaining variates, which in this case are the single variate <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> (so we don’t need to calculate any marginal distributions).</p>
+<p>The <code>condknowledge</code> object contains the agent’s knowledge conditional on the variates given; this knowledge is about the remaining variates, which in this case are the single variate <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> (so the <code>fmarginal()</code> calculation is actually redundant in this case).</p>
 <p>Second, the agent can calculate the probability distribution for the <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> values of this particular glass fragment, given the above information.</p>
 <p>Both inferences can be visualized in the usual way:</p>
 <div class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotsamples1D</span>(<span class="at">finfo=</span>condknowledge)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotsamples1D</span>(<span class="at">finfo=</span>condknowledge_type)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="glass_application_R_files/figure-html/cell-12-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>The agent thus gives a probability around <span style="display:inline-block;"><span class="math inline">\(87.5\%\)</span></span> to the fragment’s being of <span style="display:inline-block;"><span class="math inline">\(\texttt{\small T2}\)</span></span> type, and around <span style="display:inline-block;"><span class="math inline">\(7.5\%\)</span></span> each of being <span style="display:inline-block;"><span class="math inline">\(\texttt{\small T1}\)</span></span> or <span style="display:inline-block;"><span class="math inline">\(\texttt{\small T6}\)</span></span> type. It also shows that further training data could change these probabilities by around <span style="display:inline-block;"><span class="math inline">\(\pm 2.5\%\)</span>.</span></p>
 <p>Should the crime investigation proceed on the assumption that the fragment is of <span style="display:inline-block;"><span class="math inline">\(\texttt{\small T2}\)</span></span> type? No, not necessarily. The best decision depends on the gains and costs involves in making correct or wrong assumptions. To this last decision-making problem we turn next.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Do the “discriminative” inferences above, but omitting from the <code>newfragment</code> data <em>one</em> variate in turn; so first omit only <span style="display:inline-block;"><span class="math inline">\(\mathit{RI}\)</span></span> and do the inferences, then omit only <span style="display:inline-block;"><span class="math inline">\(\mathit{Na}\)</span></span> and do the inferences, and so on.</p></li>
+<li><p>In each of these inferences you will find that the agent becomes more ore less “confident” about the fragment type. Which of the variates above seem to be most important for making a confident inference?</p></li>
+</ul>
+</div>
+</div>
 
 
 </section>

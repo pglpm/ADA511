@@ -174,11 +174,11 @@ plotsamples1D(finfo=postknowledge_type)
 ```
 
 
-## Conditional or "supervised" inferences
+## Conditional, "discriminative" or "supervised-learning" inferences
 
-The inferences about a new units that the agent has made so far were of an "unsupervised" or "generative" kind ([§ sec-2nd-connection-ML]): the agent did not receive or use any partial information about a new unit.
+The inferences about a new units that the agent has made so far were of an "unsupervised-learning" or "generative" kind ([§ sec-2nd-connection-ML]): the agent did not receive or use any partial information about a new unit. Let's now try a "supervised-learning" or "generative" kind of inference.
 
-Let's now imagine that we are at a new crime scene, a glass fragment is recovered, and tests are made about its refractive index and chemical composition. The following values are found, referred to the levels of our variates:
+Imagine that we are at a new crime scene, a glass fragment is recovered, and tests are made about its refractive index and chemical composition. The following values are found, referred to the levels of our variates:
 
 ```{r}
 newfragment <- c(RI=2, Na=2,  Mg=4,  Al=3,  Si=3,  K=1, Ca=2,  Ba=1,  Fe=1)
@@ -190,20 +190,29 @@ First, the agent can calculate the probability distribution over the *conditiona
 
 ```{r}
 condknowledge <- fconditional(finfo=postknowledge, unitdata=newfragment)
+condknowledge_type <- fmarginal(finfo=condknowledge, variates='Type')
 ```
 
-The `condknowledge` object contains the agent's knowledge conditional on the variates given; this knowledge is about the remaining variates, which in this case are the single variate $\vType$ (so we don't need to calculate any marginal distributions).
+The `condknowledge` object contains the agent's knowledge conditional on the variates given; this knowledge is about the remaining variates, which in this case are the single variate $\vType$ (so the `fmarginal()` calculation is actually redundant in this case).
 
 Second, the agent can calculate the probability distribution for the $\vType$ values of this particular glass fragment, given the above information.
 
 Both inferences can be visualized in the usual way:
 
 ```{r}
-plotsamples1D(finfo=condknowledge)
+plotsamples1D(finfo=condknowledge_type)
 ```
 
 The agent thus gives a probability around $87.5\%$ to the fragment's being of $\cat{T2}$ type, and around $7.5\%$ each of being $\cat{T1}$ or $\cat{T6}$ type. It also shows that further training data could change these probabilities by around $\pm 2.5\%$.
 
 Should the crime investigation proceed on the assumption that the fragment is of $\cat{T2}$ type? No, not necessarily. The best decision depends on the gains and costs involves in making correct or wrong assumptions. To this last decision-making problem we turn next.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+- Do the "discriminative" inferences above, but omitting from the `newfragment` data *one* variate in turn; so first omit only $\vRI$ and do the inferences, then omit only $\vNa$ and do the inferences, and so on.
+
+- In each of these inferences you will find that the agent becomes more ore less "confident" about the fragment type. Which of the variates above seem to be most important for making a confident inference?
+:::
+
 
 
