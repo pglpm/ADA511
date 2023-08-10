@@ -59,7 +59,7 @@ fconditional <- function(finfo, unitdata){
     totake <- as.list(rep(TRUE, length(dim(finfo))))
     totake[ncond] <- unitdata
     alphas <- do.call('[', c(list(finfo), totake))
-    alphas <- alphas*sum(finfo)/sum(alphas)
+    alphas <- alphas # *sum(finfo)/sum(alphas)
     if(is.null(dim(alphas))){
         tempnames <- names(alphas)
         dim(alphas) <- length(alphas)
