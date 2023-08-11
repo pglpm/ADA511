@@ -63,6 +63,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -522,13 +525,60 @@ ul.task-list li input[type="checkbox"] {
 <p>By definition, in a decision problem under uncertainty there is generally no method to <em>determine</em> the decision that surely leads to the desired consequence – if such a method existed, then the problem would not have any uncertainty! Therefore, if there is a method to deal with decision problems, its goal cannot be the determination of the <em>successful</em> decision. This also means that a priori we cannot blame an engineer for making an unsuccessful decision in a situation of uncertainty.</p>
 <p>Imagine two persons, Henry and Tina, who must bet on “heads” or “tails” under the following conditions (but who otherwise don’t get any special thrill from betting):</p>
 <ul>
-<li>If the bet is “heads” and the coin lands “heads”, the person wins a <em>small</em> amount of money; but if it lands “tails”, they lose a <em>large</em> amount of money.</li>
-<li>If the bet is “tails” and the coin lands “tails”, the person <em>wins</em> a small amount of money; if it lands “heads”, they lose the same <em>small</em> amount of money.</li>
+<li><span class="yellow">If the bet is “heads”</span> and the coin lands <span class="green">heads</span>, the person <span class="green">wins a <em>small</em> amount</span> of money; but if it lands <span class="red">tails</span>, they <span class="red">lose a <em>large</em> amount</span> of money.</li>
+<li><span class="green">If the bet is “tails”</span> and the coin lands <span class="green">tails</span>, the person <span class="green"><em>wins</em> a small amount</span> of money; if it lands <span class="red">heads</span>, they <span class="red">lose the same <em>small</em> amount</span> of money.</li>
 </ul>
-<p>Henry chooses the first bet, on “heads”. Tina chooses the second bet, on “tails”. The coin comes down “heads”. So Henry wins the small amount of money, while Tina loses the same small amount. What would we say about their decisions?</p>
-<p>Henry’s decision was lucky, and yet <em>irrational</em>: he risked losing much more money than in the second bet, without any possibility of at least winning more. Tina’s decision was unlucky, and yet <em>rational</em>: the possibility and amount of winning was the same in the two bets, and she chose the bet with the least amount of loss. We expect that any person making Henry’s decision in similar, future bets will eventually lose more money than any person making Tina’s decision.</p>
-<p>This example shows two points. First, “success” is generally not a good criterion to judge a decision under uncertainty; success can be the pure outcome of luck, not of smarts. Second, even if there is no method to determine which decision is successful, there is a method to determine which decision is rational or <span class="blue"><strong>optimal</strong></span>, given the particular gains, losses, and uncertainties involved in the decision problem. We had a glimpse of this method in our introductory scenarios.</p>
-<p>Let us emphasize, however, that we are not giving up on “success”, or trading it for “optimality”. Indeed we’ll find that <span class="blue"><strong>Decision Theory automatically leads to the <em>successful</em> decision</strong></span> in problems where uncertainty is not present or is irrelevant. It’s a win-win. It’s important to keep this point in mind:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  C[choose a bet!] ---|heads| H([toss coin])
+  C ---|tails| T([toss coin])
+  H ---|heads| HH{{+ $}}
+  H ---|tails| HT{{- $$$}}
+  T ---|heads| TH{{- $}}
+  T ---|tails| TT{{+ $}}
+  %%
+  linkStyle 0 stroke:#cb4,color:#cb4
+  linkStyle 1 stroke:#6ce,color:#6ce
+  linkStyle 2 stroke:#283,color:#283
+  linkStyle 3 stroke:#e67,color:#e67
+  linkStyle 4 stroke:#e67,color:#e67
+  linkStyle 5 stroke:#283,color:#283
+  style HH fill:#283,color:#fff,stroke-width:0px
+  style HT fill:#e67,color:#fff,stroke-width:0px
+  style TT fill:#283,color:#fff,stroke-width:0px
+  style TH fill:#e67,color:#fff,stroke-width:0px
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Which bet would you choose? why?</p>
+</div>
+</div>
+<p><span class="yellow">Henry chooses the “heads” bet</span>. <span class="green">Tina chooses the “tails” bet</span>. The coin comes down <span class="midgrey">heads</span>. So Henry wins the small amount of money, while Tina loses the same small amount.</p>
+<p>What would we say about their decisions?</p>
+<p><span class="yellow">Henry’s decision</span> was lucky, and yet <em>irrational</em>: he risked losing much more money than he could win. <span class="green">Tina’s decision</span> was unlucky, and yet <em>rational</em>: she wasn’t risking to lose more than she could win. Said otherwise, the two bets had the same winning prospects, but the <span class="yellow">“heads”</span> bet had more risk of loss than the <span class="green">“tails”</span> bet.</p>
+<p>We expect that any person making Henry’s decision in similar, future bets will eventually lose more money than any person making Tina’s decision.</p>
+<p>This example shows two points:</p>
+<ul>
+<li><p>“success” is generally not a good criterion to judge a decision under uncertainty; success can be the pure outcome of luck, not of smarts</p></li>
+<li><p>even if there is no method to determine which decision is successful, there is a method to determine which decision is rational or <span class="blue"><strong>optimal</strong></span>, given the particular gains, losses, and uncertainties involved in the decision problem</p></li>
+</ul>
+<p>We had a glimpse of this method in our introductory scenarios.</p>
+<p>Let us emphasize, however, that we are not giving up on “success”, or trading it for “optimality”. Indeed we’ll find that <span class="blue"><em>Decision Theory automatically leads to the <strong>successful</strong> decision</em></span> in problems where uncertainty is not present or is irrelevant. It’s a win-win. It’s important to keep this point in mind:</p>
 <div class="column-page-inset-right">
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -565,7 +615,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p><br>
 </p>
-<p>Decision Theory has a long history, going back to Leibniz in the 1600s and partly even to Aristotle in the −300s, and appearing in its present form around 1920–1960. What’s remarkable about it is that it is not only <em>a</em> framework, but <em>the</em> framework we must use. A logico-mathematical theorem shows that <span class="blue"><strong>any framework that does not break basic optimality and rationality criteria has to be equivalent to Decision Theory</strong></span>. In other words, any “alternative” framework may use different technical terminology and rewrite mathematical operations in a different way, but it boils down to the same notions and operations of Decision Theory. So if you wanted to invent and use another framework, then either (a) it would lead to some irrational or illogical consequences, or (b) it would lead to results identical to Decision Theory’s. Many frameworks that you are probably familiar with, such as optimization theory or Boolean logic, are just specific applications or particular cases of Decision Theory.</p>
+<p>Decision Theory has a long history, going back to Leibniz in the 1600s and partly even to Aristotle in the −300s, and appearing in its present form around 1920–1960. What’s remarkable about it is that it is not only <em>a</em> framework, but <em>the</em> framework we must use. A logico-mathematical theorem shows that <span class="blue"><em>any framework that does not break basic optimality and rationality criteria has to be equivalent to Decision Theory</em></span>. In other words, any “alternative” framework may use different technical terminology and rewrite mathematical operations in a different way, but it boils down to the same notions and operations of Decision Theory. So if you wanted to invent and use another framework, then either (a) it would lead to some irrational or illogical consequences, or (b) it would lead to results identical to Decision Theory’s. Many frameworks that you are probably familiar with, such as optimization theory or Boolean logic, are just specific applications or particular cases of Decision Theory.</p>
 <p>Thus we list one more important characteristic of Decision Theory:</p>
 <ul>
 <li><span class="green"><i class="fa-solid fa-check" aria-label="check"></i> it is <span class="blue"><strong>normative</strong></span></span></li>
