@@ -24,24 +24,24 @@ Consider the following population, which we consider to be exchangeable:
 - [*Units*: glass fragments collected at particularly defined crime scenes.]{.small}
 
 - [*Variates*:]{.small}
-    + [$\vRI$, ordinal, domain $\set{1,\dotsc,5}$: Refractive Index of the fragment]{.small}
-    + [$\vNa$, ordinal, domain $\set{1,\dotsc,5}$: Natrium content of the fragment]{.small}
-    + [$\vMg$, ordinal, domain $\set{1,\dotsc,5}$: Magnesium content of the fragment]{.small}
-    + [$\vAl$, ordinal, domain $\set{1,\dotsc,5}$: Aluminium content of the fragment]{.small}
-    + [$\vSi$, ordinal, domain $\set{1,\dotsc,5}$: Silicon content of the fragment]{.small}
-    + [$\vK$, ordinal, domain $\set{1,\dotsc,5}$: Potassium content of the fragment]{.small}
-    + [$\vCa$, ordinal, domain $\set{1,\dotsc,5}$: Calcium content of the fragment]{.small}
-    + [$\vBa$, ordinal, domain $\set{1,\dotsc,5}$: Barium content of the fragment]{.small}
-    + [$\vFe$, ordinal, domain $\set{1,\dotsc,5}$: Iron content of the fragment]{.small}
-	+ [$\vType$, nominal, domain $\set{\cat{T1},\dots,\cat{T7}}$: Type or origin of the glass fragment]{.small}
+    + [$\vRI$, ordinal, domain $\set{1,\dotsc,4}$: Refractive Index of the fragment]{.small}
+    + [$\vNa$, ordinal, domain $\set{1,\dotsc,4}$: Natrium content of the fragment]{.small}
+    + [$\vMg$, ordinal, domain $\set{1,\dotsc,4}$: Magnesium content of the fragment]{.small}
+    + [$\vAl$, ordinal, domain $\set{1,\dotsc,4}$: Aluminium content of the fragment]{.small}
+    + [$\vSi$, ordinal, domain $\set{1,\dotsc,4}$: Silicon content of the fragment]{.small}
+    + [$\vK$, ordinal, domain $\set{1,\dotsc,4}$: Potassium content of the fragment]{.small}
+    + [$\vCa$, ordinal, domain $\set{1,\dotsc,4}$: Calcium content of the fragment]{.small}
+    + [$\vBa$, ordinal, domain $\set{1,\dotsc,4}$: Barium content of the fragment]{.small}
+    + [$\vFe$, ordinal, domain $\set{1,\dotsc,4}$: Iron content of the fragment]{.small}
+	+ [$\vType$, nominal, domain $\set{\cat{T1},\dotsc,\cat{T7}}$: Type or origin of the glass fragment]{.small}
 	
-	[The values for the $\vRI$ and content variates represent ranges of numeric values or percentages, which you can find in [this metadata file](datasets/glass_metadata-5_lev.csv). In the same file you also find the description of the glass types.]{.small}
+	[The values for the $\vRI$ and content variates represent ranges of numeric values or percentages, which you can find in [this metadata file](datasets/glass_metadata-4_lev.csv). In the same file you also find the description of the glass types.]{.small}
 
-We have a sample of 214 units from this population; their variate values are stored in [this data file](datasets/glass_data-5_lev.csv). Here are the first five units:
+We have a sample of 214 units from this population; their variate values are stored in [this data file](datasets/glass_data-4_lev.csv). Here are the first five units:
 
 ```{r}
 #| fig-cap: "Glimpse of the glass-fragment dataset"
-print(head(fread('datasets/glass_data-5_lev.csv'), 5))
+print(head(fread('datasets/glass_data-4_lev.csv'), 5))
 ```
 
 \
@@ -68,7 +68,7 @@ Our agent at the moment doesn't know anything at all, not even about the existen
 Let us give it the basic background information about the population: the variates' names and domains. We do this through the function `finfo()`: it has a `data` argument, which we omit for the moment, and a `metadata` argument. The latter can simply be the name of the file containing the metadata (NB: this file must have a specific format):
 
 ```{r}
-priorknowledge <- finfo(metadata='datasets/glass_metadata-5_lev.csv')
+priorknowledge <- finfo(metadata='datasets/glass_metadata-4_lev.csv')
 ```
 
 The agent now possesses this basic background knowlege, encoded in the `priorknowledge` object. The encoding uses a particular mathematical representation which, however, is of no interest to us^[If you're curious you can have a glimpse at it with the command `str(priorknowledge)`, which displays structural information about an object.]. Other representations could also be used, but the knowledge would be the same. Think of this as encoding an image into a `png` or other lossless format: the representation of the image would be different, but the image would be the same.
@@ -139,7 +139,7 @@ Inspect the agent's inferences for other variates.
 Now let's give the agent the data from the sample of 214 glass fragments. This is done again with the `finfo()` function, but providing the `data` argument, which can be the name of the data file:
 
 ```{r}
-postknowledge <- finfo(data='datasets/glass_data-5_lev.csv', metadata='datasets/glass_metadata-5_lev.csv')
+postknowledge <- finfo(data='datasets/glass_data-4_lev.csv', metadata='datasets/glass_metadata-4_lev.csv')
 ```
 
 The `postknowledge` object contains the agent's knowledge from the metadata and the sample data. This object can be used in the same way as the object representing the agent's background knowledge.
@@ -164,13 +164,13 @@ This plot shows two important aspects of this probability distribution and of th
 
 And there are other more specific aspects that can be found by visual inspection. For instance:
 
-- Some frequency distributions have their absolute maximum at $\cat{T1}$, and a lower frequency at $\cat{T2}$. Others have their absolute maximum at $\cat{T2}$ and a lower value at $\cat{T1}$. So there's still uncertainty as to which value is the most frequent in the full population.
+- Some frequency distributions have their absolute maximum at $\cat{T1}$, and a lower value at $\cat{T2}$. Vice versa, others have their absolute maximum at $\cat{T2}$ and a lower value at $\cat{T1}$. So there's still uncertainty as to which value is the most frequent in the full population.
 
-- The agent gives a very small but non-zero frequency to the value $\cat{T7}$. Yet, the data **have no units at all with the $\cat{T7}$ value**. Even if the agent has never seen this value in the data it was given, it knows nevertheless, from the metadata, that this is a possible value. So the agent doesn't dogmatically say that its frequency in the full population should be zero (as in the sample); only that it should be extremely low.
+- The agent gives a very small but non-zero frequency to the value $\cat{T7}$. Yet, *the data have no units at all with the $\cat{T7}$ value*. Even if the agent has never seen this value in the data it was given, it knows nevertheless, from the metadata, that this is a possible value. So the agent doesn't dogmatically say that its frequency in the full population should be zero (as in the sample); only that it should be extremely low.
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
-Given that the value $\cat{T7}$ has not been observed in 214 units, what approximate upper bound to its frequency would you give? Does the agent inference agree with your intuition?
+Given that the value $\cat{T7}$ has not been observed in 214 units, what approximate upper bound to its frequency would you give? Does the agent's inference agree with your intuition?
 :::
 
 ### Inferences about units
@@ -178,13 +178,15 @@ Given that the value $\cat{T7}$ has not been observed in 214 units, what approxi
 Finally we ask the agent what $\vType$ value we should observe in the next glass fragment. The probability distribution answering this question is plotted by the same function with the argument `predict=TRUE` (default), as before:
 
 ```{r}
+#| label: fig-unconditional-glass
+#| fig-cap: "[Frequency distributions for full population]{.grey}, and [probability distribution for next unit]{.blue}"
 plotsamples1D(finfo=postknowledge_type)
 ```
 
 
 ## Conditional, "discriminative" or "supervised-learning" inferences
 
-The inferences about a new units that the agent has made so far were of an "unsupervised-learning" or "generative" kind ([§ sec-2nd-connection-ML]): the agent did not receive or use any partial information about a new unit. Let's now try a "supervised-learning" or "generative" kind of inference.
+The inferences about a new units that the agent has made so far were of an "unsupervised-learning" or "generative" kind ([§ sec-2nd-connection-ML]): the agent did not receive or use any partial information about a new unit. Let's now try a "supervised-learning" or "discriminative" kind of inference.
 
 Imagine that we are at a new crime scene, a glass fragment is recovered, and tests are made about its refractive index and chemical composition. The following values are found, referred to the levels of our variates:
 
@@ -193,8 +195,13 @@ Imagine that we are at a new crime scene, a glass fragment is recovered, and tes
 :::
 
 ```{r}
-newfragment <- c(RI=2, Na=2,  Mg=4,  Al=3,  Si=3,  K=1, Ca=2,  Ba=1,  Fe=1)
+newfragment <- c(RI=2, Na=2,  Mg=3,  Al=2,  Si=3,  K=1, Ca=2,  Ba=1,  Fe=1)
 ```
+<!-- 4 lvl -->
+<!-- newfragment <- c(RI=2, Na=2,  Mg=4,  Al=2,  Si=2,  K=1, Ca=2,  Ba=1,  Fe=1) -->
+
+<!-- 5 lvl -->
+<!-- newfragment <- c(RI=2, Na=2,  Mg=4,  Al=3,  Si=3,  K=1, Ca=2,  Ba=1,  Fe=1) 5lvl-->
 
 The detectives would like to know what's the possible origin of this fragment, that is, its $\vType$. Our agent can draw this inference.
 
@@ -212,12 +219,16 @@ Second, the agent can calculate the probability distribution for the $\vType$ va
 Both inferences can be visualized in the usual way:
 
 ```{r}
+#| label: fig-conditional-glass
+#| fig-cap: "[Conditional frequency distributions for full population]{.grey}, and [conditional probability distribution for next unit]{.blue}"
 plotsamples1D(finfo=condknowledge_type)
 ```
 
-The agent thus gives a probability around $90\%$ to the fragment's being of $\cat{T2}$ type, and around $5\%$ each of being $\cat{T1}$ or $\cat{T6}$ type. It also shows that further training data could change these probabilities by around $\pm 10\%$.
+The agent thus gives a probability around $80\%$ to the fragment's being of $\cat{T1}$ type, around $10\%$ of being $\cat{T2}$ type, and around $5\%$ of being $\cat{T5}$ type. It also shows that further training data could change these probabilities by even $\pm 10\%$ or even $\pm 15\%$.
 
-Should the crime investigation proceed on the assumption that the fragment is of $\cat{T2}$ type? No, not necessarily. The best decision depends on the gains and costs involved in making correct or wrong assumptions. To this last decision-making problem we turn next.
+Note how the possible conditional frequency distributions for $\vType$ and the probability distribution differ from the unconditional ones shown in [fig. @fig-unconditional-glass]. The global maximum, $80\%, is now sharper than the one for the unconditional case, $35\%$. This means that knowledge of the other variates for the present fragment has decreased the agent's uncertainty as regards its type.
+
+Should the crime investigation proceed on the assumption that the fragment is of $\cat{T1}$ type? No, not necessarily. The best decision depends on the gains and costs involved in making correct or wrong assumptions. To this last decision-making problem we turn next.
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
