@@ -2,7 +2,7 @@
 
 | week (4h) | topics                                   |
 |-----------|------------------------------------------|
-| 33        |                                          |
+| 33        | Introduction                             |
 |           |                                          |
 |           |                                          |
 | 34        | Making decisions: basic idea             |
