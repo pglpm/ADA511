@@ -1,4 +1,16 @@
-testgain <- function(n=1000, failprob, failcost, passgain, seed=17){
+hitvsgain <- function(n, catyes=1, catno=-1, dogyes=1, dogno=0, probs=c(0.6,0.7,0.4,0.3)){
+
+
+
+
+
+    for(i in 1:n){
+        for(j in )
+    }
+}
+
+
+                      failprob, failcost, passgain, seed=17){
     ## for tabulated printing
     spr <- paste0('%',nchar(n),'i')
     spr2 <- paste0('%',max(nchar(n*failcost), nchar(n*passgain)),'.0f')
@@ -29,5 +41,5 @@ testgain <- function(n=1000, failprob, failcost, passgain, seed=17){
             'GAIN/ITEM', sprintf(spr3, signif(gain/i,2))
             )
     }
-    cat('\n== Final gain/item:', signif(gain/i,2),'==\n\n')
+    cat('\n')
 }
