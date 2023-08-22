@@ -9,7 +9,7 @@ testgain <- function(n=1000, failprob, failcost, passgain, seed=17){
     ## set seed, if given, for reproducibility
     if(!missing(seed)){ set.seed(seed) }
     cat('\n')
-    for(i in 1:n){
+    for(item in 1:n){
         ## ## slow it down a little just to make it more exciting
         ## Sys.sleep(7/(n*4/100000))
         fail <- sample(c(TRUE, FALSE), 1, prob=c(failprob, 1-failprob))
@@ -21,13 +21,13 @@ testgain <- function(n=1000, failprob, failcost, passgain, seed=17){
             totok <- totok + 1
         }
         cat(
-            '\rItem', i,
+            '\rItem', item,
             outc[fail+1], '|',
             'Tot fail/pass', paste0(sprintf(spr, totfail), '/',
             sprintf(spr, totok)), '|',
             'Tot gain', sprintf(spr2, gain), '|',
-            'GAIN/ITEM', sprintf(spr3, signif(gain/i,2))
+            'GAIN/ITEM', sprintf(spr3, signif(gain/item,2))
             )
     }
-    cat('\n== Final gain/item:', signif(gain/i,2),'==\n\n')
+    cat('\n== Final gain/item:', signif(gain/n,2),'==\n\n')
 }
