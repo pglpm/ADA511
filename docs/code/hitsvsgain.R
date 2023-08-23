@@ -48,8 +48,8 @@ hitsvsgain <- function(ntrials, chooseAtrueA, chooseAtrueB, chooseBtrueB, choose
     ## Output total number of hits and total gain or loss produced
     cat('\nTrials:', length(probsA))
     cat('\nMLC: hits', mlchits, '(', signif(mlchits/length(probsA)*100,3), '%)',
-        '-- tot gain', mlcgain)
+        '| total gain', mlcgain)
     cat('\nOPM: hits', opmhits, '(', signif(opmhits/length(probsA)*100,3), '%)',
-        '-- tot gain', opmgain)
+        '| total gain', opmgain)
     cat('\n\n')
 }
