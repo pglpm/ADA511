@@ -3,7 +3,7 @@
 
 Some works in machine learning focus on "guessing the correct answer", and this focus is reflected in the way their machine-learning algorithms -- especially classifiers -- are trained and used.
 
-In [§ @sec-optimality] we emphasized that "trying to guess correctly" can be a misleading goal, however, because it can lead us away from guessing *optimally*. We shall now see two simple but concrete examples of this.
+In [§ @sec-optimality] we emphasized that "guessing correctly" can be a misleading goal, however, because it can lead us away from guessing *optimally*. We shall now see two simple but concrete examples of this.
 
 ## A "max-hit" classifier vs an optimal classifier
 
@@ -36,21 +36,19 @@ having six arguments:
 - `probsA`: a tuple of probabilities (between `0` and `1`) to be used in the simulations (recycling it if necessary), for the correct guess being `A`; the corresponding probabilities for `B` are therefore `1-probsA`. If this argument is omitted it defaults to `0.5` (not very interesting)
 
 
-<!-- ## chooseAtrueA=1, chooseAtrueB=0, chooseBtrueB=0, chooseBtrueA=-1, probsA=c(0.6,0.7,0.4,0.3) -->
-
 ## Example 1: electronic component
 
-Let's apply our two classifiers to the *Accept or discard?* problem of [§ @sec-intro]. Let's call `A` the alternative in which the element won't fail before one year, and should therefore be accepted *if this alternative were known at the time of the decision*. Let's call `B` the alternative in which the element will fail within a year, and should therefore be discarded *if this alternative were known at the time of the decision*. Remember that the crucial point here is that the classifiers *don't* have this information at the moment of making the decision.
+Let's apply our two classifiers to the *Accept or discard?* problem of [§ @sec-intro]. We call `A` the alternative in which the element won't fail before one year, and should therefore be accepted *if this alternative were known at the time of the decision*. We call `B` the alternative in which the element will fail within a year, and should therefore be discarded *if this alternative were known at the time of the decision*. Remember that the crucial point here is that the classifiers *don't* have this information at the moment of making the decision.
 
-We simulate this decision for 100 000 components ("trials"), assuming that the probabilities of failure can be `0.05`, `0.20`, `0.95`, `0.80`. The values of the arguments should be clear:
+We simulate this decision for 100 000 components ("trials"), assuming that the probabilities of failure can be `0.05`, `0.20`, `0.80`, `0.95`. The values of the arguments should be clear:
 
 ```{r}
-hitsvsgain(ntrials=100000, chooseAtrueA=+1, chooseAtrueB=-11, chooseBtrueB=0, chooseBtrueA=0, probsA=c(0.05, 0.20, 0.95, 0.80))
+hitsvsgain(ntrials=100000, chooseAtrueA=+1, chooseAtrueB=-11, chooseBtrueB=0, chooseBtrueA=0, probsA=c(0.05, 0.20, 0.80, 0.95))
 ```
 
-Note how the [Machine-Learning Classifier]{.yellow} is the one that *makes most correct guesses* (around 88%), **and yet it leads to a net loss!** If the utility were in *kroner*, this classifier would cause the company producing the components a [net loss of more than 20 000 kr]{.red}.
+Note how the [machine-learning classifier]{.yellow} is the one that *makes most correct guesses* (around 88%), **and yet it leads to a net loss!** If the utility were in *kroner*, this classifier would cause the company producing the components a [net loss of more than 20 000 kr]{.red}.
 
-The [Optimal Predictor Machine]{.blue}, on the other hand, *makes fewer correct guesses* overall (around 72%), **and yet it leads to a net gain!** It would earn the company a [net gain of around 10 000 kr]{.green}.
+The [optimal predictor machine]{.blue}, on the other hand, *makes fewer correct guesses* overall (around 72%), **and yet it leads to a net gain!** It would earn the company a [net gain of around 10 000 kr]{.green}.
 
 
 :::{.callout-caution}
@@ -60,4 +58,44 @@ How is this possible? Try to understand what's happening; feel free to research 
 
 
 ## Example 2: image recognition
+
+A typical use of machine-learning classifiers is for image recognition: for instance, the classifier guesses whether a particular subject is present in the image or not.
+
+Intuitively one may think that "guessing correctly" should be the best goal here. But exceptions to this may be more common than one thinks. Consider the following scenario:
+
+> Bianca has a computer folder with 10 000 photos. Some of these include her beloved cat Aladdin, who sadly passed away recently. She would like to select all photos that include Aladdin and save them in a separate "Aladdin" folder. Doing this by hand would take too long, if at all possible; so Bianca wants to employ a machine-learning classifier.
+> 
+> For Bianca it's important that no photo with Aladdin goes missing, so she would be very sad if any photo with him weren't correctly recognized; on the other hand she doesn't mind if some photos without him end up in the "Aladdin" folder -- she can delete them herself afterwards.
+
+Let's apply and compare our two classifiers to this image-recognition problem, using again the `hitsvsgain()` function. We call `A` the case where Aladdin is present in a photo, and `B` where he isn't. To reflect Bianca's preferences, let's use these "emotional utilities":
+
+- `chooseAisA = +2`: Aladdin is correctly recognized
+- `chooseBisA = -2`: Aladdin is not recognized and photo goes missing
+- `chooseBisB = +1`: absence of Aladding is correctly recognized
+- `chooseAisB = -1`: photo without Aladding end up in "Aladding" folder
+
+and let's say that the photos may have probabilities `0.3`, `0.4`, `0.6`, `0.7` of including Aladding:
+
+```{r}
+hitsvsgain(ntrials=10000, chooseAtrueA=+2, chooseAtrueB=-1, chooseBtrueB=1, chooseBtrueA=-2, probsA=c(0.3, 0.4, 0.6, 0.7))
+```
+
+Again we see that the [machine-learning classifier]{.yellow} makes more correct guesses than the [optimal predictor machine]{.blue}, but the latter yields a higher utility.
+
+You may sensibly object that this result could depend on the peculiar utilities or probabilities chosen for this example. The next exercise helps answering your objection.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+- Is there any case in which the optimal predictor machine yields a strictly lower utility than the machine-learning classifier?
+    + Try using different utilities, for instance using `±5` instead of `±2`, or whatever other values you please.
+    + Try using different probabilities as well.
+
+- As in the previous exercise, try to understand what's happening. Consider this question: *how many photos including Aladdin did each classifier miss?*
+    
+    Modify the `hitsvsgain()` function to output this result. [*(If this proves too difficult, take a look at [this modified function](code/hitsvsgain_detailed.R).)*]{.small}
+
+
+- Do the comparison using the following utilities: `chooseAtrueA=+1, chooseAtrueB=-1, chooseBtrueB=1, chooseBtrueA=-1`. What's the result? what does this tell you about the relationship between the machine-learning classifier and the optimal predictor machine?
+:::
+
 

@@ -471,7 +471,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 \]</span></p>
 </div>
 <p>Some works in machine learning focus on “guessing the correct answer”, and this focus is reflected in the way their machine-learning algorithms – especially classifiers – are trained and used.</p>
-<p>In <a href="framework.html#sec-optimality">§&nbsp;&nbsp;<span>2.3</span></a> we emphasized that “trying to guess correctly” can be a misleading goal, however, because it can lead us away from guessing <em>optimally</em>. We shall now see two simple but concrete examples of this.</p>
+<p>In <a href="framework.html#sec-optimality">§&nbsp;&nbsp;<span>2.3</span></a> we emphasized that “guessing correctly” can be a misleading goal, however, because it can lead us away from guessing <em>optimally</em>. We shall now see two simple but concrete examples of this.</p>
 <section id="a-max-hit-classifier-vs-an-optimal-classifier" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="a-max-hit-classifier-vs-an-optimal-classifier"><span class="header-section-number">4.1</span> A “max-hit” classifier vs an optimal classifier</h2>
 <p>We shall compare the results obtained in some numerical simulations by using</p>
@@ -498,19 +498,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="example-1-electronic-component" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="example-1-electronic-component"><span class="header-section-number">4.2</span> Example 1: electronic component</h2>
-<p>Let’s apply our two classifiers to the <em>Accept or discard?</em> problem of <a href="intro.html">§&nbsp;&nbsp;<span>1</span></a>. Let’s call <code>A</code> the alternative in which the element won’t fail before one year, and should therefore be accepted <em>if this alternative were known at the time of the decision</em>. Let’s call <code>B</code> the alternative in which the element will fail within a year, and should therefore be discarded <em>if this alternative were known at the time of the decision</em>. Remember that the crucial point here is that the classifiers <em>don’t</em> have this information at the moment of making the decision.</p>
-<p>We simulate this decision for 100 000 components (“trials”), assuming that the probabilities of failure can be <code>0.05</code>, <code>0.20</code>, <code>0.95</code>, <code>0.80</code>. The values of the arguments should be clear:</p>
+<p>Let’s apply our two classifiers to the <em>Accept or discard?</em> problem of <a href="intro.html">§&nbsp;&nbsp;<span>1</span></a>. We call <code>A</code> the alternative in which the element won’t fail before one year, and should therefore be accepted <em>if this alternative were known at the time of the decision</em>. We call <code>B</code> the alternative in which the element will fail within a year, and should therefore be discarded <em>if this alternative were known at the time of the decision</em>. Remember that the crucial point here is that the classifiers <em>don’t</em> have this information at the moment of making the decision.</p>
+<p>We simulate this decision for 100 000 components (“trials”), assuming that the probabilities of failure can be <code>0.05</code>, <code>0.20</code>, <code>0.80</code>, <code>0.95</code>. The values of the arguments should be clear:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hitsvsgain</span>(<span class="at">ntrials=</span><span class="dv">100000</span>, <span class="at">chooseAtrueA=</span><span class="sc">+</span><span class="dv">1</span>, <span class="at">chooseAtrueB=</span><span class="sc">-</span><span class="dv">11</span>, <span class="at">chooseBtrueB=</span><span class="dv">0</span>, <span class="at">chooseBtrueA=</span><span class="dv">0</span>, <span class="at">probsA=</span><span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.20</span>, <span class="fl">0.95</span>, <span class="fl">0.80</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hitsvsgain</span>(<span class="at">ntrials=</span><span class="dv">100000</span>, <span class="at">chooseAtrueA=</span><span class="sc">+</span><span class="dv">1</span>, <span class="at">chooseAtrueB=</span><span class="sc">-</span><span class="dv">11</span>, <span class="at">chooseBtrueB=</span><span class="dv">0</span>, <span class="at">chooseBtrueA=</span><span class="dv">0</span>, <span class="at">probsA=</span><span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.20</span>, <span class="fl">0.80</span>, <span class="fl">0.95</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Trials: 100000
-MLC: hits 87676 ( 87.7 %) | total gain -24472
-OPM: hits 72542 ( 72.5 %) | total gain 9724</code></pre>
+MLC: hits 87639 ( 87.6 %) | total gain -24004
+OPM: hits 72527 ( 72.5 %) | total gain 10324</code></pre>
 </div>
 </div>
-<p>Note how the <span class="yellow">Machine-Learning Classifier</span> is the one that <em>makes most correct guesses</em> (around 88%), <strong>and yet it leads to a net loss!</strong> If the utility were in <em>kroner</em>, this classifier would cause the company producing the components a <span class="red">net loss of more than 20 000 kr</span>.</p>
-<p>The <span class="blue">Optimal Predictor Machine</span>, on the other hand, <em>makes fewer correct guesses</em> overall (around 72%), <strong>and yet it leads to a net gain!</strong> It would earn the company a <span class="green">net gain of around 10 000 kr</span>.</p>
+<p>Note how the <span class="yellow">machine-learning classifier</span> is the one that <em>makes most correct guesses</em> (around 88%), <strong>and yet it leads to a net loss!</strong> If the utility were in <em>kroner</em>, this classifier would cause the company producing the components a <span class="red">net loss of more than 20 000 kr</span>.</p>
+<p>The <span class="blue">optimal predictor machine</span>, on the other hand, <em>makes fewer correct guesses</em> overall (around 72%), <strong>and yet it leads to a net gain!</strong> It would earn the company a <span class="green">net gain of around 10 000 kr</span>.</p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -527,6 +527,53 @@ OPM: hits 72542 ( 72.5 %) | total gain 9724</code></pre>
 </section>
 <section id="example-2-image-recognition" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="example-2-image-recognition"><span class="header-section-number">4.3</span> Example 2: image recognition</h2>
+<p>A typical use of machine-learning classifiers is for image recognition: for instance, the classifier guesses whether a particular subject is present in the image or not.</p>
+<p>Intuitively one may think that “guessing correctly” should be the best goal here. But exceptions to this may be more common than one thinks. Consider the following scenario:</p>
+<blockquote class="blockquote">
+<p>Bianca has a computer folder with 10 000 photos. Some of these include her beloved cat Aladdin, who sadly passed away recently. She would like to select all photos that include Aladdin and save them in a separate “Aladdin” folder. Doing this by hand would take too long, if at all possible; so Bianca wants to employ a machine-learning classifier.</p>
+<p>For Bianca it’s important that no photo with Aladdin goes missing, so she would be very sad if any photo with him weren’t correctly recognized; on the other hand she doesn’t mind if some photos without him end up in the “Aladdin” folder – she can delete them herself afterwards.</p>
+</blockquote>
+<p>Let’s apply and compare our two classifiers to this image-recognition problem, using again the <code>hitsvsgain()</code> function. We call <code>A</code> the case where Aladdin is present in a photo, and <code>B</code> where he isn’t. To reflect Bianca’s preferences, let’s use these “emotional utilities”:</p>
+<ul>
+<li><code>chooseAisA = +2</code>: Aladdin is correctly recognized</li>
+<li><code>chooseBisA = -2</code>: Aladdin is not recognized and photo goes missing</li>
+<li><code>chooseBisB = +1</code>: absence of Aladding is correctly recognized</li>
+<li><code>chooseAisB = -1</code>: photo without Aladding end up in “Aladding” folder</li>
+</ul>
+<p>and let’s say that the photos may have probabilities <code>0.3</code>, <code>0.4</code>, <code>0.6</code>, <code>0.7</code> of including Aladding:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hitsvsgain</span>(<span class="at">ntrials=</span><span class="dv">10000</span>, <span class="at">chooseAtrueA=</span><span class="sc">+</span><span class="dv">2</span>, <span class="at">chooseAtrueB=</span><span class="sc">-</span><span class="dv">1</span>, <span class="at">chooseBtrueB=</span><span class="dv">1</span>, <span class="at">chooseBtrueA=</span><span class="sc">-</span><span class="dv">2</span>, <span class="at">probsA=</span><span class="fu">c</span>(<span class="fl">0.3</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.7</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Trials: 10000
+MLC: hits 6460 ( 64.6 %) | total gain 4380
+OPM: hits 5964 ( 59.6 %) | total gain 5392</code></pre>
+</div>
+</div>
+<p>Again we see that the <span class="yellow">machine-learning classifier</span> makes more correct guesses than the <span class="blue">optimal predictor machine</span>, but the latter yields a higher utility.</p>
+<p>You may sensibly object that this result could depend on the peculiar utilities or probabilities chosen for this example. The next exercise helps answering your objection.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Is there any case in which the optimal predictor machine yields a strictly lower utility than the machine-learning classifier?</p>
+<ul>
+<li>Try using different utilities, for instance using <code>±5</code> instead of <code>±2</code>, or whatever other values you please.</li>
+<li>Try using different probabilities as well.</li>
+</ul></li>
+<li><p>As in the previous exercise, try to understand what’s happening. Consider this question: <em>how many photos including Aladdin did each classifier miss?</em></p>
+<p>Modify the <code>hitsvsgain()</code> function to output this result. <span class="small"><em>(If this proves too difficult, take a look at <a href="code/hitsvsgain_detailed.R">this modified function</a>.)</em></span></p></li>
+<li><p>Do the comparison using the following utilities: <code>chooseAtrueA=+1, chooseAtrueB=-1, chooseBtrueB=1, chooseBtrueA=-1</code>. What’s the result? what does this tell you about the relationship between the machine-learning classifier and the optimal predictor machine?</p></li>
+</ul>
+</div>
+</div>
 
 
 </section>
