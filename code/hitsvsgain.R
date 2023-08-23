@@ -1,44 +1,54 @@
-hitsvsgain <- function(n, chooseAisA=1, chooseAisB=-11, chooseBisB=0, chooseBisA=0, probsA=c(0.95,0.8,0.95,0.8,0.05,0.2), seed=16){
-## chooseAisA=1, chooseAisB=0, chooseBisB=0, chooseBisA=-1, probsA=c(0.6,0.7,0.4,0.3)
+hitsvsgain <- function(ntrials, chooseAtrueA, chooseAtrueB, chooseBtrueB, chooseBtrueA, probsA=0.5){
+    ## Recycle the given probabilities for the number of trials
+    probsA <- rep(probsA, ntrials)[1:ntrials]
+    ## "Magic" parameter used in making the optimal decision
+    threshold <- (chooseBtrueB-chooseAtrueB)/(chooseAtrueA-chooseAtrueB+chooseBtrueB-chooseBtrueA)
+    ## Initialize total "hits" and gains
+    ## 'mlc' refers to the Machine-Learning Classifier
+    ## 'opm' refers to the Optimal Predictor Machine
+    mlchits <- mlcgain <- 0
+    opmhits <- opmgain <- 0
     ##
-    probsA <- rep(probsA, n)
-    threshold <- (chooseBisB-chooseAisB)/(chooseAisA-chooseAisB+chooseBisB-chooseBisA)
-    ##
-    mlhits <- opmhits <- 0
-    mlgain <- opmgain <- 0
-    if(!missing(seed)){ set.seed(seed) }
+    ## Loop through the trials
     for(probabilityA in probsA){
-        mlchoice <- (if(probabilityA > 0.5){
+        ## Output of the MLC, based on the current probability
+        mlcchoice <- (if(probabilityA > 0.5){
                          'A'
                      }else if(probabilityA < 0.5){
                          'B'
                      }else{sample(c('A','B'),1)})
+        ## Output of the OPM, based on the current probability
         opmchoice <- (if(probabilityA > threshold){
                          'A'
                      }else if(probabilityA < threshold){
                          'B'
                      }else{sample(c('A','B'),1)})
         ##
+        ## Correct answer for the current trial
         trueitem <- sample(c('A','B'), 1, prob=c(probabilityA, 1-probabilityA))
         ##
-        if(mlchoice == trueitem){
-            mlhits <- mlhits+1
-            mlgain <- mlgain + (if(trueitem=='A'){chooseAisA}else{chooseBisB})
+        ## MLC: add one "hit" if correct guess, and add gain/loss
+        if(mlcchoice == trueitem){
+            mlchits <- mlchits+1
+            mlcgain <- mlcgain + (if(trueitem=='A'){chooseAtrueA}else{chooseBtrueB})
         }else{
-            mlgain <- mlgain + (if(trueitem=='B'){chooseAisB}else{chooseBisA})
+            mlcgain <- mlcgain + (if(trueitem=='B'){chooseAtrueB}else{chooseBtrueA})
         }
         ##
+        ## OPM: add one "hit" if correct guess, and add gain/loss
         if(opmchoice == trueitem){
             opmhits <- opmhits+1
-            opmgain <- opmgain + (if(trueitem=='A'){chooseAisA}else{chooseBisB})
+            opmgain <- opmgain + (if(trueitem=='A'){chooseAtrueA}else{chooseBtrueB})
         }else{
-            opmgain <- opmgain + (if(trueitem=='B'){chooseAisB}else{chooseBisA})
+            opmgain <- opmgain + (if(trueitem=='B'){chooseAtrueB}else{chooseBtrueA})
         }
     }
+    ## end of loop
     ##
+    ## Output total number of hits and total gain or loss produced
     cat('\nTrials:', length(probsA))
-    cat('\nML: hits', mlhits, '(', signif(mlhits/length(probsA)*100,3), '%)',
-        '-- tot gain', mlgain)
+    cat('\nMLC: hits', mlchits, '(', signif(mlchits/length(probsA)*100,3), '%)',
+        '-- tot gain', mlcgain)
     cat('\nOPM: hits', opmhits, '(', signif(opmhits/length(probsA)*100,3), '%)',
         '-- tot gain', opmgain)
     cat('\n\n')
