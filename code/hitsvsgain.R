@@ -1,55 +1,77 @@
 hitsvsgain <- function(ntrials, chooseAtrueA, chooseAtrueB, chooseBtrueB, chooseBtrueA, probsA=0.5){
-    ## Recycle the given probabilities for the number of trials
-    probsA <- rep(probsA, ntrials)[1:ntrials]
+    ## Recycle & shuffle the given probabilities for the number of trials
+    probsArepeated <- sample(probsA, ntrials, replace=TRUE)
     ## "Magic" parameter used in making the optimal decision
     threshold <- (chooseBtrueB-chooseAtrueB)/(chooseAtrueA-chooseAtrueB+chooseBtrueB-chooseBtrueA)
     ## Initialize total "hits" and gains
     ## 'mlc' refers to the Machine-Learning Classifier
     ## 'opm' refers to the Optimal Predictor Machine
-    mlchits <- mlcgain <- 0
-    opmhits <- opmgain <- 0
+    mlchits <- 0
+    mlcgain <- 0
+    opmhits <- 0
+    opmgain <- 0
     ##
-    ## Loop through the trials
-    for(probabilityA in probsA){
+    ## Loop through the trials and their probabilities
+    for(probabilityA in probsArepeated){
         ## Output of the MLC, based on the current probability
-        mlcchoice <- (if(probabilityA > 0.5){
-                         'A'
-                     }else if(probabilityA < 0.5){
-                         'B'
-                     }else{sample(c('A','B'),1)})
+        if(probabilityA > 0.5){
+            mlcchoice <- 'A'
+        }else if(probabilityA < 0.5){
+            mlcchoice <- 'B'
+        }else{
+            mlcchoice <- sample(c('A','B'), 1) # A or B with 50%/50% prob.
+        }
         ## Output of the OPM, based on the current probability
-        opmchoice <- (if(probabilityA > threshold){
-                         'A'
-                     }else if(probabilityA < threshold){
-                         'B'
-                     }else{sample(c('A','B'),1)})
+        if(probabilityA > threshold){
+            opmchoice <- 'A'
+        }else if(probabilityA < threshold){
+            opmchoice <- 'B'
+        }else{
+            opmchoice <- sample(c('A','B'), 1) # A or B with 50%/50% prob.
+        }
         ##
         ## Correct answer for the current trial
         trueitem <- sample(c('A','B'), 1, prob=c(probabilityA, 1-probabilityA))
         ##
         ## MLC: add one "hit" if correct guess, and add gain/loss
         if(mlcchoice == trueitem){
-            mlchits <- mlchits+1
-            mlcgain <- mlcgain + (if(trueitem=='A'){chooseAtrueA}else{chooseBtrueB})
+            mlchits <- mlchits + 1 # one success
+            if(trueitem=='A'){
+                mlcgain <- mlcgain + chooseAtrueA
+            }else{
+                mlcgain <- mlcgain + chooseBtrueB
+            }
         }else{
-            mlcgain <- mlcgain + (if(trueitem=='B'){chooseAtrueB}else{chooseBtrueA})
+            if(trueitem=='B'){
+                mlcgain <- mlcgain + chooseAtrueB
+            }else{
+                mlcgain <- mlcgain + chooseBtrueA
+            }
         }
         ##
         ## OPM: add one "hit" if correct guess, and add gain/loss
         if(opmchoice == trueitem){
-            opmhits <- opmhits+1
-            opmgain <- opmgain + (if(trueitem=='A'){chooseAtrueA}else{chooseBtrueB})
+            opmhits <- opmhits + 1 # one success
+            if(trueitem=='A'){
+                opmgain <- opmgain + chooseAtrueA
+            }else{
+                opmgain <- opmgain + chooseBtrueB
+            }
         }else{
-            opmgain <- opmgain + (if(trueitem=='B'){chooseAtrueB}else{chooseBtrueA})
+            if(trueitem=='B'){
+                opmgain <- opmgain + chooseAtrueB
+            }else{
+                opmgain <- opmgain + chooseBtrueA
+            }
         }
     }
     ## end of loop
     ##
     ## Output total number of hits and total gain or loss produced
-    cat('\nTrials:', length(probsA))
-    cat('\nMLC: hits', mlchits, '(', signif(mlchits/length(probsA)*100,3), '%)',
+    cat('\nTrials:', ntrials)
+    cat('\nMachine-Learning Classifier: successes', mlchits, '(', signif(mlchits/ntrials*100, 3), '%)',
         '| total gain', mlcgain)
-    cat('\nOPM: hits', opmhits, '(', signif(opmhits/length(probsA)*100,3), '%)',
+    cat('\nOptimal Predictor Machine:   successes', opmhits, '(', signif(opmhits/ntrials*100, 3), '%)',
         '| total gain', opmgain)
     cat('\n\n')
 }
