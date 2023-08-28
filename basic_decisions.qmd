@@ -10,7 +10,7 @@ A basic decision problem can be represented by a diagram like this:
 <!-- ::::: {.column-page-inset-right} -->
 ![](basic_decision_tree.svg){width=100%}
 
-It has one [**decision node**]{.blue}, usually represented by a square {{< fa regular square >}}, from which the available decisions depart as lines. Each decision leads to an [**inference node**]{.blue},^[also called *chance node* or *uncertainty node*] usually represented by a circle {{< fa regular circle >}}, from which the possible outcomes depart as lines. Each outcome leads to a particular utility value. The uncertainty of each outcome is quantified by a probability.
+It has one [**decision node**]{.blue}, usually represented by a square {{< fa regular square >}}, from which the available decisions depart as lines. Each decision leads to an [**inference node**]{.blue},^[also called *chance node* or *uncertainty node*] usually represented by a circle {{< fa regular circle >}}, from which the possible outcomes depart as lines. Each outcome leads to a particular gain or loss, depending on the decision. The uncertainty of each outcome is quantified by a probability.
 
 A basic decision problem is analysed in terms of these elements:
 
@@ -19,7 +19,7 @@ A basic decision problem is analysed in terms of these elements:
 [{{< fa seedling >}} Remember: What matters is to be able to identify these elements in a concrete problem, understanding their role. Their technical names don't matter.]{.small}
 :::
 
-- [{{< fa cube >}} **Agent**]{.blue}, and [**background**]{.blue} or  [**prior information**]{.blue}. The agent is the person or device that has to make the decision. An agent possesses (or has been programmed with) specific background information that is used and taken for granted in the decision-making process. This background information determines the probabilities and utilities of the outcomes, together with other available data and information. Different agents typically have different background information.
+- [{{< fa cube >}} **Agent**]{.blue}, and [**background**]{.blue} or  [**prior information**]{.blue}. The agent is the person or device that has to make the decision. An agent possesses (or has been programmed with) specific background information that is used and taken for granted in the decision-making process. This background information determines the probabilities, gains, and losses of the outcomes, together with other available data and information. Different agents typically have different background information.
 
 :::{.column-margin}
 *Agent* means "conductor", "mover", and similar (from Latin *ago* = *to move* or *drive* and similar meanings).
@@ -39,18 +39,21 @@ We'll use the neutral pronouns *it*/*its* when referring to an agent, since an a
 Many other terms instead of *outcome* are used in the literature, for instance *state* or *event*.
 :::
 
+- [{{< fa cube >}} **Probabilities**]{.blue} for each of the outcomes and for each decision. Their values typically depend also on the background information and the additional data.
 
+- [{{< fa cube >}} **Utilities**]{.blue}: the gains or losses associated with each possible outcome and each decision. We shall mainly use the term [**utility**]{.blue}, instead of "gain", "loss", and similar, for several reasons:
 
-
-
-- [{{< fa cube >}} **Probabilities**]{.blue} for each of the outcomes. Their values typically depend on the background information, the decision, and the additional data.
-
-- [{{< fa cube >}} **Utilities**]{.blue}: the gains or losses associated with each of the possible outcomes. The term "utility" is used instead of "gain", "loss", and similar for several reasons:
-
+	+ gain and losses may involve not money, but time, or energy, or health, or emotional value, or other kinds of commodities and things that are important to us; or even a combination of them. The term "utility" is useful as a neutral term that doesn't mean "money", but depends on the context
     + we can just use one term instead of two: for example, when the utility is positive it's a "gain"; when it's negative it's a "loss"
-	+ the term "utility" does not mean "money", but depends on the context: as we shall see later, gain and losses may not involve money, but time, or energy, or health, or emotional value, or other kinds of things that have value to us
 
     The particular numerical values of the utilities are always context-dependent: they may depend on the background information, the decisions, the outcomes, and the additional data.
+
+:::{.callout-note}
+##
+{{< fa exclamation-circle >}} We shall sometimes use the generic currency sign\ \ [**¤**]{.blue}\ \ to denote utilities, to make clear that gains and losses do not necessarily involve money, and not to reference any country in particular.
+:::
+
+\
 
 - [{{< fa cube >}} **Data**]{.blue} and other [**additional information**]{.blue}, sometimes called [**evidence**]{.blue}. They differ from the background information in that they can change with every decision instance made by the same agent, while the background information stays the same. In the assembly-line scenario, for example, the test results could be different for every new electric component.
 
@@ -104,10 +107,125 @@ See MacKay's options-vs-costs rational analysis in [Sustainable Energy -- withou
 :::
 
 
+## Setting up a basic decision problem {#sec-decision-matrices}
+
+A basic decision problem can be set up along the following steps (which we illustrate afterwards with a couple of examples):
+
+:::{.callout-note}
+## Setup of a basic decision problem
+
+1. **List all available decisions**
+
+2. **For each decision, list its possible outcomes**
+
+3. **Pool together all outcomes of all decisions, counting the common ones only once**
+
+4. **Prepare two tables: in each, display the decisions as rows, and the pooled outcomes as columns** (or you can do the opposite: decisions as columns and outcomes as rows)
+
+5. **In one table, report the probabilities for all decision-outcome pairs. If an outcome is not available for that decision, give it a $0\%$ probability**
+
+6. **In the other table, report the utilities for all decision-outcome pairs. If an outcome is not available for that decision, give it a $0$ utility**
+:::
+
+
+
+### Example: the assembly-line problem
+
+Let apply the steps above in the assembly-line example of [ch. @sec-intro]:
+
+[**1. List all available decisions**]{.midgrey .small}
+
+Easy: they are "[accept]{.green} the electronic component" and "[discard]{.yellow} it".
+
+\
+
+[**2. For each decision, list its possible outcomes**]{.midgrey .small}
+
+In general you will notice that some outcomes may be common to all decisions, while other outcomes can happen for some decisions only, or even for just one decision.
+
+In the present example, the [accept]{.green} decision has two possible outcomes: "the component works with [no faults]{.blue} for at least a year" and "the component [fails]{.red} within a year".
+
+The [discard]{.decision} cannot have those outcomes, because the component is discarded. It has indeed only one outcome: "component [discarded]{.purple}".
+
+\
+
+[**3. Pool together all outcomes of all decisions, counting the common ones only once**]{.midgrey .small}
+
+In total we have *three* pooled outcomes:
+
+- [**no faults**]{.blue} (from the [accept]{.green} decision)
+- [**fails**]{.red} (from the [accept]{.green} decision)
+- [**discarded**]{.purple} (from the [discard]{.yellow} decision)
+
+\
+
+[**4. Prepare two tables: in each, display the decisions as rows, and the pooled outcomes as columns** (or you can do the opposite: decisions as columns and outcomes as rows)]{.midgrey .small}
+
+In the present example each table looks like this:
+
+|                               | [no faults for a year]{.blue .small} | [fails within a year]{.red .small}   |       [discarded]{.purple .small}    |
+|:------------------------------|:------------------------------------:|:------------------------------------:|:------------------------------------:|
+| [**accept**]{.green .small}   |                                      |                                      |                                      |
+| [**discard**]{.yellow .small} |                                      |                                      |                                      |
+: {.sm}
+
+\
+
+[**5. In one table, report the probabilities for all decision-outcome pairs. If an outcome is not available for that decision, give it a $0\%$ probability**]{.midgrey .small}
+
+|                               | [no faults for a year]{.blue .small} | [fails within a year]{.red .small}   |       [discarded]{.purple .small}    |
+|:------------------------------|:------------------------------------:|:------------------------------------:|:------------------------------------:|
+| [**accept**]{.green .small}   |       $90\%$                         |           $10\%$                     |   [$0\%$]{.grey}                     |
+| [**discard**]{.yellow .small} |       [$0\%$]{.grey}                 |           [$0\%$]{.grey}             |                $100\%$               |
+: [*Probability table*]{.midgrey} {.sm}
+
+Note how the outcomes that do not exist for a particular decision have been given a [$0\%$]{.grey} probability (in [grey]{.grey}). This is just a way of saying "this outcome can't happen, if this decision is made".
+
+\
+
+[**6. In the other table, report the utilities for all decision-outcome pairs. If an outcome is not available for that decision, give it a $0$ utility**]{.midgrey .small}
+
+
+|                               | [no faults for a year]{.blue .small} | [fails within a year]{.red .small}   |       [discarded]{.purple .small}    |
+|:------------------------------|:------------------------------------:|:------------------------------------:|:------------------------------------:|
+| [**accept**]{.green .small}   |            $+1\$$                    |          $-11\$$                     |           [$0\$$]{.grey}             |
+| [**discard**]{.yellow .small} |           [ $0\$$]{.grey}            |          [$0\$$]{.grey}              |            $0\$$                     |
+: [*Utility table*]{.midgrey} {.sm}
+
+Note how the outcomes that do not exist for a particular decision have been given a [$0\$$]{.grey} utility (in [grey]{.grey}). We shall see later that it actually doesn't matter which utilities we give to these impossible outcomes.
+
+\
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercises
+Apply the steps above to the following basic decision problems (you only need to set them up with their probability & utility tables, but feel free to solve them as well, if you like):
+
+- The "heads-bet" vs "tails-bet" example of [§ @sec-optimality]. Assume that the "small amount" of money is $10\$$, the "large amount" is $1000\$$, and the two outcomes' probabilities are $50\%$ each.
+
+- Peter must reach a particular destination, and is undecided between two alternatives: *go by car*, or *ride a bus*, or *go on foot*. If he goes by car, he could *arrive without problems*, with a probability of $80\%$ and a utility of $10\,\textcurrency$, or he could *get stuck in a traffic jam* and arrive late, with a probability of $20\%$ and a utility of $-10\,\textcurrency$.  If he rides a bus, he could *arrive without problems*, with a probability of $95\%$ and a utility of $15\,\textcurrency$, or arrive in time but *travelling in a fully-packed bus*, with a probability of $5\%$ and a utility of $-10\,\textcurrency$. If he goes on foot, he could *arrive without problems*, with a probability of $20\%$ and a utility of $20\,\textcurrency$, or he could *get soaked from rain*, with a probability of $80\%$ and a utility of $-5\,\textcurrency$.
+    
+	(We are using the symbol "$\textcurrency$" because Peter's utilities are a combination of money savings, time of arrival, and comfort.)
+:::
+
+\
+
+
+## How to make a basic decision? {#sec-make-decision}
+
+Up to now we have seen what are the elements of a basic decision problem, and how to arrange them in a diagram and with tables. *But how do we determine what's the optimal decision?*
+
+We leave this question as a cliff-hanger, and get back to it after we explore more in detail how probabilities and utilities are assessed.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Feel free to sketch an algorithm or a mathematical formula for determining the optimal decision, once all probabilities and utilities are known. Observe the way you reasoned in all decision-problem examples so far, and try to systematize it. The goal is *not* to get the correct answer, but to become more familiar with all the notions and ideas behind a basic decision problem.
+:::
+
+\
 
 ## Inference, utility, maximization
 
-The solution of a basic decision-making problem can be roughly divided into three main stages: inference, utility assessment, and expected-utility maximization.
+The solution of a basic decision-making problem can be roughly divided into three main stages: inference or probability assessment, utility assessment, and expected-utility maximization.
 
 [{{< fa cube >}} **Inference**]{.blue} is the stage where the probabilities of the possible outcomes are calculated. Its rules are given by the [**Probability Calculus**]{.blue}. Inference is independent from decision: in some situations we may simply wish to assess whether some hypotheses, conjectures, or outcomes are more or less plausible than others, without making any decision. This kind of assessment can be very important in problems of communication and storage, and it is specially considered by [**Information Theory**]{.blue}.
 
@@ -120,3 +238,7 @@ Roughly half of this course will be devoted in understanding the laws of inferen
 \
 
 [{{< fa cube >}} **Expected-utility maximization**]{.blue} is the final stage where the probabilities and gains or costs of the possible outcomes are combined, in order to determine the optimal decision.
+
+\
+
+We shall now explore each of these three stages in the order above. We take up inference next because it is the most demanding and probably the one that can be optimized the most by new technologies.

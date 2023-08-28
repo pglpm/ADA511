@@ -406,7 +406,12 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#graphical-representation-and-elements" id="toc-graphical-representation-and-elements" class="nav-link active" data-scroll-target="#graphical-representation-and-elements"><span class="header-section-number">3.1</span> Graphical representation and elements</a></li>
-  <li><a href="#inference-utility-maximization" id="toc-inference-utility-maximization" class="nav-link" data-scroll-target="#inference-utility-maximization"><span class="header-section-number">3.2</span> Inference, utility, maximization</a></li>
+  <li><a href="#sec-decision-matrices" id="toc-sec-decision-matrices" class="nav-link" data-scroll-target="#sec-decision-matrices"><span class="header-section-number">3.2</span> Setting up a basic decision problem</a>
+  <ul class="collapse">
+  <li><a href="#example-the-assembly-line-problem" id="toc-example-the-assembly-line-problem" class="nav-link" data-scroll-target="#example-the-assembly-line-problem">Example: the assembly-line problem</a></li>
+  </ul></li>
+  <li><a href="#sec-make-decision" id="toc-sec-make-decision" class="nav-link" data-scroll-target="#sec-make-decision"><span class="header-section-number">3.3</span> How to make a basic decision?</a></li>
+  <li><a href="#inference-utility-maximization" id="toc-inference-utility-maximization" class="nav-link" data-scroll-target="#inference-utility-maximization"><span class="header-section-number">3.4</span> Inference, utility, maximization</a></li>
   </ul>
 </nav>
     </div>
@@ -441,7 +446,7 @@ ul.task-list li input[type="checkbox"] {
 <h2 data-number="3.1" class="anchored" data-anchor-id="graphical-representation-and-elements"><span class="header-section-number">3.1</span> Graphical representation and elements</h2>
 <p>A basic decision problem can be represented by a diagram like this:</p>
 <p><img src="basic_decision_tree.svg" class="img-fluid" style="width:100.0%"></p>
-<div class="page-columns page-full"><p>It has one <span class="blue"><strong>decision node</strong></span>, usually represented by a square <i class="fa-regular fa-square" aria-label="square"></i>, from which the available decisions depart as lines. Each decision leads to an <span class="blue"><strong>inference node</strong></span>,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> usually represented by a circle <i class="fa-regular fa-circle" aria-label="circle"></i>, from which the possible outcomes depart as lines. Each outcome leads to a particular utility value. The uncertainty of each outcome is quantified by a probability.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;also called <em>chance node</em> or <em>uncertainty node</em></p></li></div></div>
+<div class="page-columns page-full"><p>It has one <span class="blue"><strong>decision node</strong></span>, usually represented by a square <i class="fa-regular fa-square" aria-label="square"></i>, from which the available decisions depart as lines. Each decision leads to an <span class="blue"><strong>inference node</strong></span>,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> usually represented by a circle <i class="fa-regular fa-circle" aria-label="circle"></i>, from which the possible outcomes depart as lines. Each outcome leads to a particular gain or loss, depending on the decision. The uncertainty of each outcome is quantified by a probability.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;also called <em>chance node</em> or <em>uncertainty node</em></p></li></div></div>
 <p>A basic decision problem is analysed in terms of these elements:</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -457,7 +462,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <ul>
-<li><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Agent</strong></span>, and <span class="blue"><strong>background</strong></span> or <span class="blue"><strong>prior information</strong></span>. The agent is the person or device that has to make the decision. An agent possesses (or has been programmed with) specific background information that is used and taken for granted in the decision-making process. This background information determines the probabilities and utilities of the outcomes, together with other available data and information. Different agents typically have different background information.</li>
+<li><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Agent</strong></span>, and <span class="blue"><strong>background</strong></span> or <span class="blue"><strong>prior information</strong></span>. The agent is the person or device that has to make the decision. An agent possesses (or has been programmed with) specific background information that is used and taken for granted in the decision-making process. This background information determines the probabilities, gains, and losses of the outcomes, together with other available data and information. Different agents typically have different background information.</li>
 </ul>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -476,14 +481,31 @@ ul.task-list li input[type="checkbox"] {
 <div class="no-row-height column-margin column-container"><div class="">
 <p>Many other terms instead of <em>outcome</em> are used in the literature, for instance <em>state</em> or <em>event</em>.</p>
 </div></div><ul>
-<li><p><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Probabilities</strong></span> for each of the outcomes. Their values typically depend on the background information, the decision, and the additional data.</p></li>
-<li><p><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Utilities</strong></span>: the gains or losses associated with each of the possible outcomes. The term “utility” is used instead of “gain”, “loss”, and similar for several reasons:</p>
+<li><p><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Probabilities</strong></span> for each of the outcomes and for each decision. Their values typically depend also on the background information and the additional data.</p></li>
+<li><p><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Utilities</strong></span>: the gains or losses associated with each possible outcome and each decision. We shall mainly use the term <span class="blue"><strong>utility</strong></span>, instead of “gain”, “loss”, and similar, for several reasons:</p>
 <ul>
+<li>gain and losses may involve not money, but time, or energy, or health, or emotional value, or other kinds of commodities and things that are important to us; or even a combination of them. The term “utility” is useful as a neutral term that doesn’t mean “money”, but depends on the context</li>
 <li>we can just use one term instead of two: for example, when the utility is positive it’s a “gain”; when it’s negative it’s a “loss”</li>
-<li>the term “utility” does not mean “money”, but depends on the context: as we shall see later, gain and losses may not involve money, but time, or energy, or health, or emotional value, or other kinds of things that have value to us</li>
 </ul>
 <p>The particular numerical values of the utilities are always context-dependent: they may depend on the background information, the decisions, the outcomes, and the additional data.</p></li>
-<li><p><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Data</strong></span> and other <span class="blue"><strong>additional information</strong></span>, sometimes called <span class="blue"><strong>evidence</strong></span>. They differ from the background information in that they can change with every decision instance made by the same agent, while the background information stays the same. In the assembly-line scenario, for example, the test results could be different for every new electric component.</p></li>
+</ul>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><i class="fa-solid fa-exclamation-circle" aria-label="exclamation-circle"></i> We shall sometimes use the generic currency sign&nbsp;&nbsp;<span class="blue"><strong>¤</strong></span>&nbsp;&nbsp;to denote utilities, to make clear that gains and losses do not necessarily involve money, and not to reference any country in particular.</p>
+</div>
+</div>
+<p><br>
+</p>
+<ul>
+<li><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Data</strong></span> and other <span class="blue"><strong>additional information</strong></span>, sometimes called <span class="blue"><strong>evidence</strong></span>. They differ from the background information in that they can change with every decision instance made by the same agent, while the background information stays the same. In the assembly-line scenario, for example, the test results could be different for every new electric component.</li>
 </ul>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -560,9 +582,201 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div></div></section>
-<section id="inference-utility-maximization" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="inference-utility-maximization"><span class="header-section-number">3.2</span> Inference, utility, maximization</h2>
-<p>The solution of a basic decision-making problem can be roughly divided into three main stages: inference, utility assessment, and expected-utility maximization.</p>
+<section id="sec-decision-matrices" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="sec-decision-matrices"><span class="header-section-number">3.2</span> Setting up a basic decision problem</h2>
+<p>A basic decision problem can be set up along the following steps (which we illustrate afterwards with a couple of examples):</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Setup of a basic decision problem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>List all available decisions</strong></p></li>
+<li><p><strong>For each decision, list its possible outcomes</strong></p></li>
+<li><p><strong>Pool together all outcomes of all decisions, counting the common ones only once</strong></p></li>
+<li><p><strong>Prepare two tables: in each, display the decisions as rows, and the pooled outcomes as columns</strong> (or you can do the opposite: decisions as columns and outcomes as rows)</p></li>
+<li><p><strong>In one table, report the probabilities for all decision-outcome pairs. If an outcome is not available for that decision, give it a <span class="math inline">\(0\%\)</span> probability</strong></p></li>
+<li><p><strong>In the other table, report the utilities for all decision-outcome pairs. If an outcome is not available for that decision, give it a <span class="math inline">\(0\)</span> utility</strong></p></li>
+</ol>
+</div>
+</div>
+<section id="example-the-assembly-line-problem" class="level3">
+<h3 class="anchored" data-anchor-id="example-the-assembly-line-problem">Example: the assembly-line problem</h3>
+<p>Let apply the steps above in the assembly-line example of <a href="intro.html">ch.&nbsp;&nbsp;<span>1</span></a>:</p>
+<p><span class="midgrey small"><strong>1. List all available decisions</strong></span></p>
+<p>Easy: they are “<span class="green">accept</span> the electronic component” and “<span class="yellow">discard</span> it”.</p>
+<p><br>
+</p>
+<p><span class="midgrey small"><strong>2. For each decision, list its possible outcomes</strong></span></p>
+<p>In general you will notice that some outcomes may be common to all decisions, while other outcomes can happen for some decisions only, or even for just one decision.</p>
+<p>In the present example, the <span class="green">accept</span> decision has two possible outcomes: “the component works with <span class="blue">no faults</span> for at least a year” and “the component <span class="red">fails</span> within a year”.</p>
+<p>The <span class="decision">discard</span> cannot have those outcomes, because the component is discarded. It has indeed only one outcome: “component <span class="purple">discarded</span>”.</p>
+<p><br>
+</p>
+<p><span class="midgrey small"><strong>3. Pool together all outcomes of all decisions, counting the common ones only once</strong></span></p>
+<p>In total we have <em>three</em> pooled outcomes:</p>
+<ul>
+<li><span class="blue"><strong>no faults</strong></span> (from the <span class="green">accept</span> decision)</li>
+<li><span class="red"><strong>fails</strong></span> (from the <span class="green">accept</span> decision)</li>
+<li><span class="purple"><strong>discarded</strong></span> (from the <span class="yellow">discard</span> decision)</li>
+</ul>
+<p><br>
+</p>
+<p><span class="midgrey small"><strong>4. Prepare two tables: in each, display the decisions as rows, and the pooled outcomes as columns</strong> (or you can do the opposite: decisions as columns and outcomes as rows)</span></p>
+<p>In the present example each table looks like this:</p>
+<table class="table-sm small table">
+<caption></caption>
+<colgroup>
+<col style="width: 21%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;"><span class="blue small">no faults for a year</span></th>
+<th style="text-align: center;"><span class="red small">fails within a year</span></th>
+<th style="text-align: center;"><span class="purple small">discarded</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="green small"><strong>accept</strong></span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="yellow small"><strong>discard</strong></span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p><br>
+</p>
+<p><span class="midgrey small"><strong>5. In one table, report the probabilities for all decision-outcome pairs. If an outcome is not available for that decision, give it a <span class="math inline">\(0\%\)</span> probability</strong></span></p>
+<table class="table-sm small table">
+<caption><span class="midgrey"><em>Probability table</em></span></caption>
+<colgroup>
+<col style="width: 21%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;"><span class="blue small">no faults for a year</span></th>
+<th style="text-align: center;"><span class="red small">fails within a year</span></th>
+<th style="text-align: center;"><span class="purple small">discarded</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="green small"><strong>accept</strong></span></td>
+<td style="text-align: center;"><span class="math inline">\(90\%\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(10\%\)</span></td>
+<td style="text-align: center;"><span class="grey"><span class="math inline">\(0\%\)</span></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="yellow small"><strong>discard</strong></span></td>
+<td style="text-align: center;"><span class="grey"><span class="math inline">\(0\%\)</span></span></td>
+<td style="text-align: center;"><span class="grey"><span class="math inline">\(0\%\)</span></span></td>
+<td style="text-align: center;"><span class="math inline">\(100\%\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Note how the outcomes that do not exist for a particular decision have been given a <span class="grey"><span class="math inline">\(0\%\)</span></span> probability (in <span class="grey">grey</span>). This is just a way of saying “this outcome can’t happen, if this decision is made”.</p>
+<p><br>
+</p>
+<p><span class="midgrey small"><strong>6. In the other table, report the utilities for all decision-outcome pairs. If an outcome is not available for that decision, give it a <span class="math inline">\(0\)</span> utility</strong></span></p>
+<table class="table-sm small table">
+<caption><span class="midgrey"><em>Utility table</em></span></caption>
+<colgroup>
+<col style="width: 21%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;"><span class="blue small">no faults for a year</span></th>
+<th style="text-align: center;"><span class="red small">fails within a year</span></th>
+<th style="text-align: center;"><span class="purple small">discarded</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="green small"><strong>accept</strong></span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\$\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-11\$\)</span></td>
+<td style="text-align: center;"><span class="grey"><span class="math inline">\(0\$\)</span></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="yellow small"><strong>discard</strong></span></td>
+<td style="text-align: center;"><span class="grey"><span class="math inline">\(0\$\)</span></span></td>
+<td style="text-align: center;"><span class="grey"><span class="math inline">\(0\$\)</span></span></td>
+<td style="text-align: center;"><span class="math inline">\(0\$\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Note how the outcomes that do not exist for a particular decision have been given a <span class="grey"><span class="math inline">\(0\$\)</span></span> utility (in <span class="grey">grey</span>). We shall see later that it actually doesn’t matter which utilities we give to these impossible outcomes.</p>
+<p><br>
+</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercises
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Apply the steps above to the following basic decision problems (you only need to set them up with their probability &amp; utility tables, but feel free to solve them as well, if you like):</p>
+<ul>
+<li><p>The “heads-bet” vs “tails-bet” example of <a href="framework.html#sec-optimality">§&nbsp;&nbsp;<span>2.3</span></a>. Assume that the “small amount” of money is <span style="display:inline-block;"><span class="math inline">\(10\$\)</span>,</span> the “large amount” is <span style="display:inline-block;"><span class="math inline">\(1000\$\)</span>,</span> and the two outcomes’ probabilities are <span style="display:inline-block;"><span class="math inline">\(50\%\)</span></span> each.</p></li>
+<li><p>Peter must reach a particular destination, and is undecided between two alternatives: <em>go by car</em>, or <em>ride a bus</em>, or <em>go on foot</em>. If he goes by car, he could <em>arrive without problems</em>, with a probability of <span style="display:inline-block;"><span class="math inline">\(80\%\)</span></span> and a utility of <span style="display:inline-block;"><span class="math inline">\(10\,\textcurrency\)</span>,</span> or he could <em>get stuck in a traffic jam</em> and arrive late, with a probability of <span style="display:inline-block;"><span class="math inline">\(20\%\)</span></span> and a utility of <span style="display:inline-block;"><span class="math inline">\(-10\,\textcurrency\)</span>.</span> If he rides a bus, he could <em>arrive without problems</em>, with a probability of <span style="display:inline-block;"><span class="math inline">\(95\%\)</span></span> and a utility of <span style="display:inline-block;"><span class="math inline">\(15\,\textcurrency\)</span>,</span> or arrive in time but <em>travelling in a fully-packed bus</em>, with a probability of <span style="display:inline-block;"><span class="math inline">\(5\%\)</span></span> and a utility of <span style="display:inline-block;"><span class="math inline">\(-10\,\textcurrency\)</span>.</span> If he goes on foot, he could <em>arrive without problems</em>, with a probability of <span style="display:inline-block;"><span class="math inline">\(20\%\)</span></span> and a utility of <span style="display:inline-block;"><span class="math inline">\(20\,\textcurrency\)</span>,</span> or he could <em>get soaked from rain</em>, with a probability of <span style="display:inline-block;"><span class="math inline">\(80\%\)</span></span> and a utility of <span style="display:inline-block;"><span class="math inline">\(-5\,\textcurrency\)</span>.</span></p>
+<p>(We are using the symbol <span style="display:inline-block;">“<span class="math inline">\(\textcurrency\)</span>”</span> because Peter’s utilities are a combination of money savings, time of arrival, and comfort.)</p></li>
+</ul>
+</div>
+</div>
+<p><br>
+</p>
+</section>
+</section>
+<section id="sec-make-decision" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="sec-make-decision"><span class="header-section-number">3.3</span> How to make a basic decision?</h2>
+<p>Up to now we have seen what are the elements of a basic decision problem, and how to arrange them in a diagram and with tables. <em>But how do we determine what’s the optimal decision?</em></p>
+<p>We leave this question as a cliff-hanger, and get back to it after we explore more in detail how probabilities and utilities are assessed.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Feel free to sketch an algorithm or a mathematical formula for determining the optimal decision, once all probabilities and utilities are known. Observe the way you reasoned in all decision-problem examples so far, and try to systematize it. The goal is <em>not</em> to get the correct answer, but to become more familiar with all the notions and ideas behind a basic decision problem.</p>
+</div>
+</div>
+<p><br>
+</p>
+</section>
+<section id="inference-utility-maximization" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="inference-utility-maximization"><span class="header-section-number">3.4</span> Inference, utility, maximization</h2>
+<p>The solution of a basic decision-making problem can be roughly divided into three main stages: inference or probability assessment, utility assessment, and expected-utility maximization.</p>
 <p><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Inference</strong></span> is the stage where the probabilities of the possible outcomes are calculated. Its rules are given by the <span class="blue"><strong>Probability Calculus</strong></span>. Inference is independent from decision: in some situations we may simply wish to assess whether some hypotheses, conjectures, or outcomes are more or less plausible than others, without making any decision. This kind of assessment can be very important in problems of communication and storage, and it is specially considered by <span class="blue"><strong>Information Theory</strong></span>.</p>
 <p>The calculation of probabilities can be the part that demands most thinking, time, and computational resources in a decision problem. It is also the part that typically makes most use of data – and where data can be most easily misused.</p>
 <p>Roughly half of this course will be devoted in understanding the laws of inference, their applications, uses, and misuses.<br>
@@ -570,6 +784,9 @@ ul.task-list li input[type="checkbox"] {
 <p><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Utility assesment</strong></span> is the stage where the gains or losses of the possible outcomes are calculated. Often this stage requires further inferences and further decision-making sub-problems. The theory underlying utility assessment is still much underdeveloped, compared to probability theory.<br>
 </p>
 <p><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Expected-utility maximization</strong></span> is the final stage where the probabilities and gains or costs of the possible outcomes are combined, in order to determine the optimal decision.</p>
+<p><br>
+</p>
+<p>We shall now explore each of these three stages in the order above. We take up inference next because it is the most demanding and probably the one that can be optimized the most by new technologies.</p>
 
 
 </section>
