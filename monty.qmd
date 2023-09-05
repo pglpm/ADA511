@@ -1,0 +1,135 @@
+# [The Monty Hall inference problem]{.lightblue} {#sec-monty}
+{{< include macros.qmd >}}
+{{< include macros_monty.qmd >}}
+
+The "Monty Hall problem", inspired by the TV show *Let's make
+  a deal!* hosted by Monty Hall, was proposed in the [*Parade* magazine
+in 1990](https://hvl.instructure.com/courses/25074/modules/items/701201) (the numbers of the doors are changed here):
+
+> Suppose you are on a game show and given a choice of three doors. Behind one is a car; behind the others are goats. You pick door No. 1, and the host, who knows what is behind them [and wouldn't open the door with the car], opens No. 2, which has a goat. He then asks if you want to pick No. 3. Should you switch?
+
+:::{.column-margin}
+![](letsmakeadeal70sdoors.jpg){width=100%}
+:::
+
+
+The web is full of insightful intuitive solutions and of informal probability discussions about this inference problem. Our purpose here is different: we want to solve it *mechanically*, just by applying the fundamental rules of inference ([§ @sec-fundamental]) and the shortcut rules ([§ @sec-derived-rules]) derived from them. This purpose has two main reasons:
+
+- We generally cannot ground inferences on intuition. Intuition is shaky ground, and hopeless in data-science inference problems involving millions of data with thousands of numbers. To solve such complex problems we need to use a more mechanical procedure *mathematically guaranteed* to be self-consistent. That's the probability calculus. Intuition is useful either for arriving at a method which we can eventually prove, by mathematical and logical means, to be correct; or for approximately explaining a method that we already know, again by mathematical and logical means, to be correct.
+
+- We want to be able to implement or encode the procedure algorithmically in an AI device.
+
+
+It is instructive, however, if you also check what your intuition told you about the problem:
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Examine what your intuition tells you the answer should be,
+without spending too much time thinking, just as if you were on the game
+show. Examine which kind of heuristics your intuition uses. If you already
+know the solution to this puzzle, try to remember what your intuition told
+you the first time you faced it. Keep your observations in mind for later
+on.
+:::
+
+
+## Define the atomic sentences relevant to the problem {#sec-monty-sentences}
+
+The following sentences seem sufficient:
+
+$$
+\begin{aligned}
+\yH &\defd \text{\small[the background knowledge provided with the problem]}
+\\[1ex]
+\car{1} &\defd \pr{The car is behind door 1}
+\\
+\you{1} &\defd \pr{You initially pick door 1}
+\\
+\host{2} &\defd \pr{The host opens door 2}
+\\
+&\text{\small and similarly for the other door numbers}
+\end{aligned}
+$$
+
+We could have used other symbols for the sentences, for instance "$C_1$" instead of "$\car{1}$"; the specific symbol choice doesn't matter. We could also have stated the sentences slightly differently, for instance "[You choose door 1 at the beginning of the game]{.midgrey}"; what's important is that we understand and agree on the meaning of the atomic sentences above.
+
+
+## Specify the desired inference {#sec-monty-goal}
+
+We want the probability of the sentences $\car{1}$, $\car{2}$, $\car{3}$, given the knowledge that you picked door 1 ($\you{1}$), that the host opened door 2 ($\host{2}$), and the remaining background knowledge ($\yH$). So in symbols we want the values of the following probabilities:
+
+$$
+\begin{aligned}
+&\P(\car{1} \| \host{2} \and \you{1} \and \yH)
+\\
+&\P(\car{2} \| \host{2} \and \you{1} \and \yH)
+\\
+&\P(\car{3} \| \host{2} \and \you{1} \and \yH)
+\end{aligned}
+$$
+
+You may object: "but we already know that there's no car behind door 2, the one opened by the host; so that probability is 0%". That's correct, but how did you arrive at that probability value? Remember our goal: to solve this inference mechanically. That intuitive probability therefore must either appear as an initial probability, or be derived via the inference rules. No intuitive shortcuts.
+
+
+## Specify all given initial probabilities {#sec-monty-prior}
+
+As discussed in [§ @sec-inference-origin], any inference -- logical or uncertain -- can only be derived from other inferences, or taken for granted as a starting point ("initial probability", or "axiom" in logic). The only inferences that don't need any initial probabilities are tautologies. We must write down explicitly the initial probabilities implicit in the present inference problem:
+
+- The car is for sure behind one of the three doors, and cannot be behind more than one door:
+
+    $$
+\begin{gathered}
+\P(\car{1} \lor \car{2} \lor \car{3} \| \yH) = 1
+\\[1ex]
+\P(\car{1} \and \car{2} \| \yH) =
+\P(\car{1} \and \car{3} \| \yH) =
+\P(\car{2} \and \car{3} \| \yH) = 0
+\end{gathered}
+$$
+
+    Remember from the shortcut rule for the stability of truth and falsity ([§ @sec-truth-stable]) that the $1$ and $0$ probabilities above do not change if we `and` additional information to $\yH$.
+
+- The host cannot open the door you picked or the door with the car. This translates in several initial probabilities; here are some:
+
+    $$\begin{gathered}
+\P(\host{2} \| \you{1} \and \car{2} \and \yH) = 0
+\\[1ex]
+\P(\host{1} \| \you{1} \and \car{3} \and \yH) =
+\P(\host{3} \| \you{1} \and \car{3} \and \yH) =0
+	\end{gathered}
+	$$
+
+- The host must open one door, and cannot open more than one door:
+
+    $$
+\begin{gathered}
+\P(\host{1} \lor \host{2} \lor \host{3} \| \yH) = 1
+\\[1ex]
+\P(\host{1} \and \host{2} \| \yH) =
+\P(\host{1} \and \host{3} \| \yH) =
+\P(\host{2} \and \host{3} \| \yH) = 0
+\end{gathered}
+$$
+
+\
+
+The probabilities above are all quite clear from the description of the inference problem. But implicit in that description are some more probabilities that will be needed in our inference. The values of these probabilities can be more open to debate, because the problem, as stated, provides ambiguous information. Later you shall explore possible alternative values for these probabilities.
+
+- It is equally probable that the car is behind any of the three doors, and your initial pick doesn't change this uncertainty:
+
+    $$\begin{aligned}
+\P(\car{1} \| \yH) &= \P(\car{1} \| \you{1} \and \yH) = 1/3
+\\
+\P(\car{2} \| \yH) &= \P(\car{2} \| \you{1} \and \yH) = 1/3
+\\
+\P(\car{3} \| \yH) &= \P(\car{3} \| \you{1} \and \yH) = 1/3
+	\end{aligned}
+	$$
+
+- If the host can choose between two doors (because the car is behind the door you picked initially), we are equally uncertain the choice.
+
+    $$
+\P(\host{2} \| \you{1} \and \car{1} \and \yH) =
+\P(\host{3} \| \you{1} \and \car{1} \and \yH) = 1/2
+	$$
+
