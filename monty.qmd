@@ -71,7 +71,7 @@ $$
 You may object: "but we already know that there's no car behind door 2, the one opened by the host; so that probability is 0%". That's correct, but how did you arrive at that probability value? Remember our goal: to solve this inference mechanically. That intuitive probability therefore must either appear as an initial probability, or be derived via the inference rules. No intuitive shortcuts.
 
 
-## Specify all given initial probabilities {#sec-monty-prior}
+## Specify all initial probabilities {#sec-monty-prior}
 
 As discussed in [§ @sec-inference-origin], any inference -- logical or uncertain -- can only be derived from other inferences, or taken for granted as a starting point ("initial probability", or "axiom" in logic). The only inferences that don't need any initial probabilities are tautologies. We must write down explicitly the initial probabilities implicit in the present inference problem:
 
@@ -92,10 +92,10 @@ $$
 - The host cannot open the door you picked or the door with the car. This translates in several initial probabilities; here are some:
 
     $$\begin{gathered}
-\P(\host{2} \| \you{1} \and \car{2} \and \yH) = 0
+\P(\host{2} \| \car{2} \and \you{1} \and \yH) = 0
 \\[1ex]
-\P(\host{1} \| \you{1} \and \car{3} \and \yH) =
-\P(\host{3} \| \you{1} \and \car{3} \and \yH) =0
+\P(\host{1} \| \car{3} \and \you{1} \and \yH) =
+\P(\host{3} \| \car{3} \and \you{1} \and \yH) = 0
 	\end{gathered}
 	$$
 
@@ -126,10 +126,229 @@ The probabilities above are all quite clear from the description of the inferenc
 	\end{aligned}
 	$$
 
-- If the host can choose between two doors (because the car is behind the door you picked initially), we are equally uncertain the choice.
+- If the host can choose between two doors (because the car is behind the door you picked initially), we are equally uncertain about the choice:
 
     $$
-\P(\host{2} \| \you{1} \and \car{1} \and \yH) =
-\P(\host{3} \| \you{1} \and \car{1} \and \yH) = 1/2
+\P(\host{2} \| \car{1} \and \you{1} \and \yH) =
+\P(\host{3} \| \car{1} \and \you{1} \and \yH) = 1/2
 	$$
+
+This probability could be analysed into further hypotheses. Maybe the host, out of laziness, could more probably open the door that's closer. But from the problem it isn't fully clear which one is closer. The host could also more probably open the door that's further from the one you choose. The host could have a predetermined scheme on which door to open. The hypotheses are endless; we can imagine some making $\host{2}$ more probable, and some making $\host{3}$ more probable, conditional on $\you{1} \land \car{1} \land \yH$. The probability of 50% seems like a good compromise. Later we shall examine the effects of changing this probability.
+
+## Solution
+
+Let's try first to calculate $\P(\car{1} \| \host{2} \and \you{1} \and \yH)$, that is, the probability that the car is behind the door you picked.
+
+Seeing that we have several initial probabilities of the "$\P(\host{} \| \you{} \and \car{} \and \yH)$" form, we can use Bayes's theorem together with the "extension of the conversation" ([§ @sec-bayes-extension]). In the present case the exhaustive and mutually exclusive sentences are $\car{1}$, $\car{2}$, $\car{3}$:
+
+$$
+\begin{aligned}
+&\P(\car{1} \| \host{2} \and \you{1} \and \yH)
+\\[1ex]
+&\qquad=\frac{
+{\green\P(\host{2}\| \car{1} \and \you{1} \and \yH)} \cdot
+{\green\P(\car{1} \| \you{1} \and \yH)}
+}{
+\enspace\left[\,\begin{gathered}
+{\green\P(\host{2}\| \car{1} \and \you{1} \and \yH)} \cdot
+{\green\P(\car{1} \| \you{1} \and \yH)} +{}\\
+{\green\P(\host{2}\| \car{2} \and \you{1} \and \yH)} \cdot
+{\green\P(\car{2} \| \you{1} \and \yH)} +{}\\
+\P(\host{2}\| \car{3} \and \you{1} \and \yH) \cdot
+{\green\P(\car{3} \| \you{1} \and \yH)}
+\end{gathered}\,\right]\enspace
+}
+\\[1ex]
+&\qquad=\dotso
+\end{aligned}
+$$
+
+All probabilities in [green]{.green} are initial probabilities discussed in the previous steps. Let's substitute their values:
+
+$$
+\begin{aligned}
+&\qquad=\frac{
+{\green 1/2} \cdot
+{\green 1/3}
+}{
+\enspace\left[\,\begin{gathered}
+{\green 1/2} \cdot
+{\green 1/3} +{}\\
+{\green 0} \cdot
+{\green 1/3} +{}\\
+\P(\host{2}\| \car{3} \and \you{1} \and \yH) \cdot
+{\green 1/3}
+\end{gathered}\,\right]\enspace
+}
+\\[1ex]
+&\qquad=\frac{ 1/6
+}{
+1/6 +
+\P(\host{2}\| \car{3} \and \you{1} \and \yH) \cdot
+1/3
+}
+\\[1ex]
+&\qquad=\dotso
+\end{aligned}
+$$
+
+All that's left is to find $\P(\host{2}\| \car{3} \and \you{1} \and \yH)$. It's intuitively clear that this probability is 100%, because the host is forced to choose door 2 if you picked door 1 and the car is behind door 3. But our purpose is to make a full derivation starting from the initial probabilities only. We can find this probability by applying the `or`-rule and the `and`-rule to the probabilities that the host opens at least one door and cannot open more than one:
+
+$$
+\begin{aligned}
+&\P(\host{2}\| \car{3} \and \you{1} \and \yH)
+\\[1ex]
+&\qquad=
+\green\P(\host{2} \lor \host{1} \lor \host{3} \| \car{3} \and \you{1} \and \yH)
+\\
+&\qquad\quad{}-
+\green\P(\host{1} \| \car{3} \and \you{1} \and \yH)
+\\
+&\qquad\quad{}-
+\green\P(\host{3} \| \car{3} \and \you{1} \and \yH)
+\\
+&\qquad\quad{}+
+\green\P(\host{1} \and \host{2} \| \car{3} \and \you{1} \and \yH)
+\\
+&\qquad\quad{}+
+\green\P(\host{1} \and \host{3} \| \car{3} \and \you{1} \and \yH)
+\\
+&\qquad\quad{}+
+\green\P(\host{2} \and \host{3} \| \car{3} \and \you{1} \and \yH)
+\\
+&\qquad\quad{}-
+\green\P(\host{1} \and \host{2} \and \host{3} \| \car{3} \and \you{1} \and \yH)
+\\[1ex]
+&\qquad= 1 - 0 - 0 + 0 + 0 + 0 - 0 = 1
+\end{aligned}
+$$
+
+as expected.
+
+Finally, using this probability in our previous calculation we find
+
+$$
+\begin{aligned}
+&\P(\car{1} \| \host{2} \and \you{1} \and \yH)
+\\[1ex]
+&\qquad=\frac{ 1/6
+}{
+1/6 +
+\P(\host{2}\| \car{3} \and \you{1} \and \yH) \cdot
+1/3
+}
+\\[1ex]
+&\qquad=\frac{ 1/6
+}{
+1/6 +
+1 \cdot
+1/3
+}
+= \frac{1/6}{3/6} = \boldsymbol{\frac{1}{3}}
+\end{aligned}
+$$
+
+that is, there's a 1/3 probability that the car is behind the door we picked!
+
+\
+
+What about door 3, that is, the probability $\P(\car{1} \| \host{2} \and \you{1} \and \yH)$? Also in this case we can use Bayes's theorem with the extension of the conversation. The calculation is immediate, because we have already calculated all the relevant pieces:
+
+$$
+\begin{aligned}
+&\P(\car{3} \| \host{2} \and \you{1} \and \yH)
+\\[1ex]
+&\qquad=\frac{
+\P(\host{2}\| \car{3} \and \you{1} \and \yH) \cdot
+\P(\car{3} \| \you{1} \and \yH)
+}{
+\enspace\left[\,\begin{gathered}
+\P(\host{2}\| \car{1} \and \you{1} \and \yH) \cdot
+\P(\car{1} \| \you{1} \and \yH) +{}\\
+\P(\host{2}\| \car{2} \and \you{1} \and \yH) \cdot
+\P(\car{2} \| \you{1} \and \yH) +{}\\
+\P(\host{2}\| \car{3} \and \you{1} \and \yH) \cdot
+\P(\car{3} \| \you{1} \and \yH)
+\end{gathered}\,\right]\enspace
+}
+\\
+&\qquad=\frac{
+ 1 \cdot
+ 1/3
+}{
+\enspace\left[\,\begin{gathered}
+ 1/2 \cdot
+ 1/3 +{}\\
+ 0 \cdot
+1/3 +{}\\
+1
+\cdot
+ 1/3
+\end{gathered}\,\right]\enspace
+}
+\\[1ex]
+&\qquad=\frac{1/3}{1/2} = \boldsymbol{\frac{2}{3}}
+\end{aligned}
+$$
+
+that is, there's a 2/3 probability that the car is behind door 3. If we'd like to win the car we should then switch doors.
+
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Perform a similar calculation to find
+$\P(\car{2} \| \host{2} \and \you{1} \and \yH)$
+:::
+
+## Remarks {#sec-monty-remarks}
+
+The previous calculations may have been somewhat boring; but, again, the purpose was to see with our own eyes that the final result comes from the application of the four fundamental laws of inference to the initial probabilities -- and from nothing else.
+
+You notice that at several points our calculations could have taken a different path. For instance, in order to find $\P(\car{1} \| \host{2} \and \you{1} \and \yH)$ we applied Bayes's theorem to swap the sentences $\car{1}$ and $\host{2}$ in their supposal and conditional positions. Couldn't we have swapped $\car{1}$ and $\host{2}\land \you{1}$ instead? That is, couldn't we have made a calculation starting with
+
+$$
+\P(\car{1} \| \host{2} \and \you{1} \and \yH)
+=\frac{
+\P(\host{2} \and \you{1}\| \car{1} \and \yH) \cdot
+\P(\car{1} \| \yH)
+}{\dotso} \enspace ?
+$$
+
+after all this is also a legitimate application of Bayes's theorem.
+
+The answer is: yes, we could have. **And the final result would have been the same.** The self-consistency of the probability calculus guarantees that there are no "wrong steps", as long as every step is an application of one of the four fundamental rules (or of their shortcuts). The worst that can happen is that we take a longer route -- but to exactly the same result. In fact it's possible that there's a shorter calculation route to arrive at the probabilities that we found in the previous section. But it doesn't matter, because it would lead to the same result.
+
+## Sensitivity analysis and variations {#sec-monty-sensitivity}
+
+In [§ @sec-monty-prior] we briefly discussed possible interpretations or variations of the Monty Hall problem, for which the probability that the host chooses among the available doors 2 and 3 (if the car is behind the door you picked) is different from 50%.
+
+When we are curious to know how an initial probability value can affect the final probabilities, we can leave its value as a variable, and check how the final probabilities change as we change this variable. This procedure is often called [**sensitivity analysis**]{.blue}. Try to do a sensitivity analysis for the Monty Hall problem:
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Instead of assuming
+
+$$\P(\host{2} \| \car{1} \and \you{1} \and \yH) =
+\P(\host{3} \| \car{1} \and \you{1} \and \yH) = 1/2$$
+
+assign a generic variable value $p$
+
+$$\P(\host{2} \| \car{1} \and \you{1} \and \yH) = p
+\qquad
+\P(\host{3} \| \car{1} \and \you{1} \and \yH) = 1-p$$
+
+where $p$ could be any value between $0$ and $1$.
+
+- Calculate $\P(\car{1} \| \host{2} \and \you{1} \and \yH)$ as done in the previous sections, but keeping $p$ as a generic variable. You therefore well find a probability $\P(\car{1} \| \host{2} \and \you{1} \and \yH)$ that depend numerically on $p$; it could be considered as a function of $p$
+
+- Plot how the value of $\P(\car{1} \| \host{2} \and \you{1} \and \yH)$ depends on $p$, as the latter ranges from $0$ to $1$.
+
+- For which range of values of $p$ is it convenient to switch door, that is, $\P(\car{1} \| \host{2} \and \you{1} \and \yH) < 1/2$ ?
+
+- Imagine and describe alternative scenarios or background information that would lead to specific values of $p$ different from $0.5$.
+:::
+
+
+
+
 
