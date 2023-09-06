@@ -4,6 +4,48 @@
 
 The fundamental rules above are in principle all we need to use to draw inferences from other inferences. But from them it is possible to derive some "shortcut" rules.
 
+
+
+
+## Falsity and truth cannot be altered by additional knowledge {#sec-truth-stable}
+
+Suppose that sentence $\yX$ is judged to be completely impossible conditional on sentence $\yZ$:
+
+$$
+\P(\yX \| \yZ) = 0
+$$
+
+It can then be proved, from the fundamental rules, that $\yX$ is also completely impossible if we add information to $\yZ$. That is, for any sentence $\yY$ we'll also have
+
+$$
+\P(\yX \| \yY \land \yZ) = 0
+$$
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Try to prove this. [(Hint: try using the `and`-rule one or more times.)]{.small}
+:::
+
+{{< fa exclamation-circle >}} What if we use $\lnot\yX$ for $\yY$, that is, what if we acquire knowledge that $\yX$ is actually true? Then it can be proved that all probability calculations break down. The problem is that $\lnot\yX$ and $\yZ$ turn out to be mutually contradictory, so all inferences are starting from contradictory premises. Just as in formal logic, from contradictory premises we can obtain any conclusion whatsoever.
+
+Note that this problem does not arise, however, if $\yX$ is only extremely improbable conditional on $\yZ$ -- say with a probability of $10^{-100}$ -- rather than flat-out impossible. In practical applications we often approximate extremely small probabilities by $0$, or extremely large ones by $1$. If the probability calculations break down, we must then step back and correct the approximation.
+
+\
+
+By using the `not`-rule it is possible to prove that full certainty about a sentence behaves in a similar manner. If sentence $\yX$ is judged to be completely certain conditional on sentence $\yZ$:
+
+$$
+\P(\yX \| \yZ) = 1
+$$
+
+then, from the fundamental rules, $\yX$ is also completely certain if we add information to $\yZ$. That is, for any sentence $\yY$ we'll also have
+
+$$
+\P(\yX \| \yY \land \yZ) = 1
+$$
+
+
+
 ## Boolean algebra {#sec-boolean}
 
 First, it is possible to show that all rules you may know from Boolean algebra *are a consequence of the fundamental rules* of [§ @sec-fundamental]. So we can always make the following convenient replacements anywhere in a probability expression:
@@ -31,44 +73,77 @@ $$
 $$
 :::
 
-\
-
-## Falsity and truth cannot be altered by additional knowledge {#sec-truth-stable}
-
-Suppose that sentence $\yX$ is judged to be completely impossible conditional on sentence $\yZ$:
+For example, a partial proof of the rule $\yX \land \yX = \yX$, called "`and`-idempotence", from the four fundamental rules goes as follows:
 
 $$
-\P(\yX \| \yZ) = 0
+\begin{aligned}
+&\P(\yX \land \yX \| \yZ)&&
+\\[1ex]
+&\qquad= \P(\yX| \yX \land \yZ) \cdot \P(\yX \| \yZ)&&
+&&\text{\small ∧-rule}
+\\[1ex]
+&\qquad= 1 \cdot \P(\yX \| \yZ)&&
+&&\text{\small truth-rule}
+\\[1ex]
+&\qquad= \P(\yX \| \yZ)
+\end{aligned}
 $$
 
-It can then be proved, from the fundamental rules, that $\yX$ is also completely impossible if we add information to $\yZ$. That is, for any sentence $\yY$ we'll also have
+and with a similar procedure it can be shown that $\yX \land \yX$ can be replaced with $\yX$ no matter where it appears. The above proof shows that the `and`-idempotence rule is tightly connected with the `truth`-rule of inference.
 
-$$
-\P(\yX \| \yY \land \yZ) = 0
-$$
-
-:::{.callout-caution}
-## {{< fa user-edit >}} Exercise
-Try to prove this. [(Hint: try using the `and`-rule one or more times.)]{.small}
-:::
-
-{{< fa exclamation-circle >}} What if we use $\lnot\yX$ for $\yY$, that is, what if we acquire knowledge that $\yX$ is actually true? Then it can be proved that all probability calculations break down. The problem is that $\lnot\yX$ and $\yZ$ turn out to be mutually contradictory, so all inferences are starting from contradictory premises. Just as in formal logic, from contradictory premises we can obtain any conclusion whatsoever.
-
-Note that this problem does not arise, however, if $\yX$ is only extremely improbable conditional on $\yZ$ -- say with a probability of $10^{-100}\%$ -- rather than flat-out impossible. In practical applications we often approximate extremely small probabilities by $0$, or extremely large ones by $1$. If the probability calculations break down, we must then step back and correct the approximation.
 
 \
 
-By using the `not`-rule it is possible to prove that full certainty about a sentence behaves in a similar manner. If sentence $\yX$ is judged to be completely certain conditional on sentence $\yZ$:
+Some of these derived rules may seem obvious or unimportant, but actually are of extreme importance in data science. For instance the `and`-idempotence rule effectively asserts that [*whenever we draw inferences, redundant information or data is **automatically** counted only once*]{.blue}.
+
+This amazing feature saves us from a lot of headaches. Imagine that an AI decision agent at the assembly line has been given background information equivalent to saying that if an electronic component passes the heating test ($\yh$), then its probability of early failure ($\yf$) is only 10%:
+
+$$\P(\yf \| \yh \land \yZ) = 0.1$$
+
+
+
+A new voltage test has also been devised, and if a component passes this test ($\yv$) then its probability of early failure is also only 10%:
+
+$$\P(\yf \| \yv \land \yZ) = 0.1$$
+
+However, it is discovered that the voltage test works in exactly the same way as the heating test -- they're basically the same test: $\yv=\yh$. This means that if an element passes the heating test, then it has automatically passed the voltage test as well:
+
+$$\P(\yv \| \yh \land \yZ) = 1$$
+
+or equivalently, $\yv \land \yh = \yh \land \yh = \yh$.
+
+Now suppose that inadvertently we give our AI decision agent the redundant information that the element has passed the heating test and (therefore) the voltage test. What will the agent say about the probability of early failure, given this duplicate information? Let's calculate:
 
 $$
-\P(\yX \| \yZ) = 1
+\begin{aligned}
+&\P(\yf \| \yv \land \yh \land \yZ)&&
+\\[1ex]
+&\qquad= \frac{\P(\yf \land \yv\| \yh \land \yZ)}{
+\P(\yv\| \yh \land \yZ)
+}
+&&\text{\small ∧-rule}
+\\[1ex]
+&\qquad= \frac{\P(\yf \land \yv\| \yh \land \yZ)}{1}
+=\P(\yf \land \yv\| \yh \land \yZ)
+&&\text{\small initial probability}
+\\[1ex]
+&\qquad= \P(\yv\| \yf \land \yh \land \yZ) \cdot
+\P(\yf \| \yh \land \yZ)
+&&\text{\small ∧-rule}
+\\[1ex]
+&\qquad= 1 \cdot
+\P(\yf \| \yh \land \yZ)
+&&\text{\small truth cannot be altered}
+\\[1ex]
+&\qquad= 0.1
+&&\text{\small initial probability}
+\end{aligned}
 $$
 
-then, from the fundamental rules, $\yX$ is also completely certain if we add information to $\yZ$. That is, for any sentence $\yY$ we'll also have
+Luckily the agent correctly detected the redundancy of the sentence $\yv$ ("the element passed the voltage test") and automatically discarded it, thank to the `truth`-rule, or equivalently the `and`-idempotence rule.
 
-$$
-\P(\yX \| \yY \land \yZ) = 1
-$$
+[{{< fa exclamation-circle >}}
+This feature is of paramount importance in machine learning and data-driven engineering: the "features" that we give as an input to a machine-learning classifier could contain redundancies that we don't recognize owing to the complexity of the data space. But if the classifier makes inferences according to the four fundamental rules, it will automatically discard any redundant features.]{.red}
 
 
 
