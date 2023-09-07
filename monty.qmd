@@ -32,6 +32,16 @@ you the first time you faced it. Keep your observations in mind for later
 on.
 :::
 
+## Which agent? whose knowledge? {#sec-monty-agent}
+
+A sentence can be assigned different probabilities by different agents having different background information, although in some cases different background information can still lead to numerically equal probabilities.
+
+In the present case, who's the agent solving the inference problem? And what background information does it have?
+
+From the problem statement it sounds like you are the agent; but we can imagine that you have programmed an AI agent having your same background information, and ready to make the decision for you.
+
+We must agree on which background information $\yH$ to give to this agent. Let's define $\yH$ as the knowledge you have right *before* picking door 1. We make this choice so that we can add your door pick as additional information.
+
 
 ## Define the atomic sentences relevant to the problem {#sec-monty-sentences}
 
@@ -39,7 +49,7 @@ The following sentences seem sufficient:
 
 $$
 \begin{aligned}
-\yH &\defd \text{\small[the background knowledge provided with the problem]}
+\yH &\defd \text{\small[the background knowledge discussed in the previous section]}
 \\[1ex]
 \car{1} &\defd \pr{The car is behind door 1}
 \\
@@ -135,7 +145,25 @@ The probabilities above are all quite clear from the description of the inferenc
 
 This probability could be analysed into further hypotheses. Maybe the host, out of laziness, could more probably open the door that's closer. But from the problem it isn't fully clear which one is closer. The host could also more probably open the door that's further from the one you choose. The host could have a predetermined scheme on which door to open. The hypotheses are endless; we can imagine some making $\host{2}$ more probable, and some making $\host{3}$ more probable, conditional on $\you{1} \land \car{1} \land \yH$. The probability of 50% seems like a good compromise. Later we shall examine the effects of changing this probability.
 
-## Solution
+
+### Some curious probabilities {#sec-monty-youprob}
+
+We defined the background knowledge $\yH$ as the one you have right *before* choosing door 1. We did this so that the sentence $\you{1}$, expressing your door pick, can be added as additional information: $\you{1}\land \yH$.
+
+Then it is legitimate to ask: what is the probability that you pick door 1, given only the background information $\yH$:
+
+$$\P(\you{1}\| \yH)\ ?$$
+
+To answer this question we would need to specify $\yH$ more in detail. For instance it is possible that you planned to pick door 1 already the day before. In this case we would have $\P(\you{1}\| \yH) = 1$ or very nearly so. Or you could pick door 1 right on the spot, with no clear conscious thought process behind your choice. In this case we would have $\P(\you{1}\| \yH) = 1/3$ or a similar value.
+
+Luckily in the present problem these probabilities are not needed or, if they are used, their numerical values turn out not to matter (they "cancel out").
+
+:::{.callout-warning}
+## {{< fa exclamation-circle >}} Silly literature
+Some texts on probability say that if you have decided something and therefore know it in advance for certain, then the probability of that something is undefined "because it is not random". Obviously this is nonsense. If you already know something, then the probability of that something is well-defined and its value is $100%$ -- or something short of this value, if you want to make allowance for the occurrence of unplanned events.
+:::
+
+## Solution {#sec-monty-solution}
 
 Let's try first to calculate $\P(\car{1} \| \host{2} \and \you{1} \and \yH)$, that is, the probability that the car is behind the door you picked.
 
