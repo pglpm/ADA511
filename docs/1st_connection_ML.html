@@ -406,7 +406,14 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-1stconn-inference" id="toc-sec-1stconn-inference" class="nav-link active" data-scroll-target="#sec-1stconn-inference"><span class="header-section-number">11.1</span> “Learning” and “output” from the point of view of inference &amp; decision</a></li>
+  <li><a href="#sec-1stconn-outputs" id="toc-sec-1stconn-outputs" class="nav-link" data-scroll-target="#sec-1stconn-outputs"><span class="header-section-number">11.2</span> Why different outputs?</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -446,7 +453,9 @@ ul.task-list li input[type="checkbox"] {
 <p>In these first chapters we have been developing notions and methods about agents drawing inferences and making decisions, sentences expressing facts and information, and probabilities expressing uncertainty and certainty. Let’s draw some first qualitative connections between these notions and notions typically used in machine learning.</p>
 <p>A machine-learning algorithm is usually presented in textbooks as something that first “learns” from some training data, and thereafter performs some kind of task – typically it yields a response or outcome of some kind. More precisely, the training data are instances or examples of the task that the algorithm is expected to perform. These instances have a special status because their details are fully known, whereas new instances, where the algorithm will be applied, have some uncertain elements: typically they have an ideal or optimal outcome, but this outcome is unknown beforehand. The response given by the algorithm in new instances depend on the algorithm’s internal architecture and parameters; for brevity we shall just use “architecture” to mean both.</p>
 <p>Let’s try to rephrase this description from the point of view developed in the past chapters. A machine-learning algorithm is given <span class="green">known pieces of information (the training data)</span>, and then forms some kind of connection with <span class="red">another piece of information of a similar kind (the outcome in a new application) that was not known beforehand</span>. The connection depends on the <span class="yellow">algorithm’s architecture</span>.</p>
-<p>This has strong similarities to what an agent does when drawing an inference: it uses known pieces of information, expressed by sentences <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}\mathsfit{D}_1}, {\color[RGB]{34,136,51}\mathsfit{D}_2}, {\color[RGB]{34,136,51}\dots}, {\color[RGB]{34,136,51}\mathsfit{D}_N}\)</span>,</span> together with some background or built-in information <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{204,187,68}\mathsfit{I}\)</span>,</span> in order to calculate the probability of a piece of information of a similar kind, expressed by a sentence <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}\mathsfit{D}_{N+1}\)</span>:</span></p>
+<section id="sec-1stconn-inference" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="sec-1stconn-inference"><span class="header-section-number">11.1</span> “Learning” and “output” from the point of view of inference &amp; decision</h2>
+<p>The remarks above reveal similarities with what an agent does when drawing an inference: it uses known pieces of information, expressed by sentences <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}\mathsfit{D}_1}, {\color[RGB]{34,136,51}\mathsfit{D}_2}, {\color[RGB]{34,136,51}\dots}, {\color[RGB]{34,136,51}\mathsfit{D}_N}\)</span>,</span> together with some background or built-in information <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{204,187,68}\mathsfit{I}\)</span>,</span> in order to calculate the probability of a piece of information of a similar kind, expressed by a sentence <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}\mathsfit{D}_{N+1}\)</span>:</span></p>
 <p><span class="math display">\[
 \mathrm{P}(\color[RGB]{238,102,119}\mathsfit{D}_{N+1}\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{}
 \color[RGB]{34,136,51}\mathsfit{D}_{N} \land \dotsb \land \mathsfit{D}_2 \land \mathsfit{D}_1 \color[RGB]{0,0,0}\land {\color[RGB]{204,187,68}\mathsfit{I}})
@@ -460,8 +469,22 @@ ul.task-list li input[type="checkbox"] {
 <p>This correspondence seems convincing with regard to <span class="yellow">architecture</span> and <span class="green">training data</span>: in both cases we’re speaking about the use of pre-existing or built-in information, combined with additional one.</p>
 <p>But it is less convincing with regarding to the <span class="red">outcome</span>, because an agent gives the probabilities for several possible “outputs”, it doesn’t just yield one. This indicates that there must be also be some <strong>decision</strong> involved among the possible outcomes.</p>
 <p>We’ll return to this tentative connection later.</p>
+</section>
+<section id="sec-1stconn-outputs" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="sec-1stconn-outputs"><span class="header-section-number">11.2</span> Why different outputs?</h2>
+<p>In the past chapters we have seen, over and over, what was claimed in the introduction to the present lecture notes: that an inference &amp; decision problem has only one optimal solution. Once we specify the utilities and the initial probabilities of the problem, the fundamental rules of inference and the principle of maximal expected utility leads to one unique answer (unless, of course, there are several optimal ones with equal expected utilities).</p>
+<p>Different machine-learning algorithms, trained with the same training data, often give different answers or outputs to the same problem. Where do these differences come from? From the point of view of decision theory there are three possibilities, which don’t exclude one another:</p>
+<ul>
+<li><p><span class="yellow">The initial probabilities given to the algorithms are different.</span> Since the training data are the same, this means that the <strong>background information built into</strong> one machine-learning algorithm is different from those built into another.</p>
+<p>It is therefore important to <span class="blue"><em>understand what are the built-in background information and initial probabilities</em></span> of different machine-learning algorithms. The built-in assumptions of an algorithm must match those of the real problem as closely as possible, in order to avoid sub-optimal or even disastrously wrong answers and outputs.</p></li>
+<li><p><span class="yellow">The <strong>utilities built into</strong> one machine-learning algorithm are different</span> from those built into another.</p>
+<p>It is therefore also important to <span class="blue"><em>understand what are the built-in utilities</em></span> of different machine-learning algorithms. The built-in utilities must also match those of the real problem as closely as possible.</p></li>
+<li><p><span class="yellow">The calculations made by the algorithms are approximate</span>, and different algorithms make different kinds of approximations. This means that the algorithms don’t arrive at the unique answer determined by decision theory, but to some other answers which may be approximately close to the correct one and to one another – or not.</p>
+<p>It is therefore important to <span class="blue"><em>understand what are the calculation approximations</em></span> made by different machine-learning algorithms. Some approximations may be too crude for some real problems, and may again lead to sub-optimal or even disastrously wrong answers and outputs.</p></li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
