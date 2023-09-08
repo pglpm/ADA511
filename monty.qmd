@@ -1,4 +1,4 @@
-# [The Monty Hall inference problem]{.lightblue} {#sec-monty}
+# [Monty Hall and related inference problems]{.lightblue} {#sec-monty}
 {{< include macros.qmd >}}
 {{< include macros_monty.qmd >}}
 
@@ -15,9 +15,32 @@ in 1990](https://hvl.instructure.com/courses/25074/modules/items/701201) (the nu
 
 The web is full of insightful intuitive solutions and of informal probability discussions about this inference problem. Our purpose here is different: we want to solve it *mechanically*, just by applying the fundamental rules of inference ([§ @sec-fundamental]) and the shortcut rules ([§ @sec-derived-rules]) derived from them. This purpose has two main reasons:
 
+- We want to be able to implement or encode the procedure algorithmically in an AI agent.
+
 - We generally cannot ground inferences on intuition. Intuition is shaky ground, and hopeless in data-science inference problems involving millions of data with thousands of numbers. To solve such complex problems we need to use a more mechanical procedure *mathematically guaranteed* to be self-consistent. That's the probability calculus. Intuition is useful either for arriving at a method which we can eventually prove, by mathematical and logical means, to be correct; or for approximately explaining a method that we already know, again by mathematical and logical means, to be correct.
 
-- We want to be able to implement or encode the procedure algorithmically in an AI device.
+:::{.callout-warning}
+## {{< fa exclamation-circle >}} Misleading intuition in high dimensions
+As an example of our intuition can be completely astray in problems involving many data dimensions, consider the following fact.
+
+Take a one-dimensional Gaussian distribution of probability. You have probably heard that the probability that a data point is within a distance of three standard deviations from the peak is approximately $99.73\%$. If we take a two-dimensional (symmetric) Gaussian distribution, the probability that a data point (two real numbers) is within three standard deviations from the peak is $98.89\%$ -- slightly less that the one-dimensional case. For a three-dimensional Gaussian, the probability that a data point (three real numbers) is within three standard deviations from the peak is $97.07\%$ -- slightly smaller yet.
+
+Now try to answer this question: for a *100-dimensional* Gaussian, what is the probability that a data point is within three standard deviations from the peak? The answer is $\boldsymbol{(1.83 \cdot 10^{-32})\%}$. This probability is so small that you would never observe a data point within three standard deviations from the peak, even if you checked one data point every second for the same duration as the present age of the universe -- which is "only" around $4\cdot 10^{17}$ seconds.
+:::
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+For further examples of our intuition leads us astray in high dimensions see 
+
+- [Counterintuitive Properties of High Dimensional Space](https://marckhoury.github.io/blog/counterintuitive-properties-of-high-dimensional-space/)
+
+- Exercise 2.20 (and its solution) in [*Information Theory, Inference, and Learning Algorithms*](https://hvl.instructure.com/courses/25074/modules/items/660092)
+:::
+::::
+
+
+
 
 
 It is instructive, however, if you also check what your intuition told you about the problem:
@@ -146,7 +169,7 @@ The probabilities above are all quite clear from the description of the inferenc
 This probability could be analysed into further hypotheses. Maybe the host, out of laziness, could more probably open the door that's closer. But from the problem it isn't fully clear which one is closer. The host could also more probably open the door that's further from the one you choose. The host could have a predetermined scheme on which door to open. The hypotheses are endless; we can imagine some making $\host{2}$ more probable, and some making $\host{3}$ more probable, conditional on $\you{1} \land \car{1} \land \yH$. The probability of 50% seems like a good compromise. Later we shall examine the effects of changing this probability.
 
 
-### Some curious probabilities {#sec-monty-youprob}
+### Some peculiar probabilities {#sec-monty-youprob}
 
 We defined the background knowledge $\yH$ as the one you have right *before* choosing door 1. We did this so that the sentence $\you{1}$, expressing your door pick, can be added as additional information: $\you{1}\land \yH$.
 
@@ -167,7 +190,7 @@ Some texts on probability say that if you have decided something and therefore k
 
 Let's try first to calculate $\P(\car{1} \| \host{2} \and \you{1} \and \yH)$, that is, the probability that the car is behind the door you picked.
 
-Seeing that we have several initial probabilities of the "$\P(\host{} \| \you{} \and \car{} \and \yH)$" form, we can use Bayes's theorem together with the "extension of the conversation" ([§ @sec-bayes-extension]). In the present case the exhaustive and mutually exclusive sentences are $\car{1}$, $\car{2}$, $\car{3}$:
+Seeing that we have several initial probabilities of the "$\P(\host{} \| \you{} \and \car{} \and \yH)$" form, we can use Bayes's theorem together with the "extension of the conversation" ([§ @sec-bayes-extension]) to swap the positions of "$\car{}$" and "$\host{}$" sentences between supposal and conditional. In the present case the exhaustive and mutually exclusive sentences are $\car{1}$, $\car{2}$, $\car{3}$:
 
 $$
 \begin{aligned}
@@ -328,7 +351,7 @@ Perform a similar calculation to find
 $\P(\car{2} \| \host{2} \and \you{1} \and \yH)$
 :::
 
-## Remarks {#sec-monty-remarks}
+## Remarks on the use of Bayes's theorem {#sec-monty-remarks}
 
 The previous calculations may have been somewhat boring; but, again, the purpose was to see with our own eyes that the final result comes from the application of the four fundamental laws of inference to the initial probabilities -- and from nothing else.
 
@@ -344,9 +367,9 @@ $$
 
 after all this is also a legitimate application of Bayes's theorem.
 
-The answer is: yes, we could have. **And the final result would have been the same.** The self-consistency of the probability calculus guarantees that there are no "wrong steps", as long as every step is an application of one of the four fundamental rules (or of their shortcuts). The worst that can happen is that we take a longer route -- but to exactly the same result. In fact it's possible that there's a shorter calculation route to arrive at the probabilities that we found in the previous section. But it doesn't matter, because it would lead to the same result.
+The answer is: yes, we could have; **and the final result would have been the same.** The self-consistency of the probability calculus guarantees that there are no "wrong steps", as long as every step is an application of one of the four fundamental rules (or of their shortcuts). The worst that can happen is that we take a longer route -- but to exactly the same result. In fact it's possible that there's a shorter calculation route to arrive at the probabilities that we found in the previous section. But it doesn't matter, because it would lead to the same result.
 
-## Sensitivity analysis and variations {#sec-monty-sensitivity}
+## Sensitivity analysis {#sec-monty-sensitivity}
 
 In [§ @sec-monty-prior] we briefly discussed possible interpretations or variations of the Monty Hall problem, for which the probability that the host chooses among the available doors 2 and 3 (if the car is behind the door you picked) is different from 50%.
 
@@ -376,7 +399,7 @@ where $p$ could be any value between $0$ and $1$.
 - Imagine and describe alternative scenarios or background information that would lead to specific values of $p$ different from $0.5$.
 :::
 
-\
+## Variations and further exercises {#sec-monty-variations}
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise: other variations
@@ -412,5 +435,19 @@ In this chapter we only solved the *inference* problem for the Monty Hall scenar
 
 - Now assign utilities from the point of view of an agent who values the *goat*
 more than the car. Then solve the decision-making problem according to the usual procedure. What's the optimal decision?
+:::
+
+\
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise: the Sleeping Beauty problem
+
+Take a look at the inference problem presented in this video:
+
+{{< video https://www.youtube.com/watch?v=XeSu9fBJ2sI >}}
+
+and try to solve it, using not intuition but the mechanical procedure and steps as in the Monty Hall solution above.
+
+Note that the video asks "What do you believe is the probability that the coin came up heads?". Since probability and degree of belief are the same thing, that is like asking "What do you believe is your belief that the coin came up heads?" which is a redundant or quirky question. Instead, simply answer the question "What is your degree of belief (that is, probability) that the coin came up heads?".
 :::
 
