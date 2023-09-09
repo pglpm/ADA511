@@ -514,12 +514,12 @@ Procedures in this category make sure that the data are what they were intended 
 <dd>
 These procedures make sure that data are in the correct format to be inputted into the algorithm. They may also include rescaling of numerical values for avoiding numerical overflow or underflow errors during computation. Such procedures are often necessary and useful, but they just change the way data are encoded, possibly including the zero and unit of measurement; they do not actually change the information contained in the data.
 </dd>
-<dt>Mutilation</dt>
+<dt>“Mutilation” or information-alteration</dt>
 <dd>
-Procedures of this kind <em>alter the content of proper data</em>. For instance, such a procedure may replace, in a data set of temperatures, a datapoint having value 20 °C with one having value 25 °C; this is not just a simple rescaling. These procedures include “de-noising”, “de-biasing”, “de-trending”, “filtering”, “dimensionality reduction” and similar procedures (often having noble-sounding names). We must state, clearly and strongly, that <span class="blue"><em>within Decision Theory and Probability Theory, such information-altering pre-processing is <strong>not</strong> necessary , and is in fact <strong>detrimental</strong></em></span>.
+Procedures of this kind <em>alter the content of proper data</em>. For instance, such a procedure may replace, in a data set of temperatures, a datapoint having value 20 °C with one having value 25 °C; this is not just a simple rescaling. These procedures include “de-noising”, “de-biasing”, “de-trending”, “filtering”, “dimensionality reduction” and similar procedures (often having noble-sounding names). We must state, clearly and strongly, that <span class="blue"><em>within Decision Theory and Probability Theory, such information-altering pre-processing is <strong>not</strong> necessary , and is in fact <strong>detrimental</strong></em></span>; this is why we call it “mutilation” here.
 </dd>
 </dl>
-<p><em>It is important that you understand that such data pre-processing is <strong>not</strong> something that one has to do in data science in general – quite the opposite, in principle you should <strong>not</strong> do it, because it is a destructive procedure. Such pre-processing is done in order to correct deficiencies of the algorithms currently in use.</em></p>
+<p><em>It is important that you understand that such data pre-processing is <strong>not</strong> something that one has to do in data science in general – quite the opposite, in principle you should <strong>not</strong> do it, because it is a destructive procedure. Such pre-processing is done in order to correct deficiencies of the algorithms currently in use, as discussed below.</em></p>
 <p>If we build an “optimal predictor machine” that fully operates according to the four rules of inference (<a href="probability_inference.html#sec-fundamental">§ &nbsp;<span>8.4</span></a>) and of maximization of expected utility, then the data fed into this machine <em>should not be pre-processed with any information-altering procedures</em>. The reason is that the four fundamental rules automatically take care of factors such as noise, bias, systematic errors, redundancy in the optimal way. We briefly discussed in <a href="derived_rules.html#sec-idempotent">§ &nbsp;<span>9.3</span></a> and saw a simple example of how redundancy is accounted for by the four rules.</p>
 <p>If we have information about noise or other factors affecting the data, then we should include this information in the background information provided to the “optimal predictor machine”, rather than altering the data given to it. The reason, in intuitive terms, is that the machine does the adjustments while fully exploring the data themselves, so it can more deeply “see” how to make optimal adjustments given the “inner structure” of the data. In the pre-processing phase – as the prefix “<em>pre-</em>” indicates – we don’t have the full picture about the data, so any adjustment risks eliminating actually useful information and is always sub-optimal.</p>
 <p>More formally, this is the content of the <span class="blue"><strong>data-processing inequality</strong></span> from information theory:</p>
@@ -534,11 +534,14 @@ Data-processing inequality
 </div>
 <div class="callout-body-container callout-body">
 <div style="font-size:120%">
-<p>“No clever manipulation of the data can improve the inferences that can be made from the data” (<span class="small"><em>Elements of Information Theory</em> § 2.8</span>)</p>
+<p>“No clever manipulation of the data can improve the inferences that can be made from the data”<br>
+<span class="small">(<em>Elements of Information Theory</em> § 2.8)</span></p>
+<p><span class="small black">or, from the complementary point of view:</span></p>
+<p>“Data processing can only destroy information”<br>
+<span class="small">(<em>Information Theory, Inference, and Learning Algorithms</em> exercise&nbsp;8.9)</span></p>
 </div>
 </div>
 </div>
-<p>In other words (quoting <em>Information Theory, Inference, and Learning Algorithms</em>), <span class="blue"><em>data processing can only destroy information</em></span>.</p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -557,7 +560,7 @@ Data-processing inequality
 </div>
 <p><br>
 </p>
-<p>There are two main, partially connected reasons why one performs mutilation pre-processing of data:</p>
+<p>There are two main, partially connected reasons why one performs “mutilation” pre-processing of data:</p>
 <ul>
 <li><p>The algorithm used is <em>non-optimal</em>: it’s only using approximations of the four fundamental rules, and therefore cannot remove noise, bias, redundancies, and similar in an optimal way – or at all. In this case, pre-processing is an approximate way of correcting this deficiency of the non-optimal algorithm.</p></li>
 <li><p>Full optimal processing is <em>computationally too expensive</em>. In this case we try to simplify the optimal calculation by doing in advance and in a cruder, faster way some of the “cleaning” that the full calculation would otherwise spend time doing in an optimal way.</p></li>
