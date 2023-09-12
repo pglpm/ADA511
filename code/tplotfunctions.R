@@ -385,7 +385,7 @@ scatteraxis <- function(x, side=1, n=128, col='#555555', alpha=0.5, ext=5, pos=N
     matlines(x=xl, y=yl, lty=1, lwd=lwd, col=col, ...)
 }
 
-thist <- function(x, n=NULL, type=8, pretty=FALSE, plot=FALSE, extendbreaks=FALSE){
+thist <- function(x, n=NULL, type=8, pretty=FALSE, plot=FALSE, extendbreaks=FALSE, ...){
     if(!is.list(x)){x <- list(x)}
     if(!is.list(n)){n <- list(n)}
     out <- list()
@@ -417,7 +417,7 @@ thist <- function(x, n=NULL, type=8, pretty=FALSE, plot=FALSE, extendbreaks=FALS
     }
     if(plot){
         tplot(x=lapply(out,function(xx)xx$breaks),
-              y=lapply(out,function(xx)xx$density),ylim=c(0,NA))
+              y=lapply(out,function(xx)xx$density),ylim=c(0,NA), ...)
     }else{
         if(length(out)==1){unlist(out,recursive=F)}else{out}
     }
