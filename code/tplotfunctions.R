@@ -392,8 +392,19 @@ thist <- function(x, n=NULL, type=8, pretty=FALSE, plot=FALSE, extendbreaks=FALS
     for(i in 1:length(x)){
         ax <- x[[i]]
         an <- n[[(i-1)%%length(n)+1]]
-    ax <- ax[!is.na(ax) & is.finite(ax)]
-    if(is.null(an)){an <- (round(sqrt(length(ax))/2))}
+        if(is.character(ax)){
+            nextout <- c(table(ax[!is.na(ax)]))
+            nextout <- list(
+                breaks=NA,
+                counts=unname(nextout),
+                density=unname(nextout)/sum(nextout),
+                mids=names(nextout),
+                xname=names(x)[i],
+                equidist=NA
+            )
+        }else{
+        ax <- ax[!is.na(ax) & is.finite(ax)]
+        if(is.null(an)){an <- (round(sqrt(length(ax))/2))}
     if(length(an)==1 && (is.na(an) || an=='i' || an=='integer')){breaks <- (round(min(ax))-0.5):(round(max(ax))+0.5)}
     else if(length(an) > 1 || is.character(an)){breaks <- an}
     else if(length(an) == 1 && an > 0){
@@ -413,11 +424,15 @@ thist <- function(x, n=NULL, type=8, pretty=FALSE, plot=FALSE, extendbreaks=FALS
         if(extendbreaks){
          breaks <- c(-Inf,breaks,+Inf)
         }
-        out <- c(out,list(hist(x=ax, breaks=breaks, plot=FALSE)))
+        nextout <- hist(x=ax, breaks=breaks, plot=FALSE)
+        }
+        out <- c(out,list(nextout))
     }
     if(plot){
-        tplot(x=lapply(out,function(xx)xx$breaks),
-              y=lapply(out,function(xx)xx$density),ylim=c(0,NA), ...)
+        tplot(x=lapply(out,function(xx){
+            if(length(xx$breaks)==1){xx$mids}else{xx$breaks}
+        } ),
+              y=lapply(out,function(xx)xx$density),ylim=c(0,NA),type='h', ...)
     }else{
         if(length(out)==1){unlist(out,recursive=F)}else{out}
     }
