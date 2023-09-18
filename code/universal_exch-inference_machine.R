@@ -1,7 +1,7 @@
 library('data.table')
 library('png')
 library('foreach')
-source('tplotfunctions.R')
+## source('tplotfunctions.R')
 
 finfo <- function(data, metadata){
     if(missing(data)){data <- NULL}

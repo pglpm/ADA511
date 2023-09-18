@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-09-16">
+<meta name="dcterms.date" content="2023-09-18">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 14&nbsp; Probability distributions</title>
 <style>
@@ -133,7 +133,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-09-16</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-09-18</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -454,14 +454,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#histograms-and-area-based-representations" id="toc-histograms-and-area-based-representations" class="nav-link" data-scroll-target="#histograms-and-area-based-representations">Histograms and area-based representations</a></li>
   <li><a href="#line-based-representations" id="toc-line-based-representations" class="nav-link" data-scroll-target="#line-based-representations">Line-based representations</a></li>
   </ul></li>
-  <li><a href="#probability-distributions-over-infinite-discrete-values" id="toc-probability-distributions-over-infinite-discrete-values" class="nav-link" data-scroll-target="#probability-distributions-over-infinite-discrete-values"><span class="header-section-number">14.3</span> Probability distributions over infinite discrete values</a></li>
-  <li><a href="#sec-prob-densities" id="toc-sec-prob-densities" class="nav-link" data-scroll-target="#sec-prob-densities"><span class="header-section-number">14.4</span> Probability densities</a></li>
-  <li><a href="#sec-represent-probs" id="toc-sec-represent-probs" class="nav-link" data-scroll-target="#sec-represent-probs"><span class="header-section-number">14.5</span> Representation of probability densities</a>
+  <li><a href="#sec-prob-densities" id="toc-sec-prob-densities" class="nav-link" data-scroll-target="#sec-prob-densities"><span class="header-section-number">14.3</span> Probability densities</a></li>
+  <li><a href="#sec-represent-probs" id="toc-sec-represent-probs" class="nav-link" data-scroll-target="#sec-represent-probs"><span class="header-section-number">14.4</span> Representation of probability densities</a>
   <ul class="collapse">
   <li><a href="#line-based-representations-1" id="toc-line-based-representations-1" class="nav-link" data-scroll-target="#line-based-representations-1">Line-based representations</a></li>
   <li><a href="#scatter-plots" id="toc-scatter-plots" class="nav-link" data-scroll-target="#scatter-plots">Scatter plots</a></li>
   </ul></li>
-  <li><a href="#sec-combined-probs" id="toc-sec-combined-probs" class="nav-link" data-scroll-target="#sec-combined-probs"><span class="header-section-number">14.6</span> Combined probabilities</a></li>
+  <li><a href="#sec-combined-probs" id="toc-sec-combined-probs" class="nav-link" data-scroll-target="#sec-combined-probs"><span class="header-section-number">14.5</span> Combined probabilities</a></li>
   </ul>
 </nav>
     </div>
@@ -481,7 +480,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-09-16</p>
+      <p class="date">2023-09-18</p>
     </div>
   </div>
   
@@ -499,6 +498,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="motivation-for-the-inference-ii-part" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="motivation-for-the-inference-ii-part"><span class="green">Motivation for the “Inference II” part</span></h2>
+<p>In the “<span class="yellow">Data I</span>” part we developed a “language”, that is, particular kinds of sentences, to approach inferences and probability calculations typical of data-science and engineering problems.</p>
+<p>In the present part we focus on probability calculations that often occur with this kind of sequences, and on useful visual representation of such probabilities. Still, at bottom we’re just using the four fundamental rules of inference over and over again – nothing more than that.</p>
 <hr>
 <p><br>
 </p>
@@ -506,7 +507,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="distribution-of-probabilities-among-values" class="level2 page-columns page-full" data-number="14.1">
 <h2 data-number="14.1" class="anchored" data-anchor-id="distribution-of-probabilities-among-values"><span class="header-section-number">14.1</span> Distribution of probabilities among values</h2>
 <p>When an agent is uncertain about the value of a quantity, its uncertainty is expressed and quantified by assigning a degree of belief, conditional on the agent’s knowledge, to all the possible cases regarding the true value.</p>
-<p>For a temperature measurement, for instance, the cases could be “<span class="green">The temperature is measured to have value 271 K</span>”, “<span class="green">The temperature is measured to have value 272 K</span>”, and so on up to 275 K. These cases are expressed by mutually exclusive and exhaustive sentences. Denoting th temperature with <span style="display:inline-block;"><span class="math inline">\(T\)</span>,</span> these sentences can be abbreviated as</p>
+<p>For a temperature measurement, for instance, the cases could be “<span class="green">The temperature is measured to have value 271 K</span>”, “<span class="green">The temperature is measured to have value 272 K</span>”, and so on up to 275 K. These cases are expressed by mutually exclusive and exhaustive sentences. Denoting the temperature with <span style="display:inline-block;"><span class="math inline">\(T\)</span>,</span> these sentences can be abbreviated as</p>
 <p><span class="math display">\[
 {\color[RGB]{34,136,51}T = 271\,\mathrm{K}} \ , \quad
 {\color[RGB]{34,136,51}T = 272\,\mathrm{K} \ ,} \quad
@@ -627,7 +628,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="histograms-and-area-based-representations" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="histograms-and-area-based-representations">Histograms and area-based representations</h3>
-<p>A probability distribution for a nominal, ordinal, and discrete interval quantity can be neatly represented by a <span class="blue"><strong>histogram</strong></span>.</p>
+<p>A probability distribution for a nominal, ordinal, and discrete-interval quantity can be neatly represented by a <span class="blue"><strong>histogram</strong></span>.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <div class="quarto-figure quarto-figure-center">
@@ -642,21 +643,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Since the probabilities must sum to one, the total area of the rectangles represents the unit of area. So in principle there is no need of writing probability values on some vertical axis, or grid, or similar visual device, because the probability value can be visually read as the ratio of a rectangle area to the total area. An axis or grid can nevertheless be helpful. Alternatively the probabilities can be reported above or below each rectangle.</p>
 <p>Nominal quantities do not have any specific order, so their values do not need to be ordered on a line. Other area-based representations, such as pie charts, can also be used for these quantities.</p>
 </section>
-<section id="line-based-representations" class="level3 page-columns page-full">
+<section id="line-based-representations" class="level3">
 <h3 class="anchored" data-anchor-id="line-based-representations">Line-based representations</h3>
-<p>Histograms give faithful representations of discrete probability distributions. Their graphical bulkiness, however, can be a disadvantage in some situations; for instance when we want to have a clearer idea of how the probability distribution varies across values (for ordinal or interval quantities); or when we want to compare several probability distributions over the same values.</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p><img src="example_histogram_double.png" class="img-fluid" style="width:100.0%"> Representation of the same pair of probability distributions with a histogram plot and a line plot <img src="example_curve_double.png" class="img-fluid" style="width:100.0%"></p>
-</div></div><p>In these cases we can use standard line plots, or variations thereof. Compare the examples on the margin figure: the line plot displays more cleanly the differences between the “before-inspection” and “after-inspection” probability distributions.</p>
+<p>Histograms give faithful representations of discrete probability distributions. Their graphical bulkiness, however, can be a disadvantage in some situations; for instance when we want to have a clearer idea of how the probability distribution varies across values for ordinal or interval quantities; or when we want to compare several probability distributions over the same values.</p>
+<p>In these cases we can use standard line plots, or variations thereof. Compare the following example.</p>
+<p>A technician wonders which component of a laptop failed first (only one can fail at a time), with seven possible alternatives (this is a nominal quantity): <span style="display:inline-block;"><span class="math inline">\(\set{\texttt{\small hard-drive}, \texttt{\small motherboard}, \texttt{\small CPU}, \texttt{\small keyboard}, \texttt{\small screen}, \texttt{\small graphics-card}, \texttt{\small PCI}}\)</span>.</span> Before examining the laptop, the technician’s belief about which component failed first is distributed among the seven alternatives as in the <span class="blue">blue histogram with solid borders</span>. After a first inspection of the laptop, the technician’s belief has a new distribution, as in the <span class="red">red histogram with dashed borders</span>:</p>
+<p><img src="example_histogram_double.png" class="img-fluid" style="width:100.0%"></p>
+<p>It requires some concentration to tell the two probability distributions apart, and for example understand where their peaks are. Let us represent them by two line plots instead: <span class="blue">solid blue with circles</span> for the pre-inspection belief distribution, and <span class="red">dashed red with squares</span> for the post-inspection one:</p>
+<p><img src="example_curve_double.png" class="img-fluid" style="width:100.0%"></p>
+<p>this line plot displays more cleanly the differences between the two distributions. We see that at first the technician most strongly believed the <span style="display:inline-block;"><span class="math inline">\(\texttt{\small keyboard}\)</span></span> to be the faulty candidate, followed by the <span style="display:inline-block;"><span class="math inline">\(\texttt{\small PCI}\)</span>.</span> After the preliminary inspection, the technician most strongly believes the <span style="display:inline-block;"><span class="math inline">\(\texttt{\small PCI}\)</span></span> to be the faulty candidate, followed by the <span style="display:inline-block;"><span class="math inline">\(\texttt{\small graphics card}\)</span>.</span></p>
 </section>
 </section>
-<section id="probability-distributions-over-infinite-discrete-values" class="level2" data-number="14.3">
-<h2 data-number="14.3" class="anchored" data-anchor-id="probability-distributions-over-infinite-discrete-values"><span class="header-section-number">14.3</span> Probability distributions over infinite discrete values</h2>
-<p><span class="small grey">@@ TODO</span></p>
-</section>
-<section id="sec-prob-densities" class="level2" data-number="14.4">
-<h2 data-number="14.4" class="anchored" data-anchor-id="sec-prob-densities"><span class="header-section-number">14.4</span> Probability densities</h2>
+<section id="sec-prob-densities" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="sec-prob-densities"><span class="header-section-number">14.3</span> Probability densities</h2>
 <p>Distributions of probability over continuous domains present several counter-intuitive aspects, which essentially arise because we are dealing with uncountable infinities – while often still using linguistic expressions that make at most sense for countable infinities. Here we follow a practical and realistic approach for working with such distributions.</p>
 <p>Consider a quantity <span class="green"><span class="math inline">\(X\)</span></span> with a continuous domain. When we say that such a quantity has some value <span class="green"><span class="math inline">\(x\)</span></span> we really mean that it has a value somewhere in the range&nbsp;&nbsp; <span class="green"><span class="math inline">\(x -\epsilon/2\)</span>&nbsp;&nbsp;to&nbsp;&nbsp;<span class="math inline">\(x+\epsilon/2\)</span></span>,&nbsp;&nbsp; where the width <span style="display:inline-block;"><span class="math inline">\(\epsilon\)</span></span> is usually extremely small. For example, for <a href="https://rdrr.io/r/base/double.html">double-precision</a> values stored in a computer, the width must be at least <span style="display:inline-block;"><span class="math inline">\(\epsilon \approx 2\cdot 10^{-16}\)</span> :</span></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## R code</span></span>
@@ -709,8 +708,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><span class="math display">\[\mathrm{p}(X\mathrel{\nonscript\mkern-2.5mu\textrm{\small=}\nonscript\mkern-2.5mu}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\,\mathrm{d}x\]</span></p>
 <p>where <span style="display:inline-block;">“<span class="math inline">\(\mathrm{d}x\)</span>”</span> stands for the width of a small range around <span style="display:inline-block;"><span class="math inline">\(x\)</span>.</span> This notation is also helpful with integrals. Unfortunately it becomes a little cumbersome when we are dealing with more than one quantity.</p>
 </section>
-<section id="sec-represent-probs" class="level2 page-columns page-full" data-number="14.5">
-<h2 data-number="14.5" class="anchored" data-anchor-id="sec-represent-probs"><span class="header-section-number">14.5</span> Representation of probability densities</h2>
+<section id="sec-represent-probs" class="level2 page-columns page-full" data-number="14.4">
+<h2 data-number="14.4" class="anchored" data-anchor-id="sec-represent-probs"><span class="header-section-number">14.4</span> Representation of probability densities</h2>
 <section id="line-based-representations-1" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="line-based-representations-1">Line-based representations</h3>
 <p>The histogram and the line representations become indistinguishable for a probability density.</p>
@@ -805,8 +804,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="sec-combined-probs" class="level2 page-columns page-full" data-number="14.6">
-<h2 data-number="14.6" class="anchored" data-anchor-id="sec-combined-probs"><span class="header-section-number">14.6</span> Combined probabilities</h2>
+<section id="sec-combined-probs" class="level2 page-columns page-full" data-number="14.5">
+<h2 data-number="14.5" class="anchored" data-anchor-id="sec-combined-probs"><span class="header-section-number">14.5</span> Combined probabilities</h2>
 <p>A probability distribution is defined over a set of mutually exclusive and exhaustive sentences. In some inference problems, however, we do not need the probability of those sentences, but of some other sentence that can be obtained from them by an <code>or</code> operation. The probability of this sentence can then be obtained by a sum, according to the <code>or</code>-rule of inference. We can call this a <em>combined probability</em>. Let’s explain this procedure with an example.</p>
 <p>Back to our initial assembly-line scenario from <a href="intro.html">§&nbsp;<span>1</span></a>, the inference problem was to predict whether a specific component would fail within a year or not. Consider the time when the component will fail (if sold), and represent it by the quantity <span style="display:inline-block;"><span class="math inline">\(T\)</span></span> with the following 24 different values, where <span style="display:inline-block;">“<span class="math inline">\(\mathrm{mo}\)</span>”</span> stands for “months”:</p>
 <p><span class="math display">\[\begin{aligned}
