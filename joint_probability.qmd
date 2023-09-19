@@ -47,7 +47,7 @@ $$
 <!-- [@@ TODO]{.small .grey} -->
 
 
-## Representation of joint probability distributions
+## Representation of joint probability distributions {#sec-repr-joint-prob}
 
 There is a wide variety of ways of representing joint probability distributions, and new ways are invented (and rediscovered) all the time. In some cases, especially when the quantity has more than three component quantities, it can become impossible to graphically represent the probability distribution in a faithful way. Therefore one often tries to represent only some aspects or features of interest from the full distribution. Whenever you see a plot of a joint probability distribution, you should carefully read what the plot shows and how it was made. Here we only illustrate some examples and ideas for representations.
 
@@ -82,7 +82,7 @@ Probability distributions for nominal, ordinal, or discrete-interval quantities 
 
 :::{.column-margin}
 ![](2d_hist.png){width=100%}
-Example of generalized histogram (from [Wolfram Mathematica](https://reference.wolfram.com/language/ref/Histogram3D.html))
+Example of generalized histogram (from [Mathematica](https://reference.wolfram.com/language/ref/Histogram3D.html))
 :::
 
 Alternatively, one can replace the numerical values of the probabilities in the tabular representation of the previous section with some graphical encoding.
@@ -91,14 +91,15 @@ An example is some colour scheme, say `white` for probability $0$, `black` for p
 
 :::{.column-margin}
 ![](colour_hist.png){width=100%}
-Example of density histogram (from [Wolfram Mathematica](https://reference.wolfram.com/language/ref/DensityHistogram.html))
+Example of density histogram (from [Mathematica](https://reference.wolfram.com/language/ref/DensityHistogram.html))
 :::
 
 Another example, similar to the scatter plot ([§ @sec-scatter-plot]), is to encode the probability values with a proportional number of points or other shapes, as illustrated here for the probabilities of [table @tbl-urgent-arrival]:
 
 ![](scatter_hospital_arrival.png){width=100%}
 
-the points do not need to be scattered in regular fashion as long as it's clear which quantity value they are associated with.
+the points do not need to be scattered in regular fashion as long as it's clear which quantity value they are associated with. The scatter plot above has 100 points, and therefore we can see for instance that $\P(U\mo \textrm{\small urgent} \and T\mo \textrm{\small helicopter}\|\yi[H]) =
+0.03$, since the corresponding region has 3 points out of 100.
 
 <!-- [@@ TODO ref to marginals section]{.small .grey} -->
 
@@ -106,6 +107,54 @@ the points do not need to be scattered in regular fashion as long as it's clear 
 
 If a joint quantity consists in several continuous interval quantities, then its joint probability distribution is usually represented by a [**joint probability density**]{.blue}, which generalize the one-dimensional discussion of [§ @sec-prob-densities] to several dimensions.
 
+For instance, if $X$ and $Y$ are two continuous interval quantity, then the notation
+
+$$
+\p(X\mo x \and Y\mo y \| \yI) = 0.001
+$$
+
+means that the joint sentence "[$X$ has value between $x-\epsilon/2$ and $x+\epsilon/2$, and $Y$ between $y-\delta/2$ and $y+\delta/2$]{.midgrey}", or in symbols
+
+$$ 
+\bigl(x-\tfrac{\epsilon}{2} \mo[<] X \mo[<] x+\tfrac{\epsilon}{2}\bigr)
+\land
+\bigl(y-\tfrac{\delta}{2} \mo[<] Y \mo[<] y+\tfrac{\delta}{2}\bigr)
+$$
+
+has probability $0.001\cdot\epsilon\cdot\delta$, conditional on the background knowledge $\yI$. Said otherwise, the rectangular region of values around $(x,y)$ with widths $\epsilon$ and $\delta$ is assigned a probability $0.001\cdot\epsilon\cdot\delta$.
+
+Remember that a density typically has physical units, as in the one-dimensional case ([§ @sec-prob-densities]). For instance, if $X$ above is a temperature measured in kelvin ($\mathrm{K}$) and $Y$ a resistance measured in ohm ($\Omega$), then we would write\ \ $\p(X\mo x \and Y\mo y \| \yI) = \frac{0.001}{\mathrm{K}\,\Omega}$.
+
+
+## Representation of joint probability densities {#sec-repr-joint-dens}
+
+For one-dimensional densities we discussed line-based representations and scatter plots ([§ @sec-represent-dens]). The first of these representations can be generalized to two-dimensional densities, leading to a [**surface density plot**]{.blue}. Below is the surface density plot for the probability density given by the formula
+
+:::{.column-page-inset-right}
+$$
+\p(X\mo x \and Y\mo y \| \yI) =
+\tfrac{3}{8\sqrt{2}\,\pi}\, \e^{-\frac{1}{2} (x-1)^2-(y-1)^2}+
+\tfrac{3}{32\,\pi}\,\e^{-\frac{1}{8} (x-2)^2-\frac{1}{2} (y-4)^2}+ \tfrac{1}{8\,\sqrt{5}\,\pi}\,\e^{-\frac{1}{4} (x-5)^2-\frac{1}{5} (y-2)^2}
+$$
+:::
+
+![](surfaceXY.png){width=100%}
+
+This kind of representation can be very neat, but it has two drawbacks: it sometimes hides features of the density from view, and it cannot be extended to three-dimensional densities.
+
+<!-- :::{.column-margin} -->
+<!-- ![](surface_plot.png){width=100%} -->
+<!-- Example of surface density plot (from [Mathematica](https://reference.wolfram.com/language/ref/SmoothHistogram3D.html)) -->
+<!-- ::: -->
+
+The scatter plot instead does not hides features and can also be used for three-dimensional densities. It is, however, quantitatively more imprecise.
+Here is the scatter plot for the probability density given above:
+
+![](scatter_2d.png){width=100%}
+
+As usual, the probability of a small region is proportional to the number of points in that region. If we had a joint density for *three* continuous quantities, its scatter plot would consist of three-dimensional clouds of points instead.
+
+Clearly both kinds of representation have advantages and disadvantages.
 
 ### Multi-line plots
 
