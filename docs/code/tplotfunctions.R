@@ -87,7 +87,7 @@ tticks <- pretty
 ##     ((rg[1]%/%delta):((rg[2]%/%delta) + (rg[2]%%delta > 0)))*delta
 ## }
 
-tplot <- function(x, y, xlim=c(NA,NA), ylim=c(NA,NA), asp=NA, n=10, family='', xticks=NULL, xlabels=TRUE, yticks=NULL, ylabels=TRUE, cex=1.5, ly=NULL, lx=NULL, mar=NULL, lty.axis=1, lwd.axis=0, lwd.ticks=1, col.ticks='#bbbbbb80', col.lab='black', cex.axis=1.35, las.y=1, xgrid=NULL, ygrid=NULL, main=NULL, cex.main=1.5, xlab=NULL, ylab=NULL, cex.lab=1.5, type='l', col=palette(), pch=c(1,0,2,5,6,3,4), lty=1:4, lwd=2, alpha=NA, border=palette(), border.alpha=NA, xtransf=NULL, ytransf=NULL, add=FALSE){
+tplot <- function(x, y, xlim=c(NA,NA), ylim=c(NA,NA), asp=NA, n=10, family='', xticks=NULL, xlabels=TRUE, yticks=NULL, ylabels=TRUE, cex=1.5, ly=NULL, lx=NULL, mar=NULL, lty.axis=1, lwd.axis=0, lwd.ticks=1, col.ticks='#bbbbbb80', col.lab='black', cex.axis=1.12, las.y=1, xgrid=NULL, ygrid=NULL, main=NULL, cex.main=1.5, xlab=NULL, ylab=NULL, cex.lab=1.5, type='l', col=palette(), pch=c(1,0,2,5,6,3,4), lty=1:4, lwd=2, alpha=NA, border=palette(), border.alpha=NA, xtransf=NULL, ytransf=NULL, add=FALSE){
     ## if (missing(x)) {
     ##     if (missing(y)) 
     ##         stop("must specify at least one of 'x' and 'y'")
@@ -195,8 +195,8 @@ tplot <- function(x, y, xlim=c(NA,NA), ylim=c(NA,NA), asp=NA, n=10, family='', x
     if(!add){plot.new()
     ##par(mai=c(2, 3.5, 2, 0)/2.54, family='Palatino')#, mar=c(4,6,4,0)+0.1)
         if(is.null(main)){marup <- 0}else{marup <- 3.5}
-        if(is.null(mar)){mar <- c(3.25, ly, marup, 1)+c(1,1.1,1,1)}
-        mar[is.na(mar)] <- (c(3.25, ly, marup, 1)+c(1,1.1,1,1))[is.na(mar)]
+        if(is.null(mar)){mar <- c(3.25, ly, marup, 1)+c(1,1.5,1,1)}
+        mar[is.na(mar)] <- (c(3.25, ly, marup, 1)+c(1,1.5,1,1))[is.na(mar)]
         par(mar=mar, family=family)#, mar=c(4,6,4,0)+0.1)
     ##
     plot.window(xlim=xlim, ylim=ylim, xaxs='r', yaxs='r', asp=asp)
