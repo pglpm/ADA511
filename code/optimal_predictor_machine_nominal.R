@@ -3,8 +3,43 @@ library('png')
 library('foreach')
 ## source('tplotfunctions.R')
 
+guessmetadata <- function(data, file){
+        if(is.character(data)){
+            if(missing(file)){
+                file <- paste0('meta_',data)
+            }
+            data <- fread(data, na.strings='')
+        }else{
+            if(missing(file)){
+                cat("\n'file' argument missing: output to stdout\n")
+                file <- NULL
+            }
+        }
+        ##
+        nvariates <- ncol(data)
+        nn <- sapply(data, function(xx){length(unique(xx))})
+        maxN <- max(nn)
+        ## str(matrix(NA, nrow=nvariates,ncol=2+maxN, dimnames=list(NULL, c('variate','N',paste0('V',1:maxN)))))
+        metadata <- as.data.table(matrix(character(), nrow=nvariates,ncol=2+maxN, dimnames=list(NULL, c('variate','N',paste0('V',1:maxN)))))
+        ## print(metadata)
+        metadata[['variate']] <- colnames(data)
+        metadata[['N']] <- nn
+        for(i in 1:nvariates){
+            metadata[i, paste0('V',1:nn[i]) := as.list(sort(unique(data[[i]])))]
+        }
+        ##
+        if(!is.null(file)){
+            fwrite(x=metadata, file=file)
+        }else{
+            metadata
+        }
+}
+
 finfo <- function(data, metadata){
     if(missing(data)){data <- NULL}
+    if(missing(metadata)){metadata <- NULL}
+    if(is.null(data) & is.null(metadata)){stop("either 'data' or 'metadata' argument must be given.")}
+    ##
     if(is.character(data)){
         data <- fread(data, na.strings='')
     }
@@ -59,7 +94,7 @@ fconditional <- function(finfo, unitdata){
     totake <- as.list(rep(TRUE, length(dim(finfo))))
     totake[ncond] <- unitdata
     alphas <- do.call('[', c(list(finfo), totake))
-    alphas <- alphas # *sum(finfo)/sum(alphas)
+    ## alphas <- alphas # *sum(finfo)/sum(alphas)
     if(is.null(dim(alphas))){
         tempnames <- names(alphas)
         dim(alphas) <- length(alphas)
@@ -75,6 +110,16 @@ fpredict <- function(finfo){finfo/sum(finfo)}
 
 fsamples <- function(n, finfo){
     temp <- array(extraDistr::rdirichlet(n, alpha=c(finfo)),
+                  dim=c(n, dim(finfo)),
+                  dimnames=c(list(NULL), dimnames(finfo))
+                  )
+    attr(temp, 'variates') <- attr(finfo,'variates')
+    attr(temp, 'N') <- attr(finfo,'N')
+    temp
+}
+
+unitsamples <- function(n, finfo){
+    temp <- array(extraDistr::rdirmnom(n, alpha=c(finfo)),
                   dim=c(n, dim(finfo)),
                   dimnames=c(list(NULL), dimnames(finfo))
                   )
