@@ -6,6 +6,8 @@ library('khroma')
 cc <- colour('bright')()
 cc[8] <- '#000000'
 names(cc)[8] <- 'black'
+cc[9] <- '#777777'
+names(cc)[9] <- 'midgrey'
 palette(cc)
 bluepurple <- palette()[1]
 red <- palette()[2]
@@ -14,6 +16,7 @@ yellow <- palette()[4]
 blue <- palette()[5]
 redpurple <- palette()[6]
 grey <- palette()[7]
+midgrey <- palette()[9]
 darkgrey <- '#555555'
 black <- '#000000'
 scale_colour_discrete <- scale_colour_bright
@@ -307,7 +310,7 @@ tplot <- function(x, y, xlim=c(NA,NA), ylim=c(NA,NA), asp=NA, n=10, family='', x
 
 tlegend <- function(x, y=NULL, legend, col=palette(), pch=c(1,0,2,5,6,3,4), lty=1:4, lwd=2, alpha=0, cex=1.5, ...){
     suppressWarnings(col <- mapply(function(i,j)alpha2hex(i,j),col,alpha))
-    legend(x=x, y=y, legend=legend, col=col, pch=pch, lty=lty, lwd=lwd, bty='n', ...)
+    legend(x=x, y=y, legend=legend, col=col, pch=pch, lty=lty, lwd=lwd, bty='n', cex=cex, ...)
 }
 
 fivenumaxis <- function(side, x, col='#555555', type=8){

@@ -55,7 +55,7 @@ There is a wide variety of ways of representing joint probability distributions,
 
 When a joint quantity consists of *two, discrete and finite* component quantities, the joint probabilities can be reported as a table.
 
-Example: Consider the next patient that will arrive at a particular hospital. There's the possibility of arrival by `ambulance`, `helicopter`, or `other` transportation means; and the possibility that the patient will need `urgent` `non-urgent` care. These can be seen as two quantities $T$ (nominal) and $U$ (binary). When these two quantities are taken together; their joint probability distribution is as follows, conditional on the hospital's data $\yi[H]$:
+Example: Consider the next patient that will arrive at a particular hospital. There's the possibility of arrival by $\cat{ambulance}$, $\cat{helicopter}$, or $\cat{other}$ transportation means; and the possibility that the patient will need $\cat{urgent}$ $\cat{non-urgent}$ care. These can be seen as two quantities $T$ (nominal) and $U$ (binary). When these two quantities are taken together; their joint probability distribution is as follows, conditional on the hospital's data $\yi[H]$:
 
 +:------------------------------:+:---------------:+:---------------:+:---------------:+:---------------:+
 |$\P(U\mo u \and T\mo t\|\yi[H])$|                 |**transportation at arrival** $T$                    |
@@ -96,7 +96,7 @@ Example of density histogram (from [Mathematica](https://reference.wolfram.com/l
 
 Another example, similar to the scatter plot ([§ @sec-scatter-plot]), is to encode the probability values with a proportional number of points or other shapes, as illustrated here for the probabilities of [table @tbl-urgent-arrival]:
 
-![](scatter_hospital_arrival.png){width=100%}
+![[Scatter plot for the urgency-transportation joint probability distribution]{.small}](scatter_hospital_arrival.png){#fig-scatter-contingency width=100%}
 
 the points do not need to be scattered in regular fashion as long as it's clear which quantity value they are associated with. The scatter plot above has 100 points, and therefore we can see for instance that $\P(U\mo \textrm{\small urgent} \and T\mo \textrm{\small helicopter}\|\yi[H]) =
 0.03$, since the corresponding region has 3 points out of 100.
@@ -140,34 +140,78 @@ $$
 
 ![](surfaceXY.svg){width=100%}
 
-This kind of representation can be very neat, but it has two drawbacks: it sometimes hides features of the density from view, and it cannot be extended to three-dimensional densities.
+This kind of representation can be very neat, but it has three drawbacks: it sometimes hides features of the density from view, it cannot be extended to three-dimensional densities, and sometimes the analytical expression for the probability density (like the formula above) is not available.
 
 <!-- :::{.column-margin} -->
 <!-- ![](surface_plot.png){width=100%} -->
 <!-- Example of surface density plot (from [Mathematica](https://reference.wolfram.com/language/ref/SmoothHistogram3D.html)) -->
 <!-- ::: -->
 
-The scatter plot instead does not hides features and can also be used for three-dimensional densities. It is, however, quantitatively more imprecise.
-Here is the scatter plot for the probability density given above:
+The scatter plot instead does not hides features, can also be used for three-dimensional densities, and can be used in cases where we can at least obtain "representative" points from the probability density, even if the analytical expression of the latter is too complicated or not available. This representation is, however, quantitatively more imprecise. Here is the scatter plot for the probability density given above:
 
 ![](scatter_2d.png){width=100%}
 
-As usual, the probability of a small region is proportional to the number of points in that region. If we had a joint density for *three* continuous quantities, its scatter plot would consist of three-dimensional clouds of points instead.
+As usual, the probability of a small region is proportional to the density of points in that region. If we had a joint density for *three* continuous quantities, its scatter plot would consist of three-dimensional clouds of points instead.
 
 Clearly both kinds of representation have advantages and disadvantages.
 
+## Joint mixed discrete-continuous probability distributions {#sec-joint-mix-distr}
+
+Frequently occurring in engineering and data-science problems are joint quantities composed by some discrete and some continuous quantities. Their joint probability distribution is a density with respect to the continuous component quantity.
+
+Suppose for instance that $U$ is a binary quantity with domain $\set{\cat{low}, \cat{high}}$, $X$ a continuous quantity with all real numbers $\RR$ as domain, and together they form the joint quantity $(U,X) \in \set{\cat{low}, \cat{high}} \times \RR$. Then the probability expression
+
+$$
+\p(U\mo \cat{low} \and X\mo 3 \| \yI) = 0.07
+$$
+
+means that the agent with background information $\yI$ gives a $0.07\cdot \epsilon$ degree of belief to the joint sentence "[$U$ has value $\cat{low}$ and $X$ has value between $3-\epsilon/2$ and $3+\epsilon/2$]{.midgrey}", for any small $\epsilon$. (As usual, if $X$ has physical dimensions, say metres $\mathrm{m}$, then the probability density above has value $0.07\,\mathrm{m^{-1}}$.)
+
+
+## Representation of mixed probability distributions {#sec-repr-mix-distr}
+
+Mixed discrete-continuous probability distributions can be somewhat tricky to represent graphically. Here we consider line-based representations and scatter plots. We take as example the probability that the next patient who arrives at a particular hospital has a given age (positive continuous quantity) and arrives by $\cat{ambulance}$, $\cat{helicopter}$, or $\cat{other}$ transportation means. 
+
+
 ### Multi-line plots
 
-Joint probability distributions over *one discrete* and *one continuous* quantity (or ordinal discrete with numerous values) can be represented as a collection of line plots: each line plot represent the probability density for the continuous quantity and a specific value of the discrete quantity.
+A line plot can be used to represent the probability density for the continuous quantity and each specific value of the discrete quantity:
 
-Consider for instance the probability that the next patient who arrives at a particular hospital has a given age (continuous quantity) and may require urgent care or not (binary quantity). The joint probability density is depicted by the following plot:
+![[Line plot for the age-transportation joint probability]](hospital_age_transp.png){#fig-multiline width=100%}
 
-![](hospital_age_urgent.png){width=100%}
+With the plot above it's important to keep in mind that the three curves are three pieces of the *same* probability density, not three different densities. This is also clear seeing that the three areas under them (which partly overlap) cannot each be $1$, as would instead be expected for a probability density. The probability density is separated into three curves owing to the presence of the discrete quantity having three possible values.
 
-The area under the [solid blue curve]{.blue} is equal to 0.75, and the area under the [dashed red curve]{.red} is equal to 0.25. The two areas overlap. The total area under the two curse (the overlapping region is counted twice) is equal to 1, as it should be.
+The area under the [solid blue curve]{.blue} is equal to $0.55$, the area under the [dashed red curve]{.red} is $0.25$, and the area under the [dotted green curve]{.green} is $0.20$ . The total area under the three curves (counting also the overlapping regions) is equal to $1$, as it should be.
 
-From the plot we see that the probability of urgent patients ([dashed red curve]{.red}) is generally lower than non-urgent ones ([solid blue curve]{.blue}). A possible disadvantage of this kind of plots is that the details, such as peaks, of the densities for some values of the discrete quantity may be barely visible.
+A possible disadvantage of this kind of plots is that some details, such as peaks, of the densities for some values of the discrete quantity may be barely discernible.
 
+### Scatter plots
+
+As discussed before, in a scatter plot we represent the probability density by a cloud of "representative" objects, such as points, obtained from it: the density of these objects is approximately proportional to the probability density.
+
+An example of scatter plot for the probability density of our example is the following (note that the [blue]{.blue} colour is here no longer associated with $\cat{ambulance}$):
+
+![](hospital_age_transp_scatter.png){width=100%}
+
+In the plot above, the probability density is reflected by the density of vertical lines. Using points instead of vertical lines, the density would have been difficult to discern, since all points would be on one of three vertical positions.
+
+We can use points if we give some variation to their vertical coordinate -- keeping in mind that such vertical variation has no meaning. The idea is similar to the one of [fig. @fig-scatter-contingency]. We obtain a plot like this:
+
+![[Point-scatter plot for the age-transportation joint probability]](hospital_age_transp_scatter2.png){#fig-pointscatter width=100%}
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Compare the line plot of [fig. @fig-multiline] and the point-scatter plot of [fig. @fig-pointscatter], which represent the same joint probability density. Do some introspection, and analyse the contrasting impressions that the two kinds of representations may give you. For instance, does the line plot give you a wrong intuition about the sharpness of the peaks in the density?
+
+Compare with what you did in the exercise of [§ @sec-represent-dens].
+:::
+
+
+## Representation of more general probability distributions and densities {#sec-repr-general-distr}
+
+Probability distributions for complex types of quantity can be quite tricky to represent in an informative way. They typically require a case-by-case approach.
+
+Often the idea behind the scatter plot works also in these complex cases: the distribution or density is represented by a "representative" sample of objects
 
 
 ::: {.callout-caution}
