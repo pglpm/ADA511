@@ -3,81 +3,68 @@
 
 ## Marginal probability distributions {#sec-marginal-probs}
 
-In some situations an agent has the joint probability distribution for a joint quantity, but it needs the probability for one of the component quantities only, *irrespective of what the values for the other components might be*.
+In some situations an agent has a joint distribution of degrees of belief for the possible values of a joint quantity, but it needs to consider its belief in the value of *one* component quantity alone, *irrespective of what the values for the other components quantities might be*.
 
-Consider for instance the joint probability for the next-patient arrival scenario of [table @tbl-urgent-arrival]. We may be interested in the probability that the next patient will need urgent care, *independently of how the patient gets to the hospital*. This probability can be found, as usual, by analysing the problem in terms of *sentences* and using the [basic rules of inference from § @sec-fundamental].
+Consider for instance the joint probability for the next-patient arrival scenario of [table @tbl-urgent-arrival] from [§ @sec-repr-joint-prob], with joint quantity $(U,T)$. We may be interested in the probability that the next patient will need $\cat{urgent}$ care, *independently of how the patient is transported to the hospital*. This probability can be found, as usual, by analysing the problem in terms of *sentences* and using the [basic rules of inference from § @sec-fundamental].
 
-The sentence of interest is
+The sentence of interest is "[The next patient will require urgent care]{.midgrey}", or in symbols
 
-$$
-\pr{The next patient will require urgent care}
-$$
+$$U \mo \cat{urgent}$$
 
-which is equivalent to
+which is equivalent to "[The next patient will require urgent care, and will arrive by ambulance, helicopter, or other means]{.midgrey}", or in symbols
 
 $$
-\pr{The next patient will require urgent care, and will arrive by ambulance, helicopter, or other means}
+U \mo \cat{urgent} \land
+(
+T \mo \cat{ambulance} \lor
+T \mo \cat{helicopter} \lor
+T \mo \cat{other}
+)
 $$
 
-This last sentence can be written in terms of `and` and `or` connectives:
+Using the [derived rules of Boolean algebra of § @sec-boolean] we can rewrite this sentence in yet another way:
 
+$$
+(U \mo \cat{urgent} \land T \mo \cat{ambulance}) \lor
+(U \mo \cat{urgent} \land T \mo \cat{helicopter}) \lor
+(U \mo \cat{urgent} \land T \mo \cat{other})
+$$
+
+
+This last sentence is an `or` of *mutually exclusive* sentences. Its probability is therefore given by the `or` rule without the `and` terms  (we now use the comma "$\and$" for `and`):
+
+:::{.column-page-right}
 $$
 \begin{aligned}
-&\pr{The next patient will require urgent care} \land{}
+&\P(U \mo \cat{urgent} \| \yi[H])
 \\[1ex]
-&\qquad\bigl(\pr{The next patient will arrive by ambulance} \lor {}
-\\&\qquad\qquad
-\pr{The next patient will arrive by helicopter} \lor {}
-\\&\qquad\qquad
-\pr{The next patient will arrive by other means}\bigr)
-\end{aligned}
-$$
-
-which we can compactly write as
-
-$$
-\begin{aligned}
-&\prq{urgent}\land
-(\prq{ambulance} \lor \prq{helicopter} \lor \prq{other})
-\\[1ex]
-&\qquad{}=
-(\prq{urgent}\land \prq{ambulance}) \lor
-(\prq{urgent}\land \prq{helicopter}) \lor
-(\prq{urgent}\land \prq{other})
-\end{aligned}
-$$
-
-where the second, equivalent form comes from the [derived rules of Boolean algebra of § @sec-boolean].
-
-The last sentence is an `or` of mutually exclusive sentences. Its probability is therefore given by the `or` rule:
-
-$$
-\begin{aligned}
-&\P\bigl[
-(\prq{urgent}\land \prq{ambulance}) \lor
-(\prq{urgent}\land \prq{helicopter}) \lor
-(\prq{urgent}\land \prq{other})
+&\quad{}=
+\P\bigl[
+(U \mo \cat{urgent} \and T \mo \cat{ambulance}) \lor
+(U \mo \cat{urgent} \and T \mo \cat{helicopter}) \lor
+(U \mo \cat{urgent} \and T \mo \cat{other})
 \| \yi[H] \bigr]
 \\[1ex]
-&\qquad{}=
-\P(\prq{urgent}\land \prq{ambulance}\| \yi[H] ) +
-\P(\prq{urgent}\land \prq{ambulance}\| \yi[H] ) +
-\P(\prq{urgent}\land \prq{other}\| \yi[H] )
+&\quad{}=\begin{aligned}[t]
+&\P(U \mo \cat{urgent} \and T \mo \cat{ambulance} \| \yi[H]) +{}
+\\
+&\quad\P(U \mo \cat{urgent} \and T \mo \cat{helicopter} \| \yi[H]) +{}
+\\
+&\quad\P(U \mo \cat{urgent} \and T \mo \cat{other} \| \yi[H])
+\end{aligned}
 \end{aligned}
 $$
+:::
 
-The probability for a value of the urgency quantity, independently of the value of the arrival-means quantity, can be found by summing all joint probabilities with all possible arrival-means values. Using the $\sum$-notation we can write
-<!-- $$ -->
-<!-- \P(\prq{urgent} \| \yi[H]) = -->
-<!-- \sum_{A} -->
-<!-- \P(\prq{urgent}, A\mo a \| \yi[H]) -->
-<!-- $$ -->
+We have found that the probability for a value of the urgency quantity $U$, independently of the value of the transportation quantity $T$, can be calculated by summing all joint probabilities with all possible $T$ values. Using the $\sum$-notation we can write this compactly:
 
 $$
-\P(\prq{urgent} \| \yi[H]) =
-\sum_{\mathclap{a=\prq{ambulance}}}^{\mathclap{\prq{other}}}
-\P(\prq{urgent}, A\mo a \| \yi[H])
+\P(U \mo \cat{urgent} \| \yi[H]) =
+\sum_{t}
+\P(U \mo \cat{urgent} \and T\mo t \| \yi[H])
 $$
+
+where it's understood that the sum index $t$ runs over the values $\set{\cat{ambulance}, \cat{helicopter}, \cat{other}}$.
 
 
 This is called a [**marginal probability**]{.blue}.
@@ -90,13 +77,15 @@ Using the values from [table @tbl-urgent-arrival], calculate:
 - the marginal probability that the next patient will arrive by helicopter
 :::
 
-Considering now a more abstract case for a bivariate quantity with component quantities $X$ and $Y$, the probability for a specific value of $X$, conditional on some information $\yI$ and  irrespective of what the value of $Y$ might be, would be given by
+\
+
+Considering now a more abstract case for a bivariate quantity with component quantities $X$ and $Y$, the probability for a specific value of $X$, conditional on some information $\yI$ and  irrespective of what the value of $Y$ might be, is given by
 
 $$
 \P({\green X\mo x}\| \yI) = \sum_{\red y} \P({\red Y\mo y} \and {\green X\mo x} \| \yI)
 $$
 
-You may notice the similarity with the expression for a *combined probability* from [§ @sec-combined-probs]. Indeed a marginal probability is just a special case of a combined probability: we are combining all probabilities that exhaust the possibilities for the quantity $Y$.
+You may notice the similarity with the expression for a *combined probability* from [§ @sec-combined-probs]. Indeed a marginal probability is just a special case of a combined probability: we are combining all probabilities that exhaust the possibilities for the sentence $Y\mo y$.
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise: test your understanding
