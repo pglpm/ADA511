@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-08-31">
+
+<title>ADA511 0.1 Data science and data-driven engineering - 3&nbsp; Basic decision problems</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./0th_connection_ML.html" rel="next">
+<link href="./framework.html" rel="prev">
+<link href="./favicon.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="ada511styles.css">
+</head>
+
+<body class="nav-sidebar docked slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./intro.html"><strong>An invitation</strong></a></li><li class="breadcrumb-item"><a href="./basic_decisions.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Basic decision problems</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-08-31</span></a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dear student<br> and aspiring data engineer</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text"><strong>An invitation</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Accept or discard?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Framework</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./basic_decisions.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Basic decision problems</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0th_connection_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title"><span class="red">First connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title"><span class="green">What is an inference?</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sentences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title"><span class="green">Sentences</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./truth_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><span class="green">Truth inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title"><span class="green">Probability inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./derived_rules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><span class="green">Shortcut rules</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./monty.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title"><span class="green">Monty Hall and related inference problems</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1st_connection_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><span class="red">Second connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title"><span class="yellow">Quantities and data types</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types_multi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title"><span class="yellow">Joint quantities and complex data types</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title"><span class="green">Probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./joint_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><span class="green">Joint probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./marginal_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><span class="green">Marginal probabilities</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conditional_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probabilities</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2nd_connection_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="red">Third connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./populations_variates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title"><span class="yellow">Populations and variates</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title"><span class="yellow">Statistics</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./subpopulations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title"><span class="yellow">Subpopulations and conditional frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./samples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><span class="yellow">Infinite populations and samples</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Population inference</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./recap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title"><span class="green">A general inference problem</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./population_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title"><span class="green">Inference and populations</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exchangeability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title"><span class="green">Exchangeability</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference_exchangeability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title"><span class="green">Inference under exchangeability</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./missing_parts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">To be written</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glass_application_R.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title"><span class="red">The optimal predictor machine in action (for nominal quantities)</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text"><span class="lightblue"><strong>Decision theory</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./making_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="lightblue">Making decisions</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text"><span class="red"><strong>Machine learning</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine_learning_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Machine learning - an introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./decision_trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Decision trees</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural_networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Neural networks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#graphical-representation-and-elements" id="toc-graphical-representation-and-elements" class="nav-link active" data-scroll-target="#graphical-representation-and-elements"><span class="header-section-number">3.1</span> Graphical representation and elements</a></li>
+  <li><a href="#sec-decision-matrices" id="toc-sec-decision-matrices" class="nav-link" data-scroll-target="#sec-decision-matrices"><span class="header-section-number">3.2</span> Setting up a basic decision problem</a></li>
+  <li><a href="#sec-make-decision" id="toc-sec-make-decision" class="nav-link" data-scroll-target="#sec-make-decision"><span class="header-section-number">3.3</span> How to make a basic decision?</a></li>
+  <li><a href="#plan-for-the-next-chapters" id="toc-plan-for-the-next-chapters" class="nav-link" data-scroll-target="#plan-for-the-next-chapters"><span class="header-section-number">3.4</span> Plan for the next chapters</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Basic decision problems</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2023-08-31</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="hidden">
+<p><span class="math display">\[
+\DeclarePairedDelimiters{\set}{\{}{\}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\]</span></p>
+</div>
+<p>Decision Theory analyses any decision-making problem in terms of nested or sequential <em>basic</em> or <em>minimal</em> decision problems. The assembly-line scenario of the <a href="intro.html">introduction&nbsp;<span>1</span></a> is an example.</p>
+<section id="graphical-representation-and-elements" class="level2 page-columns page-full" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="graphical-representation-and-elements"><span class="header-section-number">3.1</span> Graphical representation and elements</h2>
+<p>A basic decision problem can be represented by a diagram like this:</p>
+<p><img src="basic_decision_tree.png" class="img-fluid" style="width:100.0%"></p>
+<div class="page-columns page-full"><p>It has one <span class="blue"><strong>decision node</strong></span>, usually represented by a square <i class="fa-regular fa-square" aria-label="square"></i>, from which the available decisions depart as lines. Each decision leads to an <span class="blue"><strong>inference node</strong></span>,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> usually represented by a circle <i class="fa-regular fa-circle" aria-label="circle"></i>, from which the possible outcomes depart as lines. Each outcome leads to a particular gain or loss, depending on the decision. The uncertainty of each outcome is quantified by a probability.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;also called <em>chance node</em> or <em>uncertainty node</em></p></li></div></div>
+<p>A basic decision problem is analysed in terms of the following elements:</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="small"><i class="fa-solid fa-seedling" aria-label="seedling"></i> Remember: What matters is to be able to identify these elements in a concrete problem, understanding their role. Their technical names don’t matter.</span></p>
+</div>
+</div>
+</div></div><ul>
+<li><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Agent</strong></span>, and <span class="blue"><strong>background</strong></span> or <span class="blue"><strong>prior information</strong></span>. The agent is the person or device that has to make the decision. An agent possesses (or has been programmed with) specific background information that is used and taken for granted in the decision-making process. This background information determines the probabilities, gains, and losses of the outcomes, together with other available data and information. Different agents typically have different background information.</li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><em>Agent</em> means “conductor”, “mover”, and similar (from Latin <em>ago</em>&nbsp;=&nbsp;<em>to move</em> or <em>drive</em> and similar meanings).</p>
+<p>We’ll use the neutral pronouns <em>it</em>/<em>its</em> when referring to an agent, since an agent could be a person or a machine.</p>
+</div></div><ul>
+<li><p><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Data</strong></span> and other <span class="blue"><strong>additional information</strong></span>, sometimes called <span class="blue"><strong>evidence</strong></span>. They differ from the background information in that they can change with every decision instance made by the same agent, while the background information stays the same. In the assembly-line scenario, for example, the test results could be different for every new electric component.</p></li>
+<li><p><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Decisions</strong></span> available to the agent. They are assumed to be mutually exclusive and exhaustive; this can always be achieved by recombining them if necessary, as we’ll discuss later.</p></li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><em>Decisions</em> are called <em>courses of action</em> in some literature.</p>
+</div></div><ul>
+<li><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Outcomes</strong></span> of the possible decisions. Every decision can have a different set of outcomes, or some outcomes can appear for several or all decisions (in this case they are reported multiple times in the decision diagram). Note that even if an outcome can happen for two or more different decisions, its probabilities can still be different depending on the decision.</li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Many other terms instead of <em>outcome</em> are used in the literature, for instance <em>state</em> or <em>event</em>.</p>
+</div></div><ul>
+<li><p><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Probabilities</strong></span> for each of the outcomes and for each decision. Their values typically depend also on the background information and the additional data.</p></li>
+<li><p><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Utilities</strong></span>: the gains or losses associated with each possible outcome and each decision. We shall mainly use the term <span class="blue"><strong>utility</strong></span>, instead of “gain”, “loss”, and similar, for several reasons:</p>
+<ul>
+<li>gain and losses may involve not money, but time, or energy, or health, or emotional value, or other kinds of commodities and things that are important to us; or even a combination of them. The term “utility” is useful as a neutral term that doesn’t mean “money”, but depends on the context</li>
+<li>we can just use one term instead of two: for example, when the utility is positive it’s a “gain”; when it’s negative it’s a “loss”</li>
+</ul>
+<p>The particular numerical values of the utilities are always context-dependent: they may depend on the background information, the decisions, the outcomes, and the additional data.</p>
+<p><span class="blue">We shall sometimes use the generic currency sign&nbsp;&nbsp;<span class="blue"><strong>¤</strong></span>&nbsp;&nbsp;to denote utilities, to make clear that gains and losses do not necessarily involve money, and not to reference any country in particular.</span></p></li>
+</ul>
+<p><br>
+</p>
+<p>The relation between the elements above can be depicted as follows – but note that this is just for an intuitive illustration: <img src="basic_decision_tree_agent.png" class="img-fluid" style="width:75.0%"></p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-circle" aria-label="exclamation-circle"></i> Don’t over-interpret the decision diagram
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>The diagram above <em>doesn’t have any temporal meaning</em>, that is, it doesn’t mean that the decisions happen before the outcomes, or vice versa.</p>
+<p>In some situations the outcome can be realized after the decision is made; for instance, someone bets on heads or tails, and then a coin is tossed.</p>
+<p>In other situations, the outcome can be realized before the decision is made; for instance, sometimes a coin is tossed and covered, then one is asked to bet on what the outcome was. Another example is some research decision made by a archaeologist, the unknown being some detail about a dinosaur from millions of years ago.</p>
+<p>In yet other situations the outcome may have a complex nature, and it may be realized partly before the decision is made, and partly after; for instance, someone can bet on the outcome of two coin tosses; one coin is tossed before the decision is made, and the other after.</p></li>
+<li><p>The diagram above is not something that an agent <em>must</em> use in making decisions. It is not part of the theory. It’s just a very convenient way to visualize and operate with the mathematics underlying the theory.</p></li>
+<li><p>It not always the case that the <em>outcomes</em> are unknown and the <em>data</em> are known. As we’ll discuss later, in some situations we reason in hypothetical or counterfactual ways, using hypothetical data and considering outcomes which have already occurred. In such situations we can still use diagrams like the one above, because the help us doing the calculation, although the actual outcome is already known.</p></li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-book" aria-label="book"></i> Study reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>§ 1.1.4 in <a href="https://hvl.instructure.com/courses/25074/modules/items/660089"><em>Artificial Intelligence</em></a></p></li>
+<li><p><em>Skim through</em> Ch.&nbsp;15 of <a href="https://hvl.instructure.com/courses/25074/modules/items/660089"><em>Artificial Intelligence</em></a>. No need to read thoroughly: just quickly glimpse whether there are ideas and notions that look familiar (a little like when you’re in a large crowd and look quickly around to see if there are any familiar faces)</p></li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Identify the elements above in the assembly-line decision problem of the <a href="intro.html">introduction&nbsp;<span>1</span></a>.</li>
+<li>Sketch the decision diagram for the assembly-line decision problem.</li>
+</ul>
+</div>
+</div>
+<p>Some of the decision-problem elements listed above may need to be in turn analysed by a decision sub-problem. For instance, the utilities could depend on uncertain factors: thus we have a decision sub-problem to determine the optimal values to be used for the utilities of the main problem. This is an example of the modular character of decision theory.</p>
+<p>We shall soon see how to mathematically represent these elements.</p>
+<p>The elements above must be identified unambiguously in every decision problem. The analysis into these elements greatly helps in making the problem and its solution well-defined.</p>
+<p>An advantage of decision theory is that its application <em>forces</em> us to make sense of an engineering problem. A useful procedure is to formulate the general problem in terms of the elements above, identifying them clearly. If the definition of any of the terms involves uncertainty of further decisions, then we analyse it in turn as a decision sub-problem, and so on.</p>
+<blockquote class="blockquote">
+<p>Suppose someone (probably a politician) says: “We must solve the energy crisis by reducing energy consumption or producing more energy”. From a decision-making point of view, this person has effectively said <em>nothing whatsoever</em>. By definition the “energy crisis” is the problem that energy production doesn’t meet demand. So this person has only said “we would like the problem to be solved”, without specifying any solution. A decision-theory approach to this problem requires us to specify which concrete courses of action should be taken for reducing consumption or increasing productions, and what their probable outcomes, costs, and gains would be.</p>
+</blockquote>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-rocket" aria-label="rocket"></i> For the extra curious
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>See MacKay’s options-vs-costs rational analysis in <a href="https://www.withouthotair.com">Sustainable Energy – without the hot air</a></p>
+</div>
+</div>
+</div></div></section>
+<section id="sec-decision-matrices" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="sec-decision-matrices"><span class="header-section-number">3.2</span> Setting up a basic decision problem</h2>
+<p>A basic decision problem can be set up along the following steps (which we illustrate afterwards with a couple of examples):</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Setup of a basic decision problem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>List all available decisions</strong></p></li>
+<li><p><strong>For each decision, list its possible outcomes</strong></p></li>
+<li><p><strong>Pool together all outcomes of all decisions, counting the common ones only once</strong></p></li>
+<li><p><strong>Prepare two tables: in each, display the decisions as rows, and the pooled outcomes as columns</strong> (or you can do the opposite: decisions as columns and outcomes as rows)</p></li>
+<li><p><strong>In one table, report the probabilities for all decision-outcome pairs. If an outcome is not available for that decision, give it a <span class="math inline">\(0\%\)</span> probability</strong></p></li>
+<li><p><strong>In the other table, report the utilities for all decision-outcome pairs. If an outcome is not available for that decision, give it a <span class="math inline">\(0\)</span> utility</strong></p></li>
+</ol>
+</div>
+</div>
+<section id="example-the-assembly-line-problem" class="level4">
+<h4 class="anchored" data-anchor-id="example-the-assembly-line-problem">Example: the assembly-line problem</h4>
+<p>Let’s apply the steps above in the assembly-line example of <a href="intro.html">ch.&nbsp;&nbsp;<span>1</span></a>:</p>
+<p><span class="midgrey small"><strong>1. List all available decisions</strong></span></p>
+<p>Easy: they are “<span class="green">accept</span> the electronic component” and “<span class="yellow">discard</span> it”.</p>
+<p><br>
+</p>
+<p><span class="midgrey small"><strong>2. For each decision, list its possible outcomes</strong></span></p>
+<p>In general you will notice that some outcomes may be common to all decisions, while other outcomes can happen for some decisions only, or even for just one decision.</p>
+<p>In the present example, the <span class="green">accept</span> decision has two possible outcomes: “the component works with <span class="blue">no faults</span> for at least a year” and “the component <span class="red">fails</span> within a year”.</p>
+<p>The <span class="decision">discard</span> cannot have those outcomes, because the component is discarded. It has indeed only one outcome: “component <span class="purple">discarded</span>”.</p>
+<p><br>
+</p>
+<p><span class="midgrey small"><strong>3. Pool together all outcomes of all decisions, counting the common ones only once</strong></span></p>
+<p>In total we have <em>three</em> pooled outcomes:</p>
+<ul>
+<li><span class="blue"><strong>no faults</strong></span> (from the <span class="green">accept</span> decision)</li>
+<li><span class="red"><strong>fails</strong></span> (from the <span class="green">accept</span> decision)</li>
+<li><span class="purple"><strong>discarded</strong></span> (from the <span class="yellow">discard</span> decision)</li>
+</ul>
+<p><br>
+</p>
+<p><span class="midgrey small"><strong>4. Prepare two tables: in each, display the decisions as rows, and the pooled outcomes as columns</strong> (or you can do the opposite: decisions as columns and outcomes as rows)</span></p>
+<p>In the present example each table looks like this:</p>
+<table class="table-sm small table">
+<caption></caption>
+<colgroup>
+<col style="width: 21%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;"><span class="blue small">no faults for a year</span></th>
+<th style="text-align: center;"><span class="red small">fails within a year</span></th>
+<th style="text-align: center;"><span class="purple small">discarded</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="green small"><strong>accept</strong></span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="yellow small"><strong>discard</strong></span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p><br>
+</p>
+<p><span class="midgrey small"><strong>5. In one table, report the probabilities for all decision-outcome pairs. If an outcome is not available for that decision, give it a <span class="math inline">\(0\%\)</span> probability</strong></span></p>
+<table class="table-sm small table">
+<caption><span class="midgrey"><em>Probability table</em></span></caption>
+<colgroup>
+<col style="width: 21%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;"><span class="blue small">no faults for a year</span></th>
+<th style="text-align: center;"><span class="red small">fails within a year</span></th>
+<th style="text-align: center;"><span class="purple small">discarded</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="green small"><strong>accept</strong></span></td>
+<td style="text-align: center;"><span class="math inline">\(90\%\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(10\%\)</span></td>
+<td style="text-align: center;"><span class="grey"><span class="math inline">\(0\%\)</span></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="yellow small"><strong>discard</strong></span></td>
+<td style="text-align: center;"><span class="grey"><span class="math inline">\(0\%\)</span></span></td>
+<td style="text-align: center;"><span class="grey"><span class="math inline">\(0\%\)</span></span></td>
+<td style="text-align: center;"><span class="math inline">\(100\%\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Note how the outcomes that do not exist for a particular decision have been given a <span class="grey"><span class="math inline">\(0\%\)</span></span> probability (in <span class="grey">grey</span>). This is just a way of saying “this outcome can’t happen, if this decision is made”.</p>
+<p><br>
+</p>
+<p><span class="midgrey small"><strong>6. In the other table, report the utilities for all decision-outcome pairs. If an outcome is not available for that decision, give it a <span class="math inline">\(0\)</span> utility</strong></span></p>
+<table class="table-sm small table">
+<caption><span class="midgrey"><em>Utility table</em></span></caption>
+<colgroup>
+<col style="width: 21%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;"><span class="blue small">no faults for a year</span></th>
+<th style="text-align: center;"><span class="red small">fails within a year</span></th>
+<th style="text-align: center;"><span class="purple small">discarded</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="green small"><strong>accept</strong></span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\$\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-11\$\)</span></td>
+<td style="text-align: center;"><span class="grey"><span class="math inline">\(0\$\)</span></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="yellow small"><strong>discard</strong></span></td>
+<td style="text-align: center;"><span class="grey"><span class="math inline">\(0\$\)</span></span></td>
+<td style="text-align: center;"><span class="grey"><span class="math inline">\(0\$\)</span></span></td>
+<td style="text-align: center;"><span class="math inline">\(0\$\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Note how the outcomes that do not exist for a particular decision have been given a <span class="grey"><span class="math inline">\(0\$\)</span></span> utility (in <span class="grey">grey</span>). We shall see later that it actually doesn’t matter which utilities we give to these impossible outcomes.</p>
+<p><br>
+</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercises
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Apply the steps above to the following basic decision problems (you only need to set them up with their probability &amp; utility tables, but feel free to solve them as well, if you like):</p>
+<ul>
+<li><p>The “heads-bet” vs “tails-bet” example of <a href="framework.html#sec-optimality">§&nbsp;&nbsp;<span>2.3</span></a>. Assume that the “small amount” of money is <span style="display:inline-block;"><span class="math inline">\(10\$\)</span>,</span> the “large amount” is <span style="display:inline-block;"><span class="math inline">\(1000\$\)</span>,</span> and the two outcomes’ probabilities are <span style="display:inline-block;"><span class="math inline">\(50\%\)</span></span> each.</p></li>
+<li><p>Peter must reach a particular destination, and is undecided between two alternatives: <em>go by car</em>, or <em>ride a bus</em>, or <em>go on foot</em>. If he goes by car, he could <em>arrive without problems</em>, with a probability of <span style="display:inline-block;"><span class="math inline">\(80\%\)</span></span> and a utility of <span style="display:inline-block;"><span class="math inline">\(10\,¤\)</span>,</span> or he could <em>get stuck in a traffic jam</em> and arrive late, with a probability of <span style="display:inline-block;"><span class="math inline">\(20\%\)</span></span> and a utility of <span style="display:inline-block;"><span class="math inline">\(-10\,¤\)</span>.</span> If he rides a bus, he could <em>arrive without problems</em>, with a probability of <span style="display:inline-block;"><span class="math inline">\(95\%\)</span></span> and a utility of <span style="display:inline-block;"><span class="math inline">\(15\,¤\)</span>,</span> or arrive in time but <em>travelling in a fully-packed bus</em>, with a probability of <span style="display:inline-block;"><span class="math inline">\(5\%\)</span></span> and a utility of <span style="display:inline-block;"><span class="math inline">\(-10\,¤\)</span>.</span> If he goes on foot, he could <em>arrive without problems</em>, with a probability of <span style="display:inline-block;"><span class="math inline">\(20\%\)</span></span> and a utility of <span style="display:inline-block;"><span class="math inline">\(20\,¤\)</span>,</span> or he could <em>get soaked from rain</em>, with a probability of <span style="display:inline-block;"><span class="math inline">\(80\%\)</span></span> and a utility of <span style="display:inline-block;"><span class="math inline">\(-5\,¤\)</span>.</span></p>
+<p>(We are using the symbol&nbsp;&nbsp;<span style="display:inline-block;">“<span class="math inline">\(¤\)</span>”</span>&nbsp;&nbsp;because Peter’s utilities are a combination of money savings, time of arrival, and comfort.)</p></li>
+</ul>
+</div>
+</div>
+<p><br>
+</p>
+</section>
+</section>
+<section id="sec-make-decision" class="level2 page-columns page-full" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="sec-make-decision"><span class="header-section-number">3.3</span> How to make a basic decision?</h2>
+<p>Up to now we have seen what are the elements of a basic decision problem, and how to arrange them in a diagram and with tables. <em>But how do we determine what’s the optimal decision?</em></p>
+<p>Decision Theory says that the optimal decision is determined by the “<span class="blue"><strong>principle of maximal expected utility</strong></span>”.</p>
+<p>We shall study this principle more in detail toward the end of the course, although you already know its basic idea, because you intuitively used this very principle in solving all decision problems we met so far, starting from the assembly-line one.</p>
+<p>However, let’s quickly describe already now the basic procedure for this principle:</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Principle of maximal expected utility
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>For each decision, multiply the probability and the utility of each of its outcomes, and then sum up these products. This way you obtain the <em>expected utility</em> of the decision.</p></li>
+<li><p>Choose the decision that has the largest expected utility; if several decisions are maximal, choose any of them unsystematically.</p></li>
+</ol>
+</div>
+</div>
+<p>This procedure can also be described in terms of the probability and utility tables introduced in the previous section:</p>
+<ol type="a">
+<li><span class="green">Multiply element-by-element the probability table and the utility table, obtaining a new table with the same number of rows and columns</span></li>
+<li><span class="green">Sum up the elements of each row of the new table (this sum is the expected utility); remember that every row corresponds to a decision</span></li>
+<li><span class="green">Choose the decision corresponding to the largest of the sums above; if there are several maximal ones, choose among them unsystematically</span></li>
+</ol>
+<section id="example-the-assembly-line-problem-1" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="example-the-assembly-line-problem-1">Example: the assembly-line problem</h4>
+<p>Multiplying the <em>Probability table</em> and the <em>Utility table</em> above, element-by-element, we obtain the following table, where we also indicate the sum of each row:</p>
+<div class="column-page-right">
+<table class="table-sm small table">
+<caption><span class="midgrey"><em>Probability × Utility table</em></span></caption>
+<colgroup>
+<col style="width: 16%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;"><span class="blue small">no faults for a year</span></th>
+<th style="text-align: center;"><span class="red small">fails within a year</span></th>
+<th style="text-align: center;"><span class="purple small">discarded</span></th>
+<th style="text-align: center;"><em>sum</em></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="green small"><strong>accept</strong></span></td>
+<td style="text-align: center;"><span class="math inline">\(+0.9\$\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1.1\$\)</span></td>
+<td style="text-align: center;"><span class="grey"><span class="math inline">\(0\$\)</span></span></td>
+<td style="text-align: center;"><span class="math inline">\(\boldsymbol{-0.2\$}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="yellow small"><strong>discard</strong></span></td>
+<td style="text-align: center;"><span class="grey"><span class="math inline">\(0\$\)</span></span></td>
+<td style="text-align: center;"><span class="grey"><span class="math inline">\(0\$\)</span></span></td>
+<td style="text-align: center;"><span class="math inline">\(0\$\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\boldsymbol{0\$}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>and, as we already knew, <span class="yellow">discard</span>ing the electronic component is the decision with the maximal expected utility.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Feel free to sketch some code (in your preferred programming language) that chooses the optimal decision according to the principle above. The code should take two inputs: the table or matrix of probabilities, and the table or matrix of utilities; and should give one output: the row-number of the optimal decision.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="plan-for-the-next-chapters" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="plan-for-the-next-chapters"><span class="header-section-number">3.4</span> Plan for the next chapters</h2>
+<p>The <span class="blue"><strong>expected-utility maximization</strong></span> above is intuitive and simple, and is the last stage in a basic decision problem.</p>
+<p>But there are two stages which occur before, and which are the most difficult:</p>
+<dl>
+<dt><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Inference</strong></span></dt>
+<dd>
+is the stage where the probabilities of the possible outcomes are calculated. Its rules are given by the <span class="blue"><strong>Probability Calculus</strong></span>. Inference is independent from decision: in some situations we may simply wish to assess whether some hypotheses, conjectures, or outcomes are more or less plausible than others, without making any decision. This kind of assessment can be very important in problems of communication and storage, and it is specially considered by <span class="blue"><strong>Information Theory</strong></span>.
+</dd>
+</dl>
+<p>The calculation of probabilities can be the part that demands most thinking, time, and computational resources in a decision problem. It is also the part that typically makes most use of data – and where data can be most easily misused.</p>
+<p>Roughly half of this course will be devoted in understanding the laws of inference, their applications, uses, and misuses.<br>
+</p>
+<dl>
+<dt><span class="blue"><i class="fa-solid fa-cube" aria-label="cube"></i> <strong>Utility assesment</strong></span></dt>
+<dd>
+is the stage where the gains or losses of the possible outcomes are calculated. Often this stage requires further inferences and further decision-making sub-problems. The theory underlying utility assessment is still much underdeveloped, compared to probability theory.<br>
+
+</dd>
+</dl>
+<p><br>
+</p>
+<p>We shall now explore each of these two stages. We take up inference first because it is the most demanding and probably the one that can be optimized the most by new technologies.</p>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./framework.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Framework</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./0th_connection_ML.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title"><span class="red">First connection with machine learning</span></span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

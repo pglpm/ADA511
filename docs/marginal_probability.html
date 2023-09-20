@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-09-20">
+
+<title>ADA511 0.1 Data science and data-driven engineering - 16&nbsp; Marginal probabilities</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./conditional_probability.html" rel="next">
+<link href="./joint_probability.html" rel="prev">
+<link href="./favicon.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="ada511styles.css">
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./probability_distributions.html"><span class="green"><strong>Inference II</strong></span></a></li><li class="breadcrumb-item"><a href="./marginal_probability.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">[Marginal probabilities]{.green}</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-09-20</span></a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dear student<br> and aspiring data engineer</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text"><strong>An invitation</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Accept or discard?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Framework</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./basic_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Basic decision problems</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0th_connection_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title"><span class="red">First connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title"><span class="green">What is an inference?</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sentences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title"><span class="green">Sentences</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./truth_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><span class="green">Truth inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title"><span class="green">Probability inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./derived_rules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><span class="green">Shortcut rules</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./monty.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title"><span class="green">Monty Hall and related inference problems</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1st_connection_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><span class="red">Second connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title"><span class="yellow">Quantities and data types</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types_multi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title"><span class="yellow">Joint quantities and complex data types</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title"><span class="green">Probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./joint_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><span class="green">Joint probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./marginal_probability.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><span class="green">Marginal probabilities</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conditional_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probabilities</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2nd_connection_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="red">Third connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./populations_variates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title"><span class="yellow">Populations and variates</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title"><span class="yellow">Statistics</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./subpopulations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title"><span class="yellow">Subpopulations and conditional frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./samples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><span class="yellow">Infinite populations and samples</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Population inference</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./recap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title"><span class="green">A general inference problem</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./population_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title"><span class="green">Inference and populations</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exchangeability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title"><span class="green">Exchangeability</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference_exchangeability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title"><span class="green">Inference under exchangeability</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./missing_parts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">To be written</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glass_application_R.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title"><span class="red">The optimal predictor machine in action (for nominal quantities)</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text"><span class="lightblue"><strong>Decision theory</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./making_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="lightblue">Making decisions</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text"><span class="red"><strong>Machine learning</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine_learning_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Machine learning - an introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./decision_trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Decision trees</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural_networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Neural networks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-marginal-probs" id="toc-sec-marginal-probs" class="nav-link active" data-scroll-target="#sec-marginal-probs"><span class="header-section-number">16.1</span> Marginal probability distributions</a></li>
+  <li><a href="#sec-marginal-dens" id="toc-sec-marginal-dens" class="nav-link" data-scroll-target="#sec-marginal-dens"><span class="header-section-number">16.2</span> Marginal density distributions</a></li>
+  <li><a href="#sec-marginal-scatter" id="toc-sec-marginal-scatter" class="nav-link" data-scroll-target="#sec-marginal-scatter"><span class="header-section-number">16.3</span> Marginal probabilities and scatter plots</a></li>
+  <li><a href="#sec-use-pitfall-marginal" id="toc-sec-use-pitfall-marginal" class="nav-link" data-scroll-target="#sec-use-pitfall-marginal"><span class="header-section-number">16.4</span> Uses and pitfalls of marginal probability distributions</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><span class="green">Marginal probabilities</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2023-09-20</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="hidden">
+<p><span class="math display">\[
+\DeclarePairedDelimiters{\set}{\{}{\}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\]</span></p>
+</div>
+<section id="sec-marginal-probs" class="level2 page-columns page-full" data-number="16.1">
+<h2 data-number="16.1" class="anchored" data-anchor-id="sec-marginal-probs"><span class="header-section-number">16.1</span> Marginal probability distributions</h2>
+<p>In some situations an agent has a joint distribution of degrees of belief for the possible values of a joint quantity, but it needs to consider its belief in the value of <em>one</em> component quantity alone, <em>irrespective of what the values for the other components quantities might be</em>.</p>
+<p>Consider for instance the joint probability for the next-patient arrival scenario of <a href="joint_probability.html#tbl-urgent-arrival">table&nbsp;<span>15.1</span></a> from <a href="joint_probability.html#sec-repr-joint-prob">§ &nbsp;<span>15.2</span></a>, with joint quantity <span style="display:inline-block;"><span class="math inline">\((U,T)\)</span>.</span> We may be interested in the probability that the next patient will need <span style="display:inline-block;"><span class="math inline">\(\texttt{\small urgent}\)</span></span> care, <em>independently of how the patient is transported to the hospital</em>. This probability can be found, as usual, by analysing the problem in terms of <em>sentences</em> and using the <a href="probability_inference.html#sec-fundamental">basic rules of inference from §&nbsp;<span>8.4</span></a>.</p>
+<p>The sentence of interest is “<span class="midgrey">The next patient will require urgent care</span>”, or in symbols</p>
+<p><span class="math display">\[U \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small urgent}\]</span></p>
+<p>which is equivalent to “<span class="midgrey">The next patient will require urgent care, and will arrive by ambulance, helicopter, or other means</span>”, or in symbols</p>
+<p><span class="math display">\[
+U \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small urgent} \land
+(
+T \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small ambulance} \lor
+T \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small helicopter} \lor
+T \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small other}
+)
+\]</span></p>
+<p>Using the <a href="derived_rules.html#sec-boolean">derived rules of Boolean algebra of §&nbsp;<span>9.2</span></a> we can rewrite this sentence in yet another way:</p>
+<p><span class="math display">\[
+(U \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small urgent} \land T \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small ambulance}) \lor
+(U \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small urgent} \land T \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small helicopter}) \lor
+(U \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small urgent} \land T \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small other})
+\]</span></p>
+<p>This last sentence is an <code>or</code> of <em>mutually exclusive</em> sentences. Its probability is therefore given by the <code>or</code> rule without the <code>and</code> terms (we now use the comma <span style="display:inline-block;">“<span class="math inline">\(\mathbin{\mkern-0mu,\mkern-0mu}\)</span>”</span> for <code>and</code>):</p>
+<div class="column-page-right">
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}(U \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small urgent} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+\\[1ex]
+&amp;\quad{}=
+\mathrm{P}\bigl[
+(U \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small urgent} \mathbin{\mkern-0mu,\mkern-0mu}T \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small ambulance}) \lor
+(U \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small urgent} \mathbin{\mkern-0mu,\mkern-0mu}T \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small helicopter}) \lor
+(U \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small urgent} \mathbin{\mkern-0mu,\mkern-0mu}T \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small other})
+\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}} \bigr]
+\\[1ex]
+&amp;\quad{}=\begin{aligned}[t]
+&amp;\mathrm{P}(U \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small urgent} \mathbin{\mkern-0mu,\mkern-0mu}T \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small ambulance} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}}) +{}
+\\
+&amp;\quad\mathrm{P}(U \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small urgent} \mathbin{\mkern-0mu,\mkern-0mu}T \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small helicopter} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}}) +{}
+\\
+&amp;\quad\mathrm{P}(U \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small urgent} \mathbin{\mkern-0mu,\mkern-0mu}T \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small other} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+\end{aligned}
+\end{aligned}
+\]</span></p>
+</div>
+<p>We have found that the probability for a value of the urgency quantity <span style="display:inline-block;"><span class="math inline">\(U\)</span>,</span> independently of the value of the transportation quantity <span style="display:inline-block;"><span class="math inline">\(T\)</span>,</span> can be calculated by summing all joint probabilities with all possible <span style="display:inline-block;"><span class="math inline">\(T\)</span></span> values. Using the <span style="display:inline-block;"><span class="math inline">\(\sum\)</span>-notation</span> we can write this compactly:</p>
+<p><span class="math display">\[
+\mathrm{P}(U \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small urgent} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}}) =
+\sum_{t}
+\mathrm{P}(U \mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}\texttt{\small urgent} \mathbin{\mkern-0mu,\mkern-0mu}T\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}t \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+\]</span></p>
+<p>where it’s understood that the sum index <span style="display:inline-block;"><span class="math inline">\(t\)</span></span> runs over the values <span style="display:inline-block;"><span class="math inline">\(\set{\texttt{\small ambulance}, \texttt{\small helicopter}, \texttt{\small other}}\)</span>.</span></p>
+<p>This is called a <span class="blue"><strong>marginal probability</strong></span>.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Using the values from <a href="joint_probability.html#tbl-urgent-arrival">table&nbsp;<span>15.1</span></a>, calculate:</p>
+<ul>
+<li>the marginal probability that the next patient will need urgent care</li>
+<li>the marginal probability that the next patient will arrive by helicopter</li>
+</ul>
+</div>
+</div>
+<p><br>
+</p>
+<p>Considering now a more abstract case for a bivariate quantity with component quantities <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> the probability for a specific value of <span style="display:inline-block;"><span class="math inline">\(X\)</span>,</span> conditional on some information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span></span> and irrespective of what the value of <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> might be, is given by</p>
+<p><span class="math display">\[
+\mathrm{P}({\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = \sum_{\color[RGB]{238,102,119}y} \mathrm{P}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}y} \mathbin{\mkern-0mu,\mkern-0mu}{\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\]</span></p>
+<p>You may notice the similarity with the expression for a <em>combined probability</em> from <a href="probability_distributions.html#sec-combined-probs">§&nbsp;<span>14.5</span></a>. Indeed a marginal probability is just a special case of a combined probability: we are combining all probabilities that exhaust the possibilities for the sentence <span style="display:inline-block;"><span class="math inline">\(Y\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}y\)</span>.</span></p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise: test your understanding
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Using again the values from <a href="joint_probability.html#tbl-urgent-arrival">table&nbsp;<span>15.1</span></a>, calculate the probability that <em>the next patient will need urgent care and will be transported either by ambulance or by helicopter</em>.</p>
+</div>
+</div>
+</section>
+<section id="sec-marginal-dens" class="level2" data-number="16.2">
+<h2 data-number="16.2" class="anchored" data-anchor-id="sec-marginal-dens"><span class="header-section-number">16.2</span> Marginal density distributions</h2>
+<p>In the example of the previous section, suppose now that the quantities <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\)</span></span> are continuous. Then the joint probability is expressed by a density:</p>
+<p><span class="math display">\[\mathrm{p}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}y} \mathbin{\mkern-0mu,\mkern-0mu}{\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\]</span></p>
+<p>with the usual meaning. The marginal probability density for <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\)</span></span> is still given by a sum, but this sum occurs over intervals of values of <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\)</span>,</span> intervals with very small widths; as a consequence the sum will have a very large number of terms. To remind ourselves of this fact, which can be very important in some situations, we use a different notation in terms of integrals:</p>
+<p><span class="math display">\[
+\mathrm{p}({\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = \int_{\color[RGB]{238,102,119}\varUpsilon} \mathrm{p}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}y} \mathbin{\mkern-0mu,\mkern-0mu}{\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\, \mathrm{d}{\color[RGB]{238,102,119}y}
+\]</span></p>
+<p>where <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}\varUpsilon\)</span></span> represents the domain of the quantity <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\)</span>.</span></p>
+<p>The fact that integrals appear is in some cases extremely useful, because it allows us to use the theory of integration to calculate marginal probabilities quickly and precisely, instead of having to compute sums of a large numbers of small terms – a procedure that can be computationally expensive and lead to numerical errors owing to underflow or similar phenomena.</p>
+<p><br>
+</p>
+</section>
+<section id="sec-marginal-scatter" class="level2 page-columns page-full" data-number="16.3">
+<h2 data-number="16.3" class="anchored" data-anchor-id="sec-marginal-scatter"><span class="header-section-number">16.3</span> Marginal probabilities and scatter plots</h2>
+<p>In the previous chapters we have often discussed scatter plots for representing probability distributions of various kinds: discrete, continuous, joint, mixed, and so on.</p>
+<p>One more advantage of the scatter plots for a joint distribution is that it can be quickly modified to represent any marginal, again with a scatter plot; whereas the use of a surface plot would require analytical calculations or approximations thereof.</p>
+<p>Consider for instance the joint probability density from <a href="joint_probability.html#sec-repr-joint-dens">§ &nbsp;<span>15.4</span></a>, represented by the formula</p>
+<div class="column-page-inset-right">
+<p><span class="math display">\[
+\mathrm{p}(X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x \mathbin{\mkern-0mu,\mkern-0mu}Y\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) =
+\tfrac{3}{8\,\pi}\, \mathrm{e}^{-\frac{1}{2} (x-1)^2-(y-1)^2}+
+\tfrac{3}{64\,\pi}\,\mathrm{e}^{-\frac{1}{32} (x-2)^2-\frac{1}{2} (y-4)^2}+ \tfrac{1}{40\,\pi}\,\mathrm{e}^{-\frac{1}{8} (x-5)^2-\frac{1}{5} (y-2)^2}
+\]</span></p>
+</div>
+<p>and suppose we would like to visualize the marginal density for <span style="display:inline-block;"><span class="math inline">\(X\)</span>,&nbsp;&nbsp;</span><span style="display:inline-block;"><span class="math inline">\(\mathrm{p}(X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>.</span> In order to represent it with a line plot, we would first have to calculate the integral of the formula above over all possible values of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>:</span></p>
+<div class="column-page-inset-right">
+<p><span class="math display">\[
+\mathrm{p}(X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) =
+\int_{-\infty}^{\infty}
+\Bigl[
+\tfrac{3}{8\,\pi}\, \mathrm{e}^{-\frac{1}{2} (x-1)^2-(y-1)^2}+
+\tfrac{3}{64\,\pi}\,\mathrm{e}^{-\frac{1}{32} (x-2)^2-\frac{1}{2} (y-4)^2}+ \tfrac{1}{40\,\pi}\,\mathrm{e}^{-\frac{1}{8} (x-5)^2-\frac{1}{5} (y-2)^2}
+\Bigr]
+\, \mathrm{d}y
+\]</span></p>
+</div>
+<p>But suppose, instead, that we have stored the points used to represent the density as a scatter plot, as in <a href="joint_probability.html#fig-scatterXY">fig.&nbsp;&nbsp;<span>15.2</span></a>. Each of these points is a pair of coordinates <span style="display:inline-block;"><span class="math inline">\((x,y)\)</span>,</span> representing an <span style="display:inline-block;"><span class="math inline">\(X\)</span>-value</span> and a <span style="display:inline-block;"><span class="math inline">\(Y\)</span>-value.</span> It turns out that <em>these same points can be used to make a scatter-plot of the marginal density for <span class="math inline">\(X\)</span></em>, by considering their <span style="display:inline-block;"><span class="math inline">\(x\)</span>-coordinates</span> only. Often we use a subsample (unsystematically chosen) of them, so that the resulting one-dimensional scatter plot doesn’t become too congested and difficult to read.</p>
+<p>As an example, here is a scatter plot for the marginal density <span style="display:inline-block;"><span class="math inline">\(\mathrm{p}(X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span></span> above, obtained by selecting a subset of 400 points from the scatter plot (<a href="joint_probability.html#fig-scatterXY">fig.&nbsp;&nbsp;<span>15.2</span></a>) for <span style="display:inline-block;"><span class="math inline">\(\mathrm{p}(X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x \mathbin{\mkern-0mu,\mkern-0mu}Y\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>;</span> the points are replaced by vertical lines for better visibility:</p>
+<div id="fig-scatterXY-marginalX" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="scatter_2d_marginalX.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;16.1: Scatter-plot representation of the marginal probability density <span class="math inline">\(\mathrm{p}(X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span></figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The points for the scatter plot of <a href="joint_probability.html#fig-scatterXY">fig.&nbsp;&nbsp;<span>15.2</span></a> (<a href="joint_probability.html#sec-repr-joint-dens">§ &nbsp;<span>15.4</span></a>) are saved in the file <a href="exercise_data/scatterXY_samples.csv"><code>scatterXY_samples.csv</code></a>. Use them to represent the marginal probability density <span style="display:inline-block;"><span class="math inline">\(\mathrm{p}(Y\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>,</span> for the other quantity <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> as a scatter plot.</p>
+</div>
+</div>
+</section>
+<section id="sec-use-pitfall-marginal" class="level2" data-number="16.4">
+<h2 data-number="16.4" class="anchored" data-anchor-id="sec-use-pitfall-marginal"><span class="header-section-number">16.4</span> Uses and pitfalls of marginal probability distributions</h2>
+<p>An agent’s probability distribution for a multi-dimensional joint quantity is not easily – or at all – visualizable. This shortcoming is even worse because, as discussed in <a href="monty.html#sec-monty-motivation">§ &nbsp;<span>10.1</span></a>, our intuition often fails us badly in multi-dimensional problems.</p>
+<p>Marginal probability distributions for one or two of the component quantities are useful because they offer us a little glimpse of the multi-dimensional “monster”. In concrete engineering and data-science problem, when we need to discuss a multi-dimensional distribution it is good practice to visually report at least its one-dimensional marginal distributions.</p>
+<p>In the machine-learning literature, one frequent application of this low-dimensional glimpse is for qualitatively assessing whether two multi-dimensional distributions are similar. Their one-dimensional marginals are visually compared and, if they overlap, one hopes (and some works in the literature even conclude) that the multi-dimensional distributions are somewhat similar as well.</p>
+<p><br>
+</p>
+<p>Unfortunately marginal distributions can also be quite deceiving:</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Here are three different joint probability densities for the joint quantity <span style="display:inline-block;"><span class="math inline">\((X,Y)\)</span>,</span> each density represented by a scatter plot with 200 points. the files containing the coordinates of the scatter-plot points are also given:</p>
+<p><strong>A</strong>. File <a href="datasets/scatterXY_A.csv"><code>scatterXY_A.csv</code></a>:<br>
+<img src="scatterXY_A.png" class="img-fluid" style="width:90.0%"></p>
+<p><strong>B</strong>. File <a href="datasets/scatterXY_B.csv"><code>scatterXY_B.csv</code></a>:<br>
+<img src="scatterXY_B.png" class="img-fluid" style="width:90.0%"></p>
+<p><strong>C</strong>. File <a href="datasets/scatterXY_C.csv"><code>scatterXY_C.csv</code></a>:<br>
+<img src="scatterXY_C.png" class="img-fluid" style="width:90.0%"></p>
+<p><br>
+</p>
+<ul>
+<li><p>For each density, plot the marginal density for the quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> as a scatter plot. Use the method described in <a href="#sec-marginal-scatter">§ &nbsp;<span>16.3</span></a>; do not subsample the points.<br>
+</p>
+<p>What can you say about the three marginal densities you obtain?</p></li>
+</ul>
+<p><br>
+</p>
+<ul>
+<li><p>Analogously, but for the marginal densities for <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p>
+<p>What can you say about the three marginal densities you obtain?</p></li>
+</ul>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./joint_probability.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><span class="green">Joint probability distributions</span></span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./conditional_probability.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probabilities</span></span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
