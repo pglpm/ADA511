@@ -35,7 +35,7 @@ guessmetadata <- function(data, file){
         }
 }
 
-finfo <- function(data, metadata){
+finfo <- function(data, metadata, nalpha=1){
     if(missing(data)){data <- NULL}
     if(missing(metadata)){metadata <- NULL}
     if(is.null(data) & is.null(metadata)){stop("either 'data' or 'metadata' argument must be given.")}
@@ -51,7 +51,7 @@ finfo <- function(data, metadata){
     nvariates <- nrow(metadata)
     rgvariates <- metadata$N
     names(rgvariates) <- variates
-    alphas <- array(1/prod(rgvariates), dim=rgvariates,
+    alphas <- array(nalpha/prod(rgvariates), dim=rgvariates,
                     dimnames=apply(metadata,1,function(xx){unname(xx[paste0('V',1:(xx['N']))])}, simplify=list))
     ##
     if(!(is.null(data) || all(is.na(data)))){
@@ -76,8 +76,7 @@ fprobability1D <- function(finfo, prob, log=FALSE){
 
 fmarginal <- function(finfo, variates){
     whichvars <- match(variates, attr(finfo,'variates'))
-    temp <- apply(finfo, whichvars,
-                  sum, na.rm=T)
+    temp <- apply(finfo, whichvars, sum, na.rm=T)
     if(is.null(dim(temp))){
         tempnames <- names(temp)
         dim(temp) <- length(temp)
