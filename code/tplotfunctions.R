@@ -38,6 +38,24 @@ pdff <- function(file='Rplot', apaper=5, portrait=FALSE, height=148/25.4, width=
     pdf(file=paste0(file,'.pdf'), paper='special', height=height, width=width, ...)
 }
 
+## to output in svg format
+svgf <- function(filename='Rplot', apaper=5, portrait=FALSE, height=148/25.4, width=210/25.4, asp=NA, ...){
+    if(is.numeric(apaper)){
+        if(portrait){
+            height <- floor(841/sqrt(2)^(apaper-1))/25.4
+            width <- floor(841/sqrt(2)^(apaper))/25.4
+        }else{
+            width <- floor(841/sqrt(2)^(apaper-1))/25.4
+            height <- floor(841/sqrt(2)^(apaper))/25.4
+        }
+    }
+    if(!is.na(asp)){
+        width <- height*asp
+    }
+    svg(file=paste0(filename,'.svg'), height=height, width=width)
+}
+
+
 ## to output in png format
 pngf <- function(filename='Rplot', res=300, apaper=5, portrait=FALSE, height=148/25.4, width=210/25.4, asp=NA, ...){
     if(is.numeric(apaper)){
@@ -52,7 +70,7 @@ pngf <- function(filename='Rplot', res=300, apaper=5, portrait=FALSE, height=148
     if(!is.na(asp)){
         width <- height*asp
     }
-    png(file=paste0(filename,'.png'), height=height, width=width, units='in', res=res, pointsize=36)
+    png(file=paste0(filename,'.png'), height=height, width=width, units='in', res=res)
 }
 
 alpha2hex2 <- function(alpha,col=NULL){
