@@ -68,7 +68,8 @@ pngf <- function(filename='Rplot', res=300, apaper=5, portrait=FALSE, height=148
         }
     }
     if(!is.na(asp)){
-        width <- height*asp
+        ## width <- height*asp
+        height <- width/asp
     }
     png(file=paste0(filename,'.png'), height=height, width=width, units='in', res=res)
 }
@@ -380,7 +381,7 @@ plotquantiles <- function(x, y, col=7, alpha=0.75, border=NA){
 
 scatteraxis <- function(x, side=1, n=128, col='#555555', alpha=0.5, ext=5, pos=NULL, exts=NULL, lwd=0.1, ...){
     x <- x[!is.na(x) & is.finite(x)]
-    if(is.na(n)){n <- length(x)}
+    if(is.na(n)|| missing(n)){n <- length(x)}
     x <- x[round(seq(1, length(x), length.out=n))]
     if(is.null(pos)){ pos <- par('usr') }
     if(is.null(exts)){ exts <- diff(pos)[-2]/100}
