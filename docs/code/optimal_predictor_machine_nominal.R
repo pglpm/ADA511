@@ -35,7 +35,7 @@ guessmetadata <- function(data, file){
         }
 }
 
-finfo <- function(data, metadata, nalpha=1){
+finfo <- function(data, metadata, nalpha){
     if(missing(data)){data <- NULL}
     if(missing(metadata)){metadata <- NULL}
     if(is.null(data) & is.null(metadata)){stop("either 'data' or 'metadata' argument must be given.")}
@@ -50,6 +50,10 @@ finfo <- function(data, metadata, nalpha=1){
     variates <- metadata$variate
     nvariates <- nrow(metadata)
     rgvariates <- metadata$N
+    if(missing(nalpha) || (is.logical(nalpha) && nalpha)){
+        nalpha <- max(rgvariates)
+    }
+    ## print(nalpha)
     names(rgvariates) <- variates
     alphas <- array(nalpha/prod(rgvariates), dim=rgvariates,
                     dimnames=apply(metadata,1,function(xx){unname(xx[paste0('V',1:(xx['N']))])}, simplify=list))
@@ -88,8 +92,8 @@ fmarginal <- function(finfo, variates){
 }
 
 fconditional <- function(finfo, unitdata){
-    unitdata <- rbind(unitdata)
-    ncond <- match(colnames(unitdata), attr(finfo,'variates'))
+    unitdata <- as.list(unitdata)
+    ncond <- match(names(unitdata), attr(finfo,'variates'))
     totake <- as.list(rep(TRUE, length(dim(finfo))))
     totake[ncond] <- unitdata
     alphas <- do.call('[', c(list(finfo), totake))
