@@ -51,7 +51,7 @@ finfo <- function(data, metadata, nalpha){
     nvariates <- nrow(metadata)
     rgvariates <- metadata$N
     if(missing(nalpha) || (is.logical(nalpha) && nalpha)){
-        nalpha <- sum(rgvariates)
+        nalpha <- max(rgvariates)
     }
     ## print(nalpha)
     names(rgvariates) <- variates
