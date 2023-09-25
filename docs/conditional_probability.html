@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-09-24">
+<meta name="dcterms.date" content="2023-09-25">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 17&nbsp; Conditional probability distributions</title>
 <style>
@@ -99,7 +99,7 @@ ul.task-list li input[type="checkbox"] {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-09-24</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-09-25</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -418,12 +418,13 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-conditional-probs" id="toc-sec-conditional-probs" class="nav-link active" data-scroll-target="#sec-conditional-probs"><span class="header-section-number">17.1</span> “Conditional” probability: acquiring knowledge</a></li>
+  <li><a href="#sec-all-prob-conditional" id="toc-sec-all-prob-conditional" class="nav-link active" data-scroll-target="#sec-all-prob-conditional"><span class="header-section-number">17.1</span> Isn’t all probability “conditional”?</a></li>
+  <li><a href="#sec-conditional-probs" id="toc-sec-conditional-probs" class="nav-link" data-scroll-target="#sec-conditional-probs"><span class="header-section-number">17.2</span> Conditional probability: acquiring knowledge</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -438,7 +439,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-09-24</p>
+      <p class="date">2023-09-25</p>
     </div>
   </div>
   
@@ -454,34 +455,54 @@ ul.task-list li input[type="checkbox"] {
 \DeclareMathOperator*{\argmax}{arg\,max}
 \]</span></p>
 </div>
-<section id="sec-conditional-probs" class="level2" data-number="17.1">
-<h2 data-number="17.1" class="anchored" data-anchor-id="sec-conditional-probs"><span class="header-section-number">17.1</span> “Conditional” probability: acquiring knowledge</h2>
-<p>A joint probability distribution quantifies an agent’s uncertainty about all the quantities that compose a joint quantity. This means that in general the agent has no sure certainty about any of them (there are of course special cases where probabilities can be <span style="display:inline-block;"><span class="math inline">\(0\)</span></span> or <span style="display:inline-block;"><span class="math inline">\(1\)</span>,</span> but they are not the general case). Suppose that the agent has a joint probability for the quantities <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> conditional on a state of knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>:</span></p>
-<p><span class="math display">\[ \mathrm{P}({\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x} \mathbin{\mkern-0mu,\mkern-0mu}{\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) \]</span></p>
-<p>Now consider these two situations:</p>
-<ol type="1">
-<li><p>the agent acquires knowledge that <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> has true value <span style="display:inline-block;"><span class="math inline">\(x\)</span>,</span> so its state of knowledge has changed;</p></li>
-<li><p>for inference purposes, the agents needs to <em>hypothetically</em> assume that the quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> has value <span style="display:inline-block;"><span class="math inline">\(x\)</span></span> (even if that might not be the case in reality);</p></li>
-</ol>
-<p>and, in either situation, the agent needs the probability that <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> has value <span style="display:inline-block;"><span class="math inline">\(y\)</span>.</span> This probability is written, in either situation as</p>
+<div class="hidden">
+
+</div>
+<section id="sec-all-prob-conditional" class="level2" data-number="17.1">
+<h2 data-number="17.1" class="anchored" data-anchor-id="sec-all-prob-conditional"><span class="header-section-number">17.1</span> Isn’t all probability “conditional”?</h2>
+<p>When we introduced the notion of degree of belief – a.k.a. probability – in <a href="probability_inference.html">chapter&nbsp;&nbsp;<span>8</span></a>, we stressed the fact that <em>every probability is conditional on some state of knowledge or information</em>. So the term “conditional probability” sounds like a <a href="https://dictionary.cambridge.org/dictionary/english/pleonasm">pleonasm</a>, just like saying “round circle”.</p>
+<p>This term must be understood in a way analogous to “marginal probability”: it applies in situations where we have two or more sentences of interest, and we speak of “conditional probability” to emphasize that one or more of those sentences appear in the conditional (right side of <span style="display:inline-block;">“<span class="math inline">\(\nonscript\:\vert\nonscript\:\mathopen{}\)</span>”</span>) of the probability, as we now show.</p>
+</section>
+<section id="sec-conditional-probs" class="level2 page-columns page-full" data-number="17.2">
+<h2 data-number="17.2" class="anchored" data-anchor-id="sec-conditional-probs"><span class="header-section-number">17.2</span> Conditional probability: acquiring knowledge</h2>
+<p>Consider once more the next-patient arrival scenario of <a href="joint_probability.html#sec-repr-joint-prob">§ &nbsp;<span>15.2</span></a>, with joint quantity <span style="display:inline-block;"><span class="math inline">\((U,T)\)</span></span> and an agent’s joint probability distribution as in <a href="joint_probability.html#tbl-urgent-arrival">table&nbsp;&nbsp;<span>15.1</span></a>. Suppose that the agent must forecast whether the next patient will require <span style="display:inline-block;"><span class="math inline">\(\texttt{\small urgent}\)</span></span> or <span style="display:inline-block;"><span class="math inline">\(\texttt{\small non-urgent}\)</span></span> care, so it needs to calculate the probability distribution for <span style="display:inline-block;"><span class="math inline">\(U\)</span></span> (that is, the probabilities for <span style="display:inline-block;"><span class="math inline">\(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\)</span>).</span></p>
+<p>In the first exercise of <a href="marginal_probability.html#sec-marginal-probs">§ &nbsp;<span>16.1</span></a> you found that the marginal probability that the next patient will need urgent care is</p>
+<p><span class="math display">\[\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}}) = 18\%\]</span></p>
+<p>this is the agent’s degree of belief if it has the knowledge encoded in the sentence <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}_{\text{H}}\)</span>,</span> nothing more and nothing less.</p>
+<p>But now let’s imagine that the agent <em>receives a new piece of information</em>: it is told that the next patient is being transported by helicopter. In other words, the agent now knows that the sentence <span style="display:inline-block;"><span class="math inline">\(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\)</span></span> is true. The agent’s complete knowledge is then encoded in the <code>and</code>ed sentence</p>
+<p><span class="math display">\[T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\land \mathsfit{I}_{\text{H}}\]</span></p>
+<p>which should therefore appear in the conditional. The agent’s belief that the next patient requires urgent care is therefore</p>
+<p><span class="math display">\[\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{H}})\]</span></p>
+<p>Calculation of this probability can be done by just one application of the <code>and</code>-rule:</p>
+<div class="column-page-inset-right">
 <p><span class="math display">\[
-\mathrm{P}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x} \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})
+\begin{aligned}
+&amp;\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}}) =
+\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{H}}) \cdot
+\mathrm{P}(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+\\[3ex]
+&amp;\quad\implies\quad
+\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{H}})
+=
+\frac{
+\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+}{
+\mathrm{P}(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+}
+\end{aligned}
 \]</span></p>
-<p>It is usually called a <span class="blue"><strong>conditional probability</strong></span>. It is somewhat a misnomer, because <em>all</em> probabilities are conditional on something. The implicit understanding here is that <em>new</em> information has been added to the conditional with respect to some base state of knowledge.</p>
-<p>What is the numerical value of the conditional probability above? We simply use the <code>and</code>-rule:</p>
+</div>
+<p>We do have the joint probability for <span style="display:inline-block;"><span class="math inline">\(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\land T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\)</span></span> that appears in the numerator of the fraction above. The probability in the denominator is just a marginal probability for <span style="display:inline-block;"><span class="math inline">\(T\)</span>,</span> and we know how to calculate that too from <a href="marginal_probability.html#sec-marginal-probs">§ &nbsp;<span>16.1</span></a>. Finally we find</p>
 <p><span class="math display">\[
-\mathrm{P}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x} \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}) =
-\frac{\mathrm{P}({\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x} \mathbin{\mkern-0mu,\mkern-0mu}{\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})}{\mathrm{P}({\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})}
+\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{H}})
+=\frac{
+\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+}{
+\sum_u\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}u \mathbin{\mkern-0mu,\mkern-0mu}T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+}
 \]</span></p>
-<p>The denominator is the <em>marginal probability</em> for <span style="display:inline-block;"><span class="math inline">\(X\)</span>,</span> which can also be calculated from the joint distribution as discussed in <a href="marginal_probability.html#sec-marginal-probs">§&nbsp;<span>16.1</span></a>:</p>
-<p><span class="math display">\[
-\mathrm{P}({\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = \sum_{\color[RGB]{238,102,119}y} \mathrm{P}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}y} \mathbin{\mkern-0mu,\mkern-0mu}{\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x} \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})
-\]</span></p>
-<p>We can thus rewrite the conditional probability as</p>
-<p><span class="math display">\[
-\mathrm{P}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x} \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}) =
-\frac{\mathrm{P}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}y} \mathbin{\mkern-0mu,\mkern-0mu}{\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x} \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})}{\sum_{\color[RGB]{238,102,119}y} \mathrm{P}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}y} \mathbin{\mkern-0mu,\mkern-0mu}{\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1.5mu\textrm{\small=}\nonscript\mkern 1.5mu}\mathopen{}x} \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})}
-\]</span></p>
+<p>where it’s understood that the sum index <span style="display:inline-block;"><span class="math inline">\(u\)</span></span> runs over the values <span style="display:inline-block;"><span class="math inline">\(\set{\texttt{\small urgent}, \texttt{\small non-urgent}}\)</span>.</span></p>
+<p>This is called a <span class="blue"><strong>conditional probability</strong></span>; in this case, the conditional probability of <span style="display:inline-block;"><span class="math inline">\(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span></span> <strong>given</strong> <span style="display:inline-block;"><span class="math inline">\(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\)</span>.</span></p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -492,15 +513,22 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Consider the next-patient problem with the joint probability of <a href="joint_probability.html#tbl-urgent-arrival">table&nbsp;<span>15.1</span></a>:</p>
-<ol type="1">
-<li><p>Calculate the probability that the next patient needs urgent care, knowing that the patient will arrive by helicopter.</p></li>
-<li><p>Compare the conditional probability you just found with the <em>marginal</em> probability that the next patient needs urgent care, independently of transportation means (calculated in a previous exercise). Which is higher? Why?</p></li>
-<li><p>Calculate the probability that the next patient arrives by helicopter, knowing that the patient will need urgent care.</p></li>
-<li><p>Compare the conditional probability from 3. with that from 1. Why are they so different? Why is the probability <span style="display:inline-block;">“<span class="math inline">\(\textsf{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{}\textsf{\small urgent}\)</span>”</span> so low, when <span style="display:inline-block;">“<span class="math inline">\(\textsf{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{}\textsf{\small helicopter}\)</span>”</span> is so high instead? find an intuitive explanation.</p></li>
-</ol>
+<ul>
+<li><p>Using the values from <a href="joint_probability.html#tbl-urgent-arrival">table&nbsp;<span>15.1</span></a> and the formula for marginal probabilities, calculate:</p>
+<ul>
+<li><p>The conditional probability that the next patient needs urgent care, given that the patient is being transported by helicopter.</p></li>
+<li><p>The conditional probability that the next patient is being transported by helicopter, given that the patient needs urgent care.</p></li>
+</ul></li>
+<li><p>Now discuss and find an intuitive explanation for these comparisons:</p>
+<ul>
+<li><p>The two probabilities you obtained above. Are they equal? why or why not?</p></li>
+<li><p>The <em>marginal</em> probability that the next patient will be transported by helicopter, with the <em>conditional</em> probability that the patient will be transported by helicopter <em>given</em> that it’s urgent. Are they equal? if not, which is higher, and why?</p></li>
+</ul></li>
+</ul>
 </div>
 </div>
+<p><br>
+</p>
 
 
 </section>

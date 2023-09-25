@@ -1,33 +1,34 @@
 # [Marginal probability distributions]{.green}
 {{< include macros.qmd >}}
+{{< include macros_marg_cond.qmd >}}
 
 ## Marginal probability: neglecting some quantities {#sec-marginal-probs}
 
 In some situations an agent has a joint distribution of degrees of belief for the possible values of a joint quantity, but it needs to consider its belief in the value of *one* component quantity alone, *irrespective of what the values for the other components quantities might be*.
 
-Consider for instance the joint probability for the next-patient arrival scenario of [table @tbl-urgent-arrival] from [§ @sec-repr-joint-prob], with joint quantity $(U,T)$. We may be interested in the probability that the next patient will need $\cat{urgent}$ care, *independently of how the patient is transported to the hospital*. This probability can be found, as usual, by analysing the problem in terms of *sentences* and using the [basic rules of inference from § @sec-fundamental].
+Consider for instance the joint probability for the next-patient arrival scenario of [table @tbl-urgent-arrival] from [§ @sec-repr-joint-prob], with joint quantity $(U,T)$. We may be interested in the probability that the next patient will need $\urge$ care, *independently of how the patient is transported to the hospital*. This probability can be found, as usual, by analysing the problem in terms of *sentences* and using the [basic rules of inference from § @sec-fundamental].
 
 The sentence of interest is "[The next patient will require urgent care]{.midgrey}", or in symbols
 
-$$U \mo \cat{urgent}$$
+$$U \mo \urge$$
 
 which is equivalent to "[The next patient will require urgent care, and will arrive by ambulance, helicopter, or other means]{.midgrey}", or in symbols
 
 $$
-U \mo \cat{urgent} \land
+U \mo \urge \land
 (
-T \mo \cat{ambulance} \lor
-T \mo \cat{helicopter} \lor
-T \mo \cat{other}
+T \mo \ambu \lor
+T \mo \heli \lor
+T \mo \othe
 )
 $$
 
 Using the [derived rules of Boolean algebra of § @sec-boolean] we can rewrite this sentence in yet another way:
 
 $$
-(U \mo \cat{urgent} \land T \mo \cat{ambulance}) \lor
-(U \mo \cat{urgent} \land T \mo \cat{helicopter}) \lor
-(U \mo \cat{urgent} \land T \mo \cat{other})
+(U \mo \urge \land T \mo \ambu) \lor
+(U \mo \urge \land T \mo \heli) \lor
+(U \mo \urge \land T \mo \othe)
 $$
 
 
@@ -36,21 +37,21 @@ This last sentence is an `or` of *mutually exclusive* sentences. Its probability
 :::{.column-page-right}
 $$
 \begin{aligned}
-&\P(U \mo \cat{urgent} \| \yi[H])
+&\P(U \mo \urge \| \yi[H])
 \\[1ex]
 &\quad{}=
 \P\bigl[
-(U \mo \cat{urgent} \and T \mo \cat{ambulance}) \lor
-(U \mo \cat{urgent} \and T \mo \cat{helicopter}) \lor
-(U \mo \cat{urgent} \and T \mo \cat{other})
+(U \mo \urge \and T \mo \ambu) \lor
+(U \mo \urge \and T \mo \heli) \lor
+(U \mo \urge \and T \mo \othe)
 \| \yi[H] \bigr]
 \\[1ex]
 &\quad{}=\begin{aligned}[t]
-&\P(U \mo \cat{urgent} \and T \mo \cat{ambulance} \| \yi[H]) +{}
+&\P(U \mo \urge \and T \mo \ambu \| \yi[H]) +{}
 \\
-&\quad\P(U \mo \cat{urgent} \and T \mo \cat{helicopter} \| \yi[H]) +{}
+&\quad\P(U \mo \urge \and T \mo \heli \| \yi[H]) +{}
 \\
-&\quad\P(U \mo \cat{urgent} \and T \mo \cat{other} \| \yi[H])
+&\quad\P(U \mo \urge \and T \mo \othe \| \yi[H])
 \end{aligned}
 \end{aligned}
 $$
@@ -59,13 +60,12 @@ $$
 We have found that the probability for a value of the urgency quantity $U$, independently of the value of the transportation quantity $T$, can be calculated by summing all joint probabilities with all possible $T$ values. Using the $\sum$-notation we can write this compactly:
 
 $$
-\P(U \mo \cat{urgent} \| \yi[H]) =
+\P(U \mo \urge \| \yi[H]) =
 \sum_{t}
-\P(U \mo \cat{urgent} \and T\mo t \| \yi[H])
+\P(U \mo \urge \and T\mo t \| \yi[H])
 $$
 
-where it's understood that the sum index $t$ runs over the values $\set{\cat{ambulance}, \cat{helicopter}, \cat{other}}$.
-
+where it's understood that the sum index $t$ runs over the values $\set{\ambu, \heli, \othe}$.
 
 This is called a [**marginal probability**]{.blue}.
 
@@ -79,7 +79,7 @@ Using the values from [table @tbl-urgent-arrival], calculate:
 
 \
 
-Considering now a more abstract case for a bivariate quantity with component quantities $X$ and $Y$, the probability for a specific value of $X$, conditional on some information $\yI$ and  irrespective of what the value of $Y$ might be, is given by
+Considering now a more generic case of a joint quantity with component quantities $\green X$ and $\red Y$, the probability for a specific value of $\green X$, conditional on some information $\yI$ and  irrespective of what the value of $\red Y$ might be, is given by
 
 $$
 \P({\green X\mo x}\| \yI) = \sum_{\red y} \P({\red Y\mo y} \and {\green X\mo x} \| \yI)
