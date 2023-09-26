@@ -73,6 +73,31 @@ where it's understood that the sum index $u$ runs over the values $\set{\urge, \
 
 This is called a [**conditional probability**]{.blue}; in this case, the conditional probability of\ \ $U\mo\urge$\ \ [**given**]{.blue}\ \ $T\mo\heli$.
 
+The collection of probabilities for all possible values of the quantity $U$, given a *specific* value of the quantity $T$, say $\heli$:
+
+$$
+\P(U\mo\urge \| T\mo\heli \and \yi[H]) \ ,
+\qquad
+\P(U\mo\nonu \| T\mo\heli \and \yi[H])
+$$
+
+is called the [**conditional probability distribution**]{.blue} for $U$\ \ [**given**]{.blue}\ \ $T\mo\heli$. It is indeed a probability distribution because the two probabilities sum up to $1$.
+
+:::{.callout-warning}
+## {{< fa exclamation-circle >}}
+Note that the collection of probabilities for, say, $U\mo\urge$, but for *different* values of the conditional quantity $T$, that is
+
+$$
+\P(U\mo\urge \| T\mo\ambu \and \yi[H]) \ ,
+\qquad
+\P(U\mo\urge \| T\mo\heli \and \yi[H]) \ ,
+\qquad
+\P(U\mo\urge \| T\mo\othe \and \yi[H])
+$$
+
+is **not** a probability distribution. Calculate the three probabilities above and check that indeed they do not sum up to one.
+:::
+
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
 - Using the values from [table @tbl-urgent-arrival] and the formula for marginal probabilities, calculate:
@@ -204,11 +229,37 @@ $$
 
 This conditional probability of $17.5\%$ for $U_3\mo\nonu$ is *lower* than the marginal one $20.0\%$ calculated previously. **Observation of two patients has thus affected the agent's degree of belief**.
 
-One possible intuitive explanation of this probability decrease, *in the present scenario*, is that observation of two non-urgent cases makes the agent slightly more confident that "this is a day with few urgent cases".
+\
+
+Let's also check how the agent's belief changes in the case where the first two patients are both urgent. The calculation is completely analogous:
+
+$$
+\begin{aligned}
+&\P(U_3\mo\urge \| U_1\mo\urge \and U_2\mo\urge \and \yI)
+\\[2ex]
+&\qquad{}=
+\frac{
+\P(U_1\mo\urge \and U_2\mo\urge \and U_3\mo\urge \| \yI)
+}{
+\P(U_1\mo\urge \and U_2\mo\urge \| \yI)
+}
+\\[1ex]
+&\qquad{}=\frac{0.030}{0.107}
+\\[2ex]
+&\qquad{}\approx
+\boldsymbol{28.0\%}
+\end{aligned}
+$$
+
+In this case the conditional probability $28.0\%$ for $U_3\mo\urge$ is *higher* than the marginal one $20.0\%$.
+
+One possible intuitive explanation of these probability changes, *in the present scenario*, is that observation of two non-urgent cases makes the agent slightly more confident that "this is a day with few urgent cases"; whereas observation of two urgent cases makes the agent more confident that "this is a day with many urgent cases".
+
+
 
 :::{.callout-warning}
 ## {{< fa exclamation-circle >}}
-In general we cannot say that the probability of a particular value (such as $\urge$ in the scenario above) will decrease or increase as similar or dissimilar values are observed, nor how much will the increase or decrease be.
+In general we cannot say that the probability of a particular value (such as $\urge$ in the scenario above) will decrease or increase as similar or dissimilar values are observed, nor how much the increase or decrease will be.
 
 In a different situation the probability of $\urge$ could actually **increase** as more and more $\nonu$ cases are observed. Imagine, for instance, a scenario where the agent initially knows that there are 10 urgent and 90 non-urgent cases ahead. Having observed 90 non-urgent cases, the agent will give a much higher probability -- 100% -- that the next case will be an urgent one.
 
@@ -219,25 +270,38 @@ The differences among such scenarios are reflected in differences of the joint p
 
 
 :::{.callout-caution}
-## {{< fa user-edit >}} Exercise
-Do an analysis completely analogous to the previous, three-patient one, but with different background information $\yJ$ that gives a joint probability distribution for $(U_1, U_2, U_3)$ as follows:
+## {{< fa user-edit >}} Exercises
 
-• If $\urge$ appears 0 times out of 3: probability = $0\%$\
-• If $\urge$ appears 1 times out of 3: probability = $24.5\%$\
-• If $\urge$ appears 2 times out of 3: probability = $7.7\%$\
-• If $\urge$ appears 3 times out of 3: probability = $3.0\%$
+a. Using the same joint distribution above, calculate
 
-1. Calculate
+    $$\P(U_1\mo\urge \| U_2\mo\nonu \and U_3\mo\nonu \and \yI)$$
+	
+	that is, the probability that the next patient will require urgent care *given that the agent knows the second and third patients will not-require urgent care*.
+	
+	- Why is the value obtained different from\ \ $\P(U_1\mo\urge \|\yI)$ ?
+	
+	- Describe a scenario in which the calculation above makes sense (and patients 2 and 3 still arrive after patient 1).
 
-    $$\P(U_3\mo\urge \|\yJ)$$
+\
 
-    and
+b. Do an analysis completely analogous to the previous, three-patient one, but with different background information $\yJ$ that gives a joint probability distribution for $(U_1, U_2, U_3)$ as follows:
 
-    $$\P(U_3\mo\urge \| U_1\mo\nonu \and U_2\mo\nonu \and \yJ)$$
+    • If $\urge$ appears 0 times out of 3: probability = $0\%$\
+    • If $\urge$ appears 1 times out of 3: probability = $24.5\%$\
+    • If $\urge$ appears 2 times out of 3: probability = $7.7\%$\
+    • If $\urge$ appears 3 times out of 3: probability = $3.0\%$
 
-    and compare them.
+    1. Calculate
 
-2. Explain why this particular change in degree of belief occurs, in this situation.
+        $$\P(U_3\mo\urge \|\yJ)$$
+
+        and
+
+        $$\P(U_3\mo\urge \| U_1\mo\nonu \and U_2\mo\nonu \and \yJ)$$
+
+        and compare them.
+
+    2. Explain why this particular change in degree of belief occurs, in this situation.
 
 <!--      i1 i2 i3        p   num   den -->
 <!-- [1,]  0  0  1 1.000000 0.245 0.245 -->
@@ -256,6 +320,40 @@ Do an analysis completely analogous to the previous, three-patient one, but with
 
 - §§ 5.1--5.5 of [*Probability*](https://hvl.instructure.com/courses/25074/modules/items/675505) -- yes, once more!
 :::
+
+## General case and remarks on the previous two sections {#sec-remarks-conditional-similar}
+
+Take the time to review the two sections above, focusing on the application and meaning of the two scenarios and calculations, and noting the similarities and differences:
+
+- [{{< fa equals >}} The calculations were completely analogous; in particular, the conditional probability was obtained as the quotient of a joint probability and a marginal one.]{.green}
+
+- [{{< fa not-equal >}} In the first (next-patient) scenario, information about one aspect of the situation changed the agent's belief about another aspect; the two aspects were somewhat different (transportation and urgency). Whereas in the second (three-patient) scenario, information about analogous occurrences of an aspect of the situation changed the agent's belief about a further occurrence.]{.yellow}
+
+Both kinds of inference scenarios -- considering one aspect to infer another, and considering some occurrences to infer new ones -- frequently occur in data science and engineering. In machine learning, the first scenario is connected to "supervised learning", the second to "unsupervised learning". As you just saw, the probability calculus "sees" them as analogous: information about something changes and agent's beliefs about something else. And the handling of both cases is perfectly covered by the four fundamental rules of inference.
+
+\
+
+Let's now consider a more generic case of a joint quantity with component quantities $\green X$ and $\red Y$, whose joint probability distribution is given. The conditional probability for $\red Y$, given that $\green X$ has some specific value $\green x^*$, is then
+
+$$
+\P({\red Y\mo y}\| {\green X\mo x^*}\and\yI) =
+\frac{
+\P({\red Y\mo y} \and {\green X\mo x^*}\|\yI)
+}{
+\sum_{\red \upsilon}\P({\red Y\mo \upsilon}\and {\green X\mo x^*}\|\yI)
+}
+$$
+
+for all possible values $\red y$.
+
+\
+
+## Conditional from conditional probability {#sec-conditional-conditional}
+
+As emphasized in [§ @sec-inference-origin], probabilities are either obtained from other probabilities, or taken as given probabilities, maybe determined by symmetry requirements. This is also true when we want to calculate conditional probabilities.
+
+Up to now we have calculated conditional probabilities starting from the joint distribution as given.
+
 
 
 
