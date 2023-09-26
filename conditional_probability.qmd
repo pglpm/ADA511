@@ -1,4 +1,4 @@
-# [Conditional probability distributions]{.green}
+# [Conditional probability and learning]{.green}
 {{< include macros.qmd >}}
 {{< include macros_marg_cond.qmd >}}
 
@@ -88,11 +88,13 @@ is called the [**conditional probability distribution**]{.blue} for $U$\ \ [**gi
 Note that the collection of probabilities for, say, $U\mo\urge$, but for *different* values of the conditional quantity $T$, that is
 
 $$
-\P(U\mo\urge \| T\mo\ambu \and \yi[H]) \ ,
-\qquad
-\P(U\mo\urge \| T\mo\heli \and \yi[H]) \ ,
-\qquad
-\P(U\mo\urge \| T\mo\othe \and \yi[H])
+\begin{aligned}
+&\P(U\mo\urge \| T\mo\ambu \and \yi[H]) \ ,
+\\[1ex]
+&\P(U\mo\urge \| T\mo\heli \and \yi[H]) \ ,
+\\[1ex]
+&\P(U\mo\urge \| T\mo\othe \and \yi[H])
+\end{aligned}
 $$
 
 is **not** a probability distribution. Calculate the three probabilities above and check that indeed they do not sum up to one.
@@ -321,7 +323,8 @@ b. Do an analysis completely analogous to the previous, three-patient one, but w
 - §§ 5.1--5.5 of [*Probability*](https://hvl.instructure.com/courses/25074/modules/items/675505) -- yes, once more!
 :::
 
-## General case and remarks on the previous two sections {#sec-remarks-conditional-similar}
+## General case: conditional from joint
+{#sec-conditional-joint-general}
 
 Take the time to review the two sections above, focusing on the application and meaning of the two scenarios and calculations, and noting the similarities and differences:
 
@@ -329,11 +332,58 @@ Take the time to review the two sections above, focusing on the application and 
 
 - [{{< fa not-equal >}} In the first (next-patient) scenario, information about one aspect of the situation changed the agent's belief about another aspect; the two aspects were somewhat different (transportation and urgency). Whereas in the second (three-patient) scenario, information about analogous occurrences of an aspect of the situation changed the agent's belief about a further occurrence.]{.yellow}
 
-Both kinds of inference scenarios -- considering one aspect to infer another, and considering some occurrences to infer new ones -- frequently occur in data science and engineering. In machine learning, the first scenario is connected to "supervised learning", the second to "unsupervised learning". As you just saw, the probability calculus "sees" them as analogous: information about something changes and agent's beliefs about something else. And the handling of both cases is perfectly covered by the four fundamental rules of inference.
+\
+
+A third scenario is also possible, which combines the two above. Consider the case with three patients, where each patient can require $\urge$ care or not, and can be transported by $\ambu$, $\heli$, or $\othe$ means. To describe this situation, introduce three pairs of quantities, which together form the joint quantity
+
+$$
+(U_1, T_1, \ U_2, T_2, \ U_3, T_3)
+$$
+
+whose meaning should now be obvious. This joint quantity has $(2\cdot 3)^3 = 216$ possible values, corresponding to all urgency & transportation combinations for the three patients.
+
+Given the joint probability distribution for this joint quantity, it is possible to calculate all kinds of conditional probabilities, which reflect the knowledge that the agent may have acquired. For instance, suppose the agent has observed that
+
+- the first two patients have not required urgent care
+- the first patient was transported by ambulance
+- the second patient was transported by other means
+- the third patient is arriving by ambulance
+
+and needs to infer whether the third patient will require urgent care. The required probability is 
+
+:::{.column-page-right}
+$$
+\begin{aligned}
+&\P(U_3\mo\urge \| T_3\mo\ambu \and
+U_1\mo\nonu \and T_1\mo\ambu \and
+U_2\mo\nonu \and T_2\mo\othe \and
+\yI)
+\\[2ex]
+&\qquad{}=
+\frac{
+\P(U_3\mo\urge \and T_3\mo\ambu \and
+U_1\mo\nonu \and T_1\mo\ambu \and
+U_2\mo\nonu \and T_2\mo\othe \|
+\yI)
+}{
+\P(T_3\mo\ambu \and
+U_1\mo\nonu \and T_1\mo\ambu \and
+U_2\mo\nonu \and T_2\mo\othe \and
+\yI)
+}
+\end{aligned}
+$$
+:::
+
+and is calculated in a way completely analogous to the ones already seen.
 
 \
 
-Let's now consider a more generic case of a joint quantity with component quantities $\green X$ and $\red Y$, whose joint probability distribution is given. The conditional probability for $\red Y$, given that $\green X$ has some specific value $\green x^*$, is then
+All three kinds of inference scenarios frequently occur in data science and engineering. In machine learning, the second scenario is connected to "unsupervised learning"; the third, mixed one to "supervised learning". As you just saw, the probability calculus "sees" all of the them as analogous: information about something changes the agent's belief about something else. And the handling of all three cases is perfectly covered by the four fundamental rules of inference.
+
+\
+
+Let's now consider a more generic case of a joint quantity with component quantities $\green X$ and $\red Y$, whose joint probability distribution is given. The two quantities could be complicated joint quantities themselves. The conditional probability for $\red Y$, given that $\green X$ has some specific value $\green x^*$, is then
 
 $$
 \P({\red Y\mo y}\| {\green X\mo x^*}\and\yI) =
@@ -342,7 +392,7 @@ $$
 }{
 \sum_{\red \upsilon}\P({\red Y\mo \upsilon}\and {\green X\mo x^*}\|\yI)
 }
-$$
+$$ {#eq-conditional-joint}
 
 for all possible values $\red y$.
 
@@ -352,7 +402,140 @@ for all possible values $\red y$.
 
 As emphasized in [§ @sec-inference-origin], probabilities are either obtained from other probabilities, or taken as given probabilities, maybe determined by symmetry requirements. This is also true when we want to calculate conditional probabilities.
 
-Up to now we have calculated conditional probabilities starting from the joint distribution as given.
+Up to now we have calculated conditional probabilities starting from the joint distribution as given, using the derived formula ([@eq-conditional-joint]). In some situations, however, an agent may have **given conditional probabilities** together with **given marginal probabilities**.
+
+As an example let's consider a variation of our next-patient scenario one more time. The agent has background information $\yi[S]$ that provides the following set of probabilities:
+
+- Two conditional probability distributions\ \ $\P(T\mo\dotso \| U\mo\dotso \and \yi[S])$ for transportation $T$ given urgency $U$, as reported in the following table:
+
++:------------------------------:+:---------------:+:---------------:+:---------------:+:---------------:+
+|$\P(T\mo t \| U\mo u\and\yi[S])$|                 |**transportation at arrival**\ \ $T\|{}$             |
++--------------------------------+-----------------+-----------------+-----------------+-----------------+
+|                                |                 |ambulance        |helicopter       |other            |
++--------------------------------+-----------------+-----------------+-----------------+-----------------+
+|*given* **urgency**\ \ ${}\|U$  |urgent           |0.61             |0.22             |0.17             |
++                                +-----------------+-----------------+-----------------+-----------------+
+|                                |non-urgent       |0.21             |0.01             |0.78             |
++--------------------------------+-----------------+-----------------+-----------------+-----------------+
+: Probability distributions for transportation given urgency {#tbl-T-given-U .sm}
+
+::::{.column-margin}
+:::{.callout-warning}
+## {{< fa exclamation-circle >}}
+[This table has **two** probability distributions: on the first row, one conditional on $U\mo\urge$; on the second row, one conditional on $U\mo\nonu$.  Check that the probabilities on each row indeed sum up to one.]{.small}
+:::
+::::
+
+\
+
+- Marginal probability distribution\ \ $\P(U\mo\dotso \| \yi[S])$ for urgency $U$:
+
+$$
+\P(U\mo\urge \| \yi[S]) = 0.18 \ ,
+\quad
+\P(U\mo\nonu \| \yi[S]) = 0.82
+$$ {#eq-U-marg}
+
+\
+
+With this background information, the agent can also compute all joint probabilities simply using the `and`-rule. For instance
+
+$$
+\begin{aligned}
+&P(U\mo\urge \and T\mo\heli \| \yi[S])
+\\[1ex]
+&\quad{}= 
+P(T\mo\heli \| U\mo\urge \and \yi[S]) \cdot
+P(U\mo\urge \| \yi[S])
+\\[1ex]
+&\quad{}= 0.22 \cdot 0.18 = \boldsymbol{3.96\%}
+\end{aligned}
+$$
+
+:::{.column-margin}
+Note that the joint probabilities are slightly different compared with those from the previous background information $\yi[H]$.
+:::
+
+And from the joint probabilities, the marginal ones for transportation $T$ can also be calculated. For instance
+
+$$
+\begin{aligned}
+&P(T\mo\heli \| \yi[S])
+\\[1ex]
+&\quad{}= 
+\sum_u P(T\mo\heli \and U\mo u \| \yi[S])
+\\[1ex]
+&\quad{}= 
+\sum_u P(T\mo\heli \| U\mo u \and \yi[S]) \cdot
+P(U\mo u \| \yi[S])
+\\[1ex]
+&\quad{}= 
+0.22 \cdot 0.18 +
+0.01 \cdot 0.82
+\\[1ex]
+&\quad{}= \boldsymbol{4.78\%}
+\end{aligned}
+$$
+
+
+
+Suppose that the agent knows that the next patient is being transported by $\heli$, and needs to forecast whether $\urge$ care will be needed. This inference is the conditional probability\ \ $\P(U\mo\urge \| T\mo\heli \and \yi[S])$, which can also be rewritten in terms of the set of probabilities initially given:
+
+$$
+\begin{aligned}
+&\P(U\mo\urge \| T\mo\heli \and \yi[H])
+\\[2ex]
+&\quad{}=\frac{
+\P(U\mo\urge \and T\mo\heli \| \yi[H])
+}{
+\P(T\mo\heli \| \yi[H])
+}
+\\[1ex]
+&\quad{}=\frac{
+P(T\mo\heli \| U\mo\urge \and \yi[S]) \cdot
+P(U\mo\urge \| \yi[S])
+}{
+\sum_u P(T\mo\heli \| U\mo u \and \yi[S]) \cdot
+P(U\mo u \| \yi[S])
+}
+\\[1ex]
+&\quad{}=\frac{0.0396}{0.0478}
+\\[2ex]
+&\quad{}=\boldsymbol{82.8\%}
+\end{aligned}
+$$
+
+This calculation has been slightly more involved than the one in [§ @sec-conditional-joint-dis] because the joint probabilities were not directly available. Our calculation involved the steps\ \ " $T\|U \longrightarrow T\land U \longrightarrow U\|T$ ".
+
+\
+
+If the agent were instead interested, say, in forecasting the transportation means knowing that the next patient requires urgent care, then the relevant degree of belief\ \ $\P(T\mo\dotso \| U\mo\urge \and \yi[S])$ would be immediately available and no calculations would be needed.
+
+## General case: conditional from conditional
+{#sec-conditional-conditional-general}
+
+The example from the previous section can be easily generalized. Consider a joint quantity with component quantities $\green X$ and $\red Y$. The probabilities\ \ $\P({\green X\mo\dotso} \| {\red Y\mo\dotso} \and \yI)$\ \ and\ \ $\P({\red Y\mo\dotso} \| \yI)$\ \ are given.
+
+The conditional probability for $\red Y$, given that $\green X$ has some specific value $\green x^*$, is then
+
+$$
+\P({\red Y\mo y}\| {\green X\mo x^*}\and\yI) =
+\frac{
+\P( {\green X\mo x^*}\| {\red Y\mo y} \and\yI) \cdot
+\P( {\red Y\mo y} \|\yI)
+}{
+\sum_{\red \upsilon}
+\P( {\green X\mo x^*}\| {\red Y\mo \upsilon} \and\yI) \cdot
+\P( {\red Y\mo \upsilon} \|\yI)
+}
+$$ {#eq-conditional-bayes}
+
+for all possible values $\red y$.
+
+In the above formula we recognize [**Bayes's theorem**]{.blue} from [§ @sec-bayes-theorem].
+
+This formula is often exaggeratedly emphasized in the literature; some texts even present it as an "axiom" to be used in situations such as the present one. But we see that it is simply a by-product of the four fundamental rules of inference in a specific situation. An AI agent who knows the four fundamental inference rules, and doesn't know what "Bayes's theorem" is, will nevertheless arrive at this very formula.
+
 
 
 
