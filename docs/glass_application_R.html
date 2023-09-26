@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-09-19">
+<meta name="dcterms.date" content="2023-09-26">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 28&nbsp; The optimal predictor machine in action (for nominal quantities)</title>
 <style>
@@ -133,7 +133,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-09-19</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-09-26</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -486,7 +486,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-09-19</p>
+      <p class="date">2023-09-26</p>
     </div>
   </div>
   
@@ -573,7 +573,7 @@ source('code/optimal_predictor_machine_nominal.R')</code></pre>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>priorknowledge_type <span class="ot">&lt;-</span> <span class="fu">fmarginal</span>(<span class="at">finfo=</span>priorknowledge, <span class="at">variates=</span><span class="st">'Type'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The answer is stored in the object <code>priorknowledge_type</code>, which now contains only information pertinent to the <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> variate.</p>
-<p>We would like to visualize this probability distribution over marginal frequency distributions. A complication is that we would need infinite dimensions to visualize this faithfully. One approximate way to represent this probability distribution is by showing, say, 100 representative samples from it. The idea is the same as for a scatter plot (<a href="probability_distributions.html#sec-represent-dens">§&nbsp;&nbsp;<span>14.4</span></a>). In this case we would then have 100 different frequency distributions for the variate <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span>.</span></p>
+<p>We would like to visualize this probability distribution over marginal frequency distributions. A complication is that we would need infinite dimensions to visualize this faithfully. One approximate way to represent this probability distribution is by showing, say, 100 representative samples from it. The idea is the same as for a scatter plot (<a href="probability_distributions.html#sec-represent-dens">§ &nbsp;<span>14.4</span></a>). In this case we would then have 100 different frequency distributions for the variate <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span>.</span></p>
 <p>The function <code>plotsamples1D()</code> does this kind of visual representation. It has arguments <code>finfo</code>: the object encoding the probability distribution; <code>n</code> (default 100): the number of samples to show; and <code>predict</code>, which for the moment we set to <code>FALSE</code> and discuss in a moment.</p>
 <p>How do you think this probability distribution will look like? what kind of marginal frequencies we do expect in the full population?</p>
 <div class="cell" data-execution_count="6">
@@ -692,7 +692,7 @@ source('code/optimal_predictor_machine_nominal.R')</code></pre>
 </section>
 <section id="conditional-discriminative-or-supervised-learning-inferences" class="level2 page-columns page-full" data-number="28.4">
 <h2 data-number="28.4" class="anchored" data-anchor-id="conditional-discriminative-or-supervised-learning-inferences"><span class="header-section-number">28.4</span> Conditional, “discriminative” or “supervised-learning” inferences</h2>
-<p>The inferences about a new units that the agent has made so far were of an “unsupervised-learning” or “generative” kind ([§&nbsp;sec-2nd-connection-ML]): the agent did not receive or use any partial information about a new unit. Let’s now try a “supervised-learning” or “discriminative” kind of inference.</p>
+<p>The inferences about a new units that the agent has made so far were of an “unsupervised-learning” or “generative” kind ([§ sec-2nd-connection-ML]): the agent did not receive or use any partial information about a new unit. Let’s now try a “supervised-learning” or “discriminative” kind of inference.</p>
 <p>Imagine that we are at a new crime scene, a glass fragment is recovered, and tests are made about its refractive index and chemical composition. The following values are found, referred to the levels of our variates:</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -701,7 +701,7 @@ source('code/optimal_predictor_machine_nominal.R')</code></pre>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>newfragment <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">RI=</span><span class="dv">2</span>, <span class="at">Na=</span><span class="dv">2</span>,  <span class="at">Mg=</span><span class="dv">3</span>,  <span class="at">Al=</span><span class="dv">2</span>,  <span class="at">Si=</span><span class="dv">3</span>,  <span class="at">K=</span><span class="dv">1</span>, <span class="at">Ca=</span><span class="dv">2</span>,  <span class="at">Ba=</span><span class="dv">1</span>,  <span class="at">Fe=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The detectives would like to know what’s the possible origin of this fragment, that is, its <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span>.</span> Our agent can draw this inference.</p>
-<p>First, the agent can calculate the probability distribution over the <em>conditional frequencies</em> (<a href="subpopulations.html#sec-conditional-freqs">§&nbsp;&nbsp;<span>21.2</span></a>) of the <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> values for the subpopulation (<a href="subpopulations.html#sec-subpopulations">§&nbsp;&nbsp;<span>21.1</span></a>) of units having the specific variate values above. This calculation is done with the function <code>fconditional()</code>, with arguments <code>finfo</code>: the agent’s current knowledge, and <code>unitdata</code>: the partial data obtained from the unit.</p>
+<p>First, the agent can calculate the probability distribution over the <em>conditional frequencies</em> (<a href="subpopulations.html#sec-conditional-freqs">§ &nbsp;<span>21.2</span></a>) of the <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> values for the subpopulation (<a href="subpopulations.html#sec-subpopulations">§ &nbsp;<span>21.1</span></a>) of units having the specific variate values above. This calculation is done with the function <code>fconditional()</code>, with arguments <code>finfo</code>: the agent’s current knowledge, and <code>unitdata</code>: the partial data obtained from the unit.</p>
 <div class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>condknowledge <span class="ot">&lt;-</span> <span class="fu">fconditional</span>(<span class="at">finfo=</span>postknowledge, <span class="at">unitdata=</span>newfragment)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>condknowledge_type <span class="ot">&lt;-</span> <span class="fu">fmarginal</span>(<span class="at">finfo=</span>condknowledge, <span class="at">variates=</span><span class="st">'Type'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
