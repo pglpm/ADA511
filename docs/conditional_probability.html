@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-09-25">
+<meta name="dcterms.date" content="2023-09-26">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 17&nbsp; Conditional probability distributions</title>
 <style>
@@ -99,7 +99,7 @@ ul.task-list li input[type="checkbox"] {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-09-25</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-09-26</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -418,8 +418,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-all-prob-conditional" id="toc-sec-all-prob-conditional" class="nav-link active" data-scroll-target="#sec-all-prob-conditional"><span class="header-section-number">17.1</span> Isn’t all probability “conditional”?</a></li>
-  <li><a href="#sec-conditional-probs" id="toc-sec-conditional-probs" class="nav-link" data-scroll-target="#sec-conditional-probs"><span class="header-section-number">17.2</span> Conditional probability: acquiring knowledge</a></li>
+  <li><a href="#sec-conditional-probs" id="toc-sec-conditional-probs" class="nav-link active" data-scroll-target="#sec-conditional-probs"><span class="header-section-number">17.1</span> Conditional probability: augmenting knowledge</a></li>
+  <li><a href="#sec-conditional-joint-dis" id="toc-sec-conditional-joint-dis" class="nav-link" data-scroll-target="#sec-conditional-joint-dis"><span class="header-section-number">17.2</span> Conditional from joint probability: dissimilar quantities</a></li>
+  <li><a href="#sec-conditional-joint-sim" id="toc-sec-conditional-joint-sim" class="nav-link" data-scroll-target="#sec-conditional-joint-sim"><span class="header-section-number">17.3</span> Conditional from joint probability: similar quantities</a></li>
   </ul>
 </nav>
     </div>
@@ -439,7 +440,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-09-25</p>
+      <p class="date">2023-09-26</p>
     </div>
   </div>
   
@@ -458,13 +459,20 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 
 </div>
-<section id="sec-all-prob-conditional" class="level2" data-number="17.1">
-<h2 data-number="17.1" class="anchored" data-anchor-id="sec-all-prob-conditional"><span class="header-section-number">17.1</span> Isn’t all probability “conditional”?</h2>
+<section id="sec-conditional-probs" class="level2" data-number="17.1">
+<h2 data-number="17.1" class="anchored" data-anchor-id="sec-conditional-probs"><span class="header-section-number">17.1</span> Conditional probability: augmenting knowledge</h2>
 <p>When we introduced the notion of degree of belief – a.k.a. probability – in <a href="probability_inference.html">chapter&nbsp;&nbsp;<span>8</span></a>, we stressed the fact that <em>every probability is conditional on some state of knowledge or information</em>. So the term “conditional probability” sounds like a <a href="https://dictionary.cambridge.org/dictionary/english/pleonasm">pleonasm</a>, just like saying “round circle”.</p>
-<p>This term must be understood in a way analogous to “marginal probability”: it applies in situations where we have two or more sentences of interest, and we speak of “conditional probability” to emphasize that one or more of those sentences appear in the conditional (right side of <span style="display:inline-block;">“<span class="math inline">\(\nonscript\:\vert\nonscript\:\mathopen{}\)</span>”</span>) of the probability, as we now show.</p>
+<p>This term must be understood in a way analogous to “marginal probability”: it applies in situations where we have two or more sentences of interest. We speak of a “conditional probability” when we want to emphasize that additional sentences appear in the conditional (right side of <span style="display:inline-block;">“<span class="math inline">\(\nonscript\:\vert\nonscript\:\mathopen{}\)</span>”</span>) of that probability, as compared to other probabilities. For instance, in a scenario in which these two probabilities appear:</p>
+<p><span class="math display">\[
+\mathrm{P}(\mathsfit{A} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{B} \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})
+\qquad
+\mathrm{P}(\mathsfit{A} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\]</span></p>
+<p>we call the first <span class="blue"><strong>conditional probability</strong></span> of <span style="display:inline-block;"><span class="math inline">\(\mathsfit{A}\)</span></span> (<span class="blue"><strong>given</strong></span> <span style="display:inline-block;"><span class="math inline">\(\mathsfit{B}\)</span>)</span> to emphasize or point out that its conditional includes an additional sentence (<span style="display:inline-block;"><span class="math inline">\(\mathsfit{B}\)</span>),</span> whereas the conditional of the second probability doesn’t.</p>
+<p>Such emphasis is important because it also means that the “conditional” probability is based on some <em>additional knowledge, information, or hypothesis</em> with respect to the “non-conditional” one. This has obvious connections with the idea of “learning”. Indeed the calculation of “conditional” probabilities enters in all situations (even if hypothetical or counterfactual, see <a href="inference.html#sec-inference-scenarios">§ &nbsp;<span>5.1</span></a>) in which some knowledge is augmented by new knowledge. This can happens in several ways, which we now examine.</p>
 </section>
-<section id="sec-conditional-probs" class="level2 page-columns page-full" data-number="17.2">
-<h2 data-number="17.2" class="anchored" data-anchor-id="sec-conditional-probs"><span class="header-section-number">17.2</span> Conditional probability: acquiring knowledge</h2>
+<section id="sec-conditional-joint-dis" class="level2 page-columns page-full" data-number="17.2">
+<h2 data-number="17.2" class="anchored" data-anchor-id="sec-conditional-joint-dis"><span class="header-section-number">17.2</span> Conditional from joint probability: dissimilar quantities</h2>
 <p>Consider once more the next-patient arrival scenario of <a href="joint_probability.html#sec-repr-joint-prob">§ &nbsp;<span>15.2</span></a>, with joint quantity <span style="display:inline-block;"><span class="math inline">\((U,T)\)</span></span> and an agent’s joint probability distribution as in <a href="joint_probability.html#tbl-urgent-arrival">table&nbsp;&nbsp;<span>15.1</span></a>. Suppose that the agent must forecast whether the next patient will require <span style="display:inline-block;"><span class="math inline">\(\texttt{\small urgent}\)</span></span> or <span style="display:inline-block;"><span class="math inline">\(\texttt{\small non-urgent}\)</span></span> care, so it needs to calculate the probability distribution for <span style="display:inline-block;"><span class="math inline">\(U\)</span></span> (that is, the probabilities for <span style="display:inline-block;"><span class="math inline">\(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\)</span>).</span></p>
 <p>In the first exercise of <a href="marginal_probability.html#sec-marginal-probs">§ &nbsp;<span>16.1</span></a> you found that the marginal probability that the next patient will need urgent care is</p>
 <p><span class="math display">\[\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}}) = 18\%\]</span></p>
@@ -529,6 +537,125 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <p><br>
 </p>
+</section>
+<section id="sec-conditional-joint-sim" class="level2 page-columns page-full" data-number="17.3">
+<h2 data-number="17.3" class="anchored" data-anchor-id="sec-conditional-joint-sim"><span class="header-section-number">17.3</span> Conditional from joint probability: similar quantities</h2>
+<p>In the previous section we examined how knowledge about one quantity of a particular kind can change an agent’s degree of belief about a quantity of a different kind, for example “transportation” about “urgency” or vice versa. This change is reflected in the value of the corresponding conditional probability.</p>
+<p>This kind of change can also occur with quantities of a “similar kind”, that is, quantities that represent the same kind of phenomenon and have exactly the same domain. The maths and calculations are identical to those we have explored, but the interpretation and application can be somewhat different.</p>
+<p>As an example, imagine a scenario similar to the next-patient one above, but now consider the <em>next four patients</em> to arrive and their urgency. Define the following four quantities:</p>
+<p><span class="math inline">\(U_1\)</span> : urgency of the next patient<br>
+<span style="display:inline-block;"><span class="math inline">\(U_2\)</span> :</span> urgency of the second future patient from now<br>
+<span style="display:inline-block;"><span class="math inline">\(U_3\)</span> :</span> urgency of the third future patient from now<br>
+<span style="display:inline-block;"><span class="math inline">\(U_4\)</span> :</span> urgency of the fourth future patient from now<br>
+</p>
+<p>every one of these quantities has the same domain: <span style="display:inline-block;"><span class="math inline">\(\set{\texttt{\small urgent},\texttt{\small non-urgent}}\)</span>.</span></p>
+<p>The joint quantity <span style="display:inline-block;"><span class="math inline">\((U_1, U_2, U_3, U_4)\)</span></span> has a domain with 2⁴ = 16 possible values:</p>
+<ul>
+<li><span class="math inline">\(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_4\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span></li>
+<li><span class="math inline">\(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_4\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\)</span></li>
+<li>. . .</li>
+<li><span class="math inline">\(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_4\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span></li>
+<li><span class="math inline">\(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_4\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\)</span></li>
+</ul>
+<p>Suppose that an agent, with background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> has a joint probability distribution for the joint quantity <span style="display:inline-block;"><span class="math inline">\((U_1, U_2, U_3, U_4)\)</span>,</span> defined as follows: </p>
+<ul>
+<li>If <span class="math inline">\(\texttt{\small urgent}\)</span> appears 0 times out of 4: probability = <span class="math inline">\(44.81\%\)</span></li>
+<li>If <span class="math inline">\(\texttt{\small urgent}\)</span> appears 1 times out of 4: probability = <span class="math inline">\(8.79\%\)</span></li>
+<li>If <span class="math inline">\(\texttt{\small urgent}\)</span> appears 2 times out of 4: probability = <span class="math inline">\(2.61\%\)</span></li>
+<li>If <span class="math inline">\(\texttt{\small urgent}\)</span> appears 3 times out of 4: probability = <span class="math inline">\(0.99\%\)</span></li>
+<li>If <span class="math inline">\(\texttt{\small urgent}\)</span> appears 4 times out of 4: probability = <span class="math inline">\(0.41\%\)</span></li>
+</ul>
+<p>for instance:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_4\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+= 0.0099
+\\[1ex]
+&amp;\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_4\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+= 0.0261
+\\[1ex]
+&amp;\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_4\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+= 0.0099
+\\[1ex]
+\end{aligned}
+\]</span></p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Check that the joint probability distribution as defined above indeed sum up to <span style="display:inline-block;"><span class="math inline">\(1\)</span>.</span></p></li>
+<li><p>Calculate the marginal probability for <span style="display:inline-block;"><span class="math inline">\(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span>,</span> that is,&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})\)</span>.</span> </p></li>
+<li><p>Calculate the marginal probability that the first two patients are non-urgent cases, that is</p></li>
+</ul>
+<p><span class="math display">\[\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) \ .\]</span> </p>
+</div>
+</div>
+<p>From this joint probability distribution the agent can calculate, among other things, its degree of belief that the <em>fourth</em> patient from now will require urgent care, regardless of the urgency of the preceding three patients: it’s the marginal probability</p>
+<div class="column-page-inset-right">
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{P}(U_4\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})  &amp;=
+\sum_{u_1}\sum_{u_2}\sum_{u_3}
+\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}u_1 \mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}u_2 \mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}u_3 \mathbin{\mkern-0mu,\mkern-0mu}U_4\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex]
+&amp;= 0.0879 + 0.0261 + 0.0261 + 0.0099 + 0.0261 + 0.0099 + 0.0099 + 0.0041
+\\[1ex]
+&amp;= \boldsymbol{20.00\%}
+\end{aligned}
+\]</span></p>
+</div>
+<p>where the first term <span style="display:inline-block;"><span class="math inline">\(0.0879\)</span></span> in the sum corresponds to <span style="display:inline-block;"><span class="math inline">\(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\)</span>,</span> the second term <span style="display:inline-block;"><span class="math inline">\(0.0261\)</span></span> to <span style="display:inline-block;"><span class="math inline">\(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\)</span>,</span> and so on.</p>
+<p>Therefore the agent, right now, has a <span style="display:inline-block;"><span class="math inline">\(20\%\)</span></span> degree of belief that the fourth patient from now will require urgent care.</p>
+<p><br>
+</p>
+<p>Now fast-forward in time, after <em>three</em> patients have arrived and been taken good care of. Suppose that <em>all three were non-urgent cases</em>, and the agent knows this. The agent needs to forecast whether the next (fourth) patient will require urgent care.</p>
+<p>It wouldn’t be sensible to use&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(U_4\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})\)</span>,&nbsp;&nbsp;calculated</span> above, because this degree of belief represents an agent having only the background knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>.</span> Now, instead, the agent has additional information about the first three patients, encoded in this <code>and</code>ed sentence:</p>
+<p><span class="math display">\[
+U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}
+\]</span></p>
+<p>The relevant degree of belief is therefore the <em>conditional</em> probability</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}(U_4\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})
+\\[2ex]
+&amp;\qquad{}=
+\frac{
+\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_4\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+}{
+\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+}
+\\[1ex]
+&amp;\qquad{}=\frac{0.0879}{0.536}
+\\[2ex]
+&amp;\qquad{}\approx
+\boldsymbol{16.40\%}
+\end{aligned}
+\]</span></p>
+<p>This conditional probability of <span style="display:inline-block;"><span class="math inline">\(16.4\%\)</span></span> for <span style="display:inline-block;"><span class="math inline">\(U_4\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\)</span></span> is <em>lower</em> than the marginal one <span style="display:inline-block;"><span class="math inline">\(20.0\%\)</span></span> calculated previously. Observation of three patients has thus affected the agent’s degree of belief.</p>
+<p>One possible intuitive explanation of this probability decrease, <em>in the present scenario</em>, is that observation of three non-urgent cases makes the agent more confident that this is “a day with few urgent cases”.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-circle" aria-label="exclamation-circle"></i>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In general we cannot say that the probability of a particular value (such as <span style="display:inline-block;"><span class="math inline">\(\texttt{\small urgent}\)</span></span> in the scenario above) will decrease or increase as similar or dissimilar values are observed.</p>
+<p>In a different situation the probability of <span style="display:inline-block;"><span class="math inline">\(\texttt{\small urgent}\)</span></span> could actually <strong>increase</strong> as more and more <span style="display:inline-block;"><span class="math inline">\(\texttt{\small non-urgent}\)</span></span> cases are observed! Imagine, for instance, a scenario where the agent knows that there are 10 urgent and 90 non-urgent cases ahead. Having observed 90 non-urgent cases, the agent will give a much higher probability – 100% – that the next case will be an urgent one.</p>
+<p>The differences among such scenarios are reflected in differences of the joint probabilities, from which the conditional probabilities are calculated.</p>
+<p><strong>All</strong> these situations are correctly handled with the four fundamental rules of inference and the formula for conditional probability derived from them.</p>
+</div>
+</div>
 
 
 </section>

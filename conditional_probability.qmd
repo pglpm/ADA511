@@ -2,14 +2,24 @@
 {{< include macros.qmd >}}
 {{< include macros_marg_cond.qmd >}}
 
-## Isn't all probability "conditional"? {#sec-all-prob-conditional}
+## Conditional probability: augmenting knowledge {#sec-conditional-probs}
 
 When we introduced the notion of degree of belief -- a.k.a. probability -- in [chapter @sec-probability], we stressed the fact that *every probability is conditional on some state of knowledge or information*. So the term "conditional probability" sounds like a [pleonasm](https://dictionary.cambridge.org/dictionary/english/pleonasm), just like saying "round circle".
 
-This term must be understood in a way analogous to "marginal probability": it applies in situations where we have two or more sentences of interest, and we speak of "conditional probability" to emphasize that one or more of those sentences appear in the conditional (right side of "$\|$") of the probability, as we now show.
+This term must be understood in a way analogous to "marginal probability": it applies in situations where we have two or more sentences of interest. We speak of a "conditional probability" when we want to emphasize that additional sentences  appear in the conditional (right side of "$\|$") of that probability, as compared to other probabilities. For instance, in a scenario in which these two probabilities appear:
+
+$$
+\P(\se{A} \| \se{B} \and \yI)
+\qquad
+\P(\se{A} \| \yI)
+$$
+
+we call the first [**conditional probability**]{.blue} of $\se{A}$ ([**given**]{.blue} $\se{B}$) to emphasize or point out that its conditional includes an additional sentence ($\se{B}$), whereas the conditional of the second probability doesn't.
+
+Such emphasis is important because it also means that the "conditional" probability is based on some *additional knowledge, information, or hypothesis* with respect to the "non-conditional" one. This has obvious connections with the idea of "learning". Indeed the calculation of "conditional" probabilities enters in all situations (even if hypothetical or counterfactual, see [§ @sec-inference-scenarios]) in which some knowledge is augmented by new knowledge. This can happens in several ways, which we now examine.
 
 
-## Conditional probability: acquiring knowledge {#sec-conditional-probs}
+## Conditional from joint probability: dissimilar quantities {#sec-conditional-joint-dis}
 
 Consider once more the next-patient arrival scenario of [§ @sec-repr-joint-prob], with joint quantity $(U,T)$ and an agent's joint probability distribution as in [table @tbl-urgent-arrival]. Suppose that the agent must forecast whether the next patient will require $\urge$ or $\nonu$ care, so it needs to calculate the probability distribution for $U$ (that is, the probabilities for $U\mo\urge$ and $U\mo\nonu$). 
 
@@ -79,6 +89,153 @@ This is called a [**conditional probability**]{.blue}; in this case, the conditi
 :::
 
 \
+
+## Conditional from joint probability: similar quantities {#sec-conditional-joint-sim}
+
+In the previous section we examined how knowledge about one quantity of a particular kind can change an agent's degree of belief about a quantity of a different kind, for example "transportation" about "urgency" or vice versa. This change is reflected in the value of the corresponding conditional probability.
+
+This kind of change can also occur with quantities of a "similar kind", that is, quantities that represent the same kind of phenomenon and have exactly the same domain. The maths and calculations are identical to those we have explored, but the interpretation and application can be somewhat different.
+
+As an example, imagine a scenario similar to the next-patient one above, but now consider the *next four patients* to arrive and their urgency. Define the following four quantities:
+
+$U_1$ : urgency of the next patient\
+$U_2$ : urgency of the second future patient from now\
+$U_3$ : urgency of the third future patient from now\
+$U_4$ : urgency of the fourth future patient from now\
+
+every one of these quantities has the same domain: $\set{\urge,\nonu}$.
+
+The joint quantity $(U_1, U_2, U_3, U_4)$ has a domain with 2⁴ = 16 possible values:
+
+- $U_1\mo\urge \and U_2\mo\urge \and U_3\mo\urge \and U_4\mo\urge$
+- $U_1\mo\urge \and U_2\mo\urge \and U_3\mo\urge \and U_4\mo\nonu$
+- . . .
+- $U_1\mo\nonu \and U_2\mo\nonu \and U_3\mo\nonu \and U_4\mo\urge$
+- $U_1\mo\nonu \and U_2\mo\nonu \and U_3\mo\nonu \and U_4\mo\nonu$
+
+Suppose that an agent, with background information $\yI$, has a joint probability distribution for the joint quantity $(U_1, U_2, U_3, U_4)$, defined as follows:
+<!-- 0 44.81  -->
+<!-- 1 8.79  -->
+<!-- 2 2.61  -->
+<!-- 3 0.99  -->
+<!-- 4 0.41  -->
+
+- If $\urge$ appears 0 times out of 4: probability = $44.81\%$
+- If $\urge$ appears 1 times out of 4: probability = $8.79\%$
+- If $\urge$ appears 2 times out of 4: probability = $2.61\%$
+- If $\urge$ appears 3 times out of 4: probability = $0.99\%$
+- If $\urge$ appears 4 times out of 4: probability = $0.41\%$
+
+for instance:
+
+$$
+\begin{aligned}
+&\P(U_1\mo\urge \and U_2\mo\nonu \and U_3\mo\urge \and U_4\mo\urge \| \yI)
+= 0.0099
+\\[1ex]
+&\P(U_1\mo\nonu \and U_2\mo\urge \and U_3\mo\nonu \and U_4\mo\urge \| \yI)
+= 0.0261
+\\[1ex]
+&\P(U_1\mo\urge \and U_2\mo\urge \and U_3\mo\urge \and U_4\mo\nonu \| \yI)
+= 0.0099
+\\[1ex]
+\end{aligned}
+$$
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+- Check that the joint probability distribution as defined above indeed sum up to $1$.
+
+- Calculate the marginal probability for $U_1\mo\urge$, that is,\ \ $\P(U_1\mo\urge \|\yI)$.
+<!-- 0.2 -->
+
+- Calculate the marginal probability that the first two patients are non-urgent cases, that is
+
+$$\P(U_1\mo\nonu \and U_2\mo\nonu \|\yI) \ .$$
+<!-- 0.65 -->
+
+<!--  sum(probs[V1==0 & V2==0 & V3==0,V5]) -->
+<!-- [1] 0.536 -->
+<!--  sum(probs[V1==0 & V2==0,V5]) -->
+<!-- [1] 0.65 -->
+:::
+
+From this joint probability distribution the agent can calculate, among other things, its degree of belief that the *fourth* patient from now will require urgent care, regardless of the urgency of the preceding three patients: it's the marginal probability
+
+:::{.column-page-inset-right}
+$$
+\begin{aligned}
+\P(U_4\mo\urge \| \yI)  &= 
+\sum_{u_1}\sum_{u_2}\sum_{u_3}
+\P(U_1\mo u_1 \and U_2\mo u_2 \and U_3\mo u_3 \and U_4\mo \urge \| \yI)
+\\[1ex]
+&= 0.0879 + 0.0261 + 0.0261 + 0.0099 + 0.0261 + 0.0099 + 0.0099 + 0.0041
+\\[1ex]
+&= \boldsymbol{20.00\%}
+\end{aligned}
+$$
+:::
+
+where the first term $0.0879$ in the sum corresponds to $U_1\mo\nonu\and U_2\mo\nonu\and U_2\mo\nonu$, the second term $0.0261$ to $U_1\mo\urge\and U_2\mo\nonu\and U_2\mo\nonu$, and so on.
+
+Therefore the agent, right now, has a $20\%$ degree of belief that the fourth patient from now will require urgent care.
+
+\
+
+Now fast-forward in time, after *three* patients have arrived and been taken good care of. Suppose that *all three were non-urgent cases*, and the agent knows this. The agent needs to forecast whether the next (fourth) patient will require urgent care.
+
+It wouldn't be sensible to use\ \ $\P(U_4\mo\urge \|\yI)$,\ \ calculated above, because this degree of belief represents an agent having only the background knowledge $\yI$. Now, instead, the agent has additional information about the first three patients, encoded in this `and`ed sentence:
+
+$$
+U_1\mo\nonu \and U_2\mo\nonu \and U_3\mo\nonu
+$$
+
+The relevant degree of belief is therefore the *conditional* probability
+
+$$
+\begin{aligned}
+&\P(U_4\mo\urge \| U_1\mo\nonu \and U_2\mo\nonu \and U_3\mo\nonu \and \yI)
+\\[2ex]
+&\qquad{}=
+\frac{
+\P(U_1\mo\nonu \and U_2\mo\nonu \and U_3\mo\nonu \and U_4\mo\urge \| \yI)
+}{
+\P(U_1\mo\nonu \and U_2\mo\nonu \and U_3\mo\nonu \| \yI)
+}
+\\[1ex]
+&\qquad{}=\frac{0.0879}{0.536}
+\\[2ex]
+&\qquad{}\approx
+\boldsymbol{16.40\%}
+\end{aligned}
+$$
+
+This conditional probability of $16.4\%$ for $U_4\mo\nonu$ is *lower* than the marginal one $20.0\%$ calculated previously. Observation of three patients has thus affected the agent's degree of belief.
+
+One possible intuitive explanation of this probability decrease, *in the present scenario*, is that observation of three non-urgent cases makes the agent more confident that this is "a day with few urgent cases".
+
+:::{.callout-warning}
+## {{< fa exclamation-circle >}}
+In general we cannot say that the probability of a particular value (such as $\urge$ in the scenario above) will decrease or increase as similar or dissimilar values are observed.
+
+In a different situation the probability of $\urge$ could actually **increase** as more and more $\nonu$ cases are observed! Imagine, for instance, a scenario where the agent knows that there are 10 urgent and 90 non-urgent cases ahead. Having observed 90 non-urgent cases, the agent will give a much higher probability -- 100% -- that the next case will be an urgent one.
+
+The differences among such scenarios are reflected in differences of the joint probabilities, from which the conditional probabilities are calculated.
+
+**All** these situations are correctly handled with the four fundamental rules of inference and the formula for conditional probability derived from them.
+:::
+
+
+
+<!-- ##      i1 i2 i3        p    num   den -->
+<!-- ## [1,]  0  0  0 0.163993 0.0879 0.536 -->
+<!-- ## [2,]  0  0  1 0.228947 0.0261 0.114 -->
+<!-- ## [3,]  0  1  0 0.228947 0.0261 0.114 -->
+<!-- ## [4,]  0  1  1 0.275000 0.0099 0.036 -->
+<!-- ## [5,]  1  0  0 0.228947 0.0261 0.114 -->
+<!-- ## [6,]  1  0  1 0.275000 0.0099 0.036 -->
+<!-- ## [7,]  1  1  0 0.275000 0.0099 0.036 -->
+<!-- ## [8,]  1  1  1 0.292857 0.0041 0.014 -->
 
 
 
