@@ -123,3 +123,187 @@ The notion of degree of relevance is important in data science and machine learn
 
 - ["Feature importance": it's the idea that knowledge about some aspects of a given problem may lead to improved inferences about other aspects.]{.yellow}
 
+
+In the next section we explore some tricky aspects and peculiarities of these ideas, which also tell us which kind of properties a quantitative measure for them should possess.
+
+## Exploring "importance": some scenarios {#sec-importance-scenarios}
+
+The following examples are only meant to give an intuitive motivation of the characteristics that a metric for "importance" or "relevance" should have.
+
+### First two characteristics: a lottery scenario
+
+A lottery comprises 1 000 000 tickets numbered from `000000` to `999999`. One of these tickets is the winner. Its number is already known. You are allowed to choose any ticket you like, before the winner number is announced.
+
+Before you choose, you have the possibility of getting (for free) some clues about the winning number. The clues are these:
+
+Clue [A]{.yellow}:\ \ [{{< fa check >}}]{.green} [{{< fa check >}}]{.green} [{{< fa check >}}]{.green} [{{< fa check >}}]{.green} [{{< fa question >}}]{.red} [{{< fa question >}}]{.red}
+: The first four digits of the winning number
+
+Clue [B]{.yellow}:\ \ [{{< fa check >}}]{.green} [{{< fa check >}}]{.green} [{{< fa check >}}]{.green} [{{< fa question >}}]{.red} [{{< fa check >}}]{.green} [{{< fa question >}}]{.red}
+: The 1st, 2nd, 3rd, and 5th digits of the winning number
+
+Clue [C]{.yellow}:\ \ [{{< fa question >}}]{.red} [{{< fa question >}}]{.red} [{{< fa question >}}]{.red} [{{< fa check >}}]{.green} [{{< fa check >}}]{.green} [{{< fa check >}}]{.green}
+: The last three digits of the winning number
+
+
+Now consider the following three "clue scenarios".
+
+#### Scenario 1: choose one clue
+
+You have the possibility of *choosing one* of the three clues above. Which would you choose, in order of importance?
+
+Obviously [**A**]{.yellow} or [**B**]{.yellow} are the most important, and equally important, because they increase your probability of winning from 1/1 000 000 to 1/100. [**C**]{.yellow} is the least important because it increases your probability of winning to 1/1000.
+
+
+#### Scenario 2: discard one clue
+
+All three clues are put in front of you (but you can't see their digits). If you could keep all three, then you'd win for sure because they would give you all digits of the winning number.
+
+You are instead asked to *discard one* of the three clues, keeping the remaining too. Which would you discard, in order of least importance?
+
+If you discarded [**A**]{.yellow}, then [**B**]{.yellow} and [**C**]{.yellow} together would give you all digits of the winning number; so you would still win. Analogously if you discarded [**B**]{.yellow}. If you discarded [**C**]{.yellow}, then [**A**]{.yellow} and [**B**]{.yellow} together would give you all digits but the last; so you'd have a 1/10 probability of winning.
+
+Obviously [**C**]{.yellow} is the most important clue to keep, and [**A**]{.yellow} and [**B**]{.yellow} least important.
+
+#### Scenario 3: discard one more clue
+
+In the previous Scenario 2, we saw that discarding [**A**]{.yellow} or [**B**]{.yellow} would not alter your 100% probability of winning. Either clue could therefore be said to have "importance = 0".
+
+If you had to discard *both* [**A**]{.yellow} and [**B**]{.yellow}, however, your situation would suddenly become worse, with only a 1/1000 probability of winning -- like choosing [**C**]{.yellow} in Scenario 1. Clues [**A**]{.yellow} and [**B**]{.yellow} *together* can therefore be said to have high "importance > 0".
+
+
+
+Now let's draw some conclusions from comparing the scenarios above.
+
+\
+
+In Scenario 1 we found that the "importance ranking" of the clues is\
+[**A**]{.yellow} = [**B**]{.yellow} > [**C**]{.yellow}\
+whereas in Scenario 2 we found the completely opposite ranking\
+[**C**]{.yellow} > [**A**]{.yellow} = [**B**]{.yellow}
+
+We conclude that
+
+:::: {.callout-note style="font-size:120%"}
+## Importance is context-dependent
+:::{style="font-size:120%"}
+It doesn't make sense to ask which aspect or feature is "most important" if we don't specify the context of its use. Important if *used alone*? Important if *used with others*? and *which* others?
+
+Depending on the context, an importance ranking could be completely reversed. A quantitative measure of "importance" must therefore take the context into account.
+:::
+::::
+
+\
+
+In Scenario 3 we found that two clues may be completely unimportant if considered individually, but extremely important if considered jointly.
+
+We conclude that
+
+:::: {.callout-note style="font-size:120%"}
+## Importance is non-additive
+:::{style="font-size:120%"}
+A quantitative measure of importance cannot be *additive*, that is, quantify the importance of two or more features as the sum of their individual importance.
+:::
+::::
+
+### Third characteristic: A two-quantity scenario
+
+Suppose we have a discrete quantities $X$ with domain $\set{1,2,3,4,5,6}$ and another discrete quantity $Y$ with domain $\set{1,2,3,4}$. We want to infer the value of $Y$ after we are told the value of $X$.
+
+The conditional probabilities for $Y$ given different values of $X$ are as follows (each column sums up to $1$)
+
++:---------------:+:----:+:------------------:+:------------------:+:------------------:+:------------------:+:------------------:+:------------------:+
+|$\P(Y\|X\and\yI)$|      |* * $X$                                                                                                                      |
++-----------------+------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+
+|                 |      |**1**               |**2**               |**3**               |**4**               |**5**               |**6**               |
++-----------------+------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+
+|                 |**1** |1.00                |0.00                |0.00                |0.00                |0.00                |0.50                |
++                 +------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+
+|* *  $Y$         |**2** |0.00                |1.00                |0.00                |0.00                |0.50                |0.00                |
++                 +------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+
+|                 |**3** |0.00                |0.00                |1.00                |0.50                |0.00                |0.00                |
++                 +------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+
+|                 |**4** |0.00                |0.00                |0.00                |0.50                |0.50                |0.50                |
++-----------------+------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+
+: Example conditional distribution for two discrete quantities {#tbl-distr-entropy .sm}
+
+Let's see what kind of inferences could occur.
+
+If we observe $X\mo 1$, then we know *for sure* that $Y\mo 1$; similarly for $X\mo 2$ and $X\mo 3$. These three values of $X$ are therefore "most important" for inference about $Y$. If we instead observe $X\mo 4$, then our uncertainty about $Y$ is between two of its values; similarly for $X\mo 5$ and $X\mo 6$, These three values of $X$ are therefore "least important" for inference about $Y$.
+
+But we usually speak of importance of a *quantity* or feature, not of a specific value. So what is the "overall importance" of $X$?
+
+Consider again three scenarios.
+
+1. In the first, we have 33% probability each of observing values $1$, $2$, $3$ of $X$, for a total of 99%; and 0.33% probability of observing each of the remaining values, for a total of 1%.
+
+    In this scenario we expect to make an almost exact inference about $Y$, and the quantity $X$ has therefore great "overall importance".
+
+2. In the second, the reverse happens: we have 0.33% probability each of observing values $1$, $2$, $3$ of $X$, for a total of 1%; and 33% probability of observing each of the remaining values, for a total of 99%.
+
+    In this scenario we expect to uncertain roughly between two values of $Y$, and the quantity $X$ has therefore less "overall importance".
+
+3. In the third, we have around 16.7% probability of observing each of the values of $X$.
+
+    This scenario is in between the first two: we expect to make an exact inference about $Y$ half of the time, and to be undecided between two values half of the time. The quantity $X$ has therefore some "overall importance": neither zero, nor as much as in the first scenario.
+
+What determines the "overall importance" of the quantity or feature $X$ is therefore *its probability distribution*.
+
+We conclude that
+
+:::: {.callout-note style="font-size:120%"}
+## The importance of a quantity depends on its probability distribution
+:::{style="font-size:120%"}
+The importance of a quantity is not only determined by the relation between its possible values and what we need to infer, but also by the probability with which its values can occur.
+
+A quantitative measure of "importance" of a quantity must therefore take the probability distribution for the latter into account.
+:::
+::::
+
+## Entropies and mutual information {#sec-entropy-mutualinfo}
+
+The thought-experiments above suggest that a quantitative measure of the importance of a quantity must have at least these three characteristics:
+
+- take the context somehow into account
+- be non-additive
+- take the probability distribution for the quantity into account
+
+Do measures with such properties exist?
+
+They do. Indeed they are regularly used in Communication Theory and Information Theory, owing to the properties above. They even have [international standards](https://www.iso.org/obp/ui/en/#!iso:std:63598:en) on their definition and measurement units. Here are the two most useful for inference purposes
+
+### Conditional entropy
+
+The [**conditional entropy**]{.blue}^[or "equivocation" according to ISO standard] of a quantity $Y$ given a quantity $X$ and additional knowledge $\yI$, is defined as
+
+:::{.column-page-inset-right}
+$$
+\HH(Y \| X\and \yI) \defd
+-\sum_x \sum_y 
+\P( X\mo x \| \yI)\cdot
+\P(Y\mo y \| X\mo x \and \yI)\, 
+\log_2 \P(Y\mo y \| X\mo x \and \yI)
+$$
+:::
+
+and, as defined above, is measured in *shannons* (symbol $\mathrm{Sh}$).
+
+It satisfies the three requirements: (1) different additional knowledge $\yI$, corresponding to different contexts, leads to different probabilities; (2) if the quantity $X$ can be split into two component quantities, it can be proved that the conditional entropy given them jointly is more than the sum of the conditional entropies given them individually; (3) the probability distribution for $X$ explicitly appears in its definition.
+
+It has several remarkable properties:
+
+- If knowledge of $Y$ is completely determined by that of $X$, that is, if $Y$ is a function of $X$, then the conditional entropy $\HH(Y \| X\and \yI)$ is zero. Vice versa, if the conditional entropy is zero, then $Y$ must be a function of $X$.
+
+- If knowledge of $X$ is irrelevant, in the sense of [§ @sec-indep-quantities], to knowledge of $Y$, then the conditional entropy $\HH(Y \| X\and \yI)$ takes on its maximal value, determined by the marginal probability for $Y$. Vice versa, if the conditional entropy takes on its maximal value, then $X$ is irrelevant to $Y$.
+
+- The value (in shannons) of the conditional entropy is the number of binary digits that we lack for correctly identifying the value of $Y$, if the possible values were listed as integers in binary format. Alternatively it can be interpreted as the minimal number of divisions necessary to find the correct value in a binary search.
+
+\
+
+For instance, in the case of [table @tbl-distr-entropy], the conditional entropy has the following values in the three scenarios:
+
+1. $\HH(Y \| X\and \yI_1) = 0.01\,\mathrm{Sh}$ , almost zero; indeed $Y$ can almost be considered a function of $X$ in this case.
+
+2. $\HH(Y \| X\and \yI_2) = 0.99\,\mathrm{Sh}$ , almost 1; indeed in this case we are approximately uncertain between two values of $Y$.
+
+3. $\HH(Y \| X\and \yI_3) = 0.5\,\mathrm{Sh}$ ; indeed this case is intermediate between the previous two.
