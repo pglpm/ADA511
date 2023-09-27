@@ -296,9 +296,7 @@ It has several remarkable properties:
 
 - If knowledge of $X$ is irrelevant, in the sense of [§ @sec-indep-quantities], to knowledge of $Y$, then the conditional entropy $\HH(Y \| X\and \yI)$ takes on its maximal value, determined by the marginal probability for $Y$. Vice versa, if the conditional entropy takes on its maximal value, then $X$ is irrelevant to $Y$.
 
-- The value (in shannons) of the conditional entropy is the number of binary digits that we lack for correctly identifying the value of $Y$, if the possible values were listed as integers in binary format. Alternatively it can be interpreted as the minimal number of divisions necessary to find the correct value in a binary search.
-
-\
+- The value (in shannons) of the conditional entropy is the number of binary digits that we lack for correctly identifying the value of $Y$, if the possible values were listed as integers in binary format. Alternatively it can be interpreted as the minimal number of divisions necessary to find the correct value of $Y$ in a binary search.
 
 For instance, in the case of [table @tbl-distr-entropy], the conditional entropy has the following values in the three scenarios:
 
@@ -307,3 +305,34 @@ For instance, in the case of [table @tbl-distr-entropy], the conditional entro
 2. $\HH(Y \| X\and \yI_2) = 0.99\,\mathrm{Sh}$ , almost 1; indeed in this case we are approximately uncertain between two values of $Y$.
 
 3. $\HH(Y \| X\and \yI_3) = 0.5\,\mathrm{Sh}$ ; indeed this case is intermediate between the previous two.
+
+
+### Mutual information
+
+The conditional entropy for $Y$ given $X$ can be misleading in one respect. Suppose that for any value of $X$ there's a 100% probability that $Y$ has one and the same value, say $Y\mo 1$. The conditional entropy is then zero. In this case it is true that $Y$ is formally a function of $X$. But it is also true that we could perfectly predict $Y$ without any knowledge of $X$. The observed value of $X$ didn't really help us in forecasting $Y$; in other words, $X$ is not relevant for inference about $Y$.^[There's no contradiction with the second "remarkable property" previously discussed: in this case the maximal value that the conditional entropy can take is zero.]
+
+This misleading aspect can be corrected by subtracting the conditional entropy for $Y$ given $X$, from the maximum value it could take if $X$ were unavailable. The result gives a measure of how much $X$ effectively "helped" in inferring $Y$.
+
+This is the [**mutual information**]{.blue}^[or "mean transinformation content" according to ISO standard] of a quantity $Y$ given a quantity $X$ and additional knowledge $\yI$. It is defined as
+
+:::{.column-page-inset-right}
+$$
+\HH(Y : X\| \yI) \defd
+\sum_x \sum_y 
+\P(Y\mo y \and X\mo x \| \yI)\,
+\log_2 \frac{\P(Y\mo y \and X\mo x \| \yI)}{
+\P(Y\mo y \| \yI)\cdot
+\P(X\mo x \| \yI)
+}
+$$
+:::
+
+and, as defined above, is also measured in *shannons*.
+
+For instance, in the case of [table @tbl-distr-entropy], the mutual information has the following values in the three scenarios:
+
+1. $\HH(Y : X\| \yI_1) = 1.61\,\mathrm{Sh}$ , almost zero; indeed $Y$ can almost be considered a function of $X$ in this case.
+
+2. $\HH(Y : X\| \yI_2) = 0.81\,\mathrm{Sh}$ , almost 1; indeed in this case we are approximately uncertain between two values of $Y$.
+
+3. $\HH(Y : X\| \yI_3) = 1.5\,\mathrm{Sh}$ ; indeed this case is intermediate between the previous two.
