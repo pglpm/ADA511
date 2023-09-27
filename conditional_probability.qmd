@@ -511,8 +511,7 @@ This calculation has been slightly more involved than the one in [§ @sec-cond
 
 If the agent were instead interested, say, in forecasting the transportation means knowing that the next patient requires urgent care, then the relevant degree of belief\ \ $\P(T\mo\dotso \| U\mo\urge \and \yi[S])$ would be immediately available and no calculations would be needed.
 
-## General case: conditional from conditional
-{#sec-conditional-conditional-general}
+## General case: conditional from conditional {#sec-conditional-conditional-general}
 
 The example from the previous section can be easily generalized. Consider a joint quantity with component quantities $\green X$ and $\red Y$. The probabilities\ \ $\P({\green X\mo\dotso} \| {\red Y\mo\dotso} \and \yI)$\ \ and\ \ $\P({\red Y\mo\dotso} \| \yI)$\ \ are given.
 
@@ -537,39 +536,54 @@ In the above formula we recognize [**Bayes's theorem**]{.blue} from [§ @sec-b
 This formula is often exaggeratedly emphasized in the literature; some texts even present it as an "axiom" to be used in situations such as the present one. But we see that it is simply a by-product of the four fundamental rules of inference in a specific situation. An AI agent who knows the four fundamental inference rules, and doesn't know what "Bayes's theorem" is, will nevertheless arrive at this very formula.
 
 
+## Conditional densities {#sec-conditional-dens}
 
+The discussion so far about conditional probabilities extends to conditional probability *densities*, in the usual way explained in §§ [-@sec-joint-prob-densities] and [-@sec-marginal-dens].
 
+If $\green X$ and $\red Y$ are continuous quantities, the notation
 
+$$
+\p({\red Y\mo y} \| {\green X\mo x} \and \yI) = {\blue q}
+$$
 
-<!-- Considering now a more generic case of a joint probability with component quantities $\green X$ and $\red Y$, the probability for a specific value of $\red Y$, conditional on knowledge that $\green X\mo x$ and  some information $\yI$, is given by -->
+means that, given background information $\yI$ and given the sentence "$\green X$ has value between $\green x-\delta/2$ and $\green x+\delta/2$", the sentence "$\red Y$ has value between $\red y-\epsilon/2$ and $\red y+\epsilon/2$" has probability ${\blue q}\cdot{\red\epsilon}$, as long as $\green\delta$ and $\red\epsilon$ are small enough. Note that the small interval $\green\delta$ for $\green X$ is *not* multiplied by the density $\blue q$.
 
-<!-- $$ -->
-<!-- \P({\red Y\mo y}\| {\green X\mo x} \and \yI) = \frac{ -->
-<!-- \P({\red Y\mo y} \and {\green X\mo x} \| \yI) -->
-<!-- }{ -->
-<!-- \sum_{\red \upsilon} \P({\red Y\mo \upsilon} \and {\green X\mo x} \| \yI) -->
-<!-- } -->
-<!-- $$ -->
+The relation between a conditional density and a joint density or a different conditional density is given by
 
-<!-- <\!-- :::{.callout-warning} -\-> -->
-<!-- <\!-- ## -\-> -->
-<!-- <\!-- {{< fa exclamation-circle >}} Always keep in mind that these are just convenient shorthands for -\-> -->
-<!-- <\!-- $$ -\-> -->
-<!-- <\!-- \P(\pr{The quantity \(X\) has value \(x\)} \land  -\-> -->
-<!-- <\!-- \pr{The quantity \(Y\) has value \(y\)} -\-> -->
-<!-- <\!-- \| \yI) -\-> -->
-<!-- <\!-- $$ -\-> -->
-<!-- <\!-- ::: -\-> -->
+$$
+\begin{aligned}
+&\p({\red Y\mo y} \| {\green X\mo x} \and \yI)
+\\[1ex]
+&\quad{}=
+\frac{\displaystyle
+\p({\red Y\mo y} \and {\green X\mo x} \| \yI)
+}{\displaystyle
+\int_{\red\varUpsilon}\p({\red Y\mo \upsilon} \and {\green X\mo x} \| \yI) \, \di{\red\upsilon}
+}
+\\[1ex]
+&\quad{}=
+\frac{\displaystyle
+\p({\green X\mo x} \| {\red Y\mo y} \and \yI) \cdot
+\p({\red Y\mo y} \| \yI)
+}{\displaystyle
+\int_{\red\varUpsilon} \p({\green X\mo x} \| {\red Y\mo \upsilon} \and \yI) \cdot
+\p({\red Y\mo \upsilon} \| \yI)\, \di{\red\upsilon}
+}
+\end{aligned}
+$$
 
-<!-- Now consider these two situations: -->
+where $\red\varUpsilon$ is the domain of $\red Y$.
 
-<!-- 1. the agent acquires knowledge that $X$ has true value $x$, so its state of knowledge has changed; -->
+## Graphical representation of conditional probability distributions and densities {#sec-repr-conditional}
 
-<!-- 2. for inference purposes, the agents needs to *hypothetically* assume that the quantity $X$ has value $x$ (even if that might not be the case in reality); -->
+Conditional probability distributions and densities can be plotted in all the ways discussed in chapters [-@sec-prob-joint] and [-@sec-prob-marginal]. If we have two quantities $A$ and $B$, often we want to compare the different conditional probability distributions for $A$ given different values of $B$:
 
-<!-- and, in either situation, the agent needs the probability that $Y$ has value $y$. This probability is written, in either situation as -->
+- $\P(A\mo\dotso \| B\mo\cat{one-value} \and \yI)$,
+- $\P(A\mo\dotso \| B\mo\cat{another-value} \and \yI)$,
+- $\dotsc$
 
-<!-- $$ -->
-<!-- \P({\red Y\mo y} \| {\green X\mo x} \and \yI) -->
-<!-- $$ -->
+and so on. This can be achieved by representing them by overlapping line plots, or side-by-side scatter plots, or similar ways.
 
+\
+
+In [§ @sec-marginal-scatter] we saw that if we have the scatter plot for a joint probability *density*, then from its points we can often obtain a scatter plot for its marginal densities. Unfortunately no similar advantage exists for the conditional densities that can be obtained from a joint density. In theory, a conditional density for $Y$, given that a quantity $X$ has value in some small interval $\delta$ around $x$, could be obtained by only considering scatter-plot points having $X$ coordinate in a small interval between $x-\delta/2$ and $x+\delta/2$. But the number of such points is usually too small and the resulting scatter plot could be very misleading.
