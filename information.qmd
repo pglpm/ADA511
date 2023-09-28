@@ -296,7 +296,7 @@ It has several remarkable properties:
 
 - If knowledge of $X$ is irrelevant, in the sense of [§ @sec-indep-quantities], to knowledge of $Y$, then the conditional entropy $\HH(Y \| X\and \yI)$ takes on its maximal value, determined by the marginal probability for $Y$. Vice versa, if the conditional entropy takes on its maximal value, then $X$ is irrelevant to $Y$.
 
-- The value (in shannons) of the conditional entropy is the number of binary digits that we lack for correctly identifying the value of $Y$, if the possible values were listed as integers in binary format. Alternatively it can be interpreted as the minimal number of divisions necessary to find the correct value of $Y$ in a binary search.
+- The value (in shannons) of the conditional entropy is the number of binary digits that we lack, on average, after $X$ is known, for correctly identifying the value of $Y$ if the possible values were listed as integers in binary format. Alternatively it can be interpreted as the average number of iterations necessary to find the correct value of $Y$ in a binary search, once $X$ is known.
 
 For instance, in the case of [table @tbl-distr-entropy], the conditional entropy has the following values in the three scenarios:
 
@@ -309,9 +309,9 @@ For instance, in the case of [table @tbl-distr-entropy], the conditional entro
 
 ### Mutual information
 
-The conditional entropy for $Y$ given $X$ can be misleading in one respect. Suppose that for any value of $X$ there's a 100% probability that $Y$ has one and the same value, say $Y\mo 1$. The conditional entropy is then zero. In this case it is true that $Y$ is formally a function of $X$. But it is also true that we could perfectly predict $Y$ without any knowledge of $X$. The observed value of $X$ didn't really help us in forecasting $Y$; in other words, $X$ is not relevant for inference about $Y$.^[There's no contradiction with the second "remarkable property" previously discussed: in this case the maximal value that the conditional entropy can take is zero.]
+Suppose that, according to background knowledge $\yI$, for any value of $X$ there's a 100% probability that $Y$ has one and the same value, say $Y\mo 1$. The conditional entropy $\HH(Y \| X\and \yI)$ is then zero. In this case it is true that $Y$ is formally a function of $X$. But it is also true that we could perfectly predict $Y$ without any knowledge of $X$. The observed value of $X$ didn't really help us in forecasting $Y$; in other words, $X$ is not relevant for inference about $Y$.^[There's no contradiction with the second "remarkable property" previously discussed: in this case the maximal value that the conditional entropy can take is zero.]
 
-This misleading aspect can be corrected by subtracting the conditional entropy for $Y$ given $X$, from the maximum value it could take if $X$ were unavailable. The result gives a measure of how much $X$ effectively "helped" in inferring $Y$.
+If we are interested in quantifying how much our knowledge about $X$ "helped" in inferring $Y$, we can subtract the conditional entropy for $Y$ given $X$ from the maximum value it would have if $X$ were unavailable.
 
 This is the [**mutual information**]{.blue}^[or "mean transinformation content" according to ISO standard] of a quantity $Y$ given a quantity $X$ and additional knowledge $\yI$. It is defined as
 
@@ -327,12 +327,40 @@ $$
 $$
 :::
 
-and, as defined above, is also measured in *shannons*.
+and, as defined above, is also measured in *shannons*. It also satisfies the three requirements for a measure of "importance". Its properties are somehow complementary to those of the conditional entropy:
 
-For instance, in the case of [table @tbl-distr-entropy], the mutual information has the following values in the three scenarios:
+- If $Y$ and $X$ are independent, in the sense of [§ @sec-indep-quantities], then their mutual information is zero. Vice versa, if it is zero, then $Y$ and $X$ are independent.
 
-1. $\HH(Y : X\| \yI_1) = 1.61\,\mathrm{Sh}$ , almost zero; indeed $Y$ can almost be considered a function of $X$ in this case.
+- If knowledge of $Y$ is completely determined by that of $X$, that is, if $Y$ is a function of $X$, then their mutual information attains its maximal value (which could be zero). Vice versa, if the mutual information attains its maximal value, then $Y$ must be a function of $X$.
 
-2. $\HH(Y : X\| \yI_2) = 0.81\,\mathrm{Sh}$ , almost 1; indeed in this case we are approximately uncertain between two values of $Y$.
+- The value (in shannons) of the mutual information is the number of binary digits provided, on average, by knowledge of $X$, for correctly identifying the value of $Y$ if the possible values were listed as integers in binary format. Alternatively, it is the average number of iterations that knowledge of $X$ saves us from doing, in a binary search for finding the value of $Y$.
 
-3. $\HH(Y : X\| \yI_3) = 1.5\,\mathrm{Sh}$ ; indeed this case is intermediate between the previous two.
+- It is symmetric in the roles of $X$ and $Y$, that is, $\HH(Y : X\| \yI) = \HH(X : Y\| \yI)$
+
+In the case of [table @tbl-distr-entropy], the mutual information has the following values in the three scenarios:
+
+1. $\HH(Y : X\| \yI_1) = 1.61\,\mathrm{Sh}$ , almost equal to the maximal value achievable in this scenario ($1.62245\,\mathrm{Sh}$); indeed $Y$ can almost be considered a function of $X$ in this case.
+
+2. $\HH(Y : X\| \yI_2) = 0.81\,\mathrm{Sh}$ ; this means that knowledge of $X$ gives us slightly less than a binary digit of the true value of $Y$.
+
+3. $\HH(Y : X\| \yI_3) = 1.5\,\mathrm{Sh}$ ; knowledge of $X$ gives us one and a half binary digits of the true value of $Y$.
+
+### Uses
+
+Whether to use the conditional entropy $\HH(Y \| X\and \yI)$ or the mutual information $\HH(Y : X\| \yI)$ depends on the question we are asking.
+
+Conditional entropy is the right choice if we want to quantify how much $Y$ can be considered as a function of $X$ -- including the special case of a constant function. It is also the right choice if we want to know how many binary-search iterations it would take to find $Y$, on average, once $X$ is known.
+
+Mutual information is the right choice if we want to quantify how much the knowledge of $X$ helps, on average, on finding $Y$, or equivalently how many additional binary-search iterations it would take to find $Y$, if $X$ were not known.
+
+If we simply want to rank the relative importance of alternative quantities $X_1$, $X_2$, etc. in inferring $Y$, then the two measures are equivalent and yield the same ranking, since they basically differ by a common zero point.
+
+::: {.callout-caution}
+## {{< fa book >}} Study reading
+- Chapter 8 of [*Information Theory, Inference, and Learning Algorithms*](https://hvl.instructure.com/courses/25074/modules/items/660092)
+
+- § 12.4 of [*Artificial Intelligence*](https://hvl.instructure.com/courses/25074/modules/items/660089)
+:::
+
+
+
