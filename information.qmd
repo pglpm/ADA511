@@ -272,7 +272,39 @@ The thought-experiments above suggest that a quantitative measure of the importa
 
 Do measures with such properties exist?
 
-They do. Indeed they are regularly used in Communication Theory and Information Theory, owing to the properties above. They even have [international standards](https://www.iso.org/obp/ui/en/#!iso:std:63598:en) on their definition and measurement units. Here are the two most useful for inference purposes
+They do. Indeed they are regularly used in Communication Theory and Information Theory, owing to the properties above. They even have [international standards](https://www.iso.org/obp/ui/en/#!iso:std:63598:en) on their definition and measurement units. Before presenting them, let's briefly present the mother of them all
+
+### Shannon entropy
+
+An agent with background knowledge $\yI$ has a belief distribution $\P(Y\|\yI)$ about the (finite) quantity $Y$. The agent's uncertainty about the value of 
+$Y$ can be quantified by the [**Shannon entropy**]{.blue}:
+
+$$
+\HH(Y \| \yI) \defd -\sum_y \P(Y\mo y \| \yI)\, \log_2 \P(Y\mo y \| \yI)
+$$
+
+whose unit is the *shannon* (symbol $\mathrm{Sh}$) when the logarithm is in base 2, as above.
+
+Shannon entropy lies at the foundation of the whole fields of Information Theory and Communication Theory, and would require a lengthy discussion. Let's just mention some of its properties and meanings:
+
+- It also quantifies the information *gained* by the agent, if it acquires knowledge about the value of $Y$.
+
+- It is always positive or zero.
+
+- It is zero if, and only if, the agent knows the value of $Y$, that is, if the probability distribution for $Y$ gives 100% to one value and 0% to all others.
+
+- Its maximum possible value is $\log_2 N$, where $N$ is the number of possible values of $Y$. This maximum is attained by the uniform distribution for $Y$.
+
+- The value (in shannons) of the Shannon entropy can be interpreted as the number of binary digits that we lack for correctly identifying the value of $Y$, if the possible values were listed as integers in binary format. Alternatively it can be interpreted as the maximum number of iterations necessary to find the correct value of $Y$ in a binary search. But many other interpretations exist.
+
+:::{.column-margin}
+![](shannon.png){width=100%}
+Plot of the Shannon entropy for a binary quantity $Y\in\set{1,2}$, for different distributions $\P(Y\mo 1\| \yI)$
+:::
+ 
+\
+
+Here are the two most useful measures of "relevance" or "importance", both based on the Shannon entropy:
 
 ### Conditional entropy
 
@@ -298,7 +330,7 @@ It has several remarkable properties:
 
 - If knowledge of $X$ is irrelevant, in the sense of [§ @sec-indep-quantities], to knowledge of $Y$, then the conditional entropy $\HH(Y \| X\and \yI)$ takes on its maximal value, determined by the marginal probability for $Y$. Vice versa, if the conditional entropy takes on its maximal value, then $X$ is irrelevant to $Y$.
 
-- The value (in shannons) of the conditional entropy is the number of binary digits that we lack, on average, after $X$ is known, for correctly identifying the value of $Y$ if the possible values were listed as integers in binary format. Alternatively it can be interpreted as the average number of iterations necessary to find the correct value of $Y$ in a binary search, once $X$ is known.
+- The value (in shannons) of the conditional entropy is the number of binary digits that we lack, on average, after $X$ is known, for correctly identifying the value of $Y$ if the possible values were listed as integers in binary format. Alternatively it can be interpreted as the maximal number of binary-search iterations necessary to find the correct value of $Y$, once $X$ is known.
 
 For instance, in the case of [table @tbl-distr-entropy], the conditional entropy has the following values in the three scenarios:
 
@@ -343,9 +375,9 @@ In the case of [table @tbl-distr-entropy], the mutual information has the foll
 
 1. $\HH(Y : X\| \yI_1) = 1.61\,\mathrm{Sh}$ , almost equal to the maximal value achievable in this scenario ($1.62\,\mathrm{Sh}$); indeed $Y$ can almost be considered a function of $X$ in this case.
 
-2. $\HH(Y : X\| \yI_2) = 0.81\,\mathrm{Sh}$ ; this means that knowledge of $X$ gives us slightly less than a binary digit of the true value of $Y$.
+2. $\HH(Y : X\| \yI_2) = 0.81\,\mathrm{Sh}$ ; this means that knowledge of $X$ gives us slightly less than a binary digit of the value of $Y$.
 
-3. $\HH(Y : X\| \yI_3) = 1.5\,\mathrm{Sh}$ ; knowledge of $X$ gives us one and a half binary digits of the true value of $Y$.
+3. $\HH(Y : X\| \yI_3) = 1.5\,\mathrm{Sh}$ ; knowledge of $X$ gives us one and a half binary digits of the value of $Y$.
 
 ### Uses
 
