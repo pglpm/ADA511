@@ -4,12 +4,12 @@
 
 ## Collections of similar quantities {#sec-collections}
 
-In engineering and data science, we often face inference problems involving not just one quantity (simple, joint, or complex), but collections of quantities. And in many problems all quantities in the collection have the same domain, so they can somehow be considered as "instances" of the same kind of quantity. Consider the following examples:
+In engineering and data science we often face inference problems involving a collection of *similar* quantities (each of which can be simple, joint, or complex). "Similar" means that all such quantities have the same domain -- for instance, each of them has possible values $\set{\cat{low}, \cat{medium}, \cat{high}}$; or each of them has possible values between $0\,\mathrm{\textcelsius}$ and $100\,\mathrm{\textcelsius}$ -- and they have a similar meaning and measurement procedure. They can be considered different "instances" of the same quantity, so to speak. We saw an example in the three-patient hospital scenario of [§ @sec-conditional-joint-sim], with the three "urgency" quantities $U_1$, $U_2$, $U_3$. Here are other examples:
 
 - [Stock exchange](https://www.britannica.com/money/topic/stock-exchange-finance)
 : We are interested in the daily change in [closing price](https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price) of a stock, during 100 days. Each day the change can be [positive (or zero)]{.green}, or [negative]{.yellow}.
 
-    The daily change on any day can clearly be considered as a binary quantity, say with domain $\set{+, -}$. The daily changes in 100 days are a set of 100 binary quantities with exactly the same domain -- even if each one can have a different value.
+    The daily change on any day can clearly be considered as a binary quantity, say with domain $\set{\cat{\green+}, \cat{\yellow-}}$. The daily changes in 100 days are a set of 100 binary quantities with exactly the same domain -- even if each one can have a different value.
 
 :::{.column-margin}
 ![](stock_course.jpg){width=100%}
@@ -18,7 +18,7 @@ In engineering and data science, we often face inference problems involving not 
 \
 
 - Mars [prospecting](https://www.britannica.com/technology/prospecting-mining)
-: Some robot examines 100 similar-sized rocks in a large crater on Mars. Each rock either  [contains [hematite](https://science.nasa.gov/science-news/science-at-nasa/2001/ast28mar_1)]{.green}, or it [doesn't]{.yellow}.
+: Some robot examines 100 similar-sized rocks in a large crater on Mars. Each rock either [contains [hematite](https://science.nasa.gov/science-news/science-at-nasa/2001/ast28mar_1)]{.green}, or it [doesn't]{.yellow}.
 
     The hematite-content of any rock can be considered as a binary quantity, say with domain $\set{\yy, \yn}$. The hematite contents of the 100 rocks are again a set of 100 binary quantities with exactly the same domain -- even if each one can have a different value.
 
@@ -26,7 +26,18 @@ In engineering and data science, we often face inference problems involving not 
 ![](mars_crater2.jpg){width=100%}
 :::
 
-It is easy to think of many other and very diverse examples that are similar to the two above. We shall now try to abstract and generalize this similarity.
+\
+
+- [Glass forensics](https://www.fbi.gov/about-us/lab/forensic-science-communications/fsc/april2009/review/2009_04_review01.htm)
+: A criminal forensics department has 215 glass fragments collected from many different crime scenes. Each fragment is characterized by a [refractive index](https://www.feynmanlectures.caltech.edu/I_26.html#Ch26-S2) (between $1$ and $\infty$), a percentage of [Calcium](https://pubchem.ncbi.nlm.nih.gov/element/Calcium) (between $0\%$ and $100\%$), a percentage of [Silicon](https://pubchem.ncbi.nlm.nih.gov/element/Silicon) (ditto), and a type of origin (for example "from window of building", "from window of car", and similar).
+
+    The refractive index, Calcium percentage, Silicon percentage, and type of the 215 fragments are a set of 215 joint quantities with exactly the same joint domain.
+
+:::{.column-margin}
+![](glass_fragments.jpg){width=100%}
+:::
+
+It is easy to think of many other and very diverse examples, with even more complex variates, such as images or words. We shall now try to abstract and generalize this similarity.
 
 ## Units, variates, statistical populations {#sec-variates-populations}
 
@@ -40,7 +51,7 @@ Consider a large collection of entities that are somehow similar to one another.
 - the rolls of a particular die or the tosses of a particular coin;
 - the weather conditions in several days.
 
-These units are similar to one another in that they have some attribute^[The term [*feature*]{.blue} is used in machine learning] common to all. This attribute can present itself in a specific number of mutually-exclusive guises, which can be different from unit to unit. For instance, the attribute could be:
+These units are similar to one another in that they have some set of attributes^[The term [*features*]{.blue} is frequently used in machine learning] common to all. These attributes can present themselves in a specific number of mutually-exclusive guises, which can be different from unit to unit. For instance, the attributes could be:
 
 - "colour", each unit being, say, [green]{.green}, [blue]{.blue}, or [yellow]{.yellow};
 - "mass", each unit having a mass between $0.1\,\mathrm{kg}$ and $10\,\mathrm{kg}$;
@@ -51,22 +62,22 @@ These units are similar to one another in that they have some attribute^[The ter
 
 The units also have additional attributes (they must, otherwise we wouldn't be able to distinguish each unit from all others), which we simply don't consider or can't measure. We'll discuss this possibility later.
 
-From this description it's clear that the attribute of each unit is a *quantity*, as defined in [§ @sec-quant-value-dom]. Once the units and their attribute are specified, we have a set of as many quantities as there are units. All these quantities have identical domains.
+From this description it's clear that the attributes of each unit are a (possibly joint) *quantity*, as defined in [§ @sec-quant-value-dom]. Once the units and their attributes are specified, we have a set of as many quantities as there are units. All these quantities have identical domains.
 
-A quantity which is an "attribute" of a set of units is called a [**variate**]{.blue}. So when we speak about a variate it is understood that this is a quantity that appears, replicated, in some set of units.
+A quantity which is a collection of attributes of a set of units is called a [**variate**]{.blue}. So when we speak about a variate it is understood that this is a quantity that appears, replicated, in some set of units.
 
 \
 
 We call a collection of units so defined a [**statistical population**]{.blue}, or just **population** when there's no ambiguity. The number of units is called the [size]{.blue} of the population.
 
-The notion of statistical population is extremely general and encompassing; so many different things can be thought of as a population. In speaking of "data", what is often meant is a particular statistical population. The specification of a population requires precision, especially when it is used to draw inferences, as we shall see later. A statistical population has not truly been specified until two things are precisely given:
+The notion of statistical population is extremely general and encompassing: many different things can be thought of as a population. In speaking of "data", what is often meant is a particular statistical population. The specification of a population requires precision, especially when it is used to draw inferences, as we shall see later. A statistical population *has not been properly specified* until two things are precisely specified:
 
 - a way to determine whether something is a unit or not: inclusion and exclusion criteria, means of collection, and so on
 - a definition of the variate considered, its possible values, and how it is measured
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercises
-- Which of the following descriptions does define a statistical population? explain why it does or does not.
+- Which of the following descriptions does properly define a statistical population? explain why it does or does not.
 
     1. People.
 
@@ -92,9 +103,9 @@ The notion of statistical population is extremely general and encompassing; so m
 :::{.callout-warning}
 ## {{< fa exclamation-circle >}} Subtleties in the notion of statistical population
 
-- A statistical population is only a conceptual device to simplify and face some decision or inference problem. There is no objectively-defined population "out there".
+- A statistical population is only a conceptual device for simplifying and facing some decision or inference problem. There is no objectively-defined population "out there".
 
-    Any entity, object, person, and so on has characteristic that makes it completely unique (say, its space-time coordinates), otherwise we wouldn't be able to distinguish it from others. From this point of view any entity is just be a one-member population in itself. If we consider two or more entities as being "similar" and belonging to the same population, it's because we have decided to disregard some characteristics and focus on some others. This decision is arbitrary, a matter of convention, and depends on the specific inference and decision problem.
+    Any entity, object, person, and so on has some characteristics that makes it completely unique (say, its space-time coordinates), otherwise we wouldn't be able to distinguish it from others. From this point of view any entity is just a one-member population in itself. If we consider two or more entities as being "similar" and belonging to the same population, it's because we have decided to disregard some characteristics and focus on some others. This decision is arbitrary, a matter of convention, and depends on the specific inference and decision problem.
 	
 	To "test" whether an entity belong to a given population, means to check if that entity satisfies the agreed-upon definition of that population.
 
@@ -105,16 +116,16 @@ The notion of statistical population is extremely general and encompassing; so m
 	c. Rocks, of volume between 10 cm³ and 200 m³, found in any crater on any planet of the solar system, and tested for hematite
     d. Rocks, of volume between 1 cm³ and 1 m³, found in the Schiaparelli crater and measured for the magnitude of their [magnetic field](https://www.feynmanlectures.caltech.edu/II_34.html).
 	
-	Populations a. b. c. above have the same variate but differ in their definition of "unit". Populations a. and d. have the same definition of unit but different variates. Population b. is a subset of population a.: they have the same variate, and any unit in b. is also a unit in a. Populations a. and c. have some overlap: they have the same variate, and some units of a. are also units of c., and vice versa.
+	Populations a. b. c. above have the same variate but differ in their definition of "unit". Populations a. and d. have the same definition of unit but different variates. Population b. is a subset of population a.: they have the same variate, and any unit in b. is also a unit in a.; but not every unit in a. is also a unit in b.. Populations a. and c. have some overlap: they have the same variate, and some units of a. are also units of c., and vice versa.
 
 :::
 
 
-## Populations with joint variates
+## Populations with joint variates {#sec-joint-variates}
 
 The definition of statistical population ([§ @sec-variates-populations]) makes it clear that the quantity associated with each unit can be of arbitrary complexity. In particular it could be a joint quantity ([§ @sec-data-multiv]), that is, a collection of quantities of a simpler type.
 
-As an example, consider the following population, relevant for [glass forensics](https://www.fbi.gov/about-us/lab/forensic-science-communications/fsc/april2009/review/2009_04_review01.htm):
+We saw an example at the beginning of this chapter, with a population relevant for [glass forensics](https://www.fbi.gov/about-us/lab/forensic-science-communications/fsc/april2009/review/2009_04_review01.htm):
 
 :::{.column-margin}
 ![](glass_fragments.jpg){width=100%}
@@ -124,22 +135,23 @@ As an example, consider the following population, relevant for [glass forensics]
 - *variate:* the joint variate $(\vRI, \vCa, \vSi, \vType)$ consisting of four simple variates:
     + [$\mathit{R}$efractive $\mathit{I}$ndex](https://www.feynmanlectures.caltech.edu/I_26.html#Ch26-S2) of the glass fragment  (interval continuous variate), with domain from $1$ (included) to $+\infty$
 	+ weight percent of [$\vCa$lcium](https://pubchem.ncbi.nlm.nih.gov/element/Calcium) in the fragment (interval discrete variate), with domain from $0$ to $100$ in steps of 0.01
-	+ weight percent of [$\vSi$licon](https://pubchem.ncbi.nlm.nih.gov/element/14) in the fragment (interval discrete variate), with domain from $0$ to $100$ in steps of 0.01
+	+ weight percent of [$\vSi$licon](https://pubchem.ncbi.nlm.nih.gov/element/Silicon) in the fragment (interval discrete variate), with domain from $0$ to $100$ in steps of 0.01
     + $\vType$ of glass fragment (nominal variate), with seven possible values `building_windows_float_processed`, `building_windows_non_float_processed`, `vehicle_windows_float_processed`, `vehicle_windows_non_float_processed`, `containers`, `tableware`, `headlamps`
 
+Here is a table with the values of the joint variate $(\vRI, \vCa, \vSi, \vType)$ for ten units:
 
 | [unit]{.yellow} |     $\vRI$  |  $\vCa$   |   $\vSi$  |                               $\vType$   |
 |:--:|:-------:|:-----:|:-----:|:------------------------------------:|
-|   [1]{.yellow}  |  $1.51888$  |   $9.95$  |  $72.50$  |                             `tableware`  |
-|   [2]{.yellow}  |  $1.51556$  |   $9.41$  |  $73.23$  |                             `headlamps`  |
-|   [3]{.yellow}  |  $1.51645$  |   $8.08$  |  $72.65$  |  `building_windows_non_float_processed`  |
-|   [4]{.yellow}  |  $1.52247$  |   $9.76$  |  $70.26$  |                             `headlamps`  |
-|   [5]{.yellow}  |  $1.51909$  |   $8.78$  |  $71.81$  |      `building_windows_float_processed`  |
-|   [6]{.yellow}  |  $1.51590$  |   $8.22$  |  $73.10$  |  `building_windows_non_float_processed`  |
-|   [7]{.yellow}  |  $1.51610$  |   $8.32$  |  $72.69$  |       `vehicle_windows_float_processed`  |
-|   [8]{.yellow}  |  $1.51673$  |   $8.03$  |  $72.53$  |  `building_windows_non_float_processed`  |
-|   [9]{.yellow}  |  $1.51915$  |  $10.09$  |  $72.69$  |                            `containers`  |
-|  [10]{.yellow}  |  $1.51651$  |   $9.76$  |  $73.61$  |                             `headlamps`  |
+|   [1]{.yellow}  |  $1.51888$  |  $9.95$   | $72.50$   |                             `tableware`  |
+|   [2]{.yellow}  |  $1.51556$  |  $9.41$   | $73.23$   |                             `headlamps`  |
+|   [3]{.yellow}  |  $1.51645$  |  $8.08$   | $72.65$   |  `building_windows_non_float_processed`  |
+|   [4]{.yellow}  |  $1.52247$  |  $9.76$   | $70.26$   |                             `headlamps`  |
+|   [5]{.yellow}  |  $1.51909$  |  $8.78$   | $71.81$   |      `building_windows_float_processed`  |
+|   [6]{.yellow}  |  $1.51590$  |  $8.22$   | $73.10$   |  `building_windows_non_float_processed`  |
+|   [7]{.yellow}  |  $1.51610$  |  $8.32$   | $72.69$   |       `vehicle_windows_float_processed`  |
+|   [8]{.yellow}  |  $1.51673$  |  $8.03$   | $72.53$   |  `building_windows_non_float_processed`  |
+|   [9]{.yellow}  |  $1.51915$  | $10.09$   | $72.69$   |                            `containers`  |
+|  [10]{.yellow}  |  $1.51651$  |  $9.76$   | $73.61$   |                             `headlamps`  |
 : Glass fragments {#tbl-glass .sm}
 
 The joint-variate value for [unit 4]{.yellow}, for instance, is
@@ -153,63 +165,34 @@ $$
 
 :::{.callout-warning}
 ## {{< fa exclamation-circle >}}
-The units' IDs don't need to be consecutive numbers; in fact they don't even need to be numbers: any label that completely distinguishes all units will do.
+- In the terminology we agreed upon, a *variate* is not a *quantity*. Remember that something is a quantity if it makes sense to ask "Does it have value . . . ?". Now consider the variate $\vCa$ (Calcium percentage) above. I say "$\vCa\mo 8.1$". Can you check if what I said is true? No, because you don't know which unit I'm referring to; you don't even know if "$\vCa$" was referring to some unit.
+
+    The variate *for a specific unit* is a quantity instead. We can indicate this by appending the unit label to the variate symbol, as we did with "$\vCa_{\yellow4}$" above. If I tell you "$\vCa_{\yellow4}\mo 8$", you can check that what i said is false; so $\vCa_{\yellow4}$ is a quantity.
+
+\
+
+- The units' IDs don't need to be consecutive numbers; in fact they don't even need to be numbers: any label that completely distinguishes all units will do.
 :::
 
 
 
-### Joint frequencies
-
-The frequency distribution for the joint variate of the population above gives the frequencies of all possible combinations of variate values. In this population, ten joint values appear each only once, and the remaining values never appear; this is because of the population's small size and the large number of possible variate values. Denoting by $\vec{f}$ the joint frequency distribution, we have for example^[For the continuous variate $\vRI$, the frequency refers to a small range around the value; see the discussion in (§ @sec-prob-densities). In the present case the range seems to be $\pm 0.000 01$]
-
-$$\begin{aligned}
-&f(\vRI\mo 1.51651  \and 
-\vCa\mo  9.76 \and 
-\vSi\mo 73.61  \and 
-\vType\mo \cat{headlamps}
-) = \frac{1}{10}
-\\
-&f(\vRI\mo 1.0  \and 
-\vCa\mo 50.00  \and 
-\vSi\mo 50.00  \and 
-\vType\mo \cat{tableware}
-) = 0
-\end{aligned}$$
-
-
-## Marginal populations
+## Marginal populations {#sec-marginal-pop}
 
 When a population has a joint variate, we may be interested in only a subset of the simpler variates that constitute the joint one. In the glass-forensics population above, for instance, we might be interested only in the $\vCa$lcium and $\vType$ variates. These two variates together are called [**marginal variates**]{.blue} and define what we can call a [**marginal population**]{.blue} of the original one. A marginal population has the same units as the original one, but only a subset of the variates of the original. It is a statistical population in its own right.
 
 The notion of "marginalization" is a relative notion. Any population can often be considered as the marginal of a population with the same units but additional attributes.
 
-## Marginal frequencies
+\
 
-Given a statistical population with joint variates ${\green X}, {\red Y}$, we define the [**marginal frequency**]{.blue} of the value ${\red y}$ of  ${\red Y}$ as the frequency of the value ${\red y}$ in the marginal population with the variate ${\red Y}$ alone. This frequency is simply written
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercises
+- Download the dataset^[This is an adapted version of the [UCI `Adult` dataset](https://doi.org/10.24432/C5XW20)] [`income_nominal_data_all.csv`](datasets/income_nominal_data_all.csv) (45 222 rows, 4 MB):
 
-$$
-f({\red Y\mo y})
-$$
+    + How many variates does this population have?
+	+ What types of variate (binary, nominal, etc.) do they seem to be?
+	+ What are their domains?
 
-A conditional frequency can be calculated as the sum of the joint frequencies for all values ${\green x}$, in a way analogous to marginal probabilities ([§ @sec-marginal-probs]):
+- Explore datasets from the [UC Irvine Machine Learning Repository](https://archive.ics.uci.edu/datasets), answering the three questions above.
+:::
 
-$$
-f({\red Y\mo y}) = \sum_{\red y} f({\red Y\mo y} \and {\green X\mo x})
-$$
-
-For example, if from the population of [table @tbl-glass] we consider the marginal population with variates $(\vCa, \vType)$ marginal population, we find the marginal frequencies
-
-$$\begin{aligned}
-&f(\vCa\mo  9.76 \and 
-\vType\mo \cat{headlamps}
-) = \frac{2}{10}
-\\
-&f(\vCa\mo  10.09 \and 
-\vType\mo \cat{containers}
-) = \frac{1}{10}
-\\
-&f(\vCa\mo 50.00  \and 
-\vType\mo \cat{tableware}
-) = 0
-\end{aligned}$$
 
