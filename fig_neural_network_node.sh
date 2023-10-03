@@ -1,8 +1,51 @@
 #! /bin/bash
 
+# Print output to screen
+debug=true
+
+if [ "$debug" = "true" ]; then
+    outstream=/dev/stdout
+else
+    outstream=/dev/null
+fi
+
+
+
+function compile_figure () {
+    local texcode=$1
+    local outname=$2
+
+    echo $texcode
+    exit 1
+
+    # Write and compile tex file
+    local tempfile=$(mktemp --suff=".tex")
+    echo "Writing to Tex file: ${tempfile}" > ${outstream}
+    echo ${texcode} > ${tempfile}
+    pdflatex -jobname ${outname} ${tempfile} > ${outstream}
+
+    exitcode=$?
+    if [ $exitcode -ne 0 ]; then
+        echo "pdflatex failed, see ${outname}.log" > /dev/stderr
+        exit 1
+    fi
+
+    # Convert to png
+    gs -sDEVICE=pngalpha -dNOPAUSE -r300 -o ${outname}.png ${outname}.pdf > ${outstream}
+
+    # Clean up files
+    echo "Cleaning files" > ${outstream}
+    rm ${outname}.aux ${outname}.log ${outname}.pdf ${tempfile}
+    echo "Output file: ${outname}.png"
+}
+
+
+
 FILENAME="fig_neural_network_node"
 
-read -r -d '' texstring <<-"EOC"
+# -----------------------------------------------------------------------------
+# Fig 1: Single node
+read -r -d '' singlenode <<-"EOC"
 \documentclass[border=3pt,tikz]{standalone}
 \usepackage{tikz}
 \usepackage{xcolor}
@@ -27,21 +70,11 @@ read -r -d '' texstring <<-"EOC"
 \end{document}
 EOC
 
-# Write and compile tex file
-tempfile=$(mktemp --suff=".tex")
-echo "Writing to Tex file: ${tempfile}"
-echo "$texstring" > ${tempfile}
-pdflatex -jobname ${FILENAME} ${tempfile} > /dev/null
+compile_figure "${singlenode}" "${fig_neural_network_node}"
 
-exitcode=$?
-if [ $exitcode -ne 0 ]; then
-    echo "pdflatex failed, see ${FILENAME}.log"
-    exit 1
-fi
 
-# Convert to png
-gs -sDEVICE=pngalpha -dNOPAUSE -r300 -o ${FILENAME}.png ${FILENAME}.pdf > /dev/null
+# -----------------------------------------------------------------------------
+# Fig 2: Single layer
 
-# Clean up files
-rm ${FILENAME}.aux ${FILENAME}.log  ${tempfile}
-echo "Output file: ${FILENAME}.pdf / .png"
+
+
