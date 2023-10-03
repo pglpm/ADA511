@@ -1,8 +1,8 @@
-# [A second connection with machine learning]{.red} {#sec-2nd-connection-ML}
+# [Third connection with machine learning]{.red} {#sec-2nd-connection-ML}
 {{< include macros.qmd >}}
 {{< include macros_prob_inference.qmd >}}
 
-In [chapter @sec-1st-connection-ML] we made a first *tentative* connection between the notions about probability explored until then, and notions from machine learning. We considered the possibility that a machine-learning algorithm is like an agent that has some [built-in background information (corresponding to the algorithm's architecture)]{.yellow}, has received [pieces of information (corresponding to the data about perfectly known instances of the task)]{.green}, and is assessing a [not-previously known piece of information (the outcome in a new task instance)]{.red}:
+In [chapter @sec-1st-connection-ML] we made a second *tentative* connection between the notions about probability explored until then, and notions from machine learning. We considered the possibility that a machine-learning algorithm is like an agent that has some [built-in background information (corresponding to the algorithm's architecture)]{.yellow}, has received [pieces of information (corresponding to the data about perfectly known instances of the task)]{.green}, and is assessing a [not-previously known piece of information (the outcome in a new task instance)]{.red}:
 
 $$
 \P(\underbracket[0ex]{\red\se{D}_{N+1}}_{\mathclap{\red\text{outcome?}}} \| 
@@ -29,6 +29,8 @@ $$
 \green\underbracket[0ex]{ D_N \mo d_N \and \dotsb \and  D_2 \mo d_2 \and  D_1 \mo d_1}_{\mathclap{\green\text{training data?}}} 
 \black\and \underbracket[0ex]{\yellow\yI}_{\mathrlap{\yellow\uparrow\ \text{architecture?}}})
 $$
+
+This kind of inference is what we explored in the "next-three-patients" scenario of [§ @sec-conditional-joint-sim] and some of the following sections.
 
 Let's extend this tentative connection even further.
 
@@ -64,10 +66,10 @@ Going back to our tentative correspondence with inference and decision-making ag
     \black\and \underbracket[0ex]{\yellow\yI}_{\mathrlap{\yellow\uparrow\ \text{architecture?}}})
     $$
 
-    For example, the agent has been given information about a collection of images, and then tries to guess what the next image could be.
+    This is the kind of inference explored in the "next-three-patients" scenario of [§ @sec-conditional-joint-sim]. As another example or scenario, the agent may have been given information about a collection of images, and then tries to guess what the next image could be.
 
 
-- In the supervised case, the quantities in the known instances and in the new application are joint quantities: 
+- In the supervised case, the quantities in the known instances and in the new application are joint quantities:
 
     $$
 	\begin{gathered}
@@ -91,8 +93,10 @@ Going back to our tentative correspondence with inference and decision-making ag
 	Y_1 \mo y_1 \and X_1 \mo x_1 
     \black\and {\yellow\yI} \bigr)
     $$
+	
+    This is the more complicated version of the "next-three-patients" scenario with "urgency & transportation", discussed in [§ @sec-conditional-joint-general].
 
-An interesting aspect of this new tentative correspondence is that there isn't any essential difference between unsupervised and supervised cases. Consider the last probability above; using the formula for a conditional probability ([§ @sec-conditional-probs]) we have
+An interesting aspect of this new tentative correspondence is that there isn't any essential difference between unsupervised and supervised cases. Consider the last probability above; using the formula for a conditional probability ([§ @sec-conditional-probs]) we have
 
 :::{.column-page-right}
 $$
@@ -140,11 +144,25 @@ $$
 
 This is a fraction between the probability for the "unsupervised case" (which we wrote above compactly in terms of $D$ rather than $(Y,X)$), and the same probability summed up for all possible values of $\red Y_{N+1}$, which in the image-example above would be a sum over $\red Y_{N+1}\mo \cat{Muppet}$ and $\red Y_{N+1}\mo \cat{non-Muppet}$.
 
-So if the agent has the probability for the "unsupervised case", then with a simple computation it also has the probability for the "supervised case".
+So if the agent has the probability for the "unsupervised case", then with a simple computation it also has the probability for the "supervised case", and many other cases that cannot be categorized as "unsupervised" or "supervised" (there is also a connection with "generative" vs "discriminative" algorithms here).
 
 \
 
-One important question arise: how are these probabilities calculated by the agent? This is what we discuss in the next chapters.
+We seem to have found a formula that should lie at the core of any machine-learning algorithm: the **formula for conditional probability**, which covers all possible inference cases: with or without features, with or without previous data, and many other cases. If we want that an inference algorithm which "learns" from example data, and possibly use features, shall be optimal, then it must operate on the conditional-probability formula in one way or another -- at least approximately.
+
+What does such an optimal algorithm require, in order to operate in full? From the discussion of [chapter @sec-learning] we see that it requires the following:
+
+- [{{< fa cubes >}} A joint probability distribution about all quantities representing features and instances; past, present, and future.]{.yellow}
+
+    This joint probability distribution also expresses what kind of background knowledge the algorithm assumes, and therefore the kind of problems it can be applied to. It thus forms the "architecture" and "internal parameters" of the algorithm. For example, in [§ @sec-conditional-joint-sim] and its exercises we examined a joint distribution expressing the belief that "the more often a specific case is seen, the more probable it is at the next instance"; and also another distribution expressing the opposite belief: "the more often a specific case is seen, the *less* probable it is at the next instance".
+
+- [{{< fa arrow-right-to-bracket >}} Data from previous instances, that is, "training" or "learning" data.]{.green}
+
+- [{{< fa arrow-right-to-bracket >}} Optionally, some quantities or "feature" data about the present instance.]{.lightblue}
+
+Of these three requirements, the first seems the most difficult to implement. How to *encode* a belief distribution about a possibly infinite number of quantities, some of which may refer to the future? And how to choose such a belief distribution in a reasonable way?
+
+This is what we discuss in the next chapters.
 
 
 

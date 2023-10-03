@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-10-02">
+
+<title>ADA511 0.1 Data science and data-driven engineering - 18&nbsp; Information, relevance, independence</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./2nd_connection_ML.html" rel="next">
+<link href="./conditional_probability.html" rel="prev">
+<link href="./favicon.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="ada511styles.css">
+</head>
+
+<body class="nav-sidebar docked slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./probability_distributions.html"><span class="green"><strong>Inference II</strong></span></a></li><li class="breadcrumb-item"><a href="./information.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">[Information, relevance, independence]{.green}</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-02</span></a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dear student<br> and aspiring data engineer</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text"><strong>An invitation</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Accept or discard?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Framework</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./basic_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Basic decision problems</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0th_connection_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title"><span class="red">First connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title"><span class="green">What is an inference?</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sentences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title"><span class="green">Sentences</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./truth_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><span class="green">Truth inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title"><span class="green">Probability inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./derived_rules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><span class="green">Shortcut rules</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./monty.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title"><span class="green">Monty Hall and related inference problems</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1st_connection_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><span class="red">Second connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title"><span class="yellow">Quantities and data types</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types_multi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title"><span class="yellow">Joint quantities and complex data types</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title"><span class="green">Probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./joint_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><span class="green">Joint probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./marginal_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><span class="green">Marginal probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conditional_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probability and learning</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./information.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="green">Information, relevance, independence</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2nd_connection_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title"><span class="red">Third connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./populations_variates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title"><span class="yellow">Populations and variates</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title"><span class="yellow">Statistics</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./subpopulations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><span class="yellow">Subpopulations and conditional frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./samples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title"><span class="yellow">Infinite populations and samples</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Population inference</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./recap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title"><span class="green">A general inference problem</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./population_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title"><span class="green">Inference and populations</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exchangeability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title"><span class="green">Exchangeability</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference_exchangeability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="green">Inference under exchangeability</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./missing_parts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">To be written</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glass_application_R.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="red">The optimal predictor machine in action (for nominal quantities)</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text"><span class="lightblue"><strong>Decision theory</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./making_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title"><span class="lightblue">Making decisions</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text"><span class="red"><strong>Machine learning</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine_learning_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Machine learning - an introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./decision_trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Decision trees</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural_networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Neural networks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-indep-sentences" id="toc-sec-indep-sentences" class="nav-link active" data-scroll-target="#sec-indep-sentences"><span class="header-section-number">18.1</span> Independence of sentences</a></li>
+  <li><a href="#sec-indep-quantities" id="toc-sec-indep-quantities" class="nav-link" data-scroll-target="#sec-indep-quantities"><span class="header-section-number">18.2</span> Independence of quantities</a></li>
+  <li><a href="#sec-info-uncertainty" id="toc-sec-info-uncertainty" class="nav-link" data-scroll-target="#sec-info-uncertainty"><span class="header-section-number">18.3</span> Information and uncertainty</a></li>
+  <li><a href="#sec-importance-scenarios" id="toc-sec-importance-scenarios" class="nav-link" data-scroll-target="#sec-importance-scenarios"><span class="header-section-number">18.4</span> Exploring “importance”: some scenarios</a>
+  <ul class="collapse">
+  <li><a href="#first-two-characteristics-a-lottery-scenario" id="toc-first-two-characteristics-a-lottery-scenario" class="nav-link" data-scroll-target="#first-two-characteristics-a-lottery-scenario">First two characteristics: a lottery scenario</a></li>
+  <li><a href="#third-characteristic-a-two-quantity-scenario" id="toc-third-characteristic-a-two-quantity-scenario" class="nav-link" data-scroll-target="#third-characteristic-a-two-quantity-scenario">Third characteristic: A two-quantity scenario</a></li>
+  </ul></li>
+  <li><a href="#sec-entropy-mutualinfo" id="toc-sec-entropy-mutualinfo" class="nav-link" data-scroll-target="#sec-entropy-mutualinfo"><span class="header-section-number">18.5</span> Entropies and mutual information</a>
+  <ul class="collapse">
+  <li><a href="#shannon-entropy" id="toc-shannon-entropy" class="nav-link" data-scroll-target="#shannon-entropy">Shannon entropy</a></li>
+  <li><a href="#conditional-entropy" id="toc-conditional-entropy" class="nav-link" data-scroll-target="#conditional-entropy">Conditional entropy</a></li>
+  <li><a href="#mutual-information" id="toc-mutual-information" class="nav-link" data-scroll-target="#mutual-information">Mutual information</a></li>
+  <li><a href="#uses" id="toc-uses" class="nav-link" data-scroll-target="#uses">Uses</a></li>
+  </ul></li>
+  <li><a href="#sec-utility-importance" id="toc-sec-utility-importance" class="nav-link" data-scroll-target="#sec-utility-importance"><span class="header-section-number">18.6</span> Utility Theory to quantify relevance and importance</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="green">Information, relevance, independence</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2023-10-02</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="hidden">
+<p><span class="math display">\[
+\DeclarePairedDelimiters{\set}{\{}{\}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\]</span></p>
+</div>
+<div class="hidden">
+
+</div>
+<div class="hidden">
+
+</div>
+<section id="sec-indep-sentences" class="level2 page-columns page-full" data-number="18.1">
+<h2 data-number="18.1" class="anchored" data-anchor-id="sec-indep-sentences"><span class="header-section-number">18.1</span> Independence of sentences</h2>
+<p>In an ordinary situation represented by background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> if you have to infer whether a coin will land heads, then knowing that it is raining outside has no impact on your inference: the information about rain is <span class="blue"><strong>irrelevant</strong></span> for your inference. In other words, your degree of belief about the coin remains the same if you include the information about rain in the conditional.</p>
+<p>In probability notation, representing “<span class="midgrey">The coin lands heads</span>” with <span style="display:inline-block;"><span class="math inline">\(\mathsfit{H}\)</span></span> and “<span class="midgrey">It rains outside</span>” with <span style="display:inline-block;"><span class="math inline">\(\mathsfit{R}\)</span>,</span> this irrelevance means</p>
+<p><span class="math display">\[
+\mathrm{P}(\mathsfit{H} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = \mathrm{P}(\mathsfit{H} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{R} \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})
+\]</span></p>
+<p><br>
+</p>
+<p>More generally two <em>sentences</em> <span style="display:inline-block;"><span class="math inline">\(\mathsfit{A}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(\mathsfit{B}\)</span></span> are said to be <span class="blue"><strong>mutually irrelevant</strong> or <strong>logically independent given information <span class="math inline">\(\mathsfit{I}\)</span></strong></span> if any one of these three conditions holds:</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><a href="https://dictionary.cambridge.org/dictionary/english/independent">“independ<strong>E</strong>nt” is written with an <strong>E</strong></a>, not with an <strong>A</strong>.</p>
+</div></div><ul>
+<li><p><span class="math inline">\(\mathrm{P}(\mathsfit{A}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{B}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}) = \mathrm{P}(\mathsfit{A}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span></p></li>
+<li><p><span class="math inline">\(\mathrm{P}(\mathsfit{B}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{A}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}) = \mathrm{P}(\mathsfit{B}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span></p></li>
+<li><p><span class="math inline">\(\mathrm{P}(\mathsfit{A}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{B}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = \mathrm{P}(\mathsfit{A}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \cdot \mathrm{P}(\mathsfit{B}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span></p></li>
+</ul>
+<p>These three conditions are equivalent to one another. In the first condition, <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(\mathsfit{A}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{B}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})\)</span></span> is undefined if <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(\mathsfit{B}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})=0\)</span>,</span> but in this case independence still holds; analogously in the second condition.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-circle" aria-label="exclamation-circle"></i>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Irrelevance or independence is not an absolute notion, but <strong>relative to some background knowledge</strong>. Two sentences may be independent given some background information, and <strong>not</strong> independent given another.</p></li>
+<li><p>Independence as defined above is a <strong>logical</strong>, not <strong>physical</strong>, notion. It isn’t stating anything about physical dependence between phenomena related to the sentences <span style="display:inline-block;"><span class="math inline">\(\mathsfit{A}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathsfit{B}\)</span>.</span> It’s simply stating that information about one does not affect an agent’s beliefs about the other.</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="sec-indep-quantities" class="level2" data-number="18.2">
+<h2 data-number="18.2" class="anchored" data-anchor-id="sec-indep-quantities"><span class="header-section-number">18.2</span> Independence of quantities</h2>
+<p>The notion of irrelevance of two sentences can be generalized to quantities. Take two quantities <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span> They are said to be <span class="blue"><strong>mutually irrelevant</strong> or <strong>logically independent given information <span class="math inline">\(\mathsfit{I}\)</span></strong></span> if any one of these three condition holds <span class="blue"><em>for all possible values <span class="math inline">\(x\)</span> of <span class="math inline">\(X\)</span> and <span class="math inline">\(y\)</span> of <span class="math inline">\(Y\)</span></em></span>:</p>
+<ul>
+<li><p><span class="math inline">\(\mathrm{P}(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}) = \mathrm{P}(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>&nbsp;&nbsp;&nbsp;<span class="midgrey">all <span class="math inline">\(x,y\)</span></span></p></li>
+<li><p><span class="math inline">\(\mathrm{P}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}) = \mathrm{P}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>&nbsp;&nbsp;&nbsp;<span class="midgrey">all <span class="math inline">\(x,y\)</span></span></p></li>
+<li><p><span class="math inline">\(\mathrm{P}(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \mathbin{\mkern-0mu,\mkern-0mu}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = \mathrm{P}(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \cdot \mathrm{P}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>&nbsp;&nbsp;&nbsp;<span class="midgrey">all <span class="math inline">\(x,y\)</span></span></p></li>
+</ul>
+<p><br>
+</p>
+<p>Note the difference between independence of <em>two sentences</em> and independence of <em>two quantities</em>. The latter independence involves not just two, but many sentences: as many as the values of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p>
+<p>In fact it may happen that for some particular values <span style="display:inline-block;"><span class="math inline">\(x^*\)</span></span> of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(y^*\)</span></span> <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> the probabilities become independent, say:</p>
+<p><span class="math display">\[
+\mathrm{P}(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x^* \nonscript\:\vert\nonscript\:\mathopen{} Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y^* \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}) = \mathrm{P}(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x^* \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})
+\]</span></p>
+<p>but this equality does <em>not</em> occur for other values. In this case the quantities <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> are <em>not</em> independent given information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>.</span> The general idea is that two quantities are independent if knowledge about one of them cannot change an agent’s beliefs about the other, <em>no matter what their values might be</em>.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-circle" aria-label="exclamation-circle"></i>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Also in this case, irrelevance or independence is not an absolute notion, but <strong>relative to some background knowledge</strong>. Two quantities may be independent given some background information, and <strong>not</strong> independent given another.</p></li>
+<li><p>Also in this case, independence is a <strong>logical</strong>, not <strong>physical</strong>, notion. It isn’t stating anything about physical dependence between phenomena related to the quantities <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span> It’s simply stating that information about one does not affect an agent’s beliefs about the other.</p></li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Consider our familiar next-patient inference problem with quantities urgency <span style="display:inline-block;"><span class="math inline">\(U\)</span></span> and transportation <span style="display:inline-block;"><span class="math inline">\(T\)</span>.</span> Assume a different background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{J}\)</span></span> that leads to the following joint probability distribution:</p>
+<table class="table-sm small table">
+<caption></caption>
+<colgroup>
+<col style="width: 30%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}u \mathbin{\mkern-0mu,\mkern-0mu}T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}t\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{J})\)</span></td>
+<td style="text-align: center;"></td>
+<td colspan="3" style="text-align: center;"><strong>transportation at arrival</strong> <span class="math inline">\(T\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">ambulance</td>
+<td style="text-align: center;">helicopter</td>
+<td style="text-align: center;">other</td>
+</tr>
+<tr class="odd">
+<td rowspan="2" style="text-align: center;"><strong>urgency</strong> <span class="math inline">\(U\)</span></td>
+<td style="text-align: center;">urgent</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">0.08</td>
+<td style="text-align: center;">0.02</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">non-urgent</td>
+<td style="text-align: center;">0.45</td>
+<td style="text-align: center;">0.04</td>
+<td style="text-align: center;">0.26</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>Calculate the marginal probability distribution <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(U\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{J})\)</span></span> and the conditional probability distribution <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(U \nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small ambulance}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{J})\)</span>,</span> and compare them. Is the value <span style="display:inline-block;"><span class="math inline">\(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small ambulance}\)</span></span> relevant for inferences about <span style="display:inline-block;"><span class="math inline">\(U\)</span>?</span> </p></li>
+<li><p>Calculate the conditional probability distribution <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(U \nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{J})\)</span>,</span> and compare it with the marginal <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(U\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{J})\)</span>.</span> Is the value <span style="display:inline-block;"><span class="math inline">\(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\)</span></span> relevant for inferences about <span style="display:inline-block;"><span class="math inline">\(U\)</span>?</span> </p></li>
+<li><p>Are the quantities <span style="display:inline-block;"><span class="math inline">\(U\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(T\)</span></span> independent, given the background knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{J}\)</span>?</span></p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="sec-info-uncertainty" class="level2 page-columns page-full" data-number="18.3">
+<h2 data-number="18.3" class="anchored" data-anchor-id="sec-info-uncertainty"><span class="header-section-number">18.3</span> Information and uncertainty</h2>
+<p>The definition of irrelevance given above appears to be very “black or white”: either two sentences or quantities are independent, or they aren’t. But in reality there is no such dichotomy. We can envisage some scenario <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span></span> where for instance the probabilities <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span></span> are extremely close in value, although not exactly equal:</p>
+<p><span class="math display">\[
+\mathrm{P}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})
+= \mathrm{P}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) + \delta(x,y)
+\]</span></p>
+<p>with <span style="display:inline-block;"><span class="math inline">\(\delta(x,y)\)</span></span> very small. This would mean that knowledge about <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> modifies an agent’s belief just a little; and depending on the situation such modification could be unimportant. In this situation the two quantities would be “independent” for all practical purposes. Therefore there are <em>degrees of relevance</em> rather than a dichotomy “relevant vs irrelevant”.</p>
+<p>This suggests that we try to quantify such degrees. This quantification would also give a measure of how “important” a quantity can be for inferences about another quantity.</p>
+<p>This is the domain of <span class="blue"><strong>Information Theory</strong></span>, which would require a course by itself to be properly explored. In this chapter we shall just get an overview of the main ideas and notions of this theory.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-rocket" aria-label="rocket"></i> For the extra curious
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p><a href="https://hvl.instructure.com/courses/25074/modules/items/660092"><em>Information Theory, Inference, and Learning Algorithms</em></a></p></li>
+<li><p><a href="https://hvl.instructure.com/courses/25074/modules/items/703785"><em>Elements of Information Theory</em></a></p></li>
+</ul>
+</div>
+</div>
+</div></div><p><br>
+</p>
+<p>The notion of degree of relevance is important in data science and machine learning, because it rigorously quantifies two related, intuitive ideas often occurring in these fields:</p>
+<ul>
+<li><p><span class="green">“Correlation”: in its general meaning, it’s the idea that if an agent’s knowledge about some quantity changes, then knowledge about another quantity may change as well.</span></p></li>
+<li><p><span class="yellow">“Feature importance”: it’s the idea that knowledge about some aspects of a given problem may lead to improved inferences about other aspects.</span></p></li>
+</ul>
+<p>In the next section we explore some tricky aspects and peculiarities of these ideas, which also tell us which kind of properties a quantitative measure for them should possess.</p>
+</section>
+<section id="sec-importance-scenarios" class="level2" data-number="18.4">
+<h2 data-number="18.4" class="anchored" data-anchor-id="sec-importance-scenarios"><span class="header-section-number">18.4</span> Exploring “importance”: some scenarios</h2>
+<p>The following examples are only meant to give an intuitive motivation of the characteristics that a metric for “importance” or “relevance” should have.</p>
+<section id="first-two-characteristics-a-lottery-scenario" class="level3">
+<h3 class="anchored" data-anchor-id="first-two-characteristics-a-lottery-scenario">First two characteristics: a lottery scenario</h3>
+<p>A lottery comprises 1 000 000 tickets numbered from <code>000000</code> to <code>999999</code>. One of these tickets is the winner. Its number is already known. You are allowed to choose any ticket you like, before the winner number is announced.</p>
+<p>Before you choose, you have the possibility of getting (for free) some clues about the winning number. The clues are these:</p>
+<dl>
+<dt>Clue <span class="yellow">A</span>:&nbsp;&nbsp;<span class="green"><i class="fa-solid fa-check" aria-label="check"></i></span> <span class="green"><i class="fa-solid fa-check" aria-label="check"></i></span> <span class="green"><i class="fa-solid fa-check" aria-label="check"></i></span> <span class="green"><i class="fa-solid fa-check" aria-label="check"></i></span> <span class="red"><i class="fa-solid fa-question" aria-label="question"></i></span> <span class="red"><i class="fa-solid fa-question" aria-label="question"></i></span></dt>
+<dd>
+The first four digits of the winning number
+</dd>
+<dt>Clue <span class="yellow">B</span>:&nbsp;&nbsp;<span class="green"><i class="fa-solid fa-check" aria-label="check"></i></span> <span class="green"><i class="fa-solid fa-check" aria-label="check"></i></span> <span class="green"><i class="fa-solid fa-check" aria-label="check"></i></span> <span class="red"><i class="fa-solid fa-question" aria-label="question"></i></span> <span class="green"><i class="fa-solid fa-check" aria-label="check"></i></span> <span class="red"><i class="fa-solid fa-question" aria-label="question"></i></span></dt>
+<dd>
+The 1st, 2nd, 3rd, and 5th digits of the winning number
+</dd>
+<dt>Clue <span class="yellow">C</span>:&nbsp;&nbsp;<span class="red"><i class="fa-solid fa-question" aria-label="question"></i></span> <span class="red"><i class="fa-solid fa-question" aria-label="question"></i></span> <span class="red"><i class="fa-solid fa-question" aria-label="question"></i></span> <span class="green"><i class="fa-solid fa-check" aria-label="check"></i></span> <span class="green"><i class="fa-solid fa-check" aria-label="check"></i></span> <span class="green"><i class="fa-solid fa-check" aria-label="check"></i></span></dt>
+<dd>
+The last three digits of the winning number
+</dd>
+</dl>
+<p>Now consider the following three “clue scenarios”.</p>
+<section id="scenario-1-choose-one-clue" class="level4">
+<h4 class="anchored" data-anchor-id="scenario-1-choose-one-clue">Scenario 1: choose one clue</h4>
+<p>You have the possibility of <em>choosing one</em> of the three clues above. Which would you choose, in order of importance?</p>
+<p>Obviously <span class="yellow"><strong>A</strong></span> or <span class="yellow"><strong>B</strong></span> are the most important, and equally important, because they increase your probability of winning from 1/1 000 000 to 1/100. <span class="yellow"><strong>C</strong></span> is the least important because it increases your probability of winning to 1/1000.</p>
+</section>
+<section id="scenario-2-discard-one-clue" class="level4">
+<h4 class="anchored" data-anchor-id="scenario-2-discard-one-clue">Scenario 2: discard one clue</h4>
+<p>All three clues are put in front of you (but you can’t see their digits). If you could keep all three, then you’d win for sure because they would give you all digits of the winning number.</p>
+<p>You are instead asked to <em>discard one</em> of the three clues, keeping the remaining too. Which would you discard, in order of least importance?</p>
+<p>If you discarded <span class="yellow"><strong>A</strong></span>, then <span class="yellow"><strong>B</strong></span> and <span class="yellow"><strong>C</strong></span> together would give you all digits of the winning number; so you would still win. Analogously if you discarded <span class="yellow"><strong>B</strong></span>. If you discarded <span class="yellow"><strong>C</strong></span>, then <span class="yellow"><strong>A</strong></span> and <span class="yellow"><strong>B</strong></span> together would give you all digits but the last; so you’d have a 1/10 probability of winning.</p>
+<p>Obviously <span class="yellow"><strong>C</strong></span> is the most important clue to keep, and <span class="yellow"><strong>A</strong></span> and <span class="yellow"><strong>B</strong></span> least important.</p>
+</section>
+<section id="scenario-3-discard-one-more-clue" class="level4">
+<h4 class="anchored" data-anchor-id="scenario-3-discard-one-more-clue">Scenario 3: discard one more clue</h4>
+<p>In the previous Scenario&nbsp;2, we saw that discarding <span class="yellow"><strong>A</strong></span> or <span class="yellow"><strong>B</strong></span> would not alter your 100% probability of winning. Either clue could therefore be said to have “importance = 0”.</p>
+<p>If you had to discard <em>both</em> <span class="yellow"><strong>A</strong></span> and <span class="yellow"><strong>B</strong></span>, however, your situation would suddenly become worse, with only a 1/1000 probability of winning – like choosing <span class="yellow"><strong>C</strong></span> in Scenario&nbsp;1. Clues <span class="yellow"><strong>A</strong></span> and <span class="yellow"><strong>B</strong></span> <em>together</em> can therefore be said to have high “importance &gt; 0”.</p>
+<p>Now let’s draw some conclusions from comparing the scenarios above.</p>
+<p><br>
+</p>
+<p>In Scenario&nbsp;1 we found that the “importance ranking” of the clues is<br>
+<span class="yellow"><strong>A</strong></span> = <span class="yellow"><strong>B</strong></span> &gt; <span class="yellow"><strong>C</strong></span><br>
+whereas in Scenario&nbsp;2 we found the completely opposite ranking<br>
+<span class="yellow"><strong>C</strong></span> &gt; <span class="yellow"><strong>A</strong></span> = <span class="yellow"><strong>B</strong></span></p>
+<p>We conclude that</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" style="font-size:120%">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importance is context-dependent
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size:120%">
+<p>It doesn’t make sense to ask which aspect or feature is “most important” if we don’t specify the context of its use. Important if <em>used alone</em>? Important if <em>used with others</em>? and <em>which</em> others?</p>
+<p>Depending on the context, an importance ranking could be completely reversed. A quantitative measure of “importance” must therefore take the context into account.</p>
+</div>
+</div>
+</div>
+<p><br>
+</p>
+<p>In Scenario&nbsp;3 we found that two clues may be completely unimportant if considered individually, but extremely important if considered jointly.</p>
+<p>We conclude that</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" style="font-size:120%">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importance is non-additive
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size:120%">
+<p>A quantitative measure of importance cannot be <em>additive</em>, that is, quantify the importance of two or more features as the sum of their individual importance.</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="third-characteristic-a-two-quantity-scenario" class="level3">
+<h3 class="anchored" data-anchor-id="third-characteristic-a-two-quantity-scenario">Third characteristic: A two-quantity scenario</h3>
+<p>Suppose we have a discrete quantities <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> with domain <span style="display:inline-block;"><span class="math inline">\(\set{1,2,3,4,5,6}\)</span></span> and another discrete quantity <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> with domain <span style="display:inline-block;"><span class="math inline">\(\set{1,2,3,4}\)</span>.</span> We want to infer the value of <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> after we are told the value of <span style="display:inline-block;"><span class="math inline">\(X\)</span>.</span></p>
+<p>The conditional probabilities for <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> given different values of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> are as follows (each column sums up to <span style="display:inline-block;"><span class="math inline">\(1\)</span>)</span></p>
+<div id="tbl-distr-entropy" class="anchored">
+<table class="table-sm small table">
+<caption>Table&nbsp;18.1: Example conditional distribution for two discrete quantities</caption>
+<colgroup>
+<col style="width: 11%">
+<col style="width: 4%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(\mathrm{P}(Y\nonscript\:\vert\nonscript\:\mathopen{}X\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})\)</span></td>
+<td style="text-align: center;"></td>
+<td colspan="6" style="text-align: center;"><em>&nbsp;</em> <span class="math inline">\({}\nonscript\:\vert\nonscript\:\mathopen{}X\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>1</strong></td>
+<td style="text-align: center;"><strong>2</strong></td>
+<td style="text-align: center;"><strong>3</strong></td>
+<td style="text-align: center;"><strong>4</strong></td>
+<td style="text-align: center;"><strong>5</strong></td>
+<td style="text-align: center;"><strong>6</strong></td>
+</tr>
+<tr class="odd">
+<td rowspan="4" style="text-align: center;"><em>&nbsp;</em> <span class="math inline">\(Y\nonscript\:\vert\nonscript\:\mathopen{}{}\)</span></td>
+<td style="text-align: center;"><strong>1</strong></td>
+<td style="text-align: center;">1.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.50</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>2</strong></td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">1.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.50</td>
+<td style="text-align: center;">0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>3</strong></td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">1.00</td>
+<td style="text-align: center;">0.50</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>4</strong></td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">0.50</td>
+<td style="text-align: center;">0.50</td>
+<td style="text-align: center;">0.50</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Let’s see what kind of inferences could occur.</p>
+<p>If we observe <span style="display:inline-block;"><span class="math inline">\(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}1\)</span>,</span> then we know <em>for sure</em> that <span style="display:inline-block;"><span class="math inline">\(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}1\)</span>;</span> similarly for <span style="display:inline-block;"><span class="math inline">\(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}2\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}3\)</span>.</span> These three values of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> are therefore “most important” for inference about <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span> If we instead observe <span style="display:inline-block;"><span class="math inline">\(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}4\)</span>,</span> then our uncertainty about <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> is between two of its values; similarly for <span style="display:inline-block;"><span class="math inline">\(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}5\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}6\)</span>,</span> These three values of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> are therefore “least important” for inference about <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p>
+<p>But we usually speak of importance of a <em>quantity</em> or feature, not of a specific value. So what is the “overall importance” of <span style="display:inline-block;"><span class="math inline">\(X\)</span>?</span></p>
+<p>Consider again three scenarios.</p>
+<ol type="1">
+<li><p>In the first, we have 33% probability each of observing values <span style="display:inline-block;"><span class="math inline">\(1\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(2\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(3\)</span></span> of <span style="display:inline-block;"><span class="math inline">\(X\)</span>,</span> for a total of 99%; and 0.33% probability of observing each of the remaining values, for a total of 1%.</p>
+<p>In this scenario we expect to make an almost exact inference about <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> and the quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> has therefore great “overall importance”.</p></li>
+<li><p>In the second, the reverse happens: we have 0.33% probability each of observing values <span style="display:inline-block;"><span class="math inline">\(1\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(2\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(3\)</span></span> of <span style="display:inline-block;"><span class="math inline">\(X\)</span>,</span> for a total of 1%; and 33% probability of observing each of the remaining values, for a total of 99%.</p>
+<p>In this scenario we expect to uncertain roughly between two values of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> and the quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> has therefore less “overall importance”.</p></li>
+<li><p>In the third, we have around 16.7% probability of observing each of the values of <span style="display:inline-block;"><span class="math inline">\(X\)</span>.</span></p>
+<p>This scenario is in between the first two: we expect to make an exact inference about <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> half of the time, and to be undecided between two values half of the time. The quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> has therefore some “overall importance”: neither zero, nor as much as in the first scenario.</p></li>
+</ol>
+<p>What determines the “overall importance” of the quantity or feature <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> is therefore <em>its probability distribution</em>.</p>
+<p>We conclude that</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" style="font-size:120%">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The importance of a quantity depends on its probability distribution
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size:120%">
+<p>The importance of a quantity is not only determined by the relation between its possible values and what we need to infer, but also by the probability with which its values can occur.</p>
+<p>A quantitative measure of “importance” of a quantity must therefore take the probability distribution for the latter into account.</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-entropy-mutualinfo" class="level2 page-columns page-full" data-number="18.5">
+<h2 data-number="18.5" class="anchored" data-anchor-id="sec-entropy-mutualinfo"><span class="header-section-number">18.5</span> Entropies and mutual information</h2>
+<p>The thought-experiments above suggest that a quantitative measure of the importance of a quantity must have at least these three characteristics:</p>
+<ul>
+<li>take the context somehow into account</li>
+<li>be non-additive</li>
+<li>take the probability distribution for the quantity into account</li>
+</ul>
+<p>Do measures with such properties exist?</p>
+<p>They do. Indeed they are regularly used in Communication Theory and Information Theory, owing to the properties above. They even have <a href="https://www.iso.org/obp/ui/en/#!iso:std:63598:en">international standards</a> on their definition and measurement units. Before presenting them, let’s briefly present the mother of them all.</p>
+<section id="shannon-entropy" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="shannon-entropy">Shannon entropy</h3>
+<p>An agent with background knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span></span> has a belief distribution <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(Y\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})\)</span></span> about the (finite) quantity <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span> The agent’s uncertainty about the value of <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> can be quantified by the <span class="blue"><strong>Shannon entropy</strong></span>:</p>
+<p><span class="math display">\[
+\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \coloneqq-\sum_y \mathrm{P}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\, \log_2 \mathrm{P}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\]</span></p>
+<p>whose unit is the <em>shannon</em> (symbol <span style="display:inline-block;"><span class="math inline">\(\mathrm{Sh}\)</span>)</span> when the logarithm is in base&nbsp;2, as above.</p>
+<p>Shannon entropy lies at the foundation of the whole fields of Information Theory and Communication Theory, and would require a lengthy discussion. Let’s just mention some of its properties and meanings:</p>
+<ul>
+<li><p>It also quantifies the information <em>gained</em> by the agent, if it acquires knowledge about the value of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p></li>
+<li><p>It is always positive or zero.</p></li>
+<li><p>It is zero if, and only if, the agent knows the value of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> that is, if the probability distribution for <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> gives 100% to one value and 0% to all others.</p></li>
+<li><p>Its maximum possible value is <span style="display:inline-block;"><span class="math inline">\(\log_2 N\)</span>,</span> where <span style="display:inline-block;"><span class="math inline">\(N\)</span></span> is the number of possible values of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span> This maximum is attained by the uniform distribution for <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p></li>
+<li><p>The value (in shannons) of the Shannon entropy can be interpreted as the number of binary digits that we lack for correctly identifying the value of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> if the possible values were listed as integers in binary format. Alternatively, a Shannon entropy equal to&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(h\,\mathrm{Sh}\)</span>&nbsp;&nbsp;is</span> equivalent to being fully uncertain among <span style="display:inline-block;"><span class="math inline">\(2^h\)</span></span> possible alternatives.</p></li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><img src="shannon.png" class="img-fluid" style="width:100.0%"> Plot of the Shannon entropy for a binary quantity <span style="display:inline-block;"><span class="math inline">\(Y\in\set{1,2}\)</span>,</span> for different distributions <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}1\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span></span></p>
+</div></div><p><br>
+</p>
+<p>Here are the two most useful measures of “relevance” or “importance”, both based on the Shannon entropy:</p>
+</section>
+<section id="conditional-entropy" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="conditional-entropy">Conditional entropy</h3>
+<div class="page-columns page-full"><p>The <span class="blue"><strong>conditional entropy</strong></span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> of a quantity <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> given a quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and additional knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> is defined as</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;or “equivocation” according to ISO standard</p></li></div></div>
+<div class="column-page-inset-right">
+<p><span class="math display">\[
+\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}) \coloneqq
+-\sum_x \sum_y
+\mathrm{P}( X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\cdot
+\mathrm{P}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})\,
+\log_2 \mathrm{P}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})
+\]</span></p>
+</div>
+<p>and, as defined above, is measured in <em>shannons</em> (symbol <span style="display:inline-block;"><span class="math inline">\(\mathrm{Sh}\)</span>).</span></p>
+<p>It satisfies the three requirements: (1) different additional knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> corresponding to different contexts, leads to different probabilities; (2) if the quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> can be split into two component quantities, it can be proved that the conditional entropy given them jointly is more than the sum of the conditional entropies given them individually; (3) the probability distribution for <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> explicitly appears in its definition.</p>
+<p>It has several remarkable properties:</p>
+<ul>
+<li><p>If knowledge of <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> is completely determined by that of <span style="display:inline-block;"><span class="math inline">\(X\)</span>,</span> that is, if <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> is a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span>,</span> then the conditional entropy <span style="display:inline-block;"><span class="math inline">\(\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})\)</span></span> is zero. Vice versa, if the conditional entropy is zero, then <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> must be a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span>.</span></p></li>
+<li><p>If knowledge of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> is irrelevant, in the sense of <a href="#sec-indep-quantities">§ &nbsp;<span>18.2</span></a>, to knowledge of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> then the conditional entropy <span style="display:inline-block;"><span class="math inline">\(\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})\)</span></span> takes on its maximal value, determined by the marginal probability for <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span> Vice versa, if the conditional entropy takes on its maximal value, then <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> is irrelevant to <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p></li>
+<li><p>The value (in shannons) of the conditional entropy has the same meaning as for the Shannon entropy: if the conditional entropy amounts to <span style="display:inline-block;"><span class="math inline">\(h\,\mathrm{Sh}\)</span>,</span> then after knowing <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> our uncertainty about <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> is the same as if we were fully uncertain among <span style="display:inline-block;"><span class="math inline">\(2^h\)</span></span> possible alternatives.</p></li>
+</ul>
+<p>For instance, in the case of <a href="#tbl-distr-entropy">table &nbsp;<span>18.1</span></a>, the conditional entropy has the following values in the three scenarios:</p>
+<ol type="1">
+<li><p><span class="math inline">\(\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_1) = 0.01\,\mathrm{Sh}\)</span> , almost zero; indeed <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> can almost be considered a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> in this case.</p></li>
+<li><p><span class="math inline">\(\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_2) = 0.99\,\mathrm{Sh}\)</span> , almost 1; indeed in this case we are approximately uncertain between two values of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p></li>
+<li><p><span class="math inline">\(\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_3) = 0.5\,\mathrm{Sh}\)</span> ; indeed this case is intermediate between the previous two.</p></li>
+</ol>
+</section>
+<section id="mutual-information" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="mutual-information">Mutual information</h3>
+<div class="page-columns page-full"><p>Suppose that, according to background knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> for any value of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> there’s a 100% probability that <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> has one and the same value, say <span style="display:inline-block;"><span class="math inline">\(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}1\)</span>.</span> The conditional entropy <span style="display:inline-block;"><span class="math inline">\(\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})\)</span></span> is then zero. In this case it is true that <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> is formally a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span>.</span> But it is also true that we could perfectly predict <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> without any knowledge of <span style="display:inline-block;"><span class="math inline">\(X\)</span>.</span> The observed value of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> didn’t really help us in forecasting <span style="display:inline-block;"><span class="math inline">\(Y\)</span>;</span> in other words, <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> is not relevant for inference about <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;There’s no contradiction with the second “remarkable property” previously discussed: in this case the maximal value that the conditional entropy can take is zero.</p></li></div></div>
+<p>If we are interested in quantifying how much our knowledge about <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> “helped” in inferring <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> we can subtract the conditional entropy for <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> given <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> from the maximum value it would have if <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> were unavailable.</p>
+<div class="page-columns page-full"><p>This is the <span class="blue"><strong>mutual information</strong></span><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> of a quantity <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> given a quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and additional knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>.</span> It is defined as</p><div class="no-row-height column-margin column-container"><li id="fn3"><p><sup>3</sup>&nbsp;or “mean transinformation content” according to ISO standard</p></li></div></div>
+<div class="column-page-inset-right">
+<p><span class="math display">\[
+\mathrm{H}(Y : X\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \coloneqq
+\sum_x \sum_y
+\mathrm{P}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \mathbin{\mkern-0mu,\mkern-0mu}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\,
+\log_2 \frac{\mathrm{P}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \mathbin{\mkern-0mu,\mkern-0mu}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})}{
+\mathrm{P}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\cdot
+\mathrm{P}(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+}
+\]</span></p>
+</div>
+<p>and, as defined above, is also measured in <em>shannons</em>. It also satisfies the three requirements for a measure of “importance”. Its properties are somehow complementary to those of the conditional entropy:</p>
+<ul>
+<li><p>If <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> are independent, in the sense of <a href="#sec-indep-quantities">§ &nbsp;<span>18.2</span></a>, then their mutual information is zero. Vice versa, if it is zero, then <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> are independent.</p></li>
+<li><p>If knowledge of <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> is completely determined by that of <span style="display:inline-block;"><span class="math inline">\(X\)</span>,</span> that is, if <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> is a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span>,</span> then their mutual information attains its maximal value (which could be zero). Vice versa, if the mutual information attains its maximal value, then <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> must be a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span>.</span></p></li>
+<li><p>If the mutual information between <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> amounts to <span style="display:inline-block;"><span class="math inline">\(h\,\mathrm{Sh}\)</span>,</span> then knowledge of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> <em>reduces, on average, <span class="math inline">\(2^h\)</span>-fold times</em> the possibilities regarding the value of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p></li>
+<li><p>It is symmetric in the roles of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> that is, <span style="display:inline-block;"><span class="math inline">\(\mathrm{H}(Y : X\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = \mathrm{H}(X : Y\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>.</span></p></li>
+</ul>
+<p>In the case of <a href="#tbl-distr-entropy">table &nbsp;<span>18.1</span></a>, the mutual information has the following values in the three scenarios:</p>
+<ol type="1">
+<li><p><span class="math inline">\(\mathrm{H}(Y : X\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_1) = 1.61\,\mathrm{Sh}\)</span> , almost equal to the maximal value achievable in this scenario (<span style="display:inline-block;"><span class="math inline">\(1.62\,\mathrm{Sh}\)</span>);</span> indeed <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> can almost be considered a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> in this case. Since <span style="display:inline-block;"><span class="math inline">\(2^{1.61}\approx 2.1\)</span>,</span> knowledge of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> roughly halves the number of possible values of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p></li>
+<li><p><span class="math inline">\(\mathrm{H}(Y : X\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_2) = 0.81\,\mathrm{Sh}\)</span> ; this means that knowledge of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> reduces by <span style="display:inline-block;"><span class="math inline">\(2^{0.81}\approx 1.8\)</span></span> or almost 2 times the number of possible values of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p></li>
+<li><p><span class="math inline">\(\mathrm{H}(Y : X\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_3) = 1.5\,\mathrm{Sh}\)</span> ; knowledge of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> reduces by <span style="display:inline-block;"><span class="math inline">\(2^{1.5} \approx 2.8\)</span></span> or almost 3 times the number of possible values of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p></li>
+</ol>
+</section>
+<section id="uses" class="level3">
+<h3 class="anchored" data-anchor-id="uses">Uses</h3>
+<p>Whether to use the conditional entropy <span style="display:inline-block;"><span class="math inline">\(\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})\)</span></span> or the mutual information <span style="display:inline-block;"><span class="math inline">\(\mathrm{H}(Y : X\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span></span> depends on the question we are asking.</p>
+<p>Conditional entropy is the right choice if we want to quantify how much <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> can be considered as a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> – including the special case of a constant function. It is also the right choice if we want to know how many binary-search iterations it would take to find <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> on average, once <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> is known.</p>
+<p>Mutual information is the right choice if we want to quantify how much the knowledge of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> helps, on average, on finding <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> or equivalently how many additional binary-search iterations it would take to find <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> if <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> were not known.</p>
+<p>If we simply want to rank the relative importance of alternative quantities <span style="display:inline-block;"><span class="math inline">\(X_1\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(X_2\)</span>,</span> etc. in inferring <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> then the two measures are equivalent and yield the same ranking, since they basically differ by a common zero point.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-book" aria-label="book"></i> Study reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Chapter&nbsp;8 of <a href="https://hvl.instructure.com/courses/25074/modules/items/660092"><em>Information Theory, Inference, and Learning Algorithms</em></a></p></li>
+<li><p>§ 12.4 of <a href="https://hvl.instructure.com/courses/25074/modules/items/660089"><em>Artificial Intelligence</em></a></p></li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-utility-importance" class="level2" data-number="18.6">
+<h2 data-number="18.6" class="anchored" data-anchor-id="sec-utility-importance"><span class="header-section-number">18.6</span> Utility Theory to quantify relevance and importance</h2>
+<p>The entropy-based measures discussed in the previous section originate from, have deep connections with, the problem of repeated communication or signal transmission. They do not require anything else beside joint probabilities. In a general decision problem – where an agent has probabilities <em>and utilities</em> – another approach is required, however.</p>
+<p>Questions such as <span style="display:inline-block;">“What happens if I discard quantity <span class="math inline">\(X\)</span> in my inference?”</span> or <span style="display:inline-block;">“If I have to choose between quantity <span class="math inline">\(U\)</span> and quantity <span class="math inline">\(V\)</span> to condition my inference, which one should I choose?”</span> are actually <em>decision-making problems</em>. They must therefore be solved using Decision Theory (this is an example of the recursive capabilities of Decision Theory, discussed in <a href="framework.html#sec-decision-theory">§ &nbsp;<span>2.4</span></a>).</p>
+<p>The application of decision theory in these situations if often intuitively understandable. For example, if we need to rank the importance of quantities <span style="display:inline-block;"><span class="math inline">\(U\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(V\)</span>,</span> we can calculate how much the expected utility would decrease if we discarded the one or the other.</p>
+<p>We’ll come back to these questions toward the end of the course.</p>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./conditional_probability.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probability and learning</span></span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./2nd_connection_ML.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title"><span class="red">Third connection with machine learning</span></span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

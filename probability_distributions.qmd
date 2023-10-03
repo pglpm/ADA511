@@ -1,13 +1,21 @@
 # [Probability distributions]{.green} {#sec-prob-distribs}
 {{< include macros.qmd >}}
 
-[*(Make sure you're familiar with [§ @sec-quantities-types-basic] before you begin.)*]{.small style="color:#EE6677;"}
+## [Motivation for the "Inference II" part]{.green} {.unnumbered}
+
+In the "[Data I]{.yellow}" part we developed a "language", that is, particular kinds of sentences, to approach inferences and probability calculations typical of data-science and engineering problems.
+
+In the present part we focus on probability calculations that often occur with this kind of sequences, and on useful visual representation of such probabilities. Still, at bottom we're just using the four fundamental rules of inference over and over again -- nothing more than that.
+
+----
+
+\
 
 ## Distribution of probabilities among values
 
 When an agent is uncertain about the value of a quantity, its uncertainty is expressed and quantified by assigning a degree of belief, conditional on the agent's knowledge, to all the possible cases regarding the true value.
 
-For a temperature measurement, for instance, the cases could be "[The temperature is measured to have value 271 K]{.green}", "[The temperature is measured to have value 272 K]{.green}", and so on up to 275 K. These cases are expressed by mutually exclusive and exhaustive sentences. Denoting th temperature with $T$, these sentences can be abbreviated as
+For a temperature measurement, for instance, the cases could be "[The temperature is measured to have value 271 K]{.green}", "[The temperature is measured to have value 272 K]{.green}", and so on up to 275 K. These cases are expressed by mutually exclusive and exhaustive sentences. Denoting the temperature with $T$, these sentences can be abbreviated as
 
 $$
 {\green T = 271\,\mathrm{K}} \ , \quad
@@ -68,18 +76,18 @@ $$
 \end{gathered}
 $$
 
-Prove, using the fundamental rules of inferences and any derived rules from [§ @sec-probability], that we must then have
+Prove, using the fundamental rules of inferences and any derived rules from [§ @sec-probability], that we must then have
 
 $$
 \P(\yX_1 \| \yI) + \P(\yX_2 \| \yI) + \P(\yX_3 \| \yI) = 1
 $$
 :::
 
-Let's see how probability distributions can be represented and visualized for the basic types of quantities discussed in [§ @sec-quantities-types-basic].
+Let's see how probability distributions can be represented and visualized for the basic types of quantities discussed in [§ @sec-quantities-types-basic].
 
 We start with probability distributions over discrete domains.
 
-## Discrete probability distributions
+## Discrete probability distributions {#sec-discr-prob-distr}
 
 ### Tables and functions
 
@@ -104,7 +112,7 @@ A graphical representation is often helpful to detect features, peculiarities, a
 
 ### Histograms and area-based representations
 
-A probability distribution for a nominal, ordinal, and discrete interval quantity can be neatly represented by a [**histogram**]{.blue}.
+A probability distribution for a nominal, ordinal, and discrete-interval quantity can be neatly represented by a [**histogram**]{.blue}.
 
 :::{.column-margin}
 ![Histogram for the probability distribution over possible component failures](example_histogram.png){width=100%}
@@ -124,23 +132,25 @@ Nominal quantities do not have any specific order, so their values do not need t
 
 ### Line-based representations
 
-Histograms give faithful representations of discrete probability distributions. Their graphical bulkiness, however, can be a disadvantage in some situations; for instance when we want to have a clearer idea of how the probability distribution varies across values (for ordinal or interval quantities); or when
+Histograms give faithful representations of discrete probability distributions. Their graphical bulkiness, however, can be a disadvantage in some situations; for instance when we want to have a clearer idea of how the probability distribution varies across values for ordinal or interval quantities; or when
 we want to compare several probability distributions over the same values.
 
-:::{.column-margin}
+In these cases we can use standard line plots, or variations thereof. Compare the following example.
+
+A technician wonders which component of a laptop failed first (only one can fail at a time), with seven possible alternatives (this is a nominal quantity): $\set{\cat{hard-drive}, \cat{motherboard}, \cat{CPU}, \cat{keyboard}, \cat{screen}, \cat{graphics-card}, \cat{PCI}}$. Before examining the laptop, the technician's belief about which component failed first is distributed among the seven alternatives as in the [blue histogram with solid borders]{.blue}. After a first inspection of the laptop, the technician's belief has a new distribution, as in the [red histogram with dashed borders]{.red}:
+
 ![](example_histogram_double.png){width=100%}
-Representation of the same pair of probability distributions with a histogram plot and a line plot
+
+It requires some concentration to tell the two probability distributions apart, and for example understand where their peaks are. Let us represent them by two line plots instead: [solid blue with circles]{.blue} for the pre-inspection belief distribution, and [dashed red with squares]{.red} for the post-inspection one:
+
 ![](example_curve_double.png){width=100%}
-:::
 
-In these cases we can use standard line plots, or variations thereof. Compare the examples on the margin figure: the line plot displays more cleanly the differences between the "before-inspection" and "after-inspection" probability distributions.
-
+this line plot displays more cleanly the differences between the two distributions. We see that at first the technician most strongly believed the $\cat{keyboard}$ to be the faulty candidate, followed by the $\cat{PCI}$. After the preliminary inspection, the technician most strongly believes the $\cat{PCI}$ to be the faulty candidate, followed by the $\cat{graphics card}$.
 
 
+<!-- ## Probability distributions over infinite discrete values -->
 
-## Probability distributions over infinite discrete values
-
-@@ TODO
+<!-- [@@ TODO]{.small .grey} -->
 
 
 
@@ -148,7 +158,7 @@ In these cases we can use standard line plots, or variations thereof. Compare th
 
 Distributions of probability over continuous domains present several counter-intuitive aspects, which essentially arise because we are dealing with uncountable infinities -- while often still using linguistic expressions that make at most sense for countable infinities. Here we follow a practical and realistic approach for working with such distributions.
 
-Consider a quantity [$X$]{.green} with a continuous domain. When we say that such a quantity has some value [$x$]{.green} we really mean that it has a value somewhere in the range\ \  [$x -\epsilon/2$\ \ to\ \ $x+\epsilon/2$]{.green},\ \  where the width $\epsilon$ is usually extremely small. For example, for [double-precision](https://rdrr.io/r/base/double.html) values stored in a computer, the width must be at least $\epsilon \approx 2\cdot 10^{-16}$ :
+Consider a quantity [$X$]{.green} with a continuous domain. When we say that such a quantity has some value [$x$]{.green} we really mean that it has a value somewhere in the range\ \  [$x -\epsilon/2$\ \ to\ \ $x+\epsilon/2$]{.green},\ \  where the width $\epsilon$ is usually extremely small. For example, for [double-precision](https://rdrr.io/r/base/double.html) values stored in a computer, the width^[more precisely the relative width] must be at least $\epsilon \approx 2\cdot 10^{-16}$ :
 
 ```r
 ## R code
@@ -210,19 +220,38 @@ It is important not to mix up probability and probability *densities*: we shall 
 
 A helpful practice (though followed by few texts) is to always write a probability density as
 
-$$\p(X\mo x \| \yI)\,\di x$$
+$$\p(X\mo x \| \yI)\,\di X$$
 
-where "$\di x$" stands for the width of a small range around $x$. This notation is also helpful with integrals. Unfortunately it becomes a little cumbersome when we are dealing with more than one quantity.
+where "$\di X$" stands for the width of a small range around $x$. This notation is also helpful with integrals. Unfortunately it becomes a little cumbersome when we are dealing with more than one quantity.
 
-## Representation of probability densities {#sec-represent-probs}
+### Physical dimensions and units
+
+In the [International System of Units (SI)](https://www.nist.gov/pml/owm/metric-si/si-units)^[see also the material at the [International Bureau of Weights and Measures (BIPM)](https://www.bipm.org/en/measurement-units)], "Degree of belief" is considered to be a dimensionless quantity, or more precisely a quantity of dimension "1". This is why we don't write units such as "metres" ($\mathrm{m}$), "kilograms" ($\mathrm{kg}$) or similar together with a probability value.
+
+A probability *density*, however, is defined as the ratio of a probability amount and an interval $\epsilon$ of some quantity. This latter quantity might well have physical dimensions, say "metres" $\mathrm{m}$. Then the ratio, which is the probability density, has dimensions $1/\mathrm{m}$. So [*probability densities in general have physical dimensions*]{.blue}.
+
+As another example, suppose that an agent with background knowledge $\yI$ assigns a degree of belief $0.00012$ to an interval of temperature of width $0.0001\,\mathrm{°C}$, around the temperature $T = 20\,\mathrm{°C}$. Then the probability *density* at $20\,\mathrm{°C}$ is equal to
+
+$$
+\p(T \mo 20\mathrm{°C} \| \yI) =
+\frac{0.00012}{0.0001\,\mathrm{°C}} = 1.2\,\mathrm{°C^{-1}}
+$$
+
+It is an error to report probability densities without their correct physical units. In fact, keeping track of these units is often useful for consistency checks and finding errors in calculations, just like in other engineering or physics calculations.
+
+On the other hand, if we write probability densities as previously suggested, in this case as "$\p(T \mo 20\mathrm{°C} \| \yI)\,\di T$", then the density written this way is a pure probability: the units "$\mathrm{°C^{-1}}$" disappear because multiplied by $\di T$, which has the inverse units $\mathrm{°C}$.
+
+
+
+## Representation of probability densities {#sec-represent-dens}
 
 ### Line-based representations
 
 The histogram and the line representations become indistinguishable for a probability density.
 
-If we represent the probability $P$ assigned to a small range of width $\epsilon$ as the area of a rectangle, and the width of the rectangle is equal to $\epsilon$, then the height $P/\epsilon$ of the rectangle is numerically equal to the probability density. The difference from histograms for discrete quantities lies in the values reported on the vertical axis: for discrete quantities the values are *probabilities* (the areas of the rectangles), but for continuous quantities they are probability *densities* (the heights of the rectangles). This is also evident from the fact that the values reported on the vertical axis can be larger than 1, as in the plots on the side.
+If we represent the probability $P$ assigned to a small range of width $\epsilon$ as the area of a rectangle, and the width of the rectangle is equal to $\epsilon$, then the height $P/\epsilon$ of the rectangle is numerically equal to the probability density. The difference from histograms for discrete quantities lies in the values reported on the vertical axis: for discrete quantities the values are *probabilities* (the *areas* of the rectangles), but for continuous quantities they are probability *densities* (the *heights* of the rectangles). This is also evident from the fact that the values reported on the vertical axis can be larger than 1, as in the plots on the side.
 
-The rectangles, however, are so thin (usually thinner than a pixel on a screen) that they appear just as vertical lines, and together they look just like a curve delimiting a coloured area. If we don't colour the area underneath we just have a line-based representation of the probability density.
+The rectangles, however, are so thin (usually thinner than a pixel on a screen) that they appear just as vertical lines, and together they look just like a curve delimiting a coloured area. If we don't colour the area underneath we just have a line-based, or rather curve-based, representation of the probability density.
 
 :::{.column-margin}
 ![](example_histo_density_0.08.png){width=100%}
@@ -231,7 +260,9 @@ The rectangles, however, are so thin (usually thinner than a pixel on a screen) 
 As the width $\epsilon$ of the small ranges is decreased, a histogram based on these widths become indistinguishable from a line plot
 :::
 
-### Scatter plots
+It can be good to keep in mind that the curve representing the probability density is *not quite a function* -- in fact it's best to call it a "density" or a "density function". There are important reasons for keeping this distinction, which have also consequences for probability calculations, but we shall not delve into them in this course.
+
+### Scatter plots {#sec-scatter-plot}
 
 Line plots of a probability density are very informative, but they can also be slightly deceiving. Try the following experiment.
 
@@ -268,13 +299,13 @@ As the experiment and exercise above may have demonstrated, line plots sometimes
 
 Scatter plots are also useful for representing probability densities in more than one dimension -- sometimes even in infinite dimensions! They can moreover be easier to produce computationally than line plots.
 
-@@ TODO Behaviour of representations under transformations of data.
+<!-- [@@ TODO Behaviour of representations under transformations of data.]{.small .grey} -->
 
 \
 
 ::: {.callout-caution}
-## {{< fa book >}} Reading
-- §§ 5.3--5.3.1 of [*Risk Assessment and Decision Analysis with Bayesian Networks*](https://hvl.instructure.com/courses/25074/modules/items/664427)
+## {{< fa book >}} Study reading
+- §§ 5.3.0--5.3.1 of [*Risk Assessment and Decision Analysis with Bayesian Networks*](https://hvl.instructure.com/courses/25074/modules/items/664427)
 :::
 
 
@@ -284,7 +315,7 @@ Scatter plots are also useful for representing probability densities in more tha
 
 A probability distribution is defined over a set of mutually exclusive and exhaustive sentences. In some inference problems, however, we do not need the probability of those sentences, but of some other sentence that can be obtained from them by an `or` operation. The probability of this sentence can then be obtained by a sum, according to the `or`-rule of inference. We can call this a *combined probability*. Let's explain this procedure with an example.
 
-Back to our initial assembly-line scenario from [§ @sec-intro], the inference problem was to predict whether a specific component would fail within a year or not. Consider the time when the component will fail (if sold), and represent it by the quantity $T$ with the following 24 different values, where "$\mathrm{mo}$" stands for "months":
+Back to our initial assembly-line scenario from [§ @sec-intro], the inference problem was to predict whether a specific component would fail within a year or not. Consider the time when the component will fail (if sold), and represent it by the quantity $T$ with the following 24 different values, where "$\mathrm{mo}$" stands for "months":
 
 $$\begin{aligned}
 &\pr{The component will fail during it 1st month of use}\\
@@ -370,7 +401,7 @@ Using your favourite programming language:
 - Load the [`csv` file](datasets/failure_probability.csv) containing the probabilities.
 - Inspect this file, find the headers of its columns and so on.
 - Calculate the probability that the component will fail within a year of use.
-- Calculate the probability that the component will fail "within two months or use or after a year of use".
+- Calculate the probability that the component will fail "within two months of use, or after a year of use".
 :::
 
 

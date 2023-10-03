@@ -1,0 +1,455 @@
+# [Monty Hall and related inference problems]{.green} {#sec-monty}
+{{< include macros.qmd >}}
+{{< include macros_monty.qmd >}}
+
+## Motivation: calculation vs intuition {#sec-monty-motivation}
+
+The "Monty Hall problem", inspired by the TV show *Let's make
+  a deal!* hosted by Monty Hall, was proposed in the [*Parade* magazine
+in 1990](https://hvl.instructure.com/courses/25074/modules/items/701201) (the numbers of the doors are changed here):
+
+> Suppose you are on a game show and given a choice of three doors. Behind one is a car; behind the others are goats. You pick door No. 1, and the host, who knows what is behind them [and wouldn't open the door with the car], opens No. 2, which has a goat. He then asks if you want to pick No. 3. Should you switch?
+
+:::{.column-margin}
+![](letsmakeadeal70sdoors.jpg){width=100%}
+:::
+
+
+The web is full of insightful intuitive solutions and of informal probability discussions about this inference problem. Our purpose here is different: we want to solve it *mechanically*, just by applying the fundamental rules of inference ([§ @sec-fundamental]) and the shortcut rules ([§ @sec-derived-rules]) derived from them. This purpose has two main reasons:
+
+- We want to be able to implement or encode the procedure algorithmically in an AI agent.
+
+- We generally cannot ground inferences on intuition. Intuition is shaky ground, and hopeless in data-science inference problems involving millions of data with thousands of numbers. To solve such complex problems we need to use a more mechanical procedure *mathematically guaranteed* to be self-consistent. That's the probability calculus. Intuition is useful either for arriving at a method which we can eventually prove, by mathematical and logical means, to be correct; or for approximately explaining a method that we already know, again by mathematical and logical means, to be correct.
+
+:::{.callout-warning}
+## {{< fa exclamation-circle >}} Misleading intuition in high dimensions
+As an example of our intuition can be completely astray in problems involving many data dimensions, consider the following fact.
+
+Take a one-dimensional Gaussian distribution of probability. You have probably heard that the probability that a data point is within a distance of three standard deviations from the peak is approximately $99.73\%$. If we take a two-dimensional (symmetric) Gaussian distribution, the probability that a data point (two real numbers) is within three standard deviations from the peak is $98.89\%$ -- slightly less that the one-dimensional case. For a three-dimensional Gaussian, the probability that a data point (three real numbers) is within three standard deviations from the peak is $97.07\%$ -- slightly smaller yet.
+
+Now try to answer this question: for a *100-dimensional* Gaussian, what is the probability that a data point is within three standard deviations from the peak? The answer is $\boldsymbol{(1.83 \cdot 10^{-32})\%}$. This probability is so small that you would never observe a data point within three standard deviations from the peak, even if you checked one data point every second for the same duration as the present age of the universe -- which is "only" around $4\cdot 10^{17}$ seconds.
+:::
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+For further examples of our intuition leads us astray in high dimensions see
+
+- [Counterintuitive Properties of High Dimensional Space](https://marckhoury.github.io/blog/counterintuitive-properties-of-high-dimensional-space/)
+
+- Exercise 2.20 (and its solution) in [*Information Theory, Inference, and Learning Algorithms*](https://hvl.instructure.com/courses/25074/modules/items/660092)
+:::
+::::
+
+
+
+
+
+It is instructive, however, if you also check what your intuition told you about the problem:
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Examine what your intuition tells you the answer should be,
+without spending too much time thinking, just as if you were on the game
+show. Examine which kind of heuristics your intuition uses. If you already
+know the solution to this puzzle, try to remember what your intuition told
+you the first time you faced it. Keep your observations in mind for later
+on.
+:::
+
+## Which agent? whose knowledge? {#sec-monty-agent}
+
+A sentence can be assigned different probabilities by different agents having different background information, although in some cases different background information can still lead to numerically equal probabilities.
+
+In the present case, who's the agent solving the inference problem? And what background information does it have?
+
+From the problem statement it sounds like you are the agent; but we can imagine that you have programmed an AI agent having your same background information, and ready to make the decision for you.
+
+We must agree on which background information $\yH$ to give to this agent. Let's define $\yH$ as the knowledge you have right *before* picking door 1. We make this choice so that we can add your door pick as additional information.
+
+
+## Define the atomic sentences relevant to the problem {#sec-monty-sentences}
+
+The following sentences seem sufficient:
+
+$$
+\begin{aligned}
+\yH &\defd \text{\small[the background knowledge discussed in the previous section]}
+\\[1ex]
+\car{1} &\defd \pr{The car is behind door 1}
+\\
+\you{1} &\defd \pr{You initially pick door 1}
+\\
+\host{2} &\defd \pr{The host opens door 2}
+\\
+&\text{\small and similarly for the other door numbers}
+\end{aligned}
+$$
+
+We could have used other symbols for the sentences, for instance "$C_1$" instead of "$\car{1}$"; the specific symbol choice doesn't matter. We could also have stated the sentences slightly differently, for instance "[You choose door 1 at the beginning of the game]{.midgrey}"; what's important is that we understand and agree on the meaning of the atomic sentences above.
+
+
+## Specify the desired inference {#sec-monty-goal}
+
+We want the probability of the sentences $\car{1}$, $\car{2}$, $\car{3}$, given the knowledge that you picked door 1 ($\you{1}$), that the host opened door 2 ($\host{2}$), and the remaining background knowledge ($\yH$). So in symbols we want the values of the following probabilities:
+
+$$
+\begin{aligned}
+&\P(\car{1} \| \host{2} \and \you{1} \and \yH)
+\\
+&\P(\car{2} \| \host{2} \and \you{1} \and \yH)
+\\
+&\P(\car{3} \| \host{2} \and \you{1} \and \yH)
+\end{aligned}
+$$
+
+You may object: "but we already know that there's no car behind door 2, the one opened by the host; so that probability is 0%". That's correct, but how did you arrive at that probability value? Remember our goal: to solve this inference mechanically. That intuitive probability therefore must either appear as an initial probability, or be derived via the inference rules. No intuitive shortcuts.
+
+
+## Specify all initial probabilities {#sec-monty-prior}
+
+As discussed in [§ @sec-inference-origin], any inference -- logical or uncertain -- can only be derived from other inferences, or taken for granted as a starting point ("initial probability", or "axiom" in logic). The only inferences that don't need any initial probabilities are tautologies. We must write down explicitly the initial probabilities implicit in the present inference problem:
+
+- The car is for sure behind one of the three doors, and cannot be behind more than one door:
+
+    $$
+\begin{gathered}
+\P(\car{1} \lor \car{2} \lor \car{3} \| \yH) = 1
+\\[1ex]
+\P(\car{1} \and \car{2} \| \yH) =
+\P(\car{1} \and \car{3} \| \yH) =
+\P(\car{2} \and \car{3} \| \yH) = 0
+\end{gathered}
+$$
+
+    Remember from the shortcut rule for the stability of truth and falsity ([§ @sec-truth-stable]) that the $1$ and $0$ probabilities above do not change if we `and` additional information to $\yH$.
+
+- The host cannot open the door you picked or the door with the car. This translates in several initial probabilities; here are some:
+
+    $$\begin{gathered}
+\P(\host{2} \| \car{2} \and \you{1} \and \yH) = 0
+\\[1ex]
+\P(\host{1} \| \car{3} \and \you{1} \and \yH) =
+\P(\host{3} \| \car{3} \and \you{1} \and \yH) = 0
+	\end{gathered}
+	$$
+
+- The host must open one door, and cannot open more than one door:
+
+    $$
+\begin{gathered}
+\P(\host{1} \lor \host{2} \lor \host{3} \| \yH) = 1
+\\[1ex]
+\P(\host{1} \and \host{2} \| \yH) =
+\P(\host{1} \and \host{3} \| \yH) =
+\P(\host{2} \and \host{3} \| \yH) = 0
+\end{gathered}
+$$
+
+\
+
+The probabilities above are all quite clear from the description of the inference problem. But implicit in that description are some more probabilities that will be needed in our inference. The values of these probabilities can be more open to debate, because the problem, as stated, provides ambiguous information. Later you shall explore possible alternative values for these probabilities.
+
+- It is equally probable that the car is behind any of the three doors, and your initial pick doesn't change this uncertainty:
+
+    $$\begin{aligned}
+\P(\car{1} \| \yH) &= \P(\car{1} \| \you{1} \and \yH) = 1/3
+\\
+\P(\car{2} \| \yH) &= \P(\car{2} \| \you{1} \and \yH) = 1/3
+\\
+\P(\car{3} \| \yH) &= \P(\car{3} \| \you{1} \and \yH) = 1/3
+	\end{aligned}
+	$$
+
+- If the host can choose between two doors (because the car is behind the door you picked initially), we are equally uncertain about the choice:
+
+    $$
+\P(\host{2} \| \car{1} \and \you{1} \and \yH) =
+\P(\host{3} \| \car{1} \and \you{1} \and \yH) = 1/2
+	$$
+
+This probability could be analysed into further hypotheses. Maybe the host, out of laziness, could more probably open the door that's closer. But from the problem it isn't fully clear which one is closer. The host could also more probably open the door that's further from the one you choose. The host could have a predetermined scheme on which door to open. The hypotheses are endless; we can imagine some making $\host{2}$ more probable, and some making $\host{3}$ more probable, conditional on $\you{1} \land \car{1} \land \yH$. The probability of 50% seems like a good compromise. Later we shall examine the effects of changing this probability.
+
+
+### Some peculiar probabilities {#sec-monty-youprob}
+
+We defined the background knowledge $\yH$ as the one you have right *before* choosing door 1. We did this so that the sentence $\you{1}$, expressing your door pick, can be added as additional information: $\you{1}\land \yH$.
+
+Then it is legitimate to ask: what is the probability that you pick door 1, given only the background information $\yH$:
+
+$$\P(\you{1}\| \yH)\ ?$$
+
+To answer this question we would need to specify $\yH$ more in detail. For instance it is possible that you planned to pick door 1 already the day before. In this case we would have $\P(\you{1}\| \yH) = 1$ or very nearly so. Or you could pick door 1 right on the spot, with no clear conscious thought process behind your choice. In this case we would have $\P(\you{1}\| \yH) = 1/3$ or a similar value.
+
+Luckily in the present problem these probabilities are not needed or, if they are used, their numerical values turn out not to matter (they "cancel out").
+
+:::{.callout-warning}
+## {{< fa exclamation-circle >}} Silly literature
+Some texts on probability say that if you have decided something and therefore know it in advance for certain, then the probability of that something is undefined "because it is not random". Obviously this is nonsense. If you already know something, then the probability of that something is well-defined and its value is $100%$ -- or something short of this value, if you want to make allowance for the occurrence of unplanned events.
+:::
+
+## Solution {#sec-monty-solution}
+
+Let's try first to calculate $\P(\car{1} \| \host{2} \and \you{1} \and \yH)$, that is, the probability that the car is behind the door you picked.
+
+Seeing that we have several initial probabilities of the "$\P(\host{} \| \you{} \and \car{} \and \yH)$" form, we can use Bayes's theorem together with the "extension of the conversation" ([§ @sec-bayes-extension]) to swap the positions of "$\car{}$" and "$\host{}$" sentences between supposal and conditional. In the present case the exhaustive and mutually exclusive sentences are $\car{1}$, $\car{2}$, $\car{3}$:
+
+$$
+\begin{aligned}
+&\P(\car{1} \| \host{2} \and \you{1} \and \yH)
+\\[1ex]
+&\qquad=\frac{
+{\green\P(\host{2}\| \car{1} \and \you{1} \and \yH)} \cdot
+{\green\P(\car{1} \| \you{1} \and \yH)}
+}{
+\enspace\left[\,\begin{gathered}
+{\green\P(\host{2}\| \car{1} \and \you{1} \and \yH)} \cdot
+{\green\P(\car{1} \| \you{1} \and \yH)} +{}\\
+{\green\P(\host{2}\| \car{2} \and \you{1} \and \yH)} \cdot
+{\green\P(\car{2} \| \you{1} \and \yH)} +{}\\
+\P(\host{2}\| \car{3} \and \you{1} \and \yH) \cdot
+{\green\P(\car{3} \| \you{1} \and \yH)}
+\end{gathered}\,\right]\enspace
+}
+\\[1ex]
+&\qquad=\dotso
+\end{aligned}
+$$
+
+All probabilities in [green]{.green} are initial probabilities discussed in the previous steps. Let's substitute their values:
+
+$$
+\begin{aligned}
+&\qquad=\frac{
+{\green 1/2} \cdot
+{\green 1/3}
+}{
+\enspace\left[\,\begin{gathered}
+{\green 1/2} \cdot
+{\green 1/3} +{}\\
+{\green 0} \cdot
+{\green 1/3} +{}\\
+\P(\host{2}\| \car{3} \and \you{1} \and \yH) \cdot
+{\green 1/3}
+\end{gathered}\,\right]\enspace
+}
+\\[1ex]
+&\qquad=\frac{ 1/6
+}{
+1/6 +
+\P(\host{2}\| \car{3} \and \you{1} \and \yH) \cdot
+1/3
+}
+\\[1ex]
+&\qquad=\dotso
+\end{aligned}
+$$
+
+All that's left is to find $\P(\host{2}\| \car{3} \and \you{1} \and \yH)$. It's intuitively clear that this probability is 100%, because the host is forced to choose door 2 if you picked door 1 and the car is behind door 3. But our purpose is to make a full derivation starting from the initial probabilities only. We can find this probability by applying the `or`-rule and the `and`-rule to the probabilities that the host opens at least one door and cannot open more than one:
+
+$$
+\begin{aligned}
+&\P(\host{2}\| \car{3} \and \you{1} \and \yH)
+\\[1ex]
+&\qquad=
+\green\P(\host{2} \lor \host{1} \lor \host{3} \| \car{3} \and \you{1} \and \yH)
+\\
+&\qquad\quad{}-
+\green\P(\host{1} \| \car{3} \and \you{1} \and \yH)
+\\
+&\qquad\quad{}-
+\green\P(\host{3} \| \car{3} \and \you{1} \and \yH)
+\\
+&\qquad\quad{}+
+\green\P(\host{1} \and \host{2} \| \car{3} \and \you{1} \and \yH)
+\\
+&\qquad\quad{}+
+\green\P(\host{1} \and \host{3} \| \car{3} \and \you{1} \and \yH)
+\\
+&\qquad\quad{}+
+\green\P(\host{2} \and \host{3} \| \car{3} \and \you{1} \and \yH)
+\\
+&\qquad\quad{}-
+\green\P(\host{1} \and \host{2} \and \host{3} \| \car{3} \and \you{1} \and \yH)
+\\[1ex]
+&\qquad= 1 - 0 - 0 + 0 + 0 + 0 - 0 = 1
+\end{aligned}
+$$
+
+as expected.
+
+Finally, using this probability in our previous calculation we find
+
+$$
+\begin{aligned}
+&\P(\car{1} \| \host{2} \and \you{1} \and \yH)
+\\[1ex]
+&\qquad=\frac{ 1/6
+}{
+1/6 +
+\P(\host{2}\| \car{3} \and \you{1} \and \yH) \cdot
+1/3
+}
+\\[1ex]
+&\qquad=\frac{ 1/6
+}{
+1/6 +
+1 \cdot
+1/3
+}
+= \frac{1/6}{3/6} = \boldsymbol{\frac{1}{3}}
+\end{aligned}
+$$
+
+that is, there's a 1/3 probability that the car is behind the door we picked!
+
+\
+
+What about door 3, that is, the probability $\P(\car{1} \| \host{2} \and \you{1} \and \yH)$? Also in this case we can use Bayes's theorem with the extension of the conversation. The calculation is immediate, because we have already calculated all the relevant pieces:
+
+$$
+\begin{aligned}
+&\P(\car{3} \| \host{2} \and \you{1} \and \yH)
+\\[1ex]
+&\qquad=\frac{
+\P(\host{2}\| \car{3} \and \you{1} \and \yH) \cdot
+\P(\car{3} \| \you{1} \and \yH)
+}{
+\enspace\left[\,\begin{gathered}
+\P(\host{2}\| \car{1} \and \you{1} \and \yH) \cdot
+\P(\car{1} \| \you{1} \and \yH) +{}\\
+\P(\host{2}\| \car{2} \and \you{1} \and \yH) \cdot
+\P(\car{2} \| \you{1} \and \yH) +{}\\
+\P(\host{2}\| \car{3} \and \you{1} \and \yH) \cdot
+\P(\car{3} \| \you{1} \and \yH)
+\end{gathered}\,\right]\enspace
+}
+\\
+&\qquad=\frac{
+ 1 \cdot
+ 1/3
+}{
+\enspace\left[\,\begin{gathered}
+ 1/2 \cdot
+ 1/3 +{}\\
+ 0 \cdot
+1/3 +{}\\
+1
+\cdot
+ 1/3
+\end{gathered}\,\right]\enspace
+}
+\\[1ex]
+&\qquad=\frac{1/3}{1/2} = \boldsymbol{\frac{2}{3}}
+\end{aligned}
+$$
+
+that is, there's a 2/3 probability that the car is behind door 3. If we'd like to win the car we should then switch doors.
+
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Perform a similar calculation to find
+$\P(\car{2} \| \host{2} \and \you{1} \and \yH)$
+:::
+
+## Remarks on the use of Bayes's theorem {#sec-monty-remarks}
+
+The previous calculations may have been somewhat boring; but, again, the purpose was to see with our own eyes that the final result comes from the application of the four fundamental laws of inference to the initial probabilities -- and from nothing else.
+
+You notice that at several points our calculations could have taken a different path. For instance, in order to find $\P(\car{1} \| \host{2} \and \you{1} \and \yH)$ we applied Bayes's theorem to swap the sentences $\car{1}$ and $\host{2}$ in their supposal and conditional positions. Couldn't we have swapped $\car{1}$ and $\host{2}\land \you{1}$ instead? That is, couldn't we have made a calculation starting with
+
+$$
+\P(\car{1} \| \host{2} \and \you{1} \and \yH)
+=\frac{
+\P(\host{2} \and \you{1}\| \car{1} \and \yH) \cdot
+\P(\car{1} \| \yH)
+}{\dotso} \enspace ?
+$$
+
+after all this is also a legitimate application of Bayes's theorem.
+
+The answer is: yes, we could have; **and the final result would have been the same.** The self-consistency of the probability calculus guarantees that there are no "wrong steps", as long as every step is an application of one of the four fundamental rules (or of their shortcuts). The worst that can happen is that we take a longer route -- but to exactly the same result. In fact it's possible that there's a shorter calculation route to arrive at the probabilities that we found in the previous section. But it doesn't matter, because it would lead to the same result.
+
+## Sensitivity analysis {#sec-monty-sensitivity}
+
+In [§ @sec-monty-prior] we briefly discussed possible interpretations or variations of the Monty Hall problem, for which the probability that the host chooses among the available doors 2 and 3 (if the car is behind the door you picked) is different from 50%.
+
+When we are curious to know how an initial probability value can affect the final probabilities, we can leave its value as a variable, and check how the final probabilities change as we change this variable. This procedure is often called [**sensitivity analysis**]{.blue}. Try to do a sensitivity analysis for the Monty Hall problem:
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Instead of assuming
+
+$$\P(\host{2} \| \car{1} \and \you{1} \and \yH) =
+\P(\host{3} \| \car{1} \and \you{1} \and \yH) = 1/2$$
+
+assign a generic variable value $p$
+
+$$\P(\host{2} \| \car{1} \and \you{1} \and \yH) = p
+\qquad
+\P(\host{3} \| \car{1} \and \you{1} \and \yH) = 1-p$$
+
+where $p$ could be any value between $0$ and $1$.
+
+- Calculate $\P(\car{1} \| \host{2} \and \you{1} \and \yH)$ as done in the previous sections, but keeping $p$ as a generic variable. You therefore well find a probability $\P(\car{1} \| \host{2} \and \you{1} \and \yH)$ that depend numerically on $p$; it could be considered as a function of $p$
+
+- Plot how the value of $\P(\car{1} \| \host{2} \and \you{1} \and \yH)$ depends on $p$, as the latter ranges from $0$ to $1$.
+
+- For which range of values of $p$ is it convenient to switch door, that is, $\P(\car{1} \| \host{2} \and \you{1} \and \yH) < 1/2$ ?
+
+- Imagine and describe alternative scenarios or background information that would lead to specific values of $p$ different from $0.5$.
+:::
+
+## Variations and further exercises {#sec-monty-variations}
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise: other variations
+- In [§ @sec-monty-agent] we decided that the agent in this inference was you, with the knowledge $\yH$ right before you picked door 1. Try to change the agent: do you arrive at different probabilities?
+
+    + Consider a person in the audience, right before you picked door 1, as the agent, and re-solve the problem, adjusting all initial probabilities as needed.
+
+    + Consider the host as the agent, right before you picked door 1, and re-solve the problem, adjusting all initial probabilities as needed. Note that the host knows for certain where the car is, so you need to provide this additional, secret information. Consider the cases where the car is behind door 1 and behind door 3.
+
+\
+
+- Suppose a friend of yours backstage gave you partial information about the location of the car (you cheater!), which makes you believe that the car should be closer to door 1, and assign the probabilities
+
+    $$\begin{aligned}
+\P(\car{1} \| \yH') &= \P(\car{1} \| \you{1} \and \yH') = 1/3 + q
+\\
+\P(\car{2} \| \yH') &= \P(\car{2} \| \you{1} \and \yH') = 1/3
+\\
+\P(\car{3} \| \yH') &= \P(\car{3} \| \you{1} \and \yH') = 1/3 - q
+	\end{aligned}
+	$$
+	
+	with $0 \le q \le 1/3$ (this is different background information, so we denote $\yH'$). Re-solve the problem keeping the variable $q$, and find if there's any value for $q$ for which it's best to keep door 1.
+:::
+
+\
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise: making decisions
+In this chapter we only solved the *inference* problem for the Monty Hall scenario: we calculated the probabilities of various outcomes. No decision has been made yet.
+
+- Assign utilities to winning the car or winning the goat from the point of view of an agent who values the car more. The available decisions are, of course, "keep door 1" vs "switch to door 3". Then solve the decision-making problem according to the procedure of [§ @sec-make-decision]. What's the optimal decision?
+
+- Now assign utilities from the point of view of an agent who values the *goat*
+more than the car. Then solve the decision-making problem according to the usual procedure. What's the optimal decision?
+:::
+
+\
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise: the Sleeping Beauty problem
+
+Take a look at the inference problem presented in this video:
+
+{{< video https://www.youtube.com/watch?v=XeSu9fBJ2sI >}}
+
+and try to solve it, using not intuition but the mechanical procedure and steps as in the Monty Hall solution above.
+
+Note that the video asks "What do you believe is the probability that the coin came up heads?". Since probability and degree of belief are the same thing, that is like asking "What do you believe is your belief that the coin came up heads?" which is a redundant or quirky question. Instead, simply answer the question "What is your degree of belief (that is, probability) that the coin came up heads?".
+:::
+

@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-10-01">
+
+<title>ADA511 0.1 Data science and data-driven engineering - 17&nbsp; Conditional probability and learning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./information.html" rel="next">
+<link href="./marginal_probability.html" rel="prev">
+<link href="./favicon.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="ada511styles.css">
+</head>
+
+<body class="nav-sidebar docked slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./probability_distributions.html"><span class="green"><strong>Inference II</strong></span></a></li><li class="breadcrumb-item"><a href="./conditional_probability.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">[Conditional probability and learning]{.green}</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-01</span></a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dear student<br> and aspiring data engineer</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text"><strong>An invitation</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Accept or discard?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Framework</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./basic_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Basic decision problems</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./0th_connection_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title"><span class="red">First connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title"><span class="green">What is an inference?</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sentences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title"><span class="green">Sentences</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./truth_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><span class="green">Truth inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title"><span class="green">Probability inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./derived_rules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><span class="green">Shortcut rules</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./monty.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title"><span class="green">Monty Hall and related inference problems</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1st_connection_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><span class="red">Second connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title"><span class="yellow">Quantities and data types</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types_multi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title"><span class="yellow">Joint quantities and complex data types</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title"><span class="green">Probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./joint_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><span class="green">Joint probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./marginal_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><span class="green">Marginal probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conditional_probability.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probability and learning</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./information.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="green">Information, relevance, independence</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2nd_connection_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title"><span class="red">Third connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./populations_variates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title"><span class="yellow">Populations and variates</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title"><span class="yellow">Statistics</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./subpopulations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><span class="yellow">Subpopulations and conditional frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./samples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title"><span class="yellow">Infinite populations and samples</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Population inference</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./recap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title"><span class="green">A general inference problem</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./population_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title"><span class="green">Inference and populations</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exchangeability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title"><span class="green">Exchangeability</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference_exchangeability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="green">Inference under exchangeability</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./missing_parts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">To be written</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glass_application_R.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="red">The optimal predictor machine in action (for nominal quantities)</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text"><span class="lightblue"><strong>Decision theory</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./making_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title"><span class="lightblue">Making decisions</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text"><span class="red"><strong>Machine learning</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine_learning_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Machine learning - an introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./decision_trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Decision trees</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural_networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Neural networks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-conditional-probs" id="toc-sec-conditional-probs" class="nav-link active" data-scroll-target="#sec-conditional-probs"><span class="header-section-number">17.1</span> Conditional probability: augmenting knowledge</a></li>
+  <li><a href="#sec-conditional-joint-dis" id="toc-sec-conditional-joint-dis" class="nav-link" data-scroll-target="#sec-conditional-joint-dis"><span class="header-section-number">17.2</span> Conditional from joint probability: dissimilar quantities</a></li>
+  <li><a href="#sec-conditional-joint-sim" id="toc-sec-conditional-joint-sim" class="nav-link" data-scroll-target="#sec-conditional-joint-sim"><span class="header-section-number">17.3</span> Conditional from joint probability: similar quantities</a></li>
+  <li><a href="#sec-conditional-joint-general" id="toc-sec-conditional-joint-general" class="nav-link" data-scroll-target="#sec-conditional-joint-general"><span class="header-section-number">17.4</span> General case: conditional from joint</a></li>
+  <li><a href="#sec-conditional-conditional" id="toc-sec-conditional-conditional" class="nav-link" data-scroll-target="#sec-conditional-conditional"><span class="header-section-number">17.5</span> Conditional from conditional probability</a></li>
+  <li><a href="#sec-conditional-conditional-general" id="toc-sec-conditional-conditional-general" class="nav-link" data-scroll-target="#sec-conditional-conditional-general"><span class="header-section-number">17.6</span> General case: conditional from conditional</a></li>
+  <li><a href="#sec-conditional-dens" id="toc-sec-conditional-dens" class="nav-link" data-scroll-target="#sec-conditional-dens"><span class="header-section-number">17.7</span> Conditional densities</a></li>
+  <li><a href="#sec-repr-conditional" id="toc-sec-repr-conditional" class="nav-link" data-scroll-target="#sec-repr-conditional"><span class="header-section-number">17.8</span> Graphical representation of conditional probability distributions and densities</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-learning" class="quarto-section-identifier"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probability and learning</span></span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2023-10-01</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="hidden">
+<p><span class="math display">\[
+\DeclarePairedDelimiters{\set}{\{}{\}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\]</span></p>
+</div>
+<div class="hidden">
+
+</div>
+<section id="sec-conditional-probs" class="level2" data-number="17.1">
+<h2 data-number="17.1" class="anchored" data-anchor-id="sec-conditional-probs"><span class="header-section-number">17.1</span> Conditional probability: augmenting knowledge</h2>
+<p>When we introduced the notion of degree of belief – a.k.a. probability – in <a href="probability_inference.html">chapter&nbsp;&nbsp;<span>8</span></a>, we stressed the fact that <em>every probability is conditional on some state of knowledge or information</em>. So the term “conditional probability” sounds like a <a href="https://dictionary.cambridge.org/dictionary/english/pleonasm">pleonasm</a>, just like saying “round circle”.</p>
+<p>This term must be understood in a way analogous to “marginal probability”: it applies in situations where we have two or more sentences of interest. We speak of a “conditional probability” when we want to emphasize that additional sentences appear in the conditional (right side of <span style="display:inline-block;">“<span class="math inline">\(\nonscript\:\vert\nonscript\:\mathopen{}\)</span>”</span>) of that probability, as compared to other probabilities. For instance, in a scenario in which these two probabilities appear:</p>
+<p><span class="math display">\[
+\mathrm{P}(\mathsfit{A} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{B} \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})
+\qquad
+\mathrm{P}(\mathsfit{A} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\]</span></p>
+<p>we call the first <span class="blue"><strong>conditional probability</strong></span> of <span style="display:inline-block;"><span class="math inline">\(\mathsfit{A}\)</span></span> (<span class="blue"><strong>given</strong></span> <span style="display:inline-block;"><span class="math inline">\(\mathsfit{B}\)</span>)</span> to emphasize or point out that its conditional includes an additional sentence (<span style="display:inline-block;"><span class="math inline">\(\mathsfit{B}\)</span>),</span> whereas the conditional of the second probability doesn’t.</p>
+<p>Such emphasis is important because it also means that the “conditional” probability is based on some <em>additional knowledge, information, or hypothesis</em> with respect to the “non-conditional” one. This has obvious connections with the idea of “learning”. Indeed the calculation of “conditional” probabilities enters in all situations (even if hypothetical or counterfactual, see <a href="inference.html#sec-inference-scenarios">§ &nbsp;<span>5.1</span></a>) in which some knowledge is augmented by new knowledge. This can happens in several ways, which we now examine.</p>
+</section>
+<section id="sec-conditional-joint-dis" class="level2 page-columns page-full" data-number="17.2">
+<h2 data-number="17.2" class="anchored" data-anchor-id="sec-conditional-joint-dis"><span class="header-section-number">17.2</span> Conditional from joint probability: dissimilar quantities</h2>
+<p>Consider once more the next-patient arrival scenario of <a href="joint_probability.html#sec-repr-joint-prob">§ &nbsp;<span>15.2</span></a>, with joint quantity <span style="display:inline-block;"><span class="math inline">\((U,T)\)</span></span> and an agent’s joint probability distribution as in <a href="joint_probability.html#tbl-urgent-arrival">table&nbsp;&nbsp;<span>15.1</span></a>. Suppose that the agent must forecast whether the next patient will require <span style="display:inline-block;"><span class="math inline">\(\texttt{\small urgent}\)</span></span> or <span style="display:inline-block;"><span class="math inline">\(\texttt{\small non-urgent}\)</span></span> care, so it needs to calculate the probability distribution for <span style="display:inline-block;"><span class="math inline">\(U\)</span></span> (that is, the probabilities for <span style="display:inline-block;"><span class="math inline">\(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\)</span>).</span></p>
+<p>In the first exercise of <a href="marginal_probability.html#sec-marginal-probs">§ &nbsp;<span>16.1</span></a> you found that the marginal probability that the next patient will need urgent care is</p>
+<p><span class="math display">\[\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}}) = 18\%\]</span></p>
+<p>this is the agent’s degree of belief if it has the knowledge encoded in the sentence <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}_{\text{H}}\)</span>,</span> nothing more and nothing less.</p>
+<p>But now let’s imagine that the agent <em>receives a new piece of information</em>: it is told that the next patient is being transported by helicopter. In other words, the agent now knows that the sentence <span style="display:inline-block;"><span class="math inline">\(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\)</span></span> is true. The agent’s complete knowledge is then encoded in the <code>and</code>ed sentence</p>
+<p><span class="math display">\[T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\land \mathsfit{I}_{\text{H}}\]</span></p>
+<p>which should therefore appear in the conditional. The agent’s belief that the next patient requires urgent care is therefore</p>
+<p><span class="math display">\[\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{H}})\]</span></p>
+<p>Calculation of this probability can be done by just one application of the <code>and</code>-rule:</p>
+<div class="column-page-inset-right">
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}}) =
+\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{H}}) \cdot
+\mathrm{P}(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+\\[3ex]
+&amp;\quad\implies\quad
+\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{H}})
+=
+\frac{
+\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+}{
+\mathrm{P}(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+}
+\end{aligned}
+\]</span></p>
+</div>
+<p>We do have the joint probability for <span style="display:inline-block;"><span class="math inline">\(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\land T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\)</span></span> that appears in the numerator of the fraction above. The probability in the denominator is just a marginal probability for <span style="display:inline-block;"><span class="math inline">\(T\)</span>,</span> and we know how to calculate that too from <a href="marginal_probability.html#sec-marginal-probs">§ &nbsp;<span>16.1</span></a>. Finally we find</p>
+<p><span class="math display">\[
+\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{H}})
+=\frac{
+\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+}{
+\sum_u\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}u \mathbin{\mkern-0mu,\mkern-0mu}T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+}
+\]</span></p>
+<p>where it’s understood that the sum index <span style="display:inline-block;"><span class="math inline">\(u\)</span></span> runs over the values <span style="display:inline-block;"><span class="math inline">\(\set{\texttt{\small urgent}, \texttt{\small non-urgent}}\)</span>.</span></p>
+<p>This is called a <span class="blue"><strong>conditional probability</strong></span>; in this case, the conditional probability of&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span>&nbsp;&nbsp;</span><span class="blue"><strong>given</strong></span>&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\)</span>.</span></p>
+<p>The collection of probabilities for all possible values of the quantity <span style="display:inline-block;"><span class="math inline">\(U\)</span>,</span> given a <em>specific</em> value of the quantity <span style="display:inline-block;"><span class="math inline">\(T\)</span>,</span> say <span style="display:inline-block;"><span class="math inline">\(\texttt{\small helicopter}\)</span>:</span></p>
+<p><span class="math display">\[
+\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{H}}) \ ,
+\qquad
+\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{H}})
+\]</span></p>
+<p>is called the <span class="blue"><strong>conditional probability distribution</strong></span> for <span style="display:inline-block;"><span class="math inline">\(U\)</span>&nbsp;&nbsp;</span><span class="blue"><strong>given</strong></span>&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\)</span>.</span> It is indeed a probability distribution because the two probabilities sum up to <span style="display:inline-block;"><span class="math inline">\(1\)</span>.</span></p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-circle" aria-label="exclamation-circle"></i>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note that the collection of probabilities for, say, <span style="display:inline-block;"><span class="math inline">\(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span>,</span> but for <em>different</em> values of the conditional quantity <span style="display:inline-block;"><span class="math inline">\(T\)</span>,</span> that is</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small ambulance}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{H}}) \ ,
+\\[1ex]
+&amp;\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{H}}) \ ,
+\\[1ex]
+&amp;\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small other}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{H}})
+\end{aligned}
+\]</span></p>
+<p>is <strong>not</strong> a probability distribution. Calculate the three probabilities above and check that indeed they do not sum up to one.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Using the values from <a href="joint_probability.html#tbl-urgent-arrival">table&nbsp;<span>15.1</span></a> and the formula for marginal probabilities, calculate:</p>
+<ul>
+<li><p>The conditional probability that the next patient needs urgent care, given that the patient is being transported by helicopter.</p></li>
+<li><p>The conditional probability that the next patient is being transported by helicopter, given that the patient needs urgent care.</p></li>
+</ul></li>
+<li><p>Now discuss and find an intuitive explanation for these comparisons:</p>
+<ul>
+<li><p>The two probabilities you obtained above. Are they equal? why or why not?</p></li>
+<li><p>The <em>marginal</em> probability that the next patient will be transported by helicopter, with the <em>conditional</em> probability that the patient will be transported by helicopter <em>given</em> that it’s urgent. Are they equal? if not, which is higher, and why?</p></li>
+</ul></li>
+</ul>
+</div>
+</div>
+<p><br>
+</p>
+</section>
+<section id="sec-conditional-joint-sim" class="level2" data-number="17.3">
+<h2 data-number="17.3" class="anchored" data-anchor-id="sec-conditional-joint-sim"><span class="header-section-number">17.3</span> Conditional from joint probability: similar quantities</h2>
+<p>In the previous section we examined how knowledge about one quantity of a particular kind can change an agent’s degree of belief about a quantity of a different kind, for example “transportation” about “urgency” or vice versa. This change is reflected in the value of the corresponding conditional probability.</p>
+<p>This kind of change can also occur with quantities of a “similar kind”, that is, quantities that represent the same kind of phenomenon and have exactly the same domain. The maths and calculations are identical to those we have explored, but the interpretation and application can be somewhat different.</p>
+<p>As an example, imagine a scenario similar to the next-patient one above, but now consider the <em>next three patients</em> to arrive, and their urgency. Define the following three quantities:</p>
+<p><span class="math inline">\(U_1\)</span> : urgency of the next patient<br>
+<span style="display:inline-block;"><span class="math inline">\(U_2\)</span> :</span> urgency of the second future patient from now<br>
+<span style="display:inline-block;"><span class="math inline">\(U_3\)</span> :</span> urgency of the third future patient from now<br>
+</p>
+<p>every one of these quantities has the same domain: <span style="display:inline-block;"><span class="math inline">\(\set{\texttt{\small urgent},\texttt{\small non-urgent}}\)</span>.</span></p>
+<p>The joint quantity <span style="display:inline-block;"><span class="math inline">\((U_1, U_2, U_3, U_4)\)</span></span> has a domain with 23 = 8 possible values:</p>
+<ul>
+<li><span class="math inline">\(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span></li>
+<li><span class="math inline">\(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\)</span></li>
+<li>. . .</li>
+<li><span class="math inline">\(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span></li>
+<li><span class="math inline">\(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\)</span></li>
+</ul>
+<p>Suppose that an agent, with background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> has a joint probability distribution for the joint quantity <span style="display:inline-block;"><span class="math inline">\((U_1, U_2, U_3)\)</span>;</span> the distribution is implicitly given as follows: </p>
+<ul>
+<li>If <span class="math inline">\(\texttt{\small urgent}\)</span> appears 0 times out of 3: probability = <span class="math inline">\(53.6\%\)</span></li>
+<li>If <span class="math inline">\(\texttt{\small urgent}\)</span> appears 1 times out of 3: probability = <span class="math inline">\(11.4\%\)</span></li>
+<li>If <span class="math inline">\(\texttt{\small urgent}\)</span> appears 2 times out of 3: probability = <span class="math inline">\(3.6\%\)</span></li>
+<li>If <span class="math inline">\(\texttt{\small urgent}\)</span> appears 3 times out of 3: probability = <span class="math inline">\(1.4\%\)</span></li>
+</ul>
+<p>examples:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+= 0.036
+\\[1ex]
+&amp;\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+= 0.114
+\\[1ex]
+&amp;\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+= 0.036
+\\[1ex]
+\end{aligned}
+\]</span></p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Check that the joint probability distribution as defined above indeed sums up to <span style="display:inline-block;"><span class="math inline">\(1\)</span>.</span></p></li>
+<li><p>Calculate the marginal probability for <span style="display:inline-block;"><span class="math inline">\(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span>,</span> that is,&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})\)</span>.</span> </p></li>
+<li><p>Calculate the marginal probability that the second and third patients are non-urgent cases, that is</p></li>
+</ul>
+<p><span class="math display">\[\mathrm{P}(U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}) \ .\]</span> </p>
+</div>
+</div>
+<p>From this joint probability distribution the agent can calculate, among other things, its degree of belief that the <em>third</em> patient from now will require urgent care, regardless of the urgency of the preceding two patients. It’s the marginal probability</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{P}(U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})  &amp;=
+\sum_{u_1}\sum_{u_2}
+\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}u_1 \mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}u_2 \mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\\[1ex]
+&amp;= 0.114 + 0.036 + 0.036 + 0.014
+\\[1ex]
+&amp;= \boldsymbol{20.0\%}
+\end{aligned}
+\]</span></p>
+<p>where the first term <span style="display:inline-block;"><span class="math inline">\(0.114\)</span></span> in the sum corresponds to <span style="display:inline-block;"><span class="math inline">\(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span>,</span> the second term <span style="display:inline-block;"><span class="math inline">\(0.036\)</span></span> to <span style="display:inline-block;"><span class="math inline">\(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span>,</span> and so on.</p>
+<p>Therefore the agent, right now, has a <span style="display:inline-block;"><span class="math inline">\(20\%\)</span></span> degree of belief that the third patient from now will require urgent care.</p>
+<p><br>
+</p>
+<p>Now fast-forward in time, after <em>two</em> patients have arrived and been taken good care of. Suppose that <em>both were non-urgent cases</em>, and the agent knows this. The agent needs to forecast whether the next (third) patient will require urgent care.</p>
+<p>It wouldn’t be sensible to use&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})\)</span>,&nbsp;&nbsp;calculated</span> above, because this degree of belief represents an agent having only the background knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>.</span> Now, instead, the agent has additional information about the first two patients, encoded in this <code>and</code>ed sentence:</p>
+<p><span class="math display">\[
+U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}
+\]</span></p>
+<p>The relevant degree of belief is therefore the <em>conditional</em> probability</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}(U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})
+\\[2ex]
+&amp;\qquad{}=
+\frac{
+\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+}{
+\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+}
+\\[1ex]
+&amp;\qquad{}=\frac{0.114}{0.65}
+\\[2ex]
+&amp;\qquad{}\approx
+\boldsymbol{17.5\%}
+\end{aligned}
+\]</span></p>
+<p>This conditional probability of <span style="display:inline-block;"><span class="math inline">\(17.5\%\)</span></span> for <span style="display:inline-block;"><span class="math inline">\(U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\)</span></span> is <em>lower</em> than the marginal one <span style="display:inline-block;"><span class="math inline">\(20.0\%\)</span></span> calculated previously. <strong>Observation of two patients has thus affected the agent’s degree of belief</strong>.</p>
+<p><br>
+</p>
+<p>Let’s also check how the agent’s belief changes in the case where the first two patients are both urgent. The calculation is completely analogous:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}(U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})
+\\[2ex]
+&amp;\qquad{}=
+\frac{
+\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+}{
+\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+}
+\\[1ex]
+&amp;\qquad{}=\frac{0.030}{0.107}
+\\[2ex]
+&amp;\qquad{}\approx
+\boldsymbol{28.0\%}
+\end{aligned}
+\]</span></p>
+<p>In this case the conditional probability <span style="display:inline-block;"><span class="math inline">\(28.0\%\)</span></span> for <span style="display:inline-block;"><span class="math inline">\(U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span></span> is <em>higher</em> than the marginal one <span style="display:inline-block;"><span class="math inline">\(20.0\%\)</span>.</span></p>
+<p>One possible intuitive explanation of these probability changes, <em>in the present scenario</em>, is that observation of two non-urgent cases makes the agent slightly more confident that “this is a day with few urgent cases”; whereas observation of two urgent cases makes the agent more confident that “this is a day with many urgent cases”.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-circle" aria-label="exclamation-circle"></i>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In general we cannot say that the probability of a particular value (such as <span style="display:inline-block;"><span class="math inline">\(\texttt{\small urgent}\)</span></span> in the scenario above) will decrease or increase as similar or dissimilar values are observed, nor how much the increase or decrease will be.</p>
+<p>In a different situation the probability of <span style="display:inline-block;"><span class="math inline">\(\texttt{\small urgent}\)</span></span> could actually <strong>increase</strong> as more and more <span style="display:inline-block;"><span class="math inline">\(\texttt{\small non-urgent}\)</span></span> cases are observed. Imagine, for instance, a scenario where the agent initially knows that there are 10 urgent and 90 non-urgent cases ahead. Having observed 90 non-urgent cases, the agent will give a much higher probability – 100% – that the next case will be an urgent one.</p>
+<p>The differences among such scenarios are reflected in differences of the joint probabilities, from which the conditional probabilities are calculated.</p>
+<p><strong>All</strong> these situations are correctly handled with the four fundamental rules of inference and the formula for conditional probability derived from them.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercises
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li><p>Using the same joint distribution above, calculate</p>
+<p><span class="math display">\[\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})\]</span></p>
+<p>that is, the probability that the next patient will require urgent care <em>given that the agent knows the second and third patients will not-require urgent care</em>.</p>
+<ul>
+<li><p>Why is the value obtained different from&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})\)</span> ?</span></p></li>
+<li><p>Describe a scenario in which the calculation above makes sense (and patients&nbsp;2 and&nbsp;3 still arrive after patient&nbsp;1).</p></li>
+</ul></li>
+</ol>
+<p><br>
+</p>
+<ol start="2" type="a">
+<li><p>Do an analysis completely analogous to the previous, three-patient one, but with different background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{J}\)</span></span> that gives a joint probability distribution for <span style="display:inline-block;"><span class="math inline">\((U_1, U_2, U_3)\)</span></span> as follows:</p>
+<p>• If <span style="display:inline-block;"><span class="math inline">\(\texttt{\small urgent}\)</span></span> appears 0 times out of 3: probability = <span style="display:inline-block;"><span class="math inline">\(0\%\)</span></span><br>
+• If <span style="display:inline-block;"><span class="math inline">\(\texttt{\small urgent}\)</span></span> appears 1 times out of 3: probability = <span style="display:inline-block;"><span class="math inline">\(24.5\%\)</span></span><br>
+• If <span style="display:inline-block;"><span class="math inline">\(\texttt{\small urgent}\)</span></span> appears 2 times out of 3: probability = <span style="display:inline-block;"><span class="math inline">\(7.8\%\)</span></span><br>
+• If <span style="display:inline-block;"><span class="math inline">\(\texttt{\small urgent}\)</span></span> appears 3 times out of 3: probability = <span style="display:inline-block;"><span class="math inline">\(3.1\%\)</span></span></p>
+<ol type="1">
+<li><p>Calculate</p>
+<p><span class="math display">\[\mathrm{P}(U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{J})\]</span> </p>
+<p>and</p>
+<p><span class="math display">\[\mathrm{P}(U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{J})\]</span> and compare them.</p></li>
+<li><p>Explain why this particular change in degree of belief occurs, in this situation.</p></li>
+</ol></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="sec-conditional-joint-general" class="level2 page-columns page-full" data-number="17.4">
+<h2 data-number="17.4" class="anchored" data-anchor-id="sec-conditional-joint-general"><span class="header-section-number">17.4</span> General case: conditional from joint</h2>
+<p>Take the time to review the two sections above, focusing on the application and meaning of the two scenarios and calculations, and noting the similarities and differences:</p>
+<ul>
+<li><p><span class="green"><i class="fa-solid fa-equals" aria-label="equals"></i> The calculations were completely analogous; in particular, the conditional probability was obtained as the quotient of a joint probability and a marginal one.</span></p></li>
+<li><p><span class="yellow"><i class="fa-solid fa-not-equal" aria-label="not-equal"></i> In the first (next-patient) scenario, information about one aspect of the situation changed the agent’s belief about another aspect; the two aspects were somewhat different (transportation and urgency). Whereas in the second (three-patient) scenario, information about analogous occurrences of an aspect of the situation changed the agent’s belief about a further occurrence.</span></p></li>
+</ul>
+<p><br>
+</p>
+<p>A third scenario is also possible, which combines the two above. Consider the case with three patients, where each patient can require <span style="display:inline-block;"><span class="math inline">\(\texttt{\small urgent}\)</span></span> care or not, and can be transported by <span style="display:inline-block;"><span class="math inline">\(\texttt{\small ambulance}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(\texttt{\small helicopter}\)</span>,</span> or <span style="display:inline-block;"><span class="math inline">\(\texttt{\small other}\)</span></span> means. To describe this situation, introduce three pairs of quantities, which together form the joint quantity</p>
+<p><span class="math display">\[
+(U_1, T_1, \ U_2, T_2, \ U_3, T_3)
+\]</span></p>
+<p>whose meaning should now be obvious. This joint quantity has <span style="display:inline-block;"><span class="math inline">\((2\cdot 3)^3 = 216\)</span></span> possible values, corresponding to all urgency &amp; transportation combinations for the three patients.</p>
+<p>Given the joint probability distribution for this joint quantity, it is possible to calculate all kinds of conditional probabilities, which reflect the knowledge that the agent may have acquired. For instance, suppose the agent has observed that</p>
+<ul>
+<li>the first two patients have not required urgent care</li>
+<li>the first patient was transported by ambulance</li>
+<li>the second patient was transported by other means</li>
+<li>the third patient is arriving by ambulance</li>
+</ul>
+<p>and needs to infer whether the third patient will require urgent care. The required probability is</p>
+<div class="column-page-right">
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}(U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} T_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small ambulance}\mathbin{\mkern-0mu,\mkern-0mu}
+U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}T_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small ambulance}\mathbin{\mkern-0mu,\mkern-0mu}
+U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}T_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small other}\mathbin{\mkern-0mu,\mkern-0mu}
+\mathsfit{I})
+\\[2ex]
+&amp;\qquad{}=
+\frac{
+\mathrm{P}(U_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}T_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small ambulance}\mathbin{\mkern-0mu,\mkern-0mu}
+U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}T_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small ambulance}\mathbin{\mkern-0mu,\mkern-0mu}
+U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}T_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small other}\nonscript\:\vert\nonscript\:\mathopen{}
+\mathsfit{I})
+}{
+\mathrm{P}(T_3\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small ambulance}\mathbin{\mkern-0mu,\mkern-0mu}
+U_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}T_1\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small ambulance}\mathbin{\mkern-0mu,\mkern-0mu}
+U_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\mathbin{\mkern-0mu,\mkern-0mu}T_2\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small other}\mathbin{\mkern-0mu,\mkern-0mu}
+\mathsfit{I})
+}
+\end{aligned}
+\]</span></p>
+</div>
+<p>and is calculated in a way completely analogous to the ones already seen.</p>
+<p><br>
+</p>
+<p>All three kinds of inference scenarios frequently occur in data science and engineering. In machine learning, the second scenario is connected to “unsupervised learning”; the third, mixed one to “supervised learning”. As you just saw, the probability calculus “sees” all of the them as analogous: information about something changes the agent’s belief about something else. And the handling of all three cases is perfectly covered by the four fundamental rules of inference.</p>
+<p><br>
+</p>
+<p>Let’s now consider a more generic case of a joint quantity with component quantities <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\)</span>,</span> whose joint probability distribution is given. The two quantities could be complicated joint quantities themselves. The conditional probability for <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\)</span>,</span> given that <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\)</span></span> has some specific value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}x^*\)</span>,</span> is then</p>
+<p><span id="eq-conditional-joint"><span class="math display">\[
+\mathrm{P}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y}\nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x^*}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}) =
+\frac{
+\mathrm{P}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y} \mathbin{\mkern-0mu,\mkern-0mu}{\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x^*}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})
+}{
+\sum_{\color[RGB]{238,102,119}\upsilon}\mathrm{P}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\upsilon}\mathbin{\mkern-0mu,\mkern-0mu}{\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x^*}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})
+}
+\tag{17.1}\]</span></span></p>
+<p>for all possible values <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}y\)</span>.</span></p>
+<p><br>
+</p>
+</section>
+<section id="sec-conditional-conditional" class="level2 page-columns page-full" data-number="17.5">
+<h2 data-number="17.5" class="anchored" data-anchor-id="sec-conditional-conditional"><span class="header-section-number">17.5</span> Conditional from conditional probability</h2>
+<p>As emphasized in <a href="inference.html#sec-inference-origin">§ &nbsp;<span>5.2</span></a>, probabilities are either obtained from other probabilities, or taken as given probabilities, maybe determined by symmetry requirements. This is also true when we want to calculate conditional probabilities.</p>
+<p>Up to now we have calculated conditional probabilities starting from the joint distribution as given, using the derived formula (<a href="#eq-conditional-joint"><span>17.1</span></a>). In some situations, however, an agent may have <strong>given conditional probabilities</strong> together with <strong>given marginal probabilities</strong>.</p>
+<p>As an example let’s consider a variation of our next-patient scenario one more time. The agent has background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}_{\text{S}}\)</span></span> that provides the following set of probabilities:</p>
+<ul>
+<li>Two conditional probability distributions&nbsp;&nbsp;<span class="math inline">\(\mathrm{P}(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\dotso \nonscript\:\vert\nonscript\:\mathopen{} U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\dotso \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{S}})\)</span> for transportation <span class="math inline">\(T\)</span> given urgency <span class="math inline">\(U\)</span>, as reported in the following table:</li>
+</ul>
+<div id="tbl-T-given-U" class="anchored">
+<table class="table-sm small table">
+<caption>Table&nbsp;17.1: Probability distributions for transportation given urgency</caption>
+<colgroup>
+<col style="width: 30%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(\mathrm{P}(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}t \nonscript\:\vert\nonscript\:\mathopen{} U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}u\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{S}})\)</span></td>
+<td style="text-align: center;"></td>
+<td colspan="3" style="text-align: center;"><strong>transportation at arrival</strong>&nbsp;&nbsp;<span class="math inline">\(T\nonscript\:\vert\nonscript\:\mathopen{}{}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">ambulance</td>
+<td style="text-align: center;">helicopter</td>
+<td style="text-align: center;">other</td>
+</tr>
+<tr class="odd">
+<td rowspan="2" style="text-align: center;"><em>given</em> <strong>urgency</strong>&nbsp;&nbsp;<span class="math inline">\({}\nonscript\:\vert\nonscript\:\mathopen{}U\)</span></td>
+<td style="text-align: center;">urgent</td>
+<td style="text-align: center;">0.61</td>
+<td style="text-align: center;">0.22</td>
+<td style="text-align: center;">0.17</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">non-urgent</td>
+<td style="text-align: center;">0.21</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">0.78</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-circle" aria-label="exclamation-circle"></i>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="small">This table has <strong>two</strong> probability distributions: on the first row, one conditional on <span class="math inline">\(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\)</span>; on the second row, one conditional on <span class="math inline">\(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\)</span>. Check that the probabilities on each row indeed sum up to one.</span></p>
+</div>
+</div>
+</div></div><p><br>
+</p>
+<ul>
+<li>Marginal probability distribution&nbsp;&nbsp;<span class="math inline">\(\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\dotso \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{S}})\)</span> for urgency <span class="math inline">\(U\)</span>:</li>
+</ul>
+<p><span id="eq-U-marg"><span class="math display">\[
+\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{S}}) = 0.18 \ ,
+\quad
+\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small non-urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{S}}) = 0.82
+\tag{17.2}\]</span></span></p>
+<p><br>
+</p>
+<p>With this background information, the agent can also compute all joint probabilities simply using the <code>and</code>-rule. For instance</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;P(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{S}})
+\\[1ex]
+&amp;\quad{}=
+P(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{S}}) \cdot
+P(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{S}})
+\\[1ex]
+&amp;\quad{}= 0.22 \cdot 0.18 = \boldsymbol{3.96\%}
+\end{aligned}
+\]</span></p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Note that the joint probabilities are slightly different compared with those from the previous background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}_{\text{H}}\)</span>.</span></p>
+</div></div><p>And from the joint probabilities, the marginal ones for transportation <span style="display:inline-block;"><span class="math inline">\(T\)</span></span> can also be calculated. For instance</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;P(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{S}})
+\\[1ex]
+&amp;\quad{}=
+\sum_u P(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\mathbin{\mkern-0mu,\mkern-0mu}U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}u \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{S}})
+\\[1ex]
+&amp;\quad{}=
+\sum_u P(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}u \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{S}}) \cdot
+P(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}u \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{S}})
+\\[1ex]
+&amp;\quad{}=
+0.22 \cdot 0.18 +
+0.01 \cdot 0.82
+\\[1ex]
+&amp;\quad{}= \boldsymbol{4.78\%}
+\end{aligned}
+\]</span></p>
+<p>Suppose that the agent knows that the next patient is being transported by <span style="display:inline-block;"><span class="math inline">\(\texttt{\small helicopter}\)</span>,</span> and needs to forecast whether <span style="display:inline-block;"><span class="math inline">\(\texttt{\small urgent}\)</span></span> care will be needed. This inference is the conditional probability&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{S}})\)</span>,</span> which can also be rewritten in terms of the set of probabilities initially given:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{H}})
+\\[2ex]
+&amp;\quad{}=\frac{
+\mathrm{P}(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+}{
+\mathrm{P}(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
+}
+\\[1ex]
+&amp;\quad{}=\frac{
+P(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{S}}) \cdot
+P(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{S}})
+}{
+\sum_u P(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{} U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}u \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{S}}) \cdot
+P(U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}u \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{S}})
+}
+\\[1ex]
+&amp;\quad{}=\frac{0.0396}{0.0478}
+\\[2ex]
+&amp;\quad{}=\boldsymbol{82.8\%}
+\end{aligned}
+\]</span></p>
+<p>This calculation has been slightly more involved than the one in <a href="#sec-conditional-joint-dis">§ &nbsp;<span>17.2</span></a> because the joint probabilities were not directly available. Our calculation involved the steps&nbsp;&nbsp;<span style="display:inline-block;">“ <span class="math inline">\(T\nonscript\:\vert\nonscript\:\mathopen{}U \longrightarrow T\land U \longrightarrow U\nonscript\:\vert\nonscript\:\mathopen{}T\)</span> ”</span>.</p>
+<p><br>
+</p>
+<p>If the agent were instead interested, say, in forecasting the transportation means knowing that the next patient requires urgent care, then the relevant degree of belief&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\dotso \nonscript\:\vert\nonscript\:\mathopen{} U\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small urgent}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}_{\text{S}})\)</span></span> would be immediately available and no calculations would be needed.</p>
+</section>
+<section id="sec-conditional-conditional-general" class="level2" data-number="17.6">
+<h2 data-number="17.6" class="anchored" data-anchor-id="sec-conditional-conditional-general"><span class="header-section-number">17.6</span> General case: conditional from conditional</h2>
+<p>The example from the previous section can be easily generalized. Consider a joint quantity with component quantities <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\)</span>.</span> The probabilities&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}({\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\dotso} \nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\dotso} \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})\)</span>&nbsp;&nbsp;and&nbsp;&nbsp;</span><span style="display:inline-block;"><span class="math inline">\(\mathrm{P}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\dotso} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>&nbsp;&nbsp;are</span> given.</p>
+<p>The conditional probability for <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\)</span>,</span> given that <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\)</span></span> has some specific value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}x^*\)</span>,</span> is then</p>
+<p><span id="eq-conditional-bayes"><span class="math display">\[
+\mathrm{P}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y}\nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x^*}\mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}) =
+\frac{
+\mathrm{P}( {\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x^*}\nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y} \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}) \cdot
+\mathrm{P}( {\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})
+}{
+\sum_{\color[RGB]{238,102,119}\upsilon}
+\mathrm{P}( {\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x^*}\nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\upsilon} \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}) \cdot
+\mathrm{P}( {\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\upsilon} \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})
+}
+\tag{17.3}\]</span></span></p>
+<p>for all possible values <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}y\)</span>.</span></p>
+<p>In the above formula we recognize <span class="blue"><strong>Bayes’s theorem</strong></span> from <a href="derived_rules.html#sec-bayes-theorem">§ &nbsp;<span>9.5</span></a>.</p>
+<p>This formula is often exaggeratedly emphasized in the literature; some texts even present it as an “axiom” to be used in situations such as the present one. But we see that it is simply a by-product of the four fundamental rules of inference in a specific situation. An AI agent who knows the four fundamental inference rules, and doesn’t know what “Bayes’s theorem” is, will nevertheless arrive at this very formula.</p>
+</section>
+<section id="sec-conditional-dens" class="level2" data-number="17.7">
+<h2 data-number="17.7" class="anchored" data-anchor-id="sec-conditional-dens"><span class="header-section-number">17.7</span> Conditional densities</h2>
+<p>The discussion so far about conditional probabilities extends to conditional probability <em>densities</em>, in the usual way explained in §§ <a href="joint_probability.html#sec-joint-prob-densities"><span>15.3</span></a> and&nbsp;<a href="marginal_probability.html#sec-marginal-dens"><span>16.2</span></a>.</p>
+<p>If <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\)</span></span> are continuous quantities, the notation</p>
+<p><span class="math display">\[
+\mathrm{p}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x} \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}) = {\color[RGB]{68,119,170}q}
+\]</span></p>
+<p>means that, given background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span></span> and given the sentence <span style="display:inline-block;">“<span class="math inline">\(\color[RGB]{34,136,51}X\)</span> has value between <span class="math inline">\(\color[RGB]{34,136,51}x-\delta/2\)</span> and <span class="math inline">\(\color[RGB]{34,136,51}x+\delta/2\)</span>”</span>, the sentence <span style="display:inline-block;">“<span class="math inline">\(\color[RGB]{238,102,119}Y\)</span> has value between <span class="math inline">\(\color[RGB]{238,102,119}y-\epsilon/2\)</span> and <span class="math inline">\(\color[RGB]{238,102,119}y+\epsilon/2\)</span>”</span> has probability <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}q}\cdot{\color[RGB]{238,102,119}\epsilon}\)</span>,</span> as long as <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}\delta\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}\epsilon\)</span></span> are small enough. Note that the small interval <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}\delta\)</span></span> for <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\)</span></span> is <em>not</em> multiplied by the density <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}q\)</span>.</span></p>
+<p>The relation between a conditional density and a joint density or a different conditional density is given by</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{p}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x} \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})
+\\[1ex]
+&amp;\quad{}=
+\frac{\displaystyle
+\mathrm{p}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y} \mathbin{\mkern-0mu,\mkern-0mu}{\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+}{\displaystyle
+\int_{\color[RGB]{238,102,119}\varUpsilon}\mathrm{p}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\upsilon} \mathbin{\mkern-0mu,\mkern-0mu}{\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \, \mathrm{d}{\color[RGB]{238,102,119}\upsilon}
+}
+\\[1ex]
+&amp;\quad{}=
+\frac{\displaystyle
+\mathrm{p}({\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x} \nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y} \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}) \cdot
+\mathrm{p}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+}{\displaystyle
+\int_{\color[RGB]{238,102,119}\varUpsilon} \mathrm{p}({\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x} \nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\upsilon} \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I}) \cdot
+\mathrm{p}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\upsilon} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\, \mathrm{d}{\color[RGB]{238,102,119}\upsilon}
+}
+\end{aligned}
+\]</span></p>
+<p>where <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}\varUpsilon\)</span></span> is the domain of <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\)</span>.</span></p>
+</section>
+<section id="sec-repr-conditional" class="level2" data-number="17.8">
+<h2 data-number="17.8" class="anchored" data-anchor-id="sec-repr-conditional"><span class="header-section-number">17.8</span> Graphical representation of conditional probability distributions and densities</h2>
+<p>Conditional probability distributions and densities can be plotted in all the ways discussed in chapters&nbsp;<a href="joint_probability.html"><span>15</span></a> and&nbsp;<a href="marginal_probability.html"><span>16</span></a>. If we have two quantities <span style="display:inline-block;"><span class="math inline">\(A\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(B\)</span>,</span> often we want to compare the different conditional probability distributions for <span style="display:inline-block;"><span class="math inline">\(A\)</span></span> given different values of <span style="display:inline-block;"><span class="math inline">\(B\)</span>:</span></p>
+<ul>
+<li><span class="math inline">\(\mathrm{P}(A\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\dotso \nonscript\:\vert\nonscript\:\mathopen{} B\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small one-value} \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})\)</span>,</li>
+<li><span class="math inline">\(\mathrm{P}(A\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\dotso \nonscript\:\vert\nonscript\:\mathopen{} B\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}\texttt{\small another-value} \mathbin{\mkern-0mu,\mkern-0mu}\mathsfit{I})\)</span>,</li>
+<li><span class="math inline">\(\dotsc\)</span></li>
+</ul>
+<p>and so on. This can be achieved by representing them by overlapping line plots, or side-by-side scatter plots, or similar ways.</p>
+<p><br>
+</p>
+<p>In <a href="marginal_probability.html#sec-marginal-scatter">§ &nbsp;<span>16.3</span></a> we saw that if we have the scatter plot for a joint probability <em>density</em>, then from its points we can often obtain a scatter plot for its marginal densities. Unfortunately no similar advantage exists for the conditional densities that can be obtained from a joint density. In theory, a conditional density for <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> given that a quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> has value in some small interval <span style="display:inline-block;"><span class="math inline">\(\delta\)</span></span> around <span style="display:inline-block;"><span class="math inline">\(x\)</span>,</span> could be obtained by only considering scatter-plot points having <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> coordinate in a small interval between <span style="display:inline-block;"><span class="math inline">\(x-\delta/2\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(x+\delta/2\)</span>.</span> But the number of such points is usually too small and the resulting scatter plot could be very misleading.</p>
+<p><br>
+</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-book" aria-label="book"></i> Study reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>§ 5.4 of <a href="https://hvl.instructure.com/courses/25074/modules/items/664427"><em>Risk Assessment and Decision Analysis with Bayesian Networks</em></a></p></li>
+<li><p>§§ 12.2.1, 12.3, and&nbsp;12.5 of <a href="https://hvl.instructure.com/courses/25074/modules/items/660089"><em>Artificial Intelligence</em></a></p></li>
+<li><p>§§ 4.1–4.3 in <a href="https://hvl.instructure.com/courses/25074/modules/items/671397"><em>Medical Decision Making</em></a></p></li>
+<li><p>§§ 5.1–5.5 of <a href="https://hvl.instructure.com/courses/25074/modules/items/675505"><em>Probability</em></a> – yes, once more!</p></li>
+</ul>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./marginal_probability.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><span class="green">Marginal probability distributions</span></span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./information.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="green">Information, relevance, independence</span></span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

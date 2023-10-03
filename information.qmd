@@ -1,0 +1,408 @@
+# [Information, relevance, independence]{.green}
+{{< include macros.qmd >}}
+{{< include macros_info.qmd >}}
+{{< include macros_marg_cond.qmd >}}
+
+## Independence of sentences {#sec-indep-sentences}
+
+In an ordinary situation represented by background information $\yI$, if you have to infer whether a coin will land heads, then knowing that it is raining outside has no impact on your inference: the information about rain is [**irrelevant**]{.blue} for your inference. In other words, your degree of belief about the coin remains the same if you include the information about rain in the conditional.
+
+In probability notation, representing "[The coin lands heads]{.midgrey}" with $\se{H}$ and "[It rains outside]{.midgrey}" with $\se{R}$, this irrelevance means
+
+$$
+\P(\se{H} \| \yI) = \P(\se{H} \| \se{R} \and \yI)
+$$
+
+\
+
+More generally two *sentences* $\yA$, $\yB$ are said to be [**mutually irrelevant** or **logically independent given information $\yI$**]{.blue} if any one of these three conditions holds:
+
+:::{.column-margin}
+["independ**E**nt"  is written with an **E**](https://dictionary.cambridge.org/dictionary/english/independent), not with an **A**.
+:::
+
+- $\P(\yA \|\yB \and \yI) = \P(\yA \| \yI)$
+
+- $\P(\yB \| \yA \and \yI) = \P(\yB \| \yI)$
+
+- $\P(\yA \and \yB \| \yI) = \P(\yA \| \yI) \cdot \P(\yB \| \yI)$
+
+These three conditions are equivalent to one another. In the first condition, $\P(\yA \|\yB \and \yI)$ is undefined if $\P(\yB\|\yI)=0$, but in this case independence still holds; analogously in the second condition.
+
+:::{.callout-warning}
+## {{< fa exclamation-circle >}}
+- Irrelevance or independence is not an absolute notion, but **relative to some background knowledge**. Two sentences may be independent given some background information, and **not** independent given another.
+
+- Independence as defined above is a **logical**, not **physical**, notion. It isn't stating anything about physical dependence between phenomena related to the sentences $\yA$ and $\yB$. It's simply stating that information about one does not affect an agent's beliefs about the other.
+:::
+
+## Independence of quantities {#sec-indep-quantities}
+
+The notion of irrelevance of two sentences can be generalized to quantities. Take two quantities $X$ and $Y$. They are said to be [**mutually irrelevant** or **logically independent given information $\yI$**]{.blue} if any one of these three condition holds [*for all possible values $x$ of $X$ and $y$ of $Y$*]{.blue}:
+
+- $\P(X\mo x \|Y\mo y \and \yI) = \P(X\mo x \| \yI)$\ \ \ [all $x,y$]{.midgrey}
+
+- $\P(Y\mo y \| X\mo x \and \yI) = \P(Y\mo y \| \yI)$\ \ \ [all $x,y$]{.midgrey}
+
+- $\P(X\mo x \and Y\mo y \| \yI) = \P(X\mo x \| \yI) \cdot \P(Y\mo y \| \yI)$\ \ \ [all $x,y$]{.midgrey}
+
+\
+
+Note the difference between independence of *two sentences* and independence of *two quantities*. The latter independence involves not just two, but many sentences: as many as the values of $X$ and $Y$.
+
+In fact it may happen that for some particular values $x^*$ of $X$ and $y^*$ $Y$ the probabilities become independent, say:
+
+
+$$
+\P(X\mo x^* \| Y\mo y^* \and \yI) = \P(X\mo x^* \|\yI)
+$$
+
+but this equality does *not* occur for other values. In this case the quantities $X$ and $Y$ are *not* independent given information $\yI$. The general idea is that two quantities are independent if knowledge about one of them cannot change an agent's beliefs about the other, *no matter what their values might be*.
+
+:::{.callout-warning}
+## {{< fa exclamation-circle >}}
+- Also in this case, irrelevance or independence is not an absolute notion, but **relative to some background knowledge**. Two quantities may be independent given some background information, and **not** independent given another.
+
+- Also in this case, independence is a **logical**, not **physical**, notion. It isn't stating anything about physical dependence between phenomena related to the quantities $X$ and $Y$. It's simply stating that information about one does not affect an agent's beliefs about the other.
+:::
+
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Consider our familiar next-patient inference problem with quantities urgency $U$ and transportation $T$. Assume a different background information $\yJ$ that leads to the following joint probability distribution:
+
++:------------------------------:+:---------------:+:---------------:+:---------------:+:---------------:+
+|$\P(U\mo u \and T\mo t\|\yJ)$   |                 |**transportation at arrival** $T$                    |
++--------------------------------+-----------------+-----------------+-----------------+-----------------+
+|                                |                 |ambulance        |helicopter       |other            |
++--------------------------------+-----------------+-----------------+-----------------+-----------------+
+|**urgency** $U$                 |urgent           |0.15             |0.08             |0.02             |
++                                +-----------------+-----------------+-----------------+-----------------+
+|                                |non-urgent       |0.45             |0.04             |0.26             |
++--------------------------------+-----------------+-----------------+-----------------+-----------------+
+: {.sm}
+
+- Calculate the marginal probability distribution $\P(U\|\yJ)$ and the conditional probability distribution $\P(U \| T\mo\ambu \and\yJ)$, and compare them. Is the value $T\mo\ambu$ relevant for inferences about $U$?
+<!-- 25/75 -->
+
+- Calculate the conditional probability distribution $\P(U \| T\mo\heli \and\yJ)$, and compare it with the marginal $\P(U\|\yJ)$. Is the value $T\mo\heli$ relevant for inferences about $U$?
+ <!-- 66.7/33.3 -->
+
+- Are the quantities $U$ and $T$ independent, given the background knowledge $\yJ$?
+:::
+
+
+
+## Information and uncertainty {#sec-info-uncertainty}
+
+The definition of irrelevance given above appears to be very "black or white": either two sentences or quantities are independent, or they aren't. But in reality there is no such dichotomy. We can envisage some scenario $\yI$ where for instance the probabilities $\P(Y\mo y \| X\mo x \and \yI)$ and $\P(Y\mo y \| \yI)$ are extremely close in value, although not exactly equal:
+
+$$
+\P(Y\mo y \| X\mo x \and \yI)
+= \P(Y\mo y \| \yI) + \delta(x,y)
+$$
+
+with $\delta(x,y)$ very small. This would mean that knowledge about $X$ modifies an agent's belief just a little; and depending on the situation such modification could be unimportant. In this situation the two quantities would be "independent" for all practical purposes. Therefore there are *degrees of relevance* rather than a dichotomy "relevant vs irrelevant".
+
+This suggests that we try to quantify such degrees. This quantification would also give a measure of how "important" a quantity can be for inferences about another quantity.
+
+This is the domain of [**Information Theory**]{.blue}, which would require a course by itself to be properly explored. In this chapter we shall just get an overview of the main ideas and notions of this theory.
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+- [*Information Theory, Inference, and Learning Algorithms*](https://hvl.instructure.com/courses/25074/modules/items/660092)
+
+- [*Elements of Information Theory*](https://hvl.instructure.com/courses/25074/modules/items/703785)
+:::
+::::
+
+\
+
+The notion of degree of relevance is important in data science and machine learning, because it rigorously quantifies two related, intuitive ideas often occurring in these fields:
+
+- ["Correlation": in its general meaning, it's the idea that if an agent's knowledge about some quantity changes, then knowledge about another quantity may change as well.]{.green}
+
+- ["Feature importance": it's the idea that knowledge about some aspects of a given problem may lead to improved inferences about other aspects.]{.yellow}
+
+
+In the next section we explore some tricky aspects and peculiarities of these ideas, which also tell us which kind of properties a quantitative measure for them should possess.
+
+## Exploring "importance": some scenarios {#sec-importance-scenarios}
+
+The following examples are only meant to give an intuitive motivation of the characteristics that a metric for "importance" or "relevance" should have.
+
+### First two characteristics: a lottery scenario
+
+A lottery comprises 1 000 000 tickets numbered from `000000` to `999999`. One of these tickets is the winner. Its number is already known. You are allowed to choose any ticket you like, before the winner number is announced.
+
+Before you choose, you have the possibility of getting (for free) some clues about the winning number. The clues are these:
+
+Clue [A]{.yellow}:\ \ [{{< fa check >}}]{.green} [{{< fa check >}}]{.green} [{{< fa check >}}]{.green} [{{< fa check >}}]{.green} [{{< fa question >}}]{.red} [{{< fa question >}}]{.red}
+: The first four digits of the winning number
+
+Clue [B]{.yellow}:\ \ [{{< fa check >}}]{.green} [{{< fa check >}}]{.green} [{{< fa check >}}]{.green} [{{< fa question >}}]{.red} [{{< fa check >}}]{.green} [{{< fa question >}}]{.red}
+: The 1st, 2nd, 3rd, and 5th digits of the winning number
+
+Clue [C]{.yellow}:\ \ [{{< fa question >}}]{.red} [{{< fa question >}}]{.red} [{{< fa question >}}]{.red} [{{< fa check >}}]{.green} [{{< fa check >}}]{.green} [{{< fa check >}}]{.green}
+: The last three digits of the winning number
+
+
+Now consider the following three "clue scenarios".
+
+#### Scenario 1: choose one clue
+
+You have the possibility of *choosing one* of the three clues above. Which would you choose, in order of importance?
+
+Obviously [**A**]{.yellow} or [**B**]{.yellow} are the most important, and equally important, because they increase your probability of winning from 1/1 000 000 to 1/100. [**C**]{.yellow} is the least important because it increases your probability of winning to 1/1000.
+
+
+#### Scenario 2: discard one clue
+
+All three clues are put in front of you (but you can't see their digits). If you could keep all three, then you'd win for sure because they would give you all digits of the winning number.
+
+You are instead asked to *discard one* of the three clues, keeping the remaining too. Which would you discard, in order of least importance?
+
+If you discarded [**A**]{.yellow}, then [**B**]{.yellow} and [**C**]{.yellow} together would give you all digits of the winning number; so you would still win. Analogously if you discarded [**B**]{.yellow}. If you discarded [**C**]{.yellow}, then [**A**]{.yellow} and [**B**]{.yellow} together would give you all digits but the last; so you'd have a 1/10 probability of winning.
+
+Obviously [**C**]{.yellow} is the most important clue to keep, and [**A**]{.yellow} and [**B**]{.yellow} least important.
+
+#### Scenario 3: discard one more clue
+
+In the previous Scenario 2, we saw that discarding [**A**]{.yellow} or [**B**]{.yellow} would not alter your 100% probability of winning. Either clue could therefore be said to have "importance = 0".
+
+If you had to discard *both* [**A**]{.yellow} and [**B**]{.yellow}, however, your situation would suddenly become worse, with only a 1/1000 probability of winning -- like choosing [**C**]{.yellow} in Scenario 1. Clues [**A**]{.yellow} and [**B**]{.yellow} *together* can therefore be said to have high "importance > 0".
+
+
+
+Now let's draw some conclusions from comparing the scenarios above.
+
+\
+
+In Scenario 1 we found that the "importance ranking" of the clues is\
+[**A**]{.yellow} = [**B**]{.yellow} > [**C**]{.yellow}\
+whereas in Scenario 2 we found the completely opposite ranking\
+[**C**]{.yellow} > [**A**]{.yellow} = [**B**]{.yellow}
+
+We conclude that
+
+:::: {.callout-note style="font-size:120%"}
+## Importance is context-dependent
+:::{style="font-size:120%"}
+It doesn't make sense to ask which aspect or feature is "most important" if we don't specify the context of its use. Important if *used alone*? Important if *used with others*? and *which* others?
+
+Depending on the context, an importance ranking could be completely reversed. A quantitative measure of "importance" must therefore take the context into account.
+:::
+::::
+
+\
+
+In Scenario 3 we found that two clues may be completely unimportant if considered individually, but extremely important if considered jointly.
+
+We conclude that
+
+:::: {.callout-note style="font-size:120%"}
+## Importance is non-additive
+:::{style="font-size:120%"}
+A quantitative measure of importance cannot be *additive*, that is, quantify the importance of two or more features as the sum of their individual importance.
+:::
+::::
+
+### Third characteristic: A two-quantity scenario
+
+Suppose we have a discrete quantities $X$ with domain $\set{1,2,3,4,5,6}$ and another discrete quantity $Y$ with domain $\set{1,2,3,4}$. We want to infer the value of $Y$ after we are told the value of $X$.
+
+The conditional probabilities for $Y$ given different values of $X$ are as follows (each column sums up to $1$)
+
++:---------------:+:----:+:------------------:+:------------------:+:------------------:+:------------------:+:------------------:+:------------------:+
+|$\P(Y\|X\and\yI)$|      |* * ${}\|X$                                                                                                                  |
++-----------------+------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+
+|                 |      |**1**               |**2**               |**3**               |**4**               |**5**               |**6**               |
++-----------------+------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+
+|                 |**1** |1.00                |0.00                |0.00                |0.00                |0.00                |0.50                |
++                 +------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+
+|* *  $Y\|{}$     |**2** |0.00                |1.00                |0.00                |0.00                |0.50                |0.00                |
++                 +------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+
+|                 |**3** |0.00                |0.00                |1.00                |0.50                |0.00                |0.00                |
++                 +------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+
+|                 |**4** |0.00                |0.00                |0.00                |0.50                |0.50                |0.50                |
++-----------------+------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+
+: Example conditional distribution for two discrete quantities {#tbl-distr-entropy .sm}
+
+Let's see what kind of inferences could occur.
+
+If we observe $X\mo 1$, then we know *for sure* that $Y\mo 1$; similarly for $X\mo 2$ and $X\mo 3$. These three values of $X$ are therefore "most important" for inference about $Y$. If we instead observe $X\mo 4$, then our uncertainty about $Y$ is between two of its values; similarly for $X\mo 5$ and $X\mo 6$, These three values of $X$ are therefore "least important" for inference about $Y$.
+
+But we usually speak of importance of a *quantity* or feature, not of a specific value. So what is the "overall importance" of $X$?
+
+Consider again three scenarios.
+
+1. In the first, we have 33% probability each of observing values $1$, $2$, $3$ of $X$, for a total of 99%; and 0.33% probability of observing each of the remaining values, for a total of 1%.
+
+    In this scenario we expect to make an almost exact inference about $Y$, and the quantity $X$ has therefore great "overall importance".
+
+2. In the second, the reverse happens: we have 0.33% probability each of observing values $1$, $2$, $3$ of $X$, for a total of 1%; and 33% probability of observing each of the remaining values, for a total of 99%.
+
+    In this scenario we expect to uncertain roughly between two values of $Y$, and the quantity $X$ has therefore less "overall importance".
+
+3. In the third, we have around 16.7% probability of observing each of the values of $X$.
+
+    This scenario is in between the first two: we expect to make an exact inference about $Y$ half of the time, and to be undecided between two values half of the time. The quantity $X$ has therefore some "overall importance": neither zero, nor as much as in the first scenario.
+
+What determines the "overall importance" of the quantity or feature $X$ is therefore *its probability distribution*.
+
+We conclude that
+
+:::: {.callout-note style="font-size:120%"}
+## The importance of a quantity depends on its probability distribution
+:::{style="font-size:120%"}
+The importance of a quantity is not only determined by the relation between its possible values and what we need to infer, but also by the probability with which its values can occur.
+
+A quantitative measure of "importance" of a quantity must therefore take the probability distribution for the latter into account.
+:::
+::::
+
+## Entropies and mutual information {#sec-entropy-mutualinfo}
+
+The thought-experiments above suggest that a quantitative measure of the importance of a quantity must have at least these three characteristics:
+
+- take the context somehow into account
+- be non-additive
+- take the probability distribution for the quantity into account
+
+Do measures with such properties exist?
+
+They do. Indeed they are regularly used in Communication Theory and Information Theory, owing to the properties above. They even have [international standards](https://www.iso.org/obp/ui/en/#!iso:std:63598:en) on their definition and measurement units. Before presenting them, let's briefly present the mother of them all.
+
+### Shannon entropy
+
+An agent with background knowledge $\yI$ has a belief distribution $\P(Y\|\yI)$ about the (finite) quantity $Y$. The agent's uncertainty about the value of 
+$Y$ can be quantified by the [**Shannon entropy**]{.blue}:
+
+$$
+\HH(Y \| \yI) \defd -\sum_y \P(Y\mo y \| \yI)\, \log_2 \P(Y\mo y \| \yI)
+$$
+
+whose unit is the *shannon* (symbol $\mathrm{Sh}$) when the logarithm is in base 2, as above.
+
+Shannon entropy lies at the foundation of the whole fields of Information Theory and Communication Theory, and would require a lengthy discussion. Let's just mention some of its properties and meanings:
+
+- It also quantifies the information *gained* by the agent, if it acquires knowledge about the value of $Y$.
+
+- It is always positive or zero.
+
+- It is zero if, and only if, the agent knows the value of $Y$, that is, if the probability distribution for $Y$ gives 100% to one value and 0% to all others.
+
+- Its maximum possible value is $\log_2 N$, where $N$ is the number of possible values of $Y$. This maximum is attained by the uniform distribution for $Y$.
+
+- The value (in shannons) of the Shannon entropy can be interpreted as the number of binary digits that we lack for correctly identifying the value of $Y$, if the possible values were listed as integers in binary format. Alternatively, a Shannon entropy equal to\ \ $h\,\mathrm{Sh}$\ \ is equivalent to being fully uncertain among $2^h$ possible alternatives.
+
+:::{.column-margin}
+![](shannon.png){width=100%}
+Plot of the Shannon entropy for a binary quantity $Y\in\set{1,2}$, for different distributions $\P(Y\mo 1\| \yI)$
+:::
+ 
+\
+
+Here are the two most useful measures of "relevance" or "importance", both based on the Shannon entropy:
+
+### Conditional entropy
+
+The [**conditional entropy**]{.blue}^[or "equivocation" according to ISO standard] of a quantity $Y$ given a quantity $X$ and additional knowledge $\yI$, is defined as
+
+:::{.column-page-inset-right}
+$$
+\HH(Y \| X\and \yI) \defd
+-\sum_x \sum_y 
+\P( X\mo x \| \yI)\cdot
+\P(Y\mo y \| X\mo x \and \yI)\, 
+\log_2 \P(Y\mo y \| X\mo x \and \yI)
+$$
+:::
+
+and, as defined above, is measured in *shannons* (symbol $\mathrm{Sh}$).
+
+It satisfies the three requirements: (1) different additional knowledge $\yI$, corresponding to different contexts, leads to different probabilities; (2) if the quantity $X$ can be split into two component quantities, it can be proved that the conditional entropy given them jointly is more than the sum of the conditional entropies given them individually; (3) the probability distribution for $X$ explicitly appears in its definition.
+
+It has several remarkable properties:
+
+- If knowledge of $Y$ is completely determined by that of $X$, that is, if $Y$ is a function of $X$, then the conditional entropy $\HH(Y \| X\and \yI)$ is zero. Vice versa, if the conditional entropy is zero, then $Y$ must be a function of $X$.
+
+- If knowledge of $X$ is irrelevant, in the sense of [§ @sec-indep-quantities], to knowledge of $Y$, then the conditional entropy $\HH(Y \| X\and \yI)$ takes on its maximal value, determined by the marginal probability for $Y$. Vice versa, if the conditional entropy takes on its maximal value, then $X$ is irrelevant to $Y$.
+
+- The value (in shannons) of the conditional entropy has the same meaning as for the Shannon entropy: if the conditional entropy amounts to $h\,\mathrm{Sh}$, then after knowing $X$ our uncertainty about $Y$ is the same as if we were fully uncertain among $2^h$ possible alternatives.
+
+For instance, in the case of [table @tbl-distr-entropy], the conditional entropy has the following values in the three scenarios:
+
+1. $\HH(Y \| X\and \yI_1) = 0.01\,\mathrm{Sh}$ , almost zero; indeed $Y$ can almost be considered a function of $X$ in this case.
+
+2. $\HH(Y \| X\and \yI_2) = 0.99\,\mathrm{Sh}$ , almost 1; indeed in this case we are approximately uncertain between two values of $Y$.
+
+3. $\HH(Y \| X\and \yI_3) = 0.5\,\mathrm{Sh}$ ; indeed this case is intermediate between the previous two.
+
+
+### Mutual information
+
+Suppose that, according to background knowledge $\yI$, for any value of $X$ there's a 100% probability that $Y$ has one and the same value, say $Y\mo 1$. The conditional entropy $\HH(Y \| X\and \yI)$ is then zero. In this case it is true that $Y$ is formally a function of $X$. But it is also true that we could perfectly predict $Y$ without any knowledge of $X$. The observed value of $X$ didn't really help us in forecasting $Y$; in other words, $X$ is not relevant for inference about $Y$.^[There's no contradiction with the second "remarkable property" previously discussed: in this case the maximal value that the conditional entropy can take is zero.]
+
+If we are interested in quantifying how much our knowledge about $X$ "helped" in inferring $Y$, we can subtract the conditional entropy for $Y$ given $X$ from the maximum value it would have if $X$ were unavailable.
+
+This is the [**mutual information**]{.blue}^[or "mean transinformation content" according to ISO standard] of a quantity $Y$ given a quantity $X$ and additional knowledge $\yI$. It is defined as
+
+:::{.column-page-inset-right}
+$$
+\HH(Y : X\| \yI) \defd
+\sum_x \sum_y 
+\P(Y\mo y \and X\mo x \| \yI)\,
+\log_2 \frac{\P(Y\mo y \and X\mo x \| \yI)}{
+\P(Y\mo y \| \yI)\cdot
+\P(X\mo x \| \yI)
+}
+$$
+:::
+
+and, as defined above, is also measured in *shannons*. It also satisfies the three requirements for a measure of "importance". Its properties are somehow complementary to those of the conditional entropy:
+
+- If $Y$ and $X$ are independent, in the sense of [§ @sec-indep-quantities], then their mutual information is zero. Vice versa, if it is zero, then $Y$ and $X$ are independent.
+
+- If knowledge of $Y$ is completely determined by that of $X$, that is, if $Y$ is a function of $X$, then their mutual information attains its maximal value (which could be zero). Vice versa, if the mutual information attains its maximal value, then $Y$ must be a function of $X$.
+
+- If the mutual information between $Y$ and $X$ amounts to $h\,\mathrm{Sh}$, then knowledge of $X$  *reduces, on average, $2^h$-fold times* the possibilities regarding the value of $Y$.
+
+- It is symmetric in the roles of $X$ and $Y$, that is, $\HH(Y : X\| \yI) = \HH(X : Y\| \yI)$.
+
+In the case of [table @tbl-distr-entropy], the mutual information has the following values in the three scenarios:
+
+1. $\HH(Y : X\| \yI_1) = 1.61\,\mathrm{Sh}$ , almost equal to the maximal value achievable in this scenario ($1.62\,\mathrm{Sh}$); indeed $Y$ can almost be considered a function of $X$ in this case. Since $2^{1.61}\approx 2.1$, knowledge of $X$ roughly halves the number of possible values of $Y$.
+
+2. $\HH(Y : X\| \yI_2) = 0.81\,\mathrm{Sh}$ ; this means that knowledge of $X$ reduces by $2^{0.81}\approx 1.8$ or almost 2 times the number of possible values of $Y$.
+
+3. $\HH(Y : X\| \yI_3) = 1.5\,\mathrm{Sh}$ ; knowledge of $X$ reduces by $2^{1.5} \approx 2.8$ or almost 3 times the number of possible values of $Y$.
+
+### Uses
+
+Whether to use the conditional entropy $\HH(Y \| X\and \yI)$ or the mutual information $\HH(Y : X\| \yI)$ depends on the question we are asking.
+
+Conditional entropy is the right choice if we want to quantify how much $Y$ can be considered as a function of $X$ -- including the special case of a constant function. It is also the right choice if we want to know how many binary-search iterations it would take to find $Y$, on average, once $X$ is known.
+
+Mutual information is the right choice if we want to quantify how much the knowledge of $X$ helps, on average, on finding $Y$, or equivalently how many additional binary-search iterations it would take to find $Y$, if $X$ were not known.
+
+If we simply want to rank the relative importance of alternative quantities $X_1$, $X_2$, etc. in inferring $Y$, then the two measures are equivalent and yield the same ranking, since they basically differ by a common zero point.
+
+::: {.callout-caution}
+## {{< fa book >}} Study reading
+- Chapter 8 of [*Information Theory, Inference, and Learning Algorithms*](https://hvl.instructure.com/courses/25074/modules/items/660092)
+
+- § 12.4 of [*Artificial Intelligence*](https://hvl.instructure.com/courses/25074/modules/items/660089)
+:::
+
+
+## Utility Theory to quantify relevance and importance {#sec-utility-importance}
+
+The entropy-based measures discussed in the previous section originate from, have deep connections with, the problem of repeated communication or signal transmission. They do not require anything else beside joint probabilities. In a general decision problem -- where an agent has probabilities *and utilities* -- another approach is required, however.
+
+Questions such as "What happens if I discard quantity $X$ in my inference?" or "If I have to choose between quantity $U$ and quantity $V$ to condition my inference, which one should I choose?" are actually *decision-making problems*. They must therefore be solved using Decision Theory (this is an example of the recursive capabilities of Decision Theory, discussed in [§ @sec-decision-theory]).
+
+The application of decision theory in these situations if often intuitively understandable. For example, if we need to rank the importance of quantities $U$ and $V$, we can calculate how much the expected utility would decrease if we discarded the one or the other.
+
+We'll come back to these questions toward the end of the course.

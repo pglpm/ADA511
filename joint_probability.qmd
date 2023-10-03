@@ -1,18 +1,18 @@
 # [Joint probability distributions]{.green} {#sec-prob-joint}
 {{< include macros.qmd >}}
+{{< include macros_marg_cond.qmd >}}
 
-So far we have considered  probability distributions for quantities of a basic (nominal, ordinal, binary, interval) type. These distributions have a sort of one-dimensional character and can be represented by ordinary histograms, line plots, and scatter plots. We now consider probability distributions for joint quantities.
+So far we have considered  probability distributions for quantities of a basic (binary, nominal, ordinal, interval) type. These distributions have a sort of one-dimensional character and can be represented by ordinary histograms, line plots, and scatter plots. We now consider probability distributions for the kind of joint quantities that were discussed in [§ @sec-data-multiv].
 
-[*(Make sure you're familiar with [§ @sec-quantities-types-multi] before you begin.)*]{.small style="color:#EE6677;"}
 
-## Joint probabilities
+## Joint probability distributions
 
-A joint quantity, as discussed in [§  @sec-data-multiv], is just a collection or set of quantities of basic types. Saying that a joint quantity has a particular value means that each basic component quantity has a particular value in its specific domain. This is expressed by an `and` of sentences.
+A joint quantity is just a collection or set of quantities of basic types. Saying that a joint quantity has a particular value means that each basic component quantity has a particular value in its specific domain. This is expressed by an `and` of sentences.
 
 Consider for instance the joint quantity $X$ consisting of the age $\lblue A$ and sex $\green S$ of a specific person. The fact that $X$ has a particular value is expressed by a composite sentence such as
 
 $$
-\pr{The person's age is 25 years and the sex is female}
+\pr{The person's age is 25 years and the person's sex is female}
 $$
 
 which we can compactly write with an `and`:
@@ -31,7 +31,7 @@ $$
 \dotsc
 $$
 
-where $\yI$ is the agent's state of knowledge, and the probabilities sum up to one. We call each of these probabilities a [**joint probability**]{.blue}, and their collection a [**joint probability distribution**]{.blue}. Usually these probabilities are written in much abbreviated form, and a comma "$\and$" is used instead of "$\land$" ([§ @sec-connecting-sentences]); for instance you can commonly find the following notation:
+where $\yI$ is the agent's state of knowledge, and the probabilities sum up to one. We call each of these probabilities a [**joint probability**]{.blue}, and their collection a [**joint probability distribution**]{.blue}. Usually these probabilities are written in much abbreviated form, and a comma "$\and$" is used instead of "$\land$" ([§ @sec-connecting-sentences]); for instance you can commonly find the following notation:
 
 $$
 \P(A\mo25 \and S\mo\mathrm{f} \| \yI)
@@ -43,61 +43,219 @@ $$
 \P(25, \mathrm{f} \| \yI)
 $$
 
-## Joint probability densities
-
-@@ TODO
 
 
-## Representation of joint probability distributions
+## Representation of joint probability distributions {#sec-repr-joint-prob}
 
 There is a wide variety of ways of representing joint probability distributions, and new ways are invented (and rediscovered) all the time. In some cases, especially when the quantity has more than three component quantities, it can become impossible to graphically represent the probability distribution in a faithful way. Therefore one often tries to represent only some aspects or features of interest from the full distribution. Whenever you see a plot of a joint probability distribution, you should carefully read what the plot shows and how it was made. Here we only illustrate some examples and ideas for representations.
 
 ### Tables
 
-When a quantity is *bi*variate and its two component quantities are both discrete and finite, the joint probabilities can be reported as a table.
+When a joint quantity consists of *two, discrete and finite* component quantities, the joint probabilities can be reported as a table, sometimes called a [**contingency table**]{.blue}^[this term is most often used for joint distributions of *frequencies* rather than probability].
 
-Example: Consider the next patient that will arrive at a particular hospital. There's the possibility of arrival by `ambulance`, `helicopter`, or `other` transportation means; and the possibility that the patient will need `urgent` `non-urgent` care. These can be seen as two quantities $A$ (nominal) and $U$ (binary). When these two quantities are taken together; their joint probability distribution is as follows, conditional on the hospital's data $\yi[H]$:
+Example: Consider the next patient that will arrive at a particular hospital. There's the possibility of arrival by $\ambu$, $\heli$, or $\othe$ transportation means; and the possibility that the patient will need $\urge$ $\nonu$ care. These can be seen as two quantities $T$ (nominal) and $U$ (binary). When these two quantities are taken together; their joint probability distribution is as follows, conditional on the hospital's data $\yi[H]$:
 
-+:-------------------------:+:---------------:+:---------------:+:---------------:+:---------------:+
-|$\P(A\mo a \and U\mo u\|\yi[H])$|                 |**arrival** $A$                                      |
-+---------------------------+-----------------+-----------------+-----------------+-----------------+
-|                           |                 |ambulance        |helicopter       |other            |
-+---------------------------+-----------------+-----------------+-----------------+-----------------+
-|**urgency** $U$            |urgent           |0.11             |0.04             |0.03             |
-+                           +-----------------+-----------------+-----------------+-----------------+
-|                           |non-urgent       |0.17             |0.01             |0.64             |
-+---------------------------+-----------------+-----------------+-----------------+-----------------+
-: Joint probability distribution for transportation at arrival and urgency {#tbl-urgent-arrival .sm}
++:------------------------------:+:---------------:+:---------------:+:---------------:+:---------------:+
+|$\P(U\mo u \and T\mo t\|\yi[H])$|                 |**transportation at arrival** $T$                    |
++--------------------------------+-----------------+-----------------+-----------------+-----------------+
+|                                |                 |ambulance        |helicopter       |other            |
++--------------------------------+-----------------+-----------------+-----------------+-----------------+
+|**urgency** $U$                 |urgent           |0.11             |0.04             |0.03             |
++                                +-----------------+-----------------+-----------------+-----------------+
+|                                |non-urgent       |0.17             |0.01             |0.64             |
++--------------------------------+-----------------+-----------------+-----------------+-----------------+
+: Joint probability distribution for transportation and urgency {#tbl-urgent-arrival .sm}
 
-We see for instance that the most probable possibility is that the next patient will arrive by transportation means other than ambulance and helicopter, and won't require urgent care.
+We see for instance that the most probable possibility is that the next patient will arrive by transportation means other than ambulance and helicopter, and won't require urgent care:
+
+$$\P(U\mo \nonu \and T\mo \othe\|\yi[H]) =
+0.64$$
 
 It is also possible to replace the numerical probability values with graphical representations; for example as shades of a colour, or squares with different areas.
 
-@@ TODO ref to marginals section
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise -- never forget the agent!
+Who could be the agent whose degrees of belief are represented in the table above? What could be the background information leading to such beliefs?
+:::
+
+
+### Scatter plots and similar
+
+Probability distributions for nominal, ordinal, or discrete-interval quantities can be represented by histograms or line plots, as we saw in [§ @sec-discr-prob-distr]. Histograms could be generalized to quantities consisting of *two* joint discrete quantities: a probability could be represented by a [cuboid or rectangular prism](https://mathworld.wolfram.com/Cuboid.html) (a sort of small tower with rectangular section), or cylinder, or similar. This representation, even if it can look flamboyant, is often inconvenient because some of the three-dimensional objects can be hidden from view, as in the generic example on the side.
+
+:::{.column-margin}
+![](2d_hist.png){width=100%}
+Example of generalized histogram (from [Mathematica](https://reference.wolfram.com/language/ref/Histogram3D.html))
+:::
+
+Alternatively, one can replace the numerical values of the probabilities in the tabular representation of the previous section with some graphical encoding.
+
+An example is some colour scheme, say `white` for probability $0$, `black` for probability $1$, and grey levels for intermediate probabilities; or some other colour scheme. This is sometimes called a "density histogram"; see the generic example on the side. This representation can be useful for qualitative or semi-quantitative assessments, for example seeing which joint values have highest probabilities.
+
+:::{.column-margin}
+![](colour_hist.png){width=100%}
+Example of density histogram (from [Mathematica](https://reference.wolfram.com/language/ref/DensityHistogram.html))
+:::
+
+Another example, similar to the scatter plot ([§ @sec-scatter-plot]), is to encode the probability values with a proportional number of points or other shapes, as illustrated here for the probabilities of [table @tbl-urgent-arrival]:
+
+![[Scatter plot for the urgency-transportation joint probability distribution]{.small}](scatter_hospital_arrival.png){#fig-scatter-contingency width=100%}
+
+the points do not need to be scattered in regular fashion as long as it's clear which quantity value they are associated with. The scatter plot above has 100 points, and therefore we can see for instance that $\P(U\mo \textrm{\small urgent} \and T\mo \textrm{\small helicopter}\|\yi[H]) =
+0.03$, since the corresponding region has 3 points out of 100.
+
+
+## Joint probability densities {#sec-joint-prob-densities}
+
+If a joint quantity consists in several continuous interval quantities, then its joint probability distribution is usually represented by a [**joint probability density**]{.blue}, which generalize the one-dimensional discussion of [§ @sec-prob-densities] to several dimensions.
+
+For instance, if $X$ and $Y$ are two continuous interval quantity, then the notation
+
+$$
+\p(X\mo x \and Y\mo y \| \yI) = 0.001
+$$
+
+means that the joint sentence "[$X$ has value between $x-\epsilon/2$ and $x+\epsilon/2$, and $Y$ between $y-\delta/2$ and $y+\delta/2$]{.midgrey}", or in symbols
+
+$$
+\bigl(x-\tfrac{\epsilon}{2} \mo[<] X \mo[<] x+\tfrac{\epsilon}{2}\bigr)
+\land
+\bigl(y-\tfrac{\delta}{2} \mo[<] Y \mo[<] y+\tfrac{\delta}{2}\bigr)
+$$
+
+has probability $0.001\cdot\epsilon\cdot\delta$, conditional on the background knowledge $\yI$. Said otherwise, the rectangular region of values around $(x,y)$ with widths $\epsilon$ and $\delta$ is assigned a probability $0.001\cdot\epsilon\cdot\delta$.
+
+Remember that a density typically has physical units, as in the one-dimensional case ([§ @sec-prob-densities]). For instance, if $X$ above is a temperature measured in kelvin ($\mathrm{K}$) and $Y$ a resistance measured in ohm ($\Omega$), then we would write\ \ $\p(X\mo x \and Y\mo y \| \yI) = \frac{0.001}{\mathrm{K}\,\Omega}$.
+
+
+## Representation of joint probability densities {#sec-repr-joint-dens}
+
+For one-dimensional densities we discussed line-based representations and scatter plots ([§ @sec-represent-dens]). The first of these representations can be generalized to two-dimensional densities, leading to a [**surface plot**]{.blue}. Below is the surface density plot for the probability density given by the formula
+
+:::{.column-page-inset-right}
+$$
+\p(X\mo x \and Y\mo y \| \yI) =
+\tfrac{3}{8\,\pi}\, \e^{-\frac{1}{2} (x-1)^2-(y-1)^2}+
+\tfrac{3}{64\,\pi}\,\e^{-\frac{1}{32} (x-2)^2-\frac{1}{2} (y-4)^2}+ \tfrac{1}{40\,\pi}\,\e^{-\frac{1}{8} (x-5)^2-\frac{1}{5} (y-2)^2}
+$$
+:::
+
+![](surfaceXY.svg){width=100%}
+
+This kind of representation can be very neat, but it has three drawbacks: it sometimes hides features of the density from view, it cannot be extended to three-dimensional densities, and sometimes the analytical expression for the probability density (like the formula above) is not available.
+
+<!-- :::{.column-margin} -->
+<!-- ![](surface_plot.png){width=100%} -->
+<!-- Example of surface density plot (from [Mathematica](https://reference.wolfram.com/language/ref/SmoothHistogram3D.html)) -->
+<!-- ::: -->
+
+The scatter plot instead does not hides features, can also be used for three-dimensional densities, and can be used in cases where we can at least obtain "representative" points from the probability density, even if the analytical expression of the latter is too complicated or not available. This representation is, however, quantitatively more imprecise. Here is a scatter plot, using 10 000 points, for the probability density given above:
+
+![Scatter-plot representation of the joint probability density $\p(X\mo x \and Y\mo y \| \yI)$](scatter_2d.png){#fig-scatterXY width=100%}
+
+As usual, the probability of a small region is proportional to the density of points in that region. If we had a joint density for *three* continuous quantities, its scatter plot would consist of three-dimensional clouds of points instead.
+
+Clearly both kinds of representation have advantages and disadvantages.
+
+## Joint mixed discrete-continuous probability distributions {#sec-joint-mix-distr}
+
+Frequently occurring in engineering and data-science problems are joint quantities composed by some discrete and some continuous quantities. Their joint probability distribution is a density with respect to the continuous component quantity.
+
+Suppose for instance that $Z$ is a binary quantity with domain $\set{\cat{low}, \cat{high}}$, $X$ a continuous quantity with all real numbers $\RR$ as domain, and together they form the joint quantity $(Z,X) \in \set{\cat{low}, \cat{high}} \times \RR$. Then the probability expression
+
+$$
+\p(Z\mo \cat{low} \and X\mo 3 \| \yI) = 0.07
+$$
+
+means that the agent with background information $\yI$ gives a $0.07\cdot \epsilon$ degree of belief to the joint sentence "[$Z$ has value $\cat{low}$ and $X$ has value between $3-\epsilon/2$ and $3+\epsilon/2$]{.midgrey}", for any small $\epsilon$. (As usual, if $X$ has physical dimensions, say metres $\mathrm{m}$, then the probability density above has value $0.07\,\mathrm{m^{-1}}$.)
+
+
+## Representation of mixed probability distributions {#sec-repr-mix-distr}
+
+Mixed discrete-continuous probability distributions can be somewhat tricky to represent graphically. Here we consider line-based representations and scatter plots. We take as example the probability that the next patient who arrives at a particular hospital has a given age (positive continuous quantity) and arrives by $\ambu$, $\heli$, or $\othe$ transportation means. 
+
 
 ### Multi-line plots
 
-Joint probability distributions over one discrete and one continuous quantity (or ordinal discrete with numerous values) can be represented as a collection of line plots: each line plot represent the probability density for the continuous quantity and a specific value of the discrete quantity.
+A line plot can be used to represent the probability density for the continuous quantity and each specific value of the discrete quantity:
 
-Consider for instance the probability that the next patient who arrives at a particular hospital has a given age (continuous quantity) and may require urgent care or not (binary quantity). The joint probability density can be visualized as in the plot in the margin. From the plot we can see that the probability of urgent patients is generally lower than non-urgent ones. A possibly disadvantage of this kind of plots is evident: the details, such as peaks, of the density for some values of the discrete quantity may be barely visible.
+![[Line plot for the age-transportation joint probability]](hospital_age_transp.png){#fig-multiline width=100%}
 
-::::{.column-margin}
-![](hospital_age_urgent.png){width=100%}
-::::
+With the plot above it's important to keep in mind that the three curves are three pieces of the *same* probability density, not three different densities. This is also clear seeing that the three areas under them (which partly overlap) cannot each be $1$, as would instead be expected for a probability density. The probability density is separated into three curves owing to the presence of the discrete quantity having three possible values.
 
+The area under the [solid blue curve]{.blue} is equal to $0.55$, the area under the [dashed red curve]{.red} is $0.25$, and the area under the [dotted green curve]{.green} is $0.20$ . The total area under the three curves (counting also the overlapping regions) is equal to $1$, as it should be.
 
-### Surface plots
+A possible disadvantage of this kind of plots is that some details, such as peaks, of the densities for some values of the discrete quantity may be barely discernible.
 
 ### Scatter plots
 
-@@ TODO work also for 3D
+As discussed before, in a scatter plot we represent the probability density by a cloud of "representative" objects, such as points, obtained from it: the density of these objects is approximately proportional to the probability density.
 
+An example of scatter plot for the probability density of our example is the following (note that the [blue]{.blue} colour is here no longer associated with $\ambu$):
+
+![](hospital_age_transp_scatter.png){width=100%}
+
+In the plot above, the probability density is reflected by the density of vertical lines. Using points instead of vertical lines, the density would have been difficult to discern, since all points would be on one of three vertical positions.
+
+We can use points if we give some variation to their vertical coordinate -- keeping in mind that such vertical variation has no meaning. The idea is similar to the one of [fig. @fig-scatter-contingency]. We obtain a plot like this:
+
+![[Point-scatter plot for the age-transportation joint probability]](hospital_age_transp_scatter2.png){#fig-pointscatter width=100%}
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Compare the line plot of [fig. @fig-multiline] and the point-scatter plot of [fig. @fig-pointscatter], which represent the same joint probability density. Do some introspection, and analyse the contrasting impressions that the two kinds of representations may give you. For instance, does the line plot give you a wrong intuition about the sharpness of the peaks in the density?
+
+Compare with what you did in the exercise of [§ @sec-represent-dens].
+:::
+
+
+## Representation of more general probability distributions and densities {#sec-repr-general-distr}
+
+Probability distributions for complex types of quantity can be quite tricky to represent in an informative way. They typically require a case-by-case approach.
+
+Often the idea behind the scatter plot works also in these complex cases: the distribution or density is represented by a "representative" sample of objects; and the objects can even depict the quantity itself.
+
+For instance, imagine the quantity $L$ defined as "[the linear relationship between input voltage and output current of a specific electronic component]{.yellow}". The possible values of this quantity are not just simple numbers or categories, but *straight lines*, that is, functions of the form "$y=m\,x + q$", where $x$ is the input voltage and $y$ the output current. The possible values -- straight lines -- can differ in their angular coefficient $m$ or in their intercept $q$: one value could be the straight line [$y= (2\,\mathrm{A/V})\, x - 3\,\mathrm{A}$]{.lightblue}, and another value could be straight line [$y= (-1\,\mathrm{A/V})\, x + 5\,\mathrm{A}$]{.lightblue}, and so on. This is a continuous quantity, but it isn't a quantity of a basic type.
+
+:::{.column-margin}
+![](voltage-current_converter.jpg){width=100%}
+A voltage-current converter
+:::
+
+
+
+An agent may be uncertain about which is the actual value of $L$, that is, which is the straight line that correctly expresses the voltage-current relationship of the electronic component. The agent therefore assign a probability density over all possible values -- over all possible straight lines. How to visually represent such a probability density?
+
+One way is to use a scatter plot: the probability distribution is represented by a cloud of *straight lines*, whose density is approximately proportional to the probability density. Here is an example using 360 representative straight lines:
+
+![[Scatter plot for the probability density over the voltage-current relationship]](scatter_lines.svg){#fig-scatterlines width=100%}
+
+From this plot we can read some important semi-quantitative information about the agent's probability density. For example, it's most probable that the voltage-current relationship has a positive angular coefficient $m$ around $0.5\,\mathrm{A/V}$, and an intercept $q$ around $3\,\mathrm{A}$; it improbable, but not impossible, that the voltage-current relationship has a negative angular coefficient (the output current decreases as the input voltage is increased); and it's practically impossible that the voltage-current relationship is almost vertical (say, changes in current larger than $\sim 5\,\mathrm{A}$  with changes in voltage smaller than $\sim 0.2\,\mathrm{V}$).
+
+\
+
+----
+
+\
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercises
+- Explore datasets in a database such as the [UC Irvine Machine Learning Repository](https://archive.ics.uci.edu/datasets), for example
+
+    + The [adult-income dataset](https://doi.org/10.24432/C5XW20)
+    + The [heart-disease dataset](https://doi.org/10.24432/C52P4X)
+
+    Assume that the data given are *representative "points"* of a probability distribution or density (of which we don't know the analytic formula).
+Plot the probability distributions and probability densities as scatter plots using some of these representative points.
+
+- Look for the analytic formulae of some probability distributions and densities of simple and joint quantities, and plot them using different representations.
+:::
+
+\
 
 ::: {.callout-caution}
-## {{< fa book >}} Reading
-- §§ 5.3.2--5.3.3 of [*Risk Assessment and Decision Analysis with Bayesian Networks*](https://hvl.instructure.com/courses/25074/modules/items/664427)
+## {{< fa book >}} Study reading
+- § 5.3.2 of [*Risk Assessment and Decision Analysis with Bayesian Networks*](https://hvl.instructure.com/courses/25074/modules/items/664427)
 
-- § 12.2.2 of [*Artificial Intelligence*](https://hvl.instructure.com/courses/25074/modules/items/660089)
-
-- §§ 5.1--5.5 of [*Probability*](https://hvl.instructure.com/courses/25074/modules/items/675505)
+- § 12.2.2 of [*Artificial Intelligence*](https://hvl.instructure.com/courses/25074/modules/items/660089)
 :::

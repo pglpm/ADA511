@@ -5,17 +5,18 @@ jupyter: ir
 {{< include macros.qmd >}}
 {{< include macros_populations_variates.qmd >}}
 
-[First let's load some libraries and functions that we shall use in this example:]{.small}
+[First let's load some libraries and functions that we shall use in this example: the [`tplotfunctions.R`](code/tplotfunctions.R) and the [`optimal_predictor_machine_nominal.R`](code/optimal_predictor_machine_nominal.R) scripts, which should be `source`d from an R console:]{.small}
 
 ```{r}
-source('code/universal_exch-inference_machine.R')
+source('code/tplotfunctions.R')
+source('code/optimal_predictor_machine_nominal.R')
 ```
 ```{r}
 #| echo: false
 options(repr.plot.width=6*sqrt(2), repr.plot.height=6)
 ```
 
-# [The universal exchangeable-inference machine in action]{.red}
+# [The optimal predictor machine in action (for nominal quantities)]{.red}
 
 ## Example population and data
 
@@ -52,9 +53,10 @@ Now we imagine to prepare an agent for drawing inferences about the full populat
 
 ### Load the machine's apparatus
 
-The call
+The calls
 ```
-source('code/universal_exch-inference_machine.R')
+source('code/tplotfunctions.R')
+source('code/optimal_predictor_machine_nominal.R')
 ```
 at the beginning of this chapter loaded several `R` functions that implement the universal machine: they draw inferences, calculate marginal and conditional probabilities, and plot probability distributions.
 
@@ -89,7 +91,7 @@ priorknowledge_type <- fmarginal(finfo=priorknowledge, variates='Type')
 
 The answer is stored in the object `priorknowledge_type`, which now contains only information pertinent to the $\vType$ variate.
 
-We would like to visualize this probability distribution over marginal frequency distributions. A complication is that we would need infinite dimensions to visualize this faithfully. One approximate way to represent this probability distribution is by showing, say, 100 representative samples from it. The idea is the same as for a scatter plot ([§ @sec-represent-probs]). In this case we would then have 100 different frequency distributions for the variate $\vType$.
+We would like to visualize this probability distribution over marginal frequency distributions. A complication is that we would need infinite dimensions to visualize this faithfully. One approximate way to represent this probability distribution is by showing, say, 100 representative samples from it. The idea is the same as for a scatter plot ([§ @sec-represent-dens]). In this case we would then have 100 different frequency distributions for the variate $\vType$.
 
 The function `plotsamples1D()` does this kind of visual representation. It has arguments `finfo`: the object encoding the probability distribution; `n` (default 100): the number of samples to show; and `predict`, which for the moment we set to `FALSE` and discuss in a moment.
 
@@ -103,7 +105,7 @@ You see that anything goes: Some frequency distributions give frequency almost `
 
 This is a meaningful answer, because the agent hasn't seen any data. From its point of view, everything is possible in this population.
 
-@@ TODO: add representation as quantiles
+[@@ TODO: add representation as quantiles]{.small .grey}
 
 ### Preliminary inferences about units
 
@@ -162,7 +164,7 @@ This plot shows two important aspects of this probability distribution and of th
 
 - Yet, the agent still has a degree of uncertainty, qualitatively shown by the width of the "bands" of frequency distributions. For example, the frequency for the $\cat{T2}$ value could be $0.40$ as well as $0.30$
 
-@@ TODO: add code with function that reports the exact probabilities of the frequencies.
+[@@ TODO: add code with function that reports the exact probabilities of the frequencies.]{.small .grey}
 
 And there are other more specific aspects that can be found by visual inspection. For instance:
 
@@ -188,7 +190,7 @@ plotsamples1D(finfo=postknowledge_type)
 
 ## Conditional, "discriminative" or "supervised-learning" inferences
 
-The inferences about a new units that the agent has made so far were of an "unsupervised-learning" or "generative" kind ([§ sec-2nd-connection-ML]): the agent did not receive or use any partial information about a new unit. Let's now try a "supervised-learning" or "discriminative" kind of inference.
+The inferences about a new units that the agent has made so far were of an "unsupervised-learning" or "generative" kind ([§ sec-2nd-connection-ML]): the agent did not receive or use any partial information about a new unit. Let's now try a "supervised-learning" or "discriminative" kind of inference.
 
 Imagine that we are at a new crime scene, a glass fragment is recovered, and tests are made about its refractive index and chemical composition. The following values are found, referred to the levels of our variates:
 
@@ -207,7 +209,7 @@ newfragment <- c(RI=2, Na=2,  Mg=3,  Al=2,  Si=3,  K=1, Ca=2,  Ba=1,  Fe=1)
 
 The detectives would like to know what's the possible origin of this fragment, that is, its $\vType$. Our agent can draw this inference.
 
-First, the agent can calculate the probability distribution over the *conditional frequencies* ([§ @sec-conditional-freqs]) of the $\vType$ values for the subpopulation ([§ @sec-subpopulations]) of units having the specific variate values above. This calculation is done with the function `fconditional()`, with arguments `finfo`: the agent's current knowledge, and `unitdata`: the partial data obtained from the unit.
+First, the agent can calculate the probability distribution over the *conditional frequencies* ([§ @sec-conditional-freqs]) of the $\vType$ values for the subpopulation ([§ @sec-subpopulations]) of units having the specific variate values above. This calculation is done with the function `fconditional()`, with arguments `finfo`: the agent's current knowledge, and `unitdata`: the partial data obtained from the unit.
 
 ```{r}
 condknowledge <- fconditional(finfo=postknowledge, unitdata=newfragment)
