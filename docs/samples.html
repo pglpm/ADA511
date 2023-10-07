@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-10-04">
+<meta name="dcterms.date" content="2023-10-07">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 23&nbsp; Infinite populations and samples</title>
 <style>
@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -99,7 +133,7 @@ ul.task-list li input[type="checkbox"] {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-04</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-07</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -430,8 +464,9 @@ ul.task-list li input[type="checkbox"] {
   </ul></li>
   <li><a href="#sec-samples" id="toc-sec-samples" class="nav-link" data-scroll-target="#sec-samples"><span class="header-section-number">23.2</span> Samples</a>
   <ul class="collapse">
+  <li><a href="#learning-from-samples" id="toc-learning-from-samples" class="nav-link" data-scroll-target="#learning-from-samples">Learning from samples</a></li>
   <li><a href="#representative-and-biased-samples" id="toc-representative-and-biased-samples" class="nav-link" data-scroll-target="#representative-and-biased-samples">“Representative” and biased samples</a></li>
-  <li><a href="#biases" id="toc-biases" class="nav-link" data-scroll-target="#biases">Biases</a></li>
+  <li><a href="#quirks-of-samples-for-mean-and-standard-deviation" id="toc-quirks-of-samples-for-mean-and-standard-deviation" class="nav-link" data-scroll-target="#quirks-of-samples-for-mean-and-standard-deviation">Quirks of samples for mean and standard deviation</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -452,7 +487,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-10-04</p>
+      <p class="date">2023-10-07</p>
     </div>
   </div>
   
@@ -476,7 +511,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <section id="sec-infinite-populations" class="level2 page-columns page-full" data-number="23.1">
 <h2 data-number="23.1" class="anchored" data-anchor-id="sec-infinite-populations"><span class="header-section-number">23.1</span> Infinite populations</h2>
-<p>The examples of populations that we explored so far comprised a small number of units, and all their data were exactly and fully known. In concrete inference and decision problems we usually deal with populations that are much larger, and often even potentially infinite; and some of their data might be unknown.</p>
+<p>The examples of populations that we explored so far comprised a small number of units, and all their data were exactly and fully known. In concrete inference and decision problems of the kind we have been focusing on in chapters&nbsp;<a href="conditional_probability.html"><span>17</span></a> and&nbsp;<a href="2nd_connection_ML.html"><span>19</span></a>, we usually deal with populations that are much larger or potentially infinite; and data are known only for a small collection of their units.</p>
 <p>In the glass-forensic example (<a href="populations_variates.html#tbl-glass">table&nbsp;&nbsp;<span>20.1</span></a>), for instance, many more glass fragments could be examined beyond the 10 units reported there, with no clear bound on the total number. We could even extend that population considering glass fragments from past and future crime scenes:</p>
 <div class="column-page-right">
 <div id="tbl-glass-ext" class="anchored">
@@ -639,15 +674,27 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="sec-samples" class="level2 page-columns page-full" data-number="23.2">
 <h2 data-number="23.2" class="anchored" data-anchor-id="sec-samples"><span class="header-section-number">23.2</span> Samples</h2>
-<p>In the glass-forensic example above (<a href="#tbl-glass-ext">table&nbsp;&nbsp;<span>23.1</span></a>), the units and data we had initially (<a href="populations_variates.html#tbl-glass">table&nbsp;&nbsp;<span>20.1</span></a>) have been considered as part or a much larger population. Such a part is called a <span class="blue"><strong>population sample</strong></span> or “sample” for short. Almost all data considered in engineering and data-science problems can be considered to be population samples.</p>
+<section id="learning-from-samples" class="level3">
+<h3 class="anchored" data-anchor-id="learning-from-samples">Learning from samples</h3>
+<p>In chapters&nbsp;<a href="conditional_probability.html"><span>17</span></a> and&nbsp;<a href="2nd_connection_ML.html"><span>19</span></a> we considered an agent that must draw an inference about some units from a population. The agent’s degrees of belief in that inference relied (that is, were conditional on) units already observed in the population, the “learning” or “training” data. We saw that the agent’s degrees of belief changed, often becoming sharper, thanks to the information about the observed units.</p>
+<p>Units for which we have full (or almost full) information, and that an agent can use to update its beliefs, are called a <span class="blue"><strong>population sample</strong></span> or “sample” for short. Almost all data considered in engineering and data-science problems can be considered to be population samples.</p>
 <p>It is extremely important to <strong>specify how a sample is extracted or collected</strong> from a population. For instance, if we consider <a href="populations_variates.html#tbl-glass">table&nbsp;&nbsp;<span>20.1</span></a> to be a full population, we could extract a sample in such a way that <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> only has value <span style="display:inline-block;"><span class="math inline">\({\small\verb;headlamps;}\)</span></span> (similarly to when we construct a subpopulation, <a href="subpopulations.html#sec-subpopulations">§ &nbsp;<span>22.1</span></a>, but for a subpopulation we would select <em>all</em> units having that variate value). The marginal frequency of the value <span style="display:inline-block;"><span class="math inline">\({\small\verb;headlamps;}\)</span></span> in the sample would then be <span style="display:inline-block;"><span class="math inline">\(1\)</span>,</span> whereas in the original population it is <span style="display:inline-block;"><span class="math inline">\(3/10 \approx 0.333\)</span></span> – two very different frequencies.</p>
+</section>
 <section id="representative-and-biased-samples" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="representative-and-biased-samples">“Representative” and biased samples</h3>
-<p>In inference and decision problems we would like to use samples for which the various frequencies don’t differ very much from those in the original population. Such a sample is called a “<span class="blue">representative sample</span>”. This is a difficult notion; the International Organization for Standardization for instance <a href="https://www.iso.org/obp/ui/#iso:std:iso:3534:-4:ed-1:v1:en">warns (item&nbsp;3.1.14)</a>:</p>
+<p>If samples from a population are used as conditional information to calculate probabilities about other units, then they should of course be “relevant”, in some sense (not the technical sense of <a href="information.html">chapter&nbsp;&nbsp;<span>18</span></a>), for the inference. The very <em>definition</em> of statistical population (<a href="populations_variates.html#sec-variates-populations">§ &nbsp;<span>20.2</span></a>) is meant to have such a relevance built-in: the “similarity” of the units makes each of them relevant for inferences about any other.</p>
+<p>Still, the procedure with which samples are selected from a population may lead to quirky and unreasonable inferences. For instance suppose we are interested in prognosing a disease for a person from a particular population, having observed a sample of people from the same population. If the sample was <em>chosen</em> to consist only of people having the disease, then it is obviously meaningless for our inference.</p>
+<p>The specific problem in this example is that our inference is based on guessing a frequency distribution in the full population (as we’ll see more in detail in later chapters), but the sample, owing to the way it was chosen, cannot show a frequency distribution similar to the full-population frequency distribution.</p>
+<p><br>
+</p>
+<p>A sampling procedure may generate a sample that is pointless for some inferences, but still useful for others.</p>
+<p>In the inference and decision problems under our focus we would like to use a sample for which particular frequencies – most often the full joint frequency – don’t differ very much from those in the full population. We’ll informally call this a “<span class="blue">representative sample</span>”. This is a difficult notion; the International Organization for Standardization for instance <a href="https://www.iso.org/obp/ui/#iso:std:iso:3534:-4:ed-1:v1:en">warns (item&nbsp;3.1.14)</a>:</p>
 <blockquote class="blockquote">
 <p>The notion of representative sample is fraught with controversy, with some survey practitioners rejecting the term altogether.</p>
 </blockquote>
-<p>In many cases it is <em>impossible</em> for a sample of given size to be “representative”:</p>
+<p><br>
+</p>
+<p>In many cases it is <em>impossible</em> for a sample of given size to be fully “representative”:</p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -780,6 +827,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 </div>
 </div>
+<p>Luckily, the probability calculus allows an agent to draw inferences also when the sample is too small to correctly reflect full-population frequencies, if appropriate <em>background information</em> is provided.</p>
 <p><br>
 </p>
 <p>Obviously we cannot expect a population sample to exactly reflect all frequency distributions – joint, marginal, conditional – of the original population; some discrepancy is to be expected. How much discrepancy should be allowed? And what is the minimal size for a sample not to exceed such discrepancy?</p>
@@ -833,12 +881,88 @@ ul.task-list li input[type="checkbox"] {
 <p><br>
 </p>
 <p>If we are only interested in a smaller number of variates of a population, then the representative sample can be smaller as well: its size would be given by the entropy of the corresponding <em>marginal</em> frequency distribution of the variates of interest. In the example of <a href="#tbl-four-bit">table&nbsp;&nbsp;<span>23.2</span></a>, if we are only interested in the variate <span style="display:inline-block;"><span class="math inline">\(X\)</span>,</span> then any sample consisting of two units, one having <span style="display:inline-block;"><span class="math inline">\(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}0\)</span></span> and the other having <span style="display:inline-block;"><span class="math inline">\(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}1\)</span>,</span> would be a representative sample of the marginal frequency distribution <span style="display:inline-block;"><span class="math inline">\(f(X)\)</span>.</span></p>
-</section>
-<section id="biases" class="level3">
-<h3 class="anchored" data-anchor-id="biases">Biases</h3>
-<p>For many populations it is difficult or impossible to obtain a “representative” sample, even when the sample is large. As the exercises above show, this impossibility remains even if we extract the sample in an unsystematic and unpredictable way (“random sample”), by shuffling or similar techniques.</p>
-<p>A sample that presents some aspects, such as frequency distributions, which are at variance with the original population, is sometimes called <span class="blue">biased</span> (this term is used in many different ways by different authors). Unfortunately, most samples are “biased” in this sense.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-book" aria-label="book"></i> Study reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://hvl.instructure.com/courses/25074/modules/items/715303"><em>Representative Sampling, I</em></a></p>
+</div>
+</div>
+<p>A sample that presents some aspects, such as frequency distributions, which are at variance with the original population, is sometimes called <span class="blue">biased</span>. This term is used in many different ways by different authors. Unfortunately, most samples are “biased” in this sense.</p>
 <p>The only way to counteract the misleading information given by a biased sample is to specify appropriate <strong>background information</strong>, which comes not from data samples but from a general meta-analysis, often based on physical, medical, and similar principles, of the problem and population.</p>
+<p><br>
+</p>
+</section>
+<section id="quirks-of-samples-for-mean-and-standard-deviation" class="level3">
+<h3 class="anchored" data-anchor-id="quirks-of-samples-for-mean-and-standard-deviation">Quirks of samples for mean and standard deviation</h3>
+<p>For some populations, the mean and standard deviation calculated in a sample can be wildly different from those of the full population – even when the sample comprises half of the full population! Here is a demonstration in <code>R</code>. Try it out in your favourite programming language.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Guided exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We imagine to have a population of 1 000 000 units. These units have continuous interval variates <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> each with an approximately standard Gaussian frequency distribution. These variates are not actual part of the population definition, however. Rather, an agent only has access to, or maybe it’s only interested in, the ratio of these two variates <span style="display:inline-block;"><span class="math inline">\(R \coloneqq X/Y\)</span>.</span></p>
+<p>The agent is in particular interested in the <em>mean</em> of the variate <span style="display:inline-block;"><span class="math inline">\(R\)</span></span> in the full population, but has only access to the values of <span style="display:inline-block;"><span class="math inline">\(R\)</span></span> in a sample. How does the mean calculated from a sample of increasing size compare with the actual mean of the full population?</p>
+<p>First let’s create the values of the variates <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> and construct <span style="display:inline-block;"><span class="math inline">\(R\)</span></span> from them:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Load custom plot functions</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/tplotfunctions.R'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1000</span>) <span class="co"># to reproduce results</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000000</span> <span class="co"># population size</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N) <span class="co"># variate invisible to agent</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N) <span class="co"># variate invisible to agent</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>R <span class="ot">&lt;-</span> X<span class="sc">/</span>Y <span class="co"># variate considered by agent</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="do">## mean of R in the full population</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>popmean <span class="ot">&lt;-</span> <span class="fu">mean</span>(R)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">'</span><span class="sc">\n</span><span class="st">The full-population mean is'</span>, popmean, <span class="st">'(unknown to the agent)</span><span class="sc">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+The full-population mean is -8.04481 (unknown to the agent)</code></pre>
+</div>
+</div>
+<p>Now we imagine that the agent accumulates samples from the population, starting from 10, increasing by 100 units, until half of the population has been sampled. At each sample increase the agent calculates the sample mean. We plot how the sample mean changes with the sample size. We also plot indicate the full-population mean, which the agent doesn’t know and is trying to guess:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## sizes of successive samples</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>samplesizes <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">10</span>, N<span class="sc">/</span><span class="dv">2</span>, <span class="at">by=</span><span class="dv">100</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="do">## empty vector to contain the means of the increasing samples</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>samplemeans <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">length</span>(samplesizes))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="do">## loop through the increasing samples, calculate mean for each</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(sample <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(samplesizes)){</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    samplemeans[sample] <span class="ot">&lt;-</span> <span class="fu">mean</span>(R[<span class="dv">1</span><span class="sc">:</span>samplesizes[sample]])</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="do">## plot how sample means change with sample size, and the actual population mean</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">tplot</span>(<span class="at">x=</span>samplesizes, <span class="at">y=</span>samplemeans,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab=</span><span class="st">'sample size'</span>, <span class="at">ylab=</span><span class="st">'sample mean'</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>)<span class="sc">*</span><span class="fl">1.01</span><span class="sc">*</span><span class="fu">max</span>(<span class="fu">abs</span>(popmean),<span class="fu">abs</span>(samplemeans)))</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span>popmean, <span class="at">lty=</span><span class="dv">2</span>, <span class="at">lwd=</span><span class="dv">4</span>, <span class="at">col=</span><span class="dv">7</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">y=</span>popmean, <span class="at">x=</span><span class="fu">max</span>(samplesizes), <span class="at">labels=</span><span class="st">'population mean (unknown to agent)'</span>, <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="at">col=</span><span class="dv">7</span>, <span class="at">cex=</span><span class="fl">1.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="samples_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><br>
+</p>
+<p>Now try a similar exercise but for the standard deviation of <span style="display:inline-block;"><span class="math inline">\(R\)</span></span></p>
+</div>
+</div>
 
 
 </section>

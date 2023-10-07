@@ -5,7 +5,7 @@
 
 ## Infinite populations {#sec-infinite-populations}
 
-The examples of populations that we explored so far comprised a small number of units, and all their data were exactly and fully known. In concrete inference and decision problems we usually deal with populations that are much larger, and often even potentially infinite; and some of their data might be unknown.
+The examples of populations that we explored so far comprised a small number of units, and all their data were exactly and fully known. In concrete inference and decision problems of the kind we have been focusing on in chapters [-@sec-learning] and [-@sec-2nd-connection-ML], we usually deal with populations that are much larger or potentially infinite; and data are known only for a small collection of their units.
 
 In the glass-forensic example ([table @tbl-glass]), for instance, many more glass fragments could be examined beyond the 10 units reported there, with no clear bound on the total number. We could even extend that population considering glass fragments from past and future crime scenes:
 
@@ -63,18 +63,34 @@ In [§ @sec-freq-distr] we defined relative frequencies. Relative frequencies 
 
 ## Samples {#sec-samples}
 
-In the glass-forensic example above ([table @tbl-glass-ext]), the units and data we had initially ([table @tbl-glass]) have been considered as part or a much larger population. Such a part is called a [**population sample**]{.blue} or "sample" for short. Almost all data considered in engineering and data-science problems can be considered to be population samples.
+### Learning from samples
+
+In chapters [-@sec-learning] and [-@sec-2nd-connection-ML] we considered an agent that must draw an inference about some units from a population. The agent's degrees of belief in that inference relied (that is, were conditional on) units already observed in the population, the "learning" or "training" data. We saw that the agent's degrees of belief changed, often becoming sharper, thanks to the information about the observed units.
+
+Units for which we have full (or almost full) information, and that an agent can use to update its beliefs, are called a [**population sample**]{.blue} or "sample" for short. Almost all data considered in engineering and data-science problems can be considered to be population samples.
 
 It is extremely important to **specify how a sample is extracted or collected** from a population. For instance, if we consider [table @tbl-glass] to be a full population, we could extract a sample in such a way that $\vType$ only has value $\cat{headlamps}$ (similarly to when we construct a subpopulation, [§ @sec-subpopulations], but for a subpopulation we would select *all* units having that variate value). The marginal frequency of the value $\cat{headlamps}$ in the sample would then be $1$, whereas in the original population it is $3/10 \approx 0.333$ -- two very different frequencies.
 
 
 ### "Representative" and biased samples
 
-In inference and decision problems we would like to use samples for which the various frequencies don't differ very much from those in the original population. Such a sample is called a "[representative sample]{.blue}". This is a difficult notion; the International Organization for Standardization for instance [warns (item 3.1.14)](https://www.iso.org/obp/ui/#iso:std:iso:3534:-4:ed-1:v1:en):
+If samples from a population are used as conditional information to calculate probabilities about other units, then they should of course be "relevant", in some sense (not the technical sense of [chapter @sec-info-chapter]), for the inference. The very *definition* of statistical population ([§ @sec-variates-populations]) is meant to have such a relevance built-in: the "similarity" of the units makes each of them relevant for inferences about any other.
+
+Still, the procedure with which samples are selected from a population may lead to quirky and unreasonable inferences. For instance suppose we are interested in prognosing a disease for a person from a particular population, having observed a sample of people from the same population. If the sample was *chosen* to consist only of people having the disease, then it is obviously meaningless for our inference.
+
+The specific problem in this example is that our inference is based on guessing a frequency distribution in the full population (as we'll see more in detail in later chapters), but the sample, owing to the way it was chosen, cannot show a frequency distribution similar to the full-population frequency distribution.
+
+\
+
+A sampling procedure may generate a sample that is pointless for some inferences, but still useful for others.
+
+In the inference and decision problems under our focus we would like to use a sample for which particular frequencies -- most often the full joint frequency -- don't differ very much from those in the full population. We'll informally call this a "[representative sample]{.blue}". This is a difficult notion; the International Organization for Standardization for instance [warns (item 3.1.14)](https://www.iso.org/obp/ui/#iso:std:iso:3534:-4:ed-1:v1:en):
 
 > The notion of representative sample is fraught with controversy, with some survey practitioners rejecting the term altogether.
 
-In many cases it is *impossible* for a sample of given size to be "representative":
+\
+
+In many cases it is *impossible* for a sample of given size to be fully "representative":
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
@@ -109,6 +125,8 @@ The joint variate $(W,X,Y,Z)$ has 16 possible values, from $(0,0,0,0)$ to $(1,1,
 
 - Extract a **representative** sample of size **four** units. In particular, the marginal frequency distributions of the four variates should be as close to 50%/50% as possible.
 :::
+
+Luckily, the probability calculus allows an agent to draw inferences also when the sample is too small to correctly reflect full-population frequencies, if appropriate *background information* is provided.
 
 \
 
@@ -158,12 +176,74 @@ This particular number has important practical consequences; for example it is r
 
 If we are only interested in a smaller number of variates of a population, then the representative sample can be smaller as well: its size would be given by the entropy of the corresponding *marginal* frequency distribution of the variates of interest. In the example of [table @tbl-four-bit], if we are only interested in the variate $X$, then any sample consisting of two units, one having $X\mo0$ and the other having $X\mo1$, would be a representative sample of the marginal frequency distribution $f(X)$.
 
+::: {.callout-caution}
+## {{< fa book >}} Study reading
+[*Representative Sampling, I*](https://hvl.instructure.com/courses/25074/modules/items/715303)
+:::
 
-### Biases
 
-For many populations it is difficult or impossible to obtain a "representative" sample, even when the sample is large. As the exercises above show, this impossibility remains even if we extract the sample in an unsystematic and unpredictable way ("random sample"), by shuffling or similar techniques.
-
-A sample that presents some aspects, such as frequency distributions, which are at variance with the original population, is sometimes called [biased]{.blue} (this term is used in many different ways by different authors). Unfortunately, most samples are "biased" in this sense.
+A sample that presents some aspects, such as frequency distributions, which are at variance with the original population, is sometimes called [biased]{.blue}. This term is used in many different ways by different authors. Unfortunately, most samples are "biased" in this sense.
 
 The only way to counteract the misleading information given by a biased sample is to specify appropriate **background information**, which comes not from data samples but from a general meta-analysis, often based on physical, medical, and similar principles, of the problem and population.
 
+\
+
+
+
+### Quirks of samples for mean and standard deviation
+
+For some populations, the mean and standard deviation calculated in a sample can be wildly different from those of the full population -- even when the sample comprises half of the full population! Here is a demonstration in `R`. Try it out in your favourite programming language.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Guided exercise
+
+We imagine to have a population of 1 000 000 units. These units have continuous interval variates $X$ and $Y$, each with an approximately standard Gaussian frequency distribution. These variates are not actual part of the population definition, however. Rather, an agent only has access to, or maybe it's only interested in, the ratio of these two variates $R \defd X/Y$.
+
+The agent is in particular interested in the *mean* of the variate $R$ in the full population, but has only access to the values of $R$ in a sample. How does the mean calculated from a sample of increasing size compare with the actual mean of the full population?
+
+First let's create the values of the variates $X$ and $Y$, and construct $R$ from them:
+
+```{r}
+## Load custom plot functions
+source('code/tplotfunctions.R')
+set.seed(1000) # to reproduce results
+
+N <- 1000000 # population size
+
+X <- rnorm(N) # variate invisible to agent
+Y <- rnorm(N) # variate invisible to agent
+
+R <- X/Y # variate considered by agent
+
+## mean of R in the full population
+popmean <- mean(R)
+cat('\nThe full-population mean is', popmean, '(unknown to the agent)\n')
+```
+
+Now we imagine that the agent accumulates samples from the population, starting from 10, increasing by 100 units, until half of the population has been sampled. At each sample increase the agent calculates the sample mean. We plot how the sample mean changes with the sample size. We also plot indicate the full-population mean, which the agent doesn't know and is trying to guess:
+
+```{r}
+## sizes of successive samples
+samplesizes <- seq(10, N/2, by=100)
+
+## empty vector to contain the means of the increasing samples
+samplemeans <- numeric(length(samplesizes))
+
+## loop through the increasing samples, calculate mean for each
+for(sample in 1:length(samplesizes)){
+    samplemeans[sample] <- mean(R[1:samplesizes[sample]])
+}
+
+## plot how sample means change with sample size, and the actual population mean
+tplot(x=samplesizes, y=samplemeans,
+      xlab='sample size', ylab='sample mean',
+      ylim=c(-1,1)*1.01*max(abs(popmean),abs(samplemeans)))
+abline(h=popmean, lty=2, lwd=4, col=7)
+text(y=popmean, x=max(samplesizes), labels='population mean (unknown to agent)', adj=c(1,1), col=7, cex=1.2)
+```
+
+\
+
+Now try a similar exercise but for the standard deviation of $R$
+
+:::
