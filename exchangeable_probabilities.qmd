@@ -2,15 +2,15 @@
 {{< include macros.qmd >}}
 {{< include macros_population_inference.qmd >}}
 
-## Recap
+## Recap {#sec-recap-before-exchang}
 
 In the chapters of part [Inference I]{.green} we had an overview of how an agent can draw inferences and make predictions of the most general kind, expressed by general sentences, using the four fundamental rules of inference.
 
 Then, in the chapters of part [Inference II]{.green}, we successively narrowed our focus on more and more specialized kinds of inference typical of engineering and data-science problems and machine-learning algorithms: first, inferences about measurements and observations; and then inferences about multiple instances of similar measurements and observations. For these purposes we introduced a specialized language about quantities and data types (chapters of part [Data I]{.yellow}), and "populations" of similar data (chapters of part [Data II]{.yellow}).
 
-The idea was that that an agent can arrive at sharper degrees of belief -- that is, learn -- by using information about "similar instances". We also found the main formula, derived from the four fundamental rules, that takes care of learning and prediction:
+The idea was that that an agent can arrive at sharper degrees of belief -- that is, learn -- by using information about "similar instances". We also found the main formula, derived from the four fundamental rules, that takes care of learning and prediction (also in both "supervised" and "unsupervised" machine learning):
 
-:::{.column-page-inset-right}
+:::{.column-page-right}
 $$
 \begin{aligned}
     &\P\bigl(
@@ -28,26 +28,103 @@ $$
 	\red Y_{N+1} \mo y_{N+1} \and
 	\red X_{N+1} \mo x_{N+1}
 	\black
-		\|[\big] 
+		\and
     \green Y_N \mo y_N \and X_N \mo x_N
 	\and
 	\dotsb \and 
-	Y_1 \mo y_1 \and X_1 \mo x_1 
-    \black\and {\yellow\yI} \bigr)
+	\green Y_1 \mo y_1 \and X_1 \mo x_1 
+    \black\|[\big] {\yellow\yI} \bigr)
 }{
 	 \sum_{\red y} \P\bigl(
 	{\red Y_{N+1} \mo y} \and
 	{\red X_{N+1} \mo x_{N+1}}
-		\|[\big] 
+		\and
     \green Y_N \mo y_N \and X_N \mo x_N \and
 	\dotsb \and 
 	Y_1 \mo y_1 \and X_1 \mo x_1 
-    \black\and {\yellow\yI} \bigr)
+    \black\|[\big]  {\yellow\yI} \bigr)
 }
 \end{aligned}
 $$
 :::
 
+To calculate this formula, an agent needs the joint probability distribution
+
+$$
+	    \P\bigl(
+	\red Y_{N+1} \mo y_{N+1} \and
+	\red X_{N+1} \mo x_{N+1}
+	\black
+		\and
+    \green Y_N \mo y_N \and X_N \mo x_N
+	\and
+	\dotsb \and 
+	\green Y_1 \mo y_1 \and X_1 \mo x_1 
+    \black\|[\big] {\yellow\yI} \bigr)
+$$
+
+for all possible values of $x_1,y_1$, $x_2, y_2$, $\dotsc$, and for a possibly unlimited number $N+1$ of instances.
+
+\
+
+We shall now narrow our focus further for one last time, on inferences where this probability distribution satisfies a property that greatly simplifies the calculations. Such special inferences are also typical of many machine-learning applications, including "supervised" and "unsupervised" learning.
+
+\
+
+## Exchangeable degrees of belief  {#sec-exchang-degrees}
+
+Consider again two populations briefly mentioned in [§ @sec-collections]
+
+- Stock exchange
+: The daily change in closing price of a stock during 1000 consecutive days. Each day the change can be positive or zero, $\green\cat{+}$; or negative, $\yellow\cat{-}$.
+
+:::{.column-margin}
+![](stock_course.jpg){width=50%}
+:::
+
+\
+
+- Mars prospecting
+: A collection of 1000 similar-sized rocks gathered from a specific, large crater on Mars. Each rock either contains hematite, $\yy$; or it doesn't, $\yn$.
+
+:::{.column-margin}
+![](mars_crater2.jpg){width=50%}
+:::
+
+\
+
+Each unit in these populations has some kind of tag which distinguishes it from all other units. In the stock-exchange population it is the day of the closing price; in the Mars-prospecting population it is the time the rock is entered into the database. Note that **this tag is *not* a population variate**. Units in any population always have some kind of tag: it could just be the row number of the database in which their data are stored.
+
+Now suppose that the variate value for unit #735 in each of these populations is unknown to you (you're the agent) and you would like to infer it.
+
+
+### Stock exchange and Mars prospecting, again
+
+Consider the following two sketches of inference problems, related to the scenarios of [§ @sec-collections]:
+
+- Stock exchange
+: In 100 days, the daily change in closing price of a stock has been `positive` 74 times, and `negative` 26 times, according a particular sequence; for instance:
+
+    ![](stock.png){width=100%}
+
+    In which of the subsequent 3 days will the closing-price change be positive, and in which negative?
+
+:::{.column-margin}
+![](stock_course.jpg){width=100%}
+:::
+
+\
+
+- Mars prospecting
+: Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 contained hematite (`Y`), and 26 did not (`N`). For instance, the data could be:
+
+    ![](rock.png){width=100%}
+
+    Which, among the next 3 rocks that will be examined, will contain hematite, and which will be hematite-free?
+
+:::{.column-margin}
+![](mars_crater2.jpg){width=100%}
+:::
 
 
 
@@ -120,7 +197,7 @@ Consider the following two sketches of inference problems, related to the scenar
 ![](stock_course.jpg){width=100%}
 :::
 
-\ 
+\
 
 - Mars prospecting
 : Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 contained hematite (`Y`), and 26 did not (`N`). For instance, the data could be:
