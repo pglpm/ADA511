@@ -19,11 +19,11 @@ guessmetadata <- function(data, file){
         nvariates <- ncol(data)
         nn <- sapply(data, function(xx){length(unique(xx))})
         maxN <- max(nn)
-        ## str(matrix(NA, nrow=nvariates,ncol=2+maxN, dimnames=list(NULL, c('variate','N',paste0('V',1:maxN)))))
-        metadata <- as.data.table(matrix(character(), nrow=nvariates,ncol=2+maxN, dimnames=list(NULL, c('variate','N',paste0('V',1:maxN)))))
+        ## str(matrix(NA, nrow=nvariates,ncol=2+maxN, dimnames=list(NULL, c('variate','domainsize',paste0('V',1:maxN)))))
+        metadata <- as.data.table(matrix(character(), nrow=nvariates,ncol=2+maxN, dimnames=list(NULL, c('variate','domainsize',paste0('V',1:maxN)))))
         ## print(metadata)
         metadata[['variate']] <- colnames(data)
-        metadata[['N']] <- nn
+        metadata[['domainsize']] <- nn
         for(i in 1:nvariates){
             metadata[i, paste0('V',1:nn[i]) := as.list(sort(unique(data[[i]])))]
         }
@@ -49,16 +49,17 @@ finfo <- function(data, metadata, nalpha){
     ##
     variates <- metadata$variate
     nvariates <- nrow(metadata)
-    rgvariates <- metadata$N
+    rgvariates <- metadata[['domainsize']]
     if(missing(nalpha) || (is.logical(nalpha) && nalpha)){
         nalpha <- max(rgvariates)
     }
     ## print(nalpha)
     names(rgvariates) <- variates
     alphas <- array(nalpha/prod(rgvariates), dim=rgvariates,
-                    dimnames=apply(metadata,1,function(xx){unname(xx[paste0('V',1:(xx['N']))])}, simplify=list))
+                    dimnames=apply(metadata,1,function(xx){unname(xx[paste0('V',1:(xx['domainsize']))])}, simplify=list))
     ##
     if(!(is.null(data) || all(is.na(data)))){
+        ## for-loop faster than apply
         for(arow in 1:nrow(data)){
             temp <- rbind(as.character(data[arow,..variates]))
         alphas[temp] <- alphas[temp] +1
@@ -70,7 +71,7 @@ finfo <- function(data, metadata, nalpha){
         dimnames(alphas) <- list(tempnames)
     }
     attr(alphas, 'variates') <- metadata$variate
-    attr(alphas, 'N') <- metadata$N
+    attr(alphas, 'domainsize') <- metadata[['domainsize']]
     alphas
 }
 
@@ -87,7 +88,7 @@ fmarginal <- function(finfo, variates){
         dimnames(temp) <- list(tempnames)
     }
     attr(temp,'variates') <- attr(finfo,'variates')[whichvars]
-    attr(temp,'N') <- attr(finfo,'N')[whichvars]
+    attr(temp,'domainsize') <- attr(finfo,'domainsize')[whichvars]
     temp
 }
 
@@ -104,7 +105,7 @@ fconditional <- function(finfo, unitdata){
         dimnames(alphas) <- list(tempnames)
     }
     attr(alphas, 'variates') <- attr(finfo,'variates')[-ncond]
-    attr(alphas, 'N') <- attr(finfo,'N')[-ncond]
+    attr(alphas, 'domainsize') <- attr(finfo,'domainsize')[-ncond]
     alphas
 }
 
@@ -117,7 +118,7 @@ fsamples <- function(n, finfo){
                   dimnames=c(list(NULL), dimnames(finfo))
                   )
     attr(temp, 'variates') <- attr(finfo,'variates')
-    attr(temp, 'N') <- attr(finfo,'N')
+    attr(temp, 'domainsize') <- attr(finfo,'domainsize')
     temp
 }
 
@@ -127,7 +128,7 @@ unitsamples <- function(n, finfo){
                   dimnames=c(list(NULL), dimnames(finfo))
                   )
     attr(temp, 'variates') <- attr(finfo,'variates')
-    attr(temp, 'N') <- attr(finfo,'N')
+    attr(temp, 'domainsize') <- attr(finfo,'domainsize')
     temp
 }
 
