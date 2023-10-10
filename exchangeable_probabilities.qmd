@@ -96,23 +96,23 @@ Take again the two populations briefly mentioned in [§ @sec-collections]
 
 \
 
-Suppose that, in each of these populations, you (the agent) don't know the variate value for unit [#735]{.yellow}, and for some reason would like to infer it. You are given the variate value for 100 other units, which you can use to improve your inference (by using them in the conditional). Now consider this question:
+Suppose that, in each of these populations, you (the agent) don't know the variate value for unit [#735]{.yellow}, and for some reason would like to infer it. You are given the variate values for 100 other units, which you can use to improve your inference. Now consider this question:
 
-> [*How much does the relative order of the 100 known units and the unknown unit matter to you, for drawing your inference?*]{.lightblue}
+> [*How much does the relative order of the 100 known units and the unknown unit matter to you, for drawing your inference?*]{.blue}
 
-We know, from information theory, that it never hurts having extra information, such as the units' order. But you probably judge the units' order to be much more important for your inference in the stock-exchange case than in the Mars-prospecting one. In the stock-exchange case it would be more informative to have data from units temporally close to unit [#735]{.yellow}; for example units [#635--#734]{.yellow}, or [#736--#835]{.yellow}, or [#685--#734]{.yellow} & [#736--#785]{.yellow}, or similar ranges. In the Mars-prospecting case we might still find it acceptable if the 100 known units were picked up in some unsystematic way from the catalogue of remaining 999 units. There are reasons, boiling down to physics, behind this kind of judgement.
+We know, from information theory, that it never hurts having extra information, such as the units' order. But you probably judge the units' order to be much more important for your inference in the stock-exchange case than in the Mars-prospecting one. In the stock-exchange case it would be more informative to have data from units temporally close to unit [#735]{.yellow}; for example units [#635--#734]{.yellow}, or [#736--#835]{.yellow}, or [#685--#734]{.yellow} & [#736--#785]{.yellow}, or similar ranges. But in the Mars-prospecting case you might find it acceptable if the 100 known units were picked up in some unsystematic way from the catalogue of remaining 999 units. There are reasons, boiling down to physics, behind this kind of judgement.
 
 The question above could also be replaced by others, slightly different but still connected to the same issue. For example:
 
-> [*How strongly would you like to be able to choose which 100 units you can have data from, in order to draw your inference?*]{.lightblue}
+> [*How strongly would you like to be able to choose which 100 units you can have data from, in order to draw your inference?*]{.blue}
 
 or
 
-> [*How much would you be upset if the original order of the population units were destroyed by accidental shuffling?*]{.lightblue}
+> [*How much would you be upset if the original order of the population units were destroyed by accidental shuffling?*]{.blue}
 
 or
 
-> [*Would it be acceptable to you if only the **frequencies** of the values ($\set{\ypl,\ymi}$ in one case, $\set{\yy,\yn}$ in the other) in the 100 known units were given to you?*]{.lightblue}
+> [*Would it be acceptable to you if only the **frequencies** of the values ($\set{\ypl,\ymi}$ in one case, $\set{\yy,\yn}$ in the other) for the 100 known units were given to you?*]{.blue}
 
 
 :::{.callout-caution}
@@ -122,14 +122,165 @@ or
 - Find examples of populations where any potential ordering of the units would *not* be very important for drawing inferences about some units, given other units. Or, put it otherwise, you wouldn't be excessively upset or worried if such order were lost owing to accidental shuffling of the units.
 :::
 
-Many kinds of inference considered in data science and engineering, and all inferences done with "supervised" or "unsupervised" machine-learning algorithms are examples where *any ordering of the data used for learning is deemed irrelevant** and is, in fact, often lost. This irrelevance is also clear from the data-shuffling involved in many procedures that accompany these algorithms.
 
-We shall thus restrict our attention to inferences where this judgement of irrelevance is considered appropriate. In reality this is not a black-or-white situation: it is possible that some kind of ordering information would improve our inferences; we are simply assuming that this improvement is so small that it can be neglected altogether.
+Many kinds of inference considered in data science and engineering, and all inferences done with "supervised" or "unsupervised" machine-learning algorithms, are examples where *any ordering of the data used for learning is deemed irrelevant* and is, in fact, often lost. This irrelevance is clear from the data-shuffling involved in many procedures that accompany these algorithms.
 
-
-### Translation into probability terms
+We shall thus restrict our attention to situations and kinds of background information where this judgement of irrelevance is considered appropriate. Precisely speaking, this is not a black-or-white situation: it is possible that some kind of ordering information would improve our inferences; what we are assuming here is that this improvement is so small that it can be neglected altogether.
 
 
+### Translation into probability language
+
+Let's take the Mars-prospecting problem as a concrete example. Denote by $X$ the variate expressing hematite presence, with domain $\set{\yy, \yn}$.
+
+If an agent's background information or assumption $\yI$ says that the relative order of units -- rocks in this case -- is irrelevant for inferences about other units, then it means that a probability such as
+
+$$
+\P(X_{735}\mo\yy \|
+X_{734}\mo\yn \and
+X_{733}\mo\yy \and
+X_{732}\mo\yy \and
+X_{731}\mo\yn \and
+X_{730}\mo\yy \and
+\yI)
+$$
+
+must be equal to the probability
+
+$$
+\P(X_{356}\mo\yy \|
+X_{587}\mo\yn \and
+X_{877}\mo\yy \and
+X_{316}\mo\yy \and
+X_{562}\mo\yn \and
+X_{988}\mo\yy \and
+\yI)
+$$
+
+and in fact to any probability like
+
+$$
+\P(X_{i}\mo\yy \|
+X_{j}\mo\yy \and
+X_{k}\mo\yy \and
+X_{l}\mo\yy \and
+X_{m}\mo\yn \and
+X_{n}\mo\yn \and
+\yI)
+$$
+
+where $i$, $j$, and so on are different but otherwise arbitrary indices.
+
+In other words, the probability depends on whether we are inferring $\yy$ or $\yn$, and on how many $\yy$ and $\yn$ appear in the conditional; in the example above, [three $\yy$]{.green .m} and [two $\yn$.]{.red .m} This property should also apply if the agent makes inferences about more than one unit, conditional on any number of units. It can be proven that this property is equivalent, in our present example, to this general requirement:
+
+> The value of a joint probability such as
+>
+> $$\P(X_{\scriptscriptstyle\dotso}\mo\yy \and\ 
+\dotso\ \and
+X_{\scriptscriptstyle\dotso}\mo\yn \and\ \dotso \|
+\yI)
+$$
+>
+> depends only on the **total number of $\yy$ values**  and **total number of $\yn$ values** that appear in it, or, equivalently, on the **absolute frequencies** of the values that appear in it.
+
+\
+
+Leaving the Mars-specific example and generalizing, we can define the following property, called [**exchangeability**]{.blue}:
+
+:::{.callout-note style="font-size:120%"}
+##
+::::{style="font-size:120%"}
+A joint probability distribution is called [**exchangeable**]{.blue} if the probabilities for any number of units depend only on the absolute frequencies of the values appearing in them.
+::::
+:::
+
+Let's see some more examples.
+
+:::{.column-margin}
+[Don't forget that\
+$\P(X\mo x \and Y\mo y \| \yI)$\
+and\
+$\P(Y\mo y \and X\mo x \| \yI)$\
+**mean exactly the same**, because `and` (symbol ["$,$")]{.m} is commutative!]{.red}
+:::
+
+
+a. Consider an infinite population with variate $Y$ having domain $\set{\lo,\me,\hi}$. If the background information $\yJ$ guarantees exchangeability, then these three joint probabilities must have the same value:
+    
+    $$\begin{aligned}
+    &\quad\P(
+	Y_{3}\mo\hi \and 
+	Y_{4}\mo\lo \and 
+	Y_{5}\mo\me \and 
+	Y_{6}\mo\lo \| \yJ
+	)
+	\\
+	&=\P(
+	Y_{6}\mo\me \and 
+	Y_{5}\mo\hi \and 
+	Y_{3}\mo\lo \and 
+	Y_{4}\mo\lo \| \yJ
+	)
+	\\
+	&=\P(
+	Y_{283}\mo\hi \and 
+	Y_{91}\mo\lo \and 
+	Y_{72}\mo\me \and 
+	Y_{1838}\mo\lo \| \yJ
+	)
+	\end{aligned}
+$$
+    
+    because they all have [one $\hi$]{.green}, [one $\me$]{.yellow}, [two $\lo$]{.red}. The same is true for these two probabilities:
+    
+    $$\begin{aligned}
+    &\quad\P(
+	Y_{99}\mo\me \and 
+	Y_{1}\mo\me \and 
+	Y_{3024}\mo\lo \| \yJ
+	)
+	\\
+	&=\P(
+	Y_{26}\mo\me \and 
+	Y_{611}\mo\lo \and 
+	Y_{78}\mo\me \| \yJ
+	)
+	\end{aligned}
+$$
+    
+    because both have [zero $\hi$]{.green}, [two $\me$]{.yellow}, [one $\lo$]{.red}.
+
+:::{.column-page-inset-right}
+b. Consider an infinite population with variates $(U,V)$ having joint domain $\set{\ymi,\ypl} \times \set{\yva, \yvb, \yvc}$ (six possible joint values). If the background information $\yK$ guarantees exchangeability, then these two joint probabilities must have the same value:
+    
+    $$\begin{aligned}
+    &\quad\P(
+	U_{14}\mo\ypl\and V_{14}\mo\yvc \ \and\ 
+	U_{337}\mo\ypl\and V_{337}\mo\yva \ \and\ 
+	U_{8}\mo\ymi\and V_{8}\mo\yvb \ \and\ 
+	U_{43}\mo\ymi\and V_{43}\mo\yva \and{}
+	\\
+	&\qquad\qquad\qquad\quad
+	U_{825}\mo\ypl\and V_{825}\mo\yva \ \and\ 
+	U_{66}\mo\ypl\and V_{66}\mo\yva \ \and\ 
+	U_{700}\mo\ymi\and V_{700}\mo\yvb
+	\| \yK)
+	\\[3ex]
+	&=\P(
+	U_{421}\mo\ypl\and V_{421}\mo\yva \ \and\ 
+	U_{55}\mo\ymi\and V_{55}\mo\yvb \ \and\ 
+	U_{43}\mo\ypl\and V_{43}\mo\yvc \ \and\ 
+	U_{14}\mo\ymi\and V_{14}\mo\yva \and{}
+	\\
+	&\qquad\qquad\qquad\quad
+	U_{928}\mo\ypl\and V_{928}\mo\yva \ \and\ 
+	U_{700}\mo\ymi\and V_{700}\mo\yvb \ \and\ 
+	U_{39}\mo\ypl\and V_{39}\mo\yva
+	\| \yK)
+	\end{aligned}
+    $$
+    
+    because both have: one $(\ymi,\yva)$,\ \ two $(\ymi,\yvb)$,\ \ zero $(\ymi,\yvc)$,\ \ three $(\ypl,\yva)$,\ \ zero $(\ypl,\yvb)$,\ \ one $(\ypl,\yvc)$.
+:::
 
 
 ### Stock exchange and Mars prospecting, again
