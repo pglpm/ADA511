@@ -1,3 +1,1007 @@
-[**The final part, about population inference and the universal machine that does it, has yet to be written**]{.red}
+# [To be deleted]{.grey .small} {.unnumbered}
 
-# To be written
+{{< include macros.qmd >}}
+{{< include macros_exch.qmd >}}
+{{< include macros_exch.qmd >}}
+{{< include macros_populations_variates.qmd >}}
+
+[*These are just snippets to be moved or deleted*]{.red}
+
+----
+
+### Stock exchange and Mars prospecting, again
+
+Consider the following two sketches of inference problems, related to the scenarios of [§ @sec-collections]:
+
+- Stock exchange
+: In 100 days, the daily change in closing price of a stock has been `positive` 74 times, and `negative` 26 times, according a particular sequence; for instance:
+
+    ![](stock.png){width=100%}
+
+    In which of the subsequent 3 days will the closing-price change be positive, and in which negative?
+
+:::{.column-margin}
+![](stock_course.jpg){width=100%}
+:::
+
+\
+
+- Mars prospecting
+: Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 contained hematite (`Y`), and 26 did not (`N`). For instance, the data could be:
+
+    ![](rock.png){width=100%}
+
+    Which, among the next 3 rocks that will be examined, will contain hematite, and which will be hematite-free?
+
+:::{.column-margin}
+![](mars_crater2.jpg){width=100%}
+:::
+
+
+
+To solve *any* inference problem, or to design an AI agent for solving an inference problem, all we have to do in principle is to repeatedly use the [fundamental laws of inference of § @sec-fundamental].
+
+In many cases an in-principle application of the inference laws is computationally impossible, however. Approximate calculations and premises are then used, which are sometimes quite drastic. The approximations used depend on the nature of the inference problem. This leads to many "recipes", which may look extremely different from one another, being used in specialized fields and applications. People working in those fields are trained to use those recipes.
+
+:::{.column-margin}
+[![](ibm_quantum.jpg){width=100%}](https://www.flickr.com/photos/ibm_research_zurich/52714013388/)
+Technological advances such as quantum computing may make the use of more powerful exact inference methods possible -- for those who know them.
+:::
+
+For a data-science engineer it is important to keep in mind that these recipes are only approximations, and that there are only a couple of principles underlying all of them, despite their diversity. The principled, maximally optimal solution should always be kept in sight. Technological advances continually allow us to make computations that were previously impossible -- think of "quantum computers" these days. A truly optimal in-principle solution, preferable to a sub-optimal approximation, can suddenly become accessible -- to those who know it!
+
+\
+
+We shall now introduce a very broad class of inference problems. They include tasks performed by most common machine-learning algorithms: classification and regression, "supervised" and "unsupervised" learning, and similar. After studying the principled solution to this class of problems we'll discuss present-day approximations to it.
+
+
+## Induction
+
+It is a fact of everyday experience that we expect things to happen in particular ways because of our previous experience with similar things. If we observe that ten electronic components in a row come out damaged from an assembly line, then we expect that the next one will be damaged as well. If you regularly go hiking in a particular area and often see deer, and sometimes hares, then you think it likely to see deer also at your next hike and, if you're lucky, a hare. You would probably be surprised to see a moose if you had never seen one in those areas. This doesn't only concern the future: if someone asks you whether you saw a deer during a hike from long time ago, which you don't quite remember anymore, you'd say "probably I did".
+
+This familiar experience is called [*induction*](https://plato.stanford.edu/entries/induction-problem/), especially in the philosophical literature. It has generated a lot of thought and research since the times of [Hume](https://plato.stanford.edu/entries/hume/) (18th century), who apparently was the first to ask how and why this experience is possible.
+
+But this kind of regularities does not have clear-cut circumstances. In some cases it is not clear what should be considered "similar" things -- in fact, sometimes we circularly reverse the reasoning: if something does not respect an observed regularity then we say it wasn't "similar". Also the circumstances in which this regularity should occur are often not-well-defined: should you expect to see deer if you hike in a somewhat different area?
+
+And sometimes this kind of regularities simply fails. Something expected doesn't happen any longer, even if the circumstances and the "similarity" are clearly the same. Jeffreys aptly said:
+
+> [A common argument for induction is that induction has always worked in the past and therefore may be expected to hold in the future. It has been objected that this is itself an inductive argumentand cannot be used in support of induction. What is hardly ever mentioned is that induction has often failed in the past and that progress in science is very largely the consequence of direct attention to instances where the inductive method has led to incorrect predictions.]{.small}
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+Chapter I of [*Scientific Inference* (3rd ed.)](https://hvl.instructure.com/courses/25074/modules/items/678374) is an extremely insightful reading about inference, probability, and science.
+:::
+::::
+
+
+### Induction and data science
+
+Induction, with the mentioned caveats that accompany it, is at the basis of how we approach and solve many engineering problems, and at the heart of data science: from data about particular things or phenomena we try to infer new or old instances of "similar" things or phenomena.
+
+We shall now see how this is done in a quantitative manner with the probability calculus. It is important to clarify what the probability calculus, and all approximate inference methods derived from it, can and cannot do:
+
+- [{{< fa check >}} It allows us to make inductive inferences in a *quantitative* and guaranteed *self-consistent* way.]{.green}
+
+- [{{< fa times >}} It does not *explain* why there are regularities and why induction in some cases works.]{.red}
+
+- [{{< fa times >}} It does *not* tell us which things or phenomena should be considered "similar". In fact, what's similar and what's not is something that *we must input* into the probability calculus.]{.red}
+
+- [{{< fa check >}} If we formulate the "similarity" and "non-similarity" of an instance as well-defined hypotheses, then the probability calculus allows us to calculate their probabilities (and make a decision as to accept, if necessary).]{.green}
+
+
+
+## Inferences and populations
+
+### Stock exchange and Mars prospecting, again
+
+Consider the following two sketches of inference problems, related to the scenarios of [§ @sec-collections]:
+
+- Stock exchange
+: In 100 days, the daily change in closing price of a stock has been `positive` 74 times, and `negative` 26 times, according a particular sequence; for instance:
+
+    ![](stock.png){width=100%}
+
+    In which of the subsequent 3 days will the closing-price change be positive, and in which negative?
+
+:::{.column-margin}
+![](stock_course.jpg){width=100%}
+:::
+
+\
+
+- Mars prospecting
+: Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 contained hematite (`Y`), and 26 did not (`N`). For instance, the data could be:
+
+    ![](rock.png){width=100%}
+
+    Which, among the next 3 rocks that will be examined, will contain hematite, and which will be hematite-free?
+
+:::{.column-margin}
+![](mars_crater2.jpg){width=100%}
+:::
+
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Discuss:
+
+- Which of the two inferences above seems more difficult?...
+
+- ...Why? Speculate on which factors make one inference more difficult than the other.
+
+- Which differences and similarities do you find between the two inferences?
+
+- Which additional information could be important for drawing more precise inferences?
+
+- Which type of quantities appear in the two inferences?
+
+<!-- - Answer the same questions, considering two inference problems that are similar but "backwards in time": -->
+
+<!--     1b. Assessing the value that a particular investment fund had in 3750 days ago, given the course of that fund in the past 3650 days. -->
+
+<!--     2b. Assessing the failure status of the past 1100th electronic component from an assembly line, given the failure status of the last 1000 electronic components already out of the same assembly line. -->
+:::
+
+### Translation into sentences
+
+Let us remember [chapter @sec-probability] that in order to set up and solve an inference problem we must first define appropriate *sentences* which we'll use in probability supposals and conditionals.
+
+For the two problems above it looks obvious that we can use sentences involving the language of statistical populations. We must then try to define the units and the variates. *Tentatively* let's try the following definitions:
+
+Stock exchange
+: - *Units:* the problem is only sketched, so let's assume that a precise definition can be found somewhere. There are at least 100 + 3 units, but the problem suggests that we might consider an infinite population.
+    - *Variates:* the change in closing price seems an obvious binary variate for the population. Let's denote it $C$, with domain $\set{\ypl,\ymi}$.
+
+
+Mars prospecting
+: - *Units:* again the problem is only sketched, so let's assume that a precise description exists of how the rocks to be examined should be chosen. There are at least 100 + 3 units, but the problem suggests that we might consider a practically infinite population.
+    - *Variates:* the presence of hematite is an obvious binary variate. Let's denote it with $H$, with domain $\set{\yy,\yn}$.
+
+
+The population data can be represented as follows, where question marks **`?`** indicate the units about which we want to draw inferences, and the ellipses "[...]{.midgrey}" indicate that the populations possibly extend to infinite other units:
+
+::::{.columns}
+
+:::::{.column width="40%"}
+|  [unit]{.yellow}  | $C$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [1]{.yellow}      | $\ymi$          |
+| [2]{.yellow}      | $\ymi$          |
+| [3]{.yellow}      | $\ypl$          |
+| [4]{.yellow}      | $\ymi$          |
+| [5]{.yellow}      | $\ypl$          |
+| [6]{.yellow}      | $\ymi$          |
+|[(omitted)]{.grey .small}|[(omitted)]{.grey .small}|
+| [95]{.yellow}     | $\ypl$          |
+| [96]{.yellow}     | $\ypl$          |
+| [97]{.yellow}     | $\ypl$          |
+| [98]{.yellow}     | $\ypl$          |
+| [99]{.yellow}     | $\ypl$          |
+| [100]{.yellow}    | $\ypl$          |
+| [101]{.yellow}    | **`?`**         |
+| [102]{.yellow}    | **`?`**         |
+| [103]{.yellow}    | **`?`**         |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: Stock exchange {#tbl-stock .sm .striped}
+:::::
+
+:::::{.column width="20%"}
+
+:::::
+
+:::::{.column width="40%"}
+|  [unit]{.yellow}  | $H$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [1]{.yellow}      | $\yy$           |
+| [2]{.yellow}      | $\yy$           |
+| [3]{.yellow}      | $\yn$           |
+| [4]{.yellow}      | $\yy$           |
+| [5]{.yellow}      | $\yy$           |
+| [6]{.yellow}      | $\yy$           |
+|[(omitted)]{.grey .small}|[(omitted)]{.grey .small}|
+| [95]{.yellow}     | $\yn$           |
+| [96]{.yellow}     | $\yy$           |
+| [97]{.yellow}     | $\yn$           |
+| [98]{.yellow}     | $\yy$           |
+| [99]{.yellow}     | $\yy$           |
+| [100]{.yellow}    | $\yy$           |
+| [101]{.yellow}    | **`?`**         |
+| [102]{.yellow}    | **`?`**         |
+| [103]{.yellow}    | **`?`**         |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: Mars prospecting {#tbl-mars .sm .striped}
+
+:::::
+::::
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Would you define these two populations in a different way? Do you think other variates should be included, for example?
+:::
+
+### Desired probabilities
+
+The stock-exchange  problem asks "In which of the subsequent 3 days will the closing-price change be positive, and in which negative?". In terms of the populations just introduced, this can be translated into:
+\
+\
+"will the $C$ variate for units #101, #102, #103 have value $\ypl$ or $\ymi$?"
+
+In other words, we are asking which of the two following mutually exclusive sentences, expressed symbolically, will be true:
+
+$$
+C_{101}\mo\ypl \qquad C_{101}\mo\ymi
+$$
+
+Since one of them must be true, their probabilities form a probability distribution ([§ @sec-prob-distribs]), in which for the moment we omit the conditional:
+
+$$
+\P\bigl(C_{101}\mo\ypl \pmb{\|[\big]}  \quad\quad
+\P\bigl(C_{101}\mo\ymi \pmb{\|[\big]}
+$$
+
+Analogously for units #102 and #103, leading to two more probability distributions.
+
+When we `and` together sentences for the three units we obtain a joint probability distribution ([§ @sec-prob-joint]) over 2³ = 8 mutually exclusive and exhaustive composite sentences:
+
+$$\begin{aligned}
+&\P\bigl(C_{101}\mo\ypl \and C_{102}\mo\ypl \and C_{103}\mo\ypl
+\pmb{\|[\big]}
+\\[1ex]
+&\P\bigl(C_{101}\mo\ymi \and C_{102}\mo\ypl \and C_{103}\mo\ypl
+\pmb{\|[\big]}
+\\[1ex]
+&\dotso
+\\[1ex]
+&\P\bigl(C_{101}\mo\ymi \and C_{102}\mo\ymi \and C_{103}\mo\ymi
+\pmb{\|[\big]}
+\end{aligned}$$
+
+\
+
+Now let's focus on the conditional. The information we are given consists of the values of the $C$ variate for units #1 to #100, which we can `and` together. We must  also `and` all other information implicit in the stock-exchange problem, which we denote $\yi[s]$:
+
+$$
+ \pmb{\|[\big]} C_{100}\mo\ypl \and C_{99}\mo\ypl \and \dotsc \and 
+C_{3}\mo\ypl \and C_{2}\mo\ymi \and C_{1}\mo\ymi \and \yi[s] \bigr)
+$$
+
+
+We finally arrive at the eight probabilities (which constitute a probability distribution) that we want to calculate:
+
+:::{.column-page-right}
+$$\begin{aligned}
+&\P\bigl(C_{101}\mo\ypl \and C_{102}\mo\ypl \and C_{103}\mo\ypl
+\pmb{\|[\big]} C_{100}\mo\ypl \and C_{99}\mo\ypl \and \dotsc \and 
+C_{3}\mo\ypl \and C_{2}\mo\ymi \and C_{1}\mo\ymi \and \yi[s] \bigr)
+\\[1ex]
+&\P\bigl(C_{101}\mo\ymi \and C_{102}\mo\ypl \and C_{103}\mo\ypl
+\pmb{\|[\big]} C_{100}\mo\ypl \and C_{99}\mo\ypl \and \dotsc \and 
+C_{3}\mo\ypl \and C_{2}\mo\ymi \and C_{1}\mo\ymi \and \yi[s] \bigr)
+\\[1ex]
+&\dotso
+\\[1ex]
+&\P\bigl(C_{101}\mo\ymi \and C_{102}\mo\ymi \and C_{103}\mo\ymi
+\pmb{\|[\big]} C_{100}\mo\ypl \and C_{99}\mo\ypl \and \dotsc \and 
+C_{3}\mo\ypl \and C_{2}\mo\ymi \and C_{1}\mo\ymi \and \yi[s] \bigr)
+\end{aligned}$$
+:::
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Do a similar analysis for the Mars-prospecting problem, and write down the final probability distribution that we wish to calculate.
+:::
+
+<!-- :::{.column-page-right} -->
+<!-- $$\begin{aligned} -->
+<!-- &\P(H_{101}\mo\yy \and H_{102}\mo\yy \and H_{103}\mo\yy -->
+<!-- \| H_{100}\mo\yy \and H_{99}\mo\yy \and \dotsc \and -->
+<!-- H_{3}\mo\yn \and H_{2}\mo\yy \and H_{1}\mo\yy \and \yi[M] ) -->
+<!-- \\[1ex] -->
+<!-- &\P(H_{101}\mo\yn \and H_{102}\mo\yy \and H_{103}\mo\yy -->
+<!-- \| H_{100}\mo\yy \and H_{99}\mo\yy \and \dotsc \and -->
+<!-- H_{3}\mo\yn \and H_{2}\mo\yy \and H_{1}\mo\yy \and \yi[M] ) -->
+<!-- \\[1ex] -->
+<!-- &\dotso -->
+<!-- \\[1ex] -->
+<!-- &\P(H_{101}\mo\yn \and H_{102}\mo\yn \and H_{103}\mo\yn -->
+<!-- \| H_{100}\mo\yy \and H_{99}\mo\yy \and \dotsc \and -->
+<!-- H_{3}\mo\yn \and H_{2}\mo\yy \and H_{1}\mo\yy \and \yi[M] ) -->
+<!-- \end{aligned}$$ -->
+<!-- ::: -->
+
+\
+
+The next -- fundamental -- question is: how do we calculate these probabilities? Which other probabilities can we take as our starting point?
+
+
+
+
+----
+
+----
+
+# [A general inference problem]{.green} {#sec-general-inference}
+
+{{< include macros.qmd >}}
+{{< include macros_exchangeability.qmd >}}
+
+
+So far we have been jumping back and forth between "inference" and "data", keeping the two topics somewhat separated. Now we shall finally combine them, to solve inference problems typically encountered in machine learning. Before continuing, let us summarize what we have learned so far, also to motivate why those two topics have been kept separated.
+
+## Recap {#sec-recap}
+
+On the "inference side" we gave a concrete and operational explanation of what "drawing an inference" means: it is the calculation of the probabilities -- the degrees of belief -- of some sentences, from the probabilities of others. This means that in principle we can draw inferences and apply the probability calculus to *literally anything* that can be expressed by language.
+
+We also saw the following points:
+
+- The calculation of probabilities only uses four fundamental -- and mathematically quite simple -- rules ([§ @sec-fundamental]). Any inference, even those make by the most complex machine-learning algorithms, is just a repeated application of those four rules (sometimes with approximating shortcuts for the sake of speed).
+
+- No inference can be drawn unless some probabilities are first posited as a starting point. This is just another face of the formal-logic fact that no theorem (besides tautologies) can be derived by logic, unless some axioms are given first.
+
+- The four fundamental rules are determined by basic requirements of logical consistency. Modifying the rules would lead to inconsistent inferences and sub-optimal decisions.
+
+\
+
+<!-- :::{.column-margin} -->
+<!-- ```{mermaid} -->
+<!-- flowchart BT -->
+<!--   A[data notions] -\-> B([sentences]) -.-> C{{probability calculus}} -->
+<!-- ``` -->
+<!-- ::: -->
+
+
+:::{.column-margin}
+```{mermaid}
+flowchart BT
+  A[quantity] --o B([sentences]) --> C{{probability calculus}}
+  D[value] ---o B
+  E[population] --o B
+  F[...] -..-o B
+  G[(problem)] --x A & D & E
+  G[(problem)] -.-x F
+```
+:::
+
+On the "data side" we introduced a handful of notions, such as "quantity", "having a value", "domain", "quantity type", "population", "variate", "frequency", and others. We learned how to use them, and paid attention to some of their counter-intuitive properties.
+
+These notions allow us to *speak*, in a precise way, about typical situations and problems that arise in engineering and other scientific contexts. In essence we have introduced a particular kind of *sentences* to express engineering problems -- *so that we can apply the probability calculus to them* and draw inferences about them.
+
+This specific language has its roots in physics and mathematics, where it has been successfully used and refined for several centuries. But it might evolve in different directions in the future, to make allowance for new inferential problems. Later we shall indeed expand it in a couple of directions to cover particular operations that we do with data.
+
+
+----
+
+----
+
+
+To solve *any* inference problem, or to design an AI agent for solving an inference problem, all we have to do in principle is to repeatedly use the [fundamental laws of inference of § @sec-fundamental].
+
+In many cases an in-principle application of the inference laws is computationally impossible, however. Approximate calculations and premises are then used, which are sometimes quite drastic. The approximations used depend on the nature of the inference problem. This leads to many "recipes", which may look extremely different from one another, being used in specialized fields and applications. People working in those fields are trained to use those recipes.
+
+:::{.column-margin}
+[![](ibm_quantum.jpg){width=100%}](https://www.flickr.com/photos/ibm_research_zurich/52714013388/)
+Technological advances such as quantum computing may make the use of more powerful exact inference methods possible -- for those who know them.
+:::
+
+For a data-science engineer it is important to keep in mind that these recipes are only approximations, and that there are only a couple of principles underlying all of them, despite their diversity. The principled, maximally optimal solution should always be kept in sight. Technological advances continually allow us to make computations that were previously impossible -- think of "quantum computers" these days. A truly optimal in-principle solution, preferable to a sub-optimal approximation, can suddenly become accessible -- to those who know it!
+
+\
+
+We shall now introduce a very broad class of inference problems. They include tasks performed by most common machine-learning algorithms: classification and regression, "supervised" and "unsupervised" learning, and similar. After studying the principled solution to this class of problems we'll discuss present-day approximations to it.
+
+
+## Induction
+
+It is a fact of everyday experience that we expect things to happen in particular ways because of our previous experience with similar things. If we observe that ten electronic components in a row come out damaged from an assembly line, then we expect that the next one will be damaged as well. If you regularly go hiking in a particular area and often see deer, and sometimes hares, then you think it likely to see deer also at your next hike and, if you're lucky, a hare. You would probably be surprised to see a moose if you had never seen one in those areas. This doesn't only concern the future: if someone asks you whether you saw a deer during a hike from long time ago, which you don't quite remember anymore, you'd say "probably I did".
+
+This familiar experience is called [*induction*](https://plato.stanford.edu/entries/induction-problem/), especially in the philosophical literature. It has generated a lot of thought and research since the times of [Hume](https://plato.stanford.edu/entries/hume/) (18th century), who apparently was the first to ask how and why this experience is possible.
+
+But this kind of regularities does not have clear-cut circumstances. In some cases it is not clear what should be considered "similar" things -- in fact, sometimes we circularly reverse the reasoning: if something does not respect an observed regularity then we say it wasn't "similar". Also the circumstances in which this regularity should occur are often not-well-defined: should you expect to see deer if you hike in a somewhat different area?
+
+And sometimes this kind of regularities simply fails. Something expected doesn't happen any longer, even if the circumstances and the "similarity" are clearly the same. Jeffreys aptly said:
+
+> [A common argument for induction is that induction has always worked in the past and therefore may be expected to hold in the future. It has been objected that this is itself an inductive argumentand cannot be used in support of induction. What is hardly ever mentioned is that induction has often failed in the past and that progress in science is very largely the consequence of direct attention to instances where the inductive method has led to incorrect predictions.]{.small}
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+Chapter I of [*Scientific Inference* (3rd ed.)](https://hvl.instructure.com/courses/25074/modules/items/678374) is an extremely insightful reading about inference, probability, and science.
+:::
+::::
+
+
+### Induction and data science
+
+Induction, with the mentioned caveats that accompany it, is at the basis of how we approach and solve many engineering problems, and at the heart of data science: from data about particular things or phenomena we try to infer new or old instances of "similar" things or phenomena.
+
+We shall now see how this is done in a quantitative manner with the probability calculus. It is important to clarify what the probability calculus, and all approximate inference methods derived from it, can and cannot do:
+
+- [{{< fa check >}} It allows us to make inductive inferences in a *quantitative* and guaranteed *self-consistent* way.]{.green}
+
+- [{{< fa times >}} It does not *explain* why there are regularities and why induction in some cases works.]{.red}
+
+- [{{< fa times >}} It does *not* tell us which things or phenomena should be considered "similar". In fact, what's similar and what's not is something that *we must input* into the probability calculus.]{.red}
+
+- [{{< fa check >}} If we formulate the "similarity" and "non-similarity" of an instance as well-defined hypotheses, then the probability calculus allows us to calculate their probabilities (and make a decision as to accept, if necessary).]{.green}
+
+
+
+## Inferences and populations {#sec-two-populations}
+
+### Stock exchange and Mars prospecting, again
+
+Consider the following two sketches of inference problems, related to the scenarios of [§ @sec-collections]:
+
+- Stock exchange
+: In 100 days, the daily change in closing price of a stock has been `positive` 74 times, and `negative` 26 times, according a particular sequence; for instance:
+
+    ![](stock.png){width=100%}
+
+    In which of the subsequent 3 days will the closing-price change be positive, and in which negative?
+
+:::{.column-margin}
+![](stock_course.jpg){width=100%}
+:::
+
+\ 
+
+- Mars prospecting
+: Of the last 100 similar-sized rocks examined in a large crater on Mars, 74 contained hematite (`Y`), and 26 did not (`N`). For instance, the data could be:
+
+    ![](rock.png){width=100%}
+
+    Which, among the next 3 rocks that will be examined, will contain hematite, and which will be hematite-free?
+
+:::{.column-margin}
+![](mars_crater2.jpg){width=100%}
+:::
+
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Discuss:
+
+- Which of the two inferences above seems more difficult?...
+
+- ...Why? Speculate on which factors make one inference more difficult than the other.
+
+- Which differences and similarities do you find between the two inferences?
+
+- Which additional information could be important for drawing more precise inferences?
+
+- Which type of quantities appear in the two inferences?
+
+<!-- - Answer the same questions, considering two inference problems that are similar but "backwards in time": -->
+
+<!--     1b. Assessing the value that a particular investment fund had in 3750 days ago, given the course of that fund in the past 3650 days. -->
+
+<!--     2b. Assessing the failure status of the past 1100th electronic component from an assembly line, given the failure status of the last 1000 electronic components already out of the same assembly line. -->
+:::
+
+### Translation into sentences
+
+Let us remember [chapter @sec-probability] that in order to set up and solve an inference problem we must first define appropriate *sentences* which we'll use in probability supposals and conditionals.
+
+For the two problems above it looks obvious that we can use sentences involving the language of statistical populations. We must then try to define the units and the variates. *Tentatively* let's try the following definitions:
+
+Stock exchange
+: - *Units:* the problem is only sketched, so let's assume that a precise definition can be found somewhere. There are at least 100 + 3 units, but the problem suggests that we might consider an infinite population.
+    - *Variates:* the change in closing price seems an obvious binary variate for the population. Let's denote it $C$, with domain $\set{\ypl,\ymi}$.
+
+
+Mars prospecting
+: - *Units:* again the problem is only sketched, so let's assume that a precise description exists of how the rocks to be examined should be chosen. There are at least 100 + 3 units, but the problem suggests that we might consider a practically infinite population.
+    - *Variates:* the presence of hematite is an obvious binary variate. Let's denote it with $H$, with domain $\set{\yy,\yn}$.
+
+
+The population data can be represented as follows, where question marks **`?`** indicate the units about which we want to draw inferences, and the ellipses "[...]{.midgrey}" indicate that the populations possibly extend to infinite other units:
+
+::::{.columns}
+
+:::::{.column width="40%"}
+|  [unit]{.yellow}  | $C$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [1]{.yellow}      | $\ymi$          |
+| [2]{.yellow}      | $\ymi$          |
+| [3]{.yellow}      | $\ypl$          |
+| [4]{.yellow}      | $\ymi$          |
+| [5]{.yellow}      | $\ypl$          |
+| [6]{.yellow}      | $\ymi$          |
+|[(omitted)]{.grey .small}|[(omitted)]{.grey .small}|
+| [95]{.yellow}     | $\ypl$          |
+| [96]{.yellow}     | $\ypl$          |
+| [97]{.yellow}     | $\ypl$          |
+| [98]{.yellow}     | $\ypl$          |
+| [99]{.yellow}     | $\ypl$          |
+| [100]{.yellow}    | $\ypl$          |
+| [101]{.yellow}    | **`?`**         |
+| [102]{.yellow}    | **`?`**         |
+| [103]{.yellow}    | **`?`**         |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: Stock exchange {#tbl-stock .sm .striped}
+:::::
+
+:::::{.column width="20%"}
+
+:::::
+
+:::::{.column width="40%"}
+|  [unit]{.yellow}  | $H$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [1]{.yellow}      | $\yy$           |
+| [2]{.yellow}      | $\yy$           |
+| [3]{.yellow}      | $\yn$           |
+| [4]{.yellow}      | $\yy$           |
+| [5]{.yellow}      | $\yy$           |
+| [6]{.yellow}      | $\yy$           |
+|[(omitted)]{.grey .small}|[(omitted)]{.grey .small}|
+| [95]{.yellow}     | $\yn$           |
+| [96]{.yellow}     | $\yy$           |
+| [97]{.yellow}     | $\yn$           |
+| [98]{.yellow}     | $\yy$           |
+| [99]{.yellow}     | $\yy$           |
+| [100]{.yellow}    | $\yy$           |
+| [101]{.yellow}    | **`?`**         |
+| [102]{.yellow}    | **`?`**         |
+| [103]{.yellow}    | **`?`**         |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: Mars prospecting {#tbl-mars .sm .striped}
+
+:::::
+::::
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Would you define these two populations in a different way? Do you think other variates should be included, for example?
+:::
+
+### Desired probabilities
+
+The stock-exchange  problem asks "In which of the subsequent 3 days will the closing-price change be positive, and in which negative?". In terms of the populations just introduced, this can be translated into:
+\
+\
+"will the $C$ variate for units #101, #102, #103 have value $\ypl$ or $\ymi$?"
+
+In other words, we are asking which of the two following mutually exclusive sentences, expressed symbolically, will be true:
+
+$$
+C_{101}\mo\ypl \qquad C_{101}\mo\ymi
+$$
+
+Since one of them must be true, their probabilities form a probability distribution ([§ @sec-prob-distribs]), in which for the moment we omit the conditional:
+
+$$
+\P\bigl(C_{101}\mo\ypl \pmb{\|[\big]}  \quad\quad
+\P\bigl(C_{101}\mo\ymi \pmb{\|[\big]}
+$$
+
+Analogously for units #102 and #103, leading to two more probability distributions.
+
+When we `and` together sentences for the three units we obtain a joint probability distribution ([§ @sec-prob-joint]) over 2³ = 8 mutually exclusive and exhaustive composite sentences:
+
+$$\begin{aligned}
+&\P\bigl(C_{101}\mo\ypl \and C_{102}\mo\ypl \and C_{103}\mo\ypl
+\pmb{\|[\big]}
+\\[1ex]
+&\P\bigl(C_{101}\mo\ymi \and C_{102}\mo\ypl \and C_{103}\mo\ypl
+\pmb{\|[\big]}
+\\[1ex]
+&\dotso
+\\[1ex]
+&\P\bigl(C_{101}\mo\ymi \and C_{102}\mo\ymi \and C_{103}\mo\ymi
+\pmb{\|[\big]}
+\end{aligned}$$
+
+\
+
+Now let's focus on the conditional. The information we are given consists of the values of the $C$ variate for units #1 to #100, which we can `and` together. We must  also `and` all other information implicit in the stock-exchange problem, which we denote $\yi[s]$:
+
+$$
+ \pmb{\|[\big]} C_{100}\mo\ypl \and C_{99}\mo\ypl \and \dotsc \and 
+C_{3}\mo\ypl \and C_{2}\mo\ymi \and C_{1}\mo\ymi \and \yi[s] \bigr)
+$$
+
+
+We finally arrive at the eight probabilities (which constitute a probability distribution) that we want to calculate:
+
+:::{.column-page-right}
+$$\begin{aligned}
+&\P\bigl(C_{101}\mo\ypl \and C_{102}\mo\ypl \and C_{103}\mo\ypl
+\pmb{\|[\big]} C_{100}\mo\ypl \and C_{99}\mo\ypl \and \dotsc \and 
+C_{3}\mo\ypl \and C_{2}\mo\ymi \and C_{1}\mo\ymi \and \yi[s] \bigr)
+\\[1ex]
+&\P\bigl(C_{101}\mo\ymi \and C_{102}\mo\ypl \and C_{103}\mo\ypl
+\pmb{\|[\big]} C_{100}\mo\ypl \and C_{99}\mo\ypl \and \dotsc \and 
+C_{3}\mo\ypl \and C_{2}\mo\ymi \and C_{1}\mo\ymi \and \yi[s] \bigr)
+\\[1ex]
+&\dotso
+\\[1ex]
+&\P\bigl(C_{101}\mo\ymi \and C_{102}\mo\ymi \and C_{103}\mo\ymi
+\pmb{\|[\big]} C_{100}\mo\ypl \and C_{99}\mo\ypl \and \dotsc \and 
+C_{3}\mo\ypl \and C_{2}\mo\ymi \and C_{1}\mo\ymi \and \yi[s] \bigr)
+\end{aligned}$$
+:::
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Do a similar analysis for the Mars-prospecting problem, and write down the final probability distribution that we wish to calculate.
+:::
+
+<!-- :::{.column-page-right} -->
+<!-- $$\begin{aligned} -->
+<!-- &\P(H_{101}\mo\yy \and H_{102}\mo\yy \and H_{103}\mo\yy -->
+<!-- \| H_{100}\mo\yy \and H_{99}\mo\yy \and \dotsc \and -->
+<!-- H_{3}\mo\yn \and H_{2}\mo\yy \and H_{1}\mo\yy \and \yi[M] ) -->
+<!-- \\[1ex] -->
+<!-- &\P(H_{101}\mo\yn \and H_{102}\mo\yy \and H_{103}\mo\yy -->
+<!-- \| H_{100}\mo\yy \and H_{99}\mo\yy \and \dotsc \and -->
+<!-- H_{3}\mo\yn \and H_{2}\mo\yy \and H_{1}\mo\yy \and \yi[M] ) -->
+<!-- \\[1ex] -->
+<!-- &\dotso -->
+<!-- \\[1ex] -->
+<!-- &\P(H_{101}\mo\yn \and H_{102}\mo\yn \and H_{103}\mo\yn -->
+<!-- \| H_{100}\mo\yy \and H_{99}\mo\yy \and \dotsc \and -->
+<!-- H_{3}\mo\yn \and H_{2}\mo\yy \and H_{1}\mo\yy \and \yi[M] ) -->
+<!-- \end{aligned}$$ -->
+<!-- ::: -->
+
+\
+
+The next -- fundamental -- question is: how do we calculate these probabilities? Which other probabilities can we take as our starting point?
+
+----
+
+----
+
+
+The stock-exchange and Mars-prospecting inference problems of [§ @sec-two-populations] differ in some aspects and are similar in others. Time, for example, seems an important aspect of the first inference.
+<!-- , which is in fact often categorized as a "[time-series analysis](https://www.abs.gov.au/statistics/understanding-statistics/statistical-terms-and-concepts/time-series-data)".  -->
+Yet, the second inference involves or could involve time as well: the rocks could be inspected sequentially. So more precisely it is the time *ordering* that seems more relevant in the first inference than the second.
+
+An important difference between the two inference problems is revealed by the following thought-experiments. Consider how you would answer in the stock-exchange case and in the Mars-prospecting case:
+
+a. [*It turns out that there was an error in the sequence of positive and negative datapoints, although not in the total amounts of positive and negative ones.*]{.green} In the stock-exchange inference, for instance, days 1 ($-$) and 3 ($+$) were erroneously swapped, as were days 100 ($+$) and 85 ($-$), and many other days; in the Mars-prospecting inference, rocks #1 (Y) and #3 (N) were erroneously swapped, as were rocks #100 (Y) and #97 (N), and many other rocks.
+
+    - *Should the final inference about the next 3 datapoints be changed?*
+
+
+b. [*The information about the exact sequence of data is lost, and only the total amount of positive and negative datapoints is preserved*]{.green} (74 vs 26).
+
+    - *Would the final inference about the next 3 datapoints be different,  compared to the situation where the exact data sequence is known?*
+
+
+c. [*A new inference is requested: not about the 3 datapoints following the known data, but the 3 datapoints preceding the known data*]{.green}: the day before day 1 and so on, or the rock before rock #1 and so on. (Or, generalizing: an inference about 3 datapoints *interspersed* among the known ones is requested.)
+
+    - *Would the inference for the preceding 3 datapoints be different from the original one about the subsequent 3 datapoints?*
+
+In all these thought-experiments, our intuition is that the inference for the stock-exchange problem would be different, but the one for the Mars-prospecting problem would stay the same or not change appreciably. Swapping days in a stock course, matters; swapping rocks in a crater, doesn't. There are good reasons, based on physics and dynamical-system theory, for this intuition.
+
+An inference which does not change if data and unknown quantities are freely reordered, like the Mars-prospecting one, is called [**exchangeable**]{.blue}. Whereas an inference in which the ordering of data and unknowns is relevant, like the stock-exchange one, is called **non-exchangeable**. There is not a  dichotomy between the two cases; rather, there are continuous varying degrees of exchangeability or non-exchangeability. But for the moment we shall simplify this gradation into a binary distinction.
+
+We shall now make this definition more precise, and then study and exploit the remarkable consequences that it has for an agent's inferences and probability calculations.
+
+
+## Infinitely exchangeable populations {#sec-exch-populations}
+
+### Definition 
+
+Consider a (practically) infinite statistical population with variate $X$. This variate could be a joint one, consisting of variates $U,V,W,\dots$ of arbitrary types. For simplicity let's assume that the domain of this variate is discrete. For instance, the variate could be of a binary type with domain $\set{\cat{Yes}, \cat{No}}$; or it could be the combination of such a binary variate and an another ordinal variate with domain $\set{\cat{low}, \cat{medium}, \cat{high}}$; so the domain of the joint variable would be the set of 2 × 3 values $\set[\big]{(\cat{Yes}, \cat{low}),\ (\cat{No}, \cat{low}),\ \dotsc,\ (\cat{No},\cat{high})}$.
+
+This variate associates a quantity to each unit in the population. We denote by $X_1$ the variate for unit #1, and so on.
+
+Now consider an agent, with background knowledge $\yI$, which must draw  inferences about some population units.
+
+We call the infinite population [**exchangeable**]{.blue} if [the agent's inferences are unaffected by the units' identities, and only depend on the units' variate values]{.blue}. Said otherwise, [exchanges among units that have the same values don't matter for inference purposes]{.blue}.
+
+### Example
+
+Let's make this clear with a simplified version of the Mars-prospecting example.
+
+Suppose the agent knows the values of units #95--#99, and needs the probability that unit #101 has variate value $\yn$, unit #102 value $\yy$, and unit #103 value $\yn$, as schematized below:
+
+:::{.columns}
+::::{.column width=30%}
+::::
+
+::::{.column width=30%}
+|  [unit]{.yellow}  | $H$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [1]{.yellow}      | $\yy$           |
+| [2]{.yellow}      | $\yy$           |
+| [3]{.yellow}      | $\yn$           |
+| [4]{.yellow}      | $\yy$           |
+| [5]{.yellow}      | $\yy$           |
+| [6]{.yellow}      | $\yy$           |
+| [7]{.yellow}      | $\yy$           |
+| [8]{.yellow}      | $\yn$           |
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [95]{.yellow}     | $\yn$ $\condi$  |
+| [96]{.yellow}     | $\yy$ $\condi$  |
+| [97]{.yellow}     | $\yn$ $\condi$  |
+| [98]{.yellow}     | $\yy$ $\condi$  |
+| [99]{.yellow}     | $\yy$ $\condi$  |
+| [100]{.yellow}    | $\yy$           |
+| [101]{.yellow}    | $\yn$ $\suppo$  |
+| [102]{.yellow}    | $\yy$ $\suppo$  |
+| [103]{.yellow}    | $\yn$ $\suppo$  |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: agent's 1st inference {.sm}
+::::
+
+::::{.column width=40%}
+::::
+:::
+
+$$
+\P\bigl(H_{101}\mo\yn \and H_{102}\mo\yy \and H_{103}\mo\yn
+\pmb{\|[\big]}
+H_{99}\mo\yy \and H_{98}\mo\yy \and 
+H_{97}\mo\yn \and H_{96}\mo\yy \and 
+H_{95}\mo\yn \and \yI \bigr)
+$$
+
+\
+
+If the population is exchangeable, then the inference above is exactly the same -- the probability values are identical -- as the following one:
+
+:::{.columns}
+::::{.column width=30%}
+::::
+
+::::{.column width=30%}
+|  [unit]{.yellow}  | $H$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [1]{.yellow}      | $\yy$ $\condi$  |
+| [2]{.yellow}      | $\yy$           |
+| [3]{.yellow}      | $\yn$ $\suppo$  |
+| [4]{.yellow}      | $\yy$           |
+| [5]{.yellow}      | $\yy$ $\condi$  |
+| [6]{.yellow}      | $\yy$ $\condi$  |
+| [7]{.yellow}      | $\yy$ $\suppo$  |
+| [8]{.yellow}      | $\yn$           |
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [95]{.yellow}     | $\yn$ $\condi$  |
+| [96]{.yellow}     | $\yy$           |
+| [97]{.yellow}     | $\yn$ $\suppo$  |
+| [98]{.yellow}     | $\yy$           |
+| [99]{.yellow}     | $\yy$           |
+| [100]{.yellow}    | $\yy$           |
+| [101]{.yellow}    | $\yn$           |
+| [102]{.yellow}    | $\yy$           |
+| [103]{.yellow}    | $\yn$ $\condi$  |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: agent's 2nd inference {.sm}
+::::
+
+::::{.column width=40%}
+::::
+:::
+
+$$
+\P\bigl(H_{3}\mo\yn \and H_{7}\mo\yy \and H_{97}\mo\yn
+\pmb{\|[\big]}
+H_{1}\mo\yy \and H_{5}\mo\yy \and 
+H_{95}\mo\yn \and H_{6}\mo\yy \and 
+H_{103}\mo\yn \and \yI \bigr)
+$$
+
+Why? Because both inferences have [one $\yy$]{.green} and [two $\yn$]{.red} in their supposals, and both have [three $\yy$]{.green} and [two $\yn$]{.red} in their conditionals. Or, from a different point of view, both inferences look the same if we reorder the units (each keeping its value), as shown below:
+
+::::::{.column-page-right}
+
+:::{.columns}
+
+::::{.column width=20%}
+|  [unit]{.yellow}  | $H$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [1]{.yellow}      | $\yy$ $\Condi$  |
+| [2]{.yellow}      | $\yy$           |
+| [3]{.yellow}      | $\yn$ $\Suppo$  |
+| [4]{.yellow}      | $\yy$           |
+| [5]{.yellow}      | $\yy$ $\Condi$  |
+| [6]{.yellow}      | $\yy$ $\Condi$  |
+| [7]{.yellow}      | $\yy$ $\Suppo$  |
+| [8]{.yellow}      | $\yn$           |
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [95]{.yellow}     | $\yn$ $\Condi$  |
+| [96]{.yellow}     | $\yy$           |
+| [97]{.yellow}     | $\yn$ $\Suppo$  |
+| [98]{.yellow}     | $\yy$           |
+| [99]{.yellow}     | $\yy$           |
+| [100]{.yellow}    | $\yy$           |
+| [101]{.yellow}    | $\yn$           |
+| [102]{.yellow}    | $\yy$           |
+| [103]{.yellow}    | $\yn$ $\Condi$  |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: 2nd inference {.sm}
+::::
+
+::::{.column width=13%}
+::::
+
+::::{.column width=20%}
+|  [unit]{.yellow}  | $H$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [99]{.yellow}     | $\yy$           |
+| [2]{.yellow}      | $\yy$           |
+| [101]{.yellow}    | $\yn$           |
+| [4]{.yellow}      | $\yy$           |
+| [98]{.yellow}     | $\yy$           |
+| [96]{.yellow}     | $\yy$           |
+| [102]{.yellow}    | $\yy$           |
+| [8]{.yellow}      | $\yn$           |
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [95]{.yellow}     | $\yn$ $\Condi$  |
+| [6]{.yellow}      | $\yy$ $\Condi$  |
+| [103]{.yellow}    | $\yn$ $\Condi$  |
+| [5]{.yellow}      | $\yy$ $\Condi$  |
+| [1]{.yellow}      | $\yy$ $\Condi$  |
+| [100]{.yellow}    | $\yy$           |
+| [3]{.yellow}      | $\yn$ $\Suppo$  |
+| [7]{.yellow}      | $\yy$ $\Suppo$  |
+| [97]{.yellow}     | $\yn$ $\Suppo$  |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: 2nd inference reordered {.sm}
+::::
+
+::::{.column width=13%}
+::::
+
+::::{.column width=20%}
+|  [unit]{.yellow}  | $H$             |
+|:--:|:------:|
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [1]{.yellow}      | $\yy$           |
+| [2]{.yellow}      | $\yy$           |
+| [3]{.yellow}      | $\yn$           |
+| [4]{.yellow}      | $\yy$           |
+| [5]{.yellow}      | $\yy$           |
+| [6]{.yellow}      | $\yy$           |
+| [7]{.yellow}      | $\yy$           |
+| [8]{.yellow}      | $\yn$           |
+| [...]{.midgrey}   | [...]{.midgrey} |
+| [95]{.yellow}     | $\yn$ $\Condi$  |
+| [96]{.yellow}     | $\yy$ $\Condi$  |
+| [97]{.yellow}     | $\yn$ $\Condi$  |
+| [98]{.yellow}     | $\yy$ $\Condi$  |
+| [99]{.yellow}     | $\yy$ $\Condi$  |
+| [100]{.yellow}    | $\yy$           |
+| [101]{.yellow}    | $\yn$ $\Suppo$  |
+| [102]{.yellow}    | $\yy$ $\Suppo$  |
+| [103]{.yellow}    | $\yn$ $\Suppo$  |
+| [...]{.midgrey}   | [...]{.midgrey} |
+: 1st inference {.sm}
+::::
+:::
+
+::::{.column width=14%}
+::::
+::::::
+
+$$\begin{aligned}
+&\P\bigl(H_{101}\mo\yn \and H_{102}\mo\yy \and H_{103}\mo\yn
+\pmb{\|[\big]}
+H_{99}\mo\yy \and H_{98}\mo\yy \and 
+H_{97}\mo\yn \and H_{96}\mo\yy \and 
+H_{95}\mo\yn \and \yI \bigr)
+\\[1ex]
+&=\P\bigl(H_{3}\mo\yn \and H_{7}\mo\yy \and H_{97}\mo\yn
+\pmb{\|[\big]}
+H_{1}\mo\yy \and H_{5}\mo\yy \and 
+H_{95}\mo\yn \and H_{6}\mo\yy \and 
+H_{103}\mo\yn \and \yI \bigr)
+\end{aligned}$$
+
+[This equality under exchanges holds no matter how many units we consider in the supposal and in the conditional (the conditional could even be empty).]{.blue}
+
+As two additional examples with the same population,
+
+$$\begin{gathered}
+\P(H_{2}\mo\yy \| H_{101}\mo\yn \and \yI)
+= \P(H_{98}\mo\yy \| H_{8}\mo\yn \and \yI)
+\\[1ex]
+\P(H_{99}\mo\yy \and H_{7}\mo\yy \and H_{3}\mo\yn \| \yI)
+=\P(H_{4}\mo\yy \and H_{102}\mo\yy \and H_{95}\mo\yn \| \yI)
+\end{gathered}$$
+
+\
+
+The definition of exchangeability extends in an obvious way to populations with variates having arbitrary discrete domains. As an example consider a population with an ordinal variate $X$ having domain of three values $\set{\ylo,\yme,\yhi}$. If this population is exchangeable for an agent with state of knowledge $\yJ$, then we must have for instance
+
+$$\begin{aligned}
+&\P( X_5\mo\yme \and X_2\mo\yhi \and 
+X_{14}\mo\yme \| X_{7}\mo\ylo \and X_{1}\mo\yme \and \yJ)
+\\[1ex]
+&=
+\P( X_1\mo\yme \and X_{90}\mo\yhi \and 
+X_{3}\mo\yme \| X_{7}\mo\ylo \and X_{5}\mo\yme \and \yJ)
+\end{aligned}$$
+
+
+:::{.callout-warning}
+## {{< fa exclamation-circle >}} Important points about exchangeability
+
+- Strictly speaking, exchangeability is **not an intrinsic property** of a population. It is a property **of an agent's state of knowledge about the population**. For instance, if an agent knows that the units' indices reflect some temporal order, then that agent generally won't consider that population as exchangeable. Another agent, oblivious of the fact that the units' indices carry information, may instead consider that population as exchangeable.
+
+- The probability calculus doesn't tell us if a population is exchangeable; in fact, it requires exchangeability (or non-exchangeability) as an *input*.
+
+- ...However, if the possibility of exchangeability and non-exchangeability are formulated as two well-defined hypotheses, the probability calculus can tell us their probabilities.
+
+- There isn't any clear-cut dichotomy between exchangeable and non-exchangeable populations. Rather, the discrepancy between probabilities under exchanges of units gradually increases from practically acceptable levels to unacceptable ones. What's acceptable depends on the particular problem.
+:::
+
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+[@@ TODO]{.small .grey}
+:::
+
+
+
+----
+
+----
+
+We can finally derive a concrete way of drawing inferences in problems involving exchangeable populations. We shall approach the derivation in an intuitive way, in two steps.
+
+
+## Inference when population frequencies are known {#sec-inference-known-freq}
+
+Suppose we have a practically infinite statistical population with variate $X$ having a discrete and finite domain. For simplicity let's assume the domain consists in the integers $\set{1,2,\dotsc,K}$ (we can always rename the actual domain values so as to put them into correspondence with a set of integers).
+
+An agent with state of knowledge $\yI$ needs to draw inferences about some units, given the values of other units, as in the examples of the previous [§ @sec-two-populations] and...
+
+Now we suppose that the agent additionally **knows the joint frequency distribution** for the variate $X$ in the population. We express this knowledge with the sentence $\vec{F}\mo\vec{f}$, where $\vec{f}$ is a $K$-tuple of numerical frequencies. We denote the frequencies of the values $1,2,\dotsc, K$ by $f_1, f_2, \dotsc, f_K$.
+
+If someone gave you the frequencies above (their exact numerical values), and asked you your degree of belief that the variate for some unit, say unit #47, has value $2$, what would you answer?
+
+This scenario has a very strong symmetry. A fraction $f_2$ of all the units have value $2$. Unit #47 could be one among those in this fraction, or one among those in the remaining\ \ $1-f_2$\ \ fraction. We are compelled to give probability $f_2$ that unit #47 has value $2$:
+
+$$
+\P(X_{47}\mo 2 \| \vec{F}\mo\vec{f} \and \yI) = f_2
+$$
+
+This is just one way of looking at this scenario. Alternative ways show similar symmetries, which lead to the same degree of belief.
+
+More generally, the agent's degree of belief on some unit #$u$ to have value $i$, when the joint frequency distribution $f$ is known, must be
+
+$$
+\P(X_u \mo i \| \vec{F}\mo\vec{f} \and\yI) = f_i
+$$
+
+\
+
+We can extend this reasoning to more than one unit. A crucial point here is that the population is practically infinite. If we know that the frequency of value $2$ is $f_2$, and then we observe a unit with that value, then we know that the total number of units having value $2$ has slightly decreased. In a practically infinite population, however, this decrease is negligible, so we can think of $f_2$ as remaining the same.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Suppose the population is finite, with $N$ units. The *absolute* frequency ([§ @sec-freq-distr]) of value $2$ is then $Nf_2$.
+
+- Calculate the new absolute and relative frequencies of value $2$ after we remove one unit with that value.
+- Calculate the difference between the previous and new frequency.
+- Do the same calculations also for the other variate values ($1,3,\dotsc$).
+:::
+
+We therefore find that the agent's degree of belief on some unit #$u$ to have value $i$, and some other unit #$v$ to have value $j$, when the joint frequency distribution $f$ is known, must be
+
+$$
+\P(X_u \mo i \and X_v\mo j \| \vec{F}\mo\vec{f} \and\yI) = f_i \cdot f_j
+$$
+
+And so on for more units.
+
+---
+
+
+[@@ TODO **to be continued**]{.red}
+
+
