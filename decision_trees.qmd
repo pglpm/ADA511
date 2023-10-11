@@ -3,7 +3,7 @@
 
 Decision trees are simple and intuitive machine learning models, that can be expanded and elaborated into a surprisingly powerful and general method for both classification and regression. They are based on the idea of performing a series of yes-or-no tests on the data, which finally lead to decision. 
 
-We have already seen the tree-like structure for illustrating decision problems in chapter @sec-basic-decisions, but in this section, we are doing similar yet different things. The name of "decision trees" still pertain to both, but it should hopefully be clear from context when we are talking about what. 
+We have already seen the tree-like structure for illustrating decision problems in @sec-basic-decisions, but in this section, we are doing similar yet different things. The name of "decision trees" still pertains to both, but it should hopefully be clear from context when we are talking about what. 
 
 ## Decision trees for classification on categorical values
 
@@ -147,7 +147,7 @@ $$
 f(\mathbf{x}) = \sum_{m=1}^M \frac{1}{M} f_m(\mathbf{x}) \,,
 $$
 
-where the $f_m$ are trained on a randomly selected subset of the total data. Necessarily, the $f_m$ models will be highly correlated, so one can also train them on randomly selected subsets of features, in order to reduce this correlation. In the case of decision trees, the ensemble is (obviously) called a [random forest]{.blue}
+where the $f_m$ are trained on a randomly selected subset of the total data. Necessarily, the $f_m$ models will be highly correlated, so one can also train them on randomly selected subsets of features, in order to reduce this correlation. In the case of decision trees, the ensemble is (obviously) called a [random forest]{.blue}.
 
 #### Boosting
 
@@ -173,5 +173,41 @@ $$
 
 with $r_2 < r_1$ (hopefully), resulting in an improved prediction. This *stagewise additive modelling* can be done until we see no further improvement, resulting in an emsemble model that typically outperforms a standard random forest approach. Several variants of the boosting algorithm exists, some of which are discussed in chapter 16.4 of the Murphy book. Here, the explanation of the different boosting variants are based on arguments about *loss functions*. We have not started looking into loss funtions yet, but this will be a topic in the next chapter. It can be useful to come back to the Murphy book after having gone through next chapter's material. 
 
+## Software frameworks
+
+We are about to start the programming exercises, so let us briefly discuss our options for the implementation. While coding a decision tree algorithm from scratch is not too technically challenging, it is an ineffective way to learn aboubt the its behaviour in practice, and we also do not have the time to so. Hence we will use ready-made frameworks. 
+
+For decent-performing and easy-to-use frameworks, we suggest to use [`scikit-learn`](https://scikit-learn.org/stable/index.html) for Python, and [`tidymodels`](https://www.tidymodels.org/) for R. There are, however, plenty of alternatives, and you are free to choose whichever you like. 
+
+For state-of-the-art boosted decision trees, we suggest [`XGBoost`](https://xgboost.readthedocs.io/en/stable/index.html), which regularly ranks among the best tree-based algorithms on the machine learning competitions at [Kaggle](https://www.kaggle.com/competitions), and is available for both Python and R.
 
 
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercises: 
+In these exercises we will start out with simple 2-dimensional data, just so we can visualise what is going on, and then move to real-world dataset afterwards. 
+
+### Classification
+
+Let us try to classify samples from two different populations, which we simply call `positive class` and `negative class`. **Follow the code examples in this notebook: [decision_tree_examples.ipynb](https://github.com/pglpm/ADA511/blob/master/code/decision_tree_examples.ipynb)**. The exercises themselves are listed in the notebook, but are included here too:
+
+@. Recreate the data with either very big separation between the classes, or very small, and observe how the decision surface changes.
+@. In the documentation for `DecisionTreeClassifier`, lots of options are described. You'll noticed that we have already specified a non-default criterion. Try changing the other parameters, and again observe how the results differ. In particular, try setting `max_depth` and `min_samples_split` to small or big values.
+@. Generate some separate test data, and plot those too. Does the default decision tree parameters give good results on the test data? Can you find better parameters to improve the class prediction for this example?
+@. Finally, print out the splitting thresholds and the leaf contents for the entire tree. Does it match your expectation from looking at the decision boundary?
+
+### Regression 
+
+Now, we want to try out decision trees for predicting continuous target values. We will leave you alone from the start, and only give you the recipe for generating the 1-dimensional data we want to predict:
+
+```{python}
+#| eval: false
+rng = np.random.default_rng()   # If not done already
+X = np.sort(5 * rng.uniform(size=(80, 1)), axis=0)
+Y = np.sin(X).ravel()
+Y[::5] += 3 * (0.5 - rng.uniform(size=16))
+``` 
+
+The execise is similar to the classification one:
+@. Using `DecisionTreeRegressor`, vary the values of its parameters and observe the result.
+@. Generate **test data** following the prescription above, and find optimal parameters that account for the fact that our data is prone to *outliers*.
+:::
