@@ -19,7 +19,7 @@ Having introduced the notion of quantity in the latest chapters [-@sec-quantitie
 - $d_i$ is the value of the data at instance $i$, for example the one here at the margin
 
 :::{.column-margin}
-![](muppet.jpg){width=128px}
+![](saitama_smile.png){width=128}
 :::
 
 And similarly for the outcome of a new task instance where the algorithm is applied for real, which we consider as instance $N+1$. So we can rewrite the correspondence above as follows:
@@ -81,12 +81,12 @@ Going back to our tentative correspondence with inference and decision-making ag
 	\end{gathered}
 	$$
 	
-	and we are interested in the $X$ and $Y$ component quantities separately. For instance, the $X$-quantity could be an image, as in the example above, and the $Y$-quantity could be a label with domain $\set{\cat{Muppet}, \cat{non-Muppet}}$. The reason we make this separation is that, upon applying the algorithm in a new task instance, *one of these component quantities*, say $\red X_{N+1}$, *can actually be observed by the agent*; so it is known. It's the other component quantity, $\red Y_{N+1}$, that the agent is uncertain about. The agent therefore needs to draw the following inference:
+	and we are interested in the $X$ and $Y$ component quantities separately. For instance, the $X$-quantity could be a 128 × 128-pixel image, as in the example above, and the $Y$-quantity could be a name whose domain is all characters in the [One Punch Man](https://onepunchman.fandom.com) series: $\set{\cat{Saitama}, \cat{Genos}, \cat{Fubuki}, \cat{MetalBat}, \dotsc}$. The reason we make this separation is that, upon applying the algorithm in a new task instance, *one of these component quantities*, say $\red X_{N+1}$, *can actually be observed by the agent*; so it is known. It's the other component quantity, $\red Y_{N+1}$, that the agent is uncertain about. The $X$ quantities are often called "features"; and the $Y$ quantities, "labels" (or "classes"). The agent therefore needs to draw the following inference:
 
     $$
     \P\bigl(
 	{\red Y_{N+1} \mo y_{N+1}}
-	\|[\big] 
+	\pmb{\|[\big]} 
 	{\red X_{N+1} \mo x_{N+1}}\, \and\,
     \green Y_N \mo y_N \and X_N \mo x_N \and
 	\dotsb \and 
@@ -94,6 +94,10 @@ Going back to our tentative correspondence with inference and decision-making ag
     \black\and {\yellow\yI} \bigr)
     $$
 	
+	Or, to give an example with a pictorial representation:
+	
+	![](saitama_example.png){width=75%}
+    
     This is the more complicated version of the "next-three-patients" scenario with "urgency & transportation", discussed in [§ @sec-conditional-joint-general].
 
 An interesting aspect of this new tentative correspondence is that there isn't any essential difference between unsupervised and supervised cases. Consider the last probability above; using the formula for a conditional probability ([§ @sec-conditional-probs]) we have
@@ -103,7 +107,7 @@ $$
 \begin{aligned}
     &\P\bigl(
 	{\red Y_{N+1} \mo y_{N+1}}
-	\|[\big] 
+	\pmb{\|[\big]} 
 	{\red X_{N+1} \mo x_{N+1}}\, \and\,
     \green Y_N \mo y_N \and X_N \mo x_N \and
 	\dotsb \and 
@@ -113,36 +117,107 @@ $$
 	&\qquad{}=
 	\frac{
 	    \P\bigl(
-	\grey\overbracket[1px]{
-	{\red Y_{N+1} \mo y_{N+1}} \and
-	{\red X_{N+1} \mo x_{N+1}}
+	\grey\overbracket[1px]{\vphantom{\Bigl(}
+	\red Y_{N+1} \mo y_{N+1} \and
+	\red X_{N+1} \mo x_{N+1}
 	}^\mathclap{{\red D_{N+1}\mo d_{N+1}}}
 	\black
-		\|[\big] 
-		\grey\overbracket[1px]{
+		\and
+		\grey\overbracket[1px]{\vphantom{\Bigl(}
     \green Y_N \mo y_N \and X_N \mo x_N
 		}^\mathclap{{\green D_{N}\mo d_{N}}}\green
 	\and
 	\dotsb \and 
-		\grey\overbracket[1px]{
+		\grey\overbracket[1px]{\vphantom{\Bigl(}
 	\green Y_1 \mo y_1 \and X_1 \mo x_1 
 		}^\mathclap{{\green D_{1}\mo d_{1}}}
-    \black\and {\yellow\yI} \bigr)
+    \black\pmb{\|[\big]} {\yellow\yI} \bigr)
 }{
-	 \sum_{\red y_{N+1}} \P\bigl(
-	{\red Y_{N+1} \mo y_{N+1}} \and
+	 \sum_{\red y} \P\bigl(
+	{\red Y_{N+1} \mo y} \and
 	{\red X_{N+1} \mo x_{N+1}}
-		\|[\big] 
+		\and
     \green Y_N \mo y_N \and X_N \mo x_N \and
 	\dotsb \and 
 	Y_1 \mo y_1 \and X_1 \mo x_1 
-    \black\and {\yellow\yI} \bigr)
+    \black\pmb{\|[\big]}  {\yellow\yI} \bigr)
 }
 \end{aligned}
 $$
 :::
 
-This is a fraction between the probability for the "unsupervised case" (which we wrote above compactly in terms of $D$ rather than $(Y,X)$), and the same probability summed up for all possible values of $\red Y_{N+1}$, which in the image-example above would be a sum over $\red Y_{N+1}\mo \cat{Muppet}$ and $\red Y_{N+1}\mo \cat{non-Muppet}$.
+<!-- :::{.column-page-right} -->
+<!-- $$ -->
+<!-- \begin{aligned} -->
+<!--     &\P\bigl( -->
+<!-- 	{\red Y_{N+1} \mo y_{N+1}} -->
+<!-- 	\pmb{\|[\big]}  -->
+<!-- 	{\red X_{N+1} \mo x_{N+1}}\, \and\, -->
+<!--     \green Y_N \mo y_N \and X_N \mo x_N \and -->
+<!-- 	\dotsb \and  -->
+<!-- 	Y_1 \mo y_1 \and X_1 \mo x_1  -->
+<!--     \black\and {\yellow\yI} \bigr) -->
+<!-- 	\\[2ex] -->
+<!-- 	&\qquad{}= -->
+<!-- 	\frac{ -->
+<!-- 	    \P\bigl( -->
+<!-- 	{\red Y_{N+1} \mo y_{N+1}} \and -->
+<!-- 	{\red X_{N+1} \mo x_{N+1}} -->
+<!-- 	\black -->
+<!-- 		\pmb{\|[\big]}  -->
+<!--     \green Y_N \mo y_N \and X_N \mo x_N -->
+<!-- 	\and -->
+<!-- 	\dotsb \and  -->
+<!-- 	\green Y_1 \mo y_1 \and X_1 \mo x_1  -->
+<!--     \black\and {\yellow\yI} \bigr) -->
+<!-- }{ -->
+<!-- 	 \sum_{\red y_{N+1}} \P\bigl( -->
+<!-- 	{\red Y_{N+1} \mo y_{N+1}} \and -->
+<!-- 	{\red X_{N+1} \mo x_{N+1}} -->
+<!-- 		\pmb{\|[\big]}  -->
+<!--     \green Y_N \mo y_N \and X_N \mo x_N \and -->
+<!-- 	\dotsb \and  -->
+<!-- 	Y_1 \mo y_1 \and X_1 \mo x_1  -->
+<!--     \black\and {\yellow\yI} \bigr) -->
+<!-- } -->
+<!-- \\[2ex] -->
+<!-- &\P\bigl(\blue -->
+<!-- 	{Y_{\infty} \mo y_{\infty}} -->
+<!-- 	\and -->
+<!-- 	{X_{\infty} \mo x_{\infty}}\, \and\, -->
+<!-- 	\dotsb \and  -->
+<!--     Y_2 \mo y_2 \and X_2 \mo x_2 \and -->
+<!-- 	Y_1 \mo y_1 \and X_1 \mo x_1  -->
+<!--     \black\and {\yellow\yI} \bigr) -->
+<!-- \\[2ex] -->
+<!-- &f\bigl(\blue -->
+<!-- 	{Y_{\infty} \mo y_{\infty}} -->
+<!-- 	\and -->
+<!-- 	{X_{\infty} \mo x_{\infty}}\, \and\, -->
+<!-- 	\dotsb \and  -->
+<!--     Y_2 \mo y_2 \and X_2 \mo x_2 \and -->
+<!-- 	Y_1 \mo y_1 \and X_1 \mo x_1  -->
+<!--     \black \bigr) -->
+<!-- \\[2ex] -->
+<!-- &f\bigl(\blue -->
+<!-- 	{Y_{1000} \mo y_{1000}} -->
+<!-- 	\and -->
+<!-- 	{X_{1000} \mo x_{1000}}\, \and\, -->
+<!-- 	\dotsb \and  -->
+<!--     Y_2 \mo y_2 \and X_2 \mo x_2 \and -->
+<!-- 	Y_1 \mo y_1 \and X_1 \mo x_1  -->
+<!--     \black \bigr) -->
+<!-- \end{aligned} -->
+<!-- $$ -->
+<!-- ::: -->
+
+This is a fraction between the probability for the "unsupervised case" (which we wrote above compactly in terms of $D$ rather than $(Y,X)$), and the same probability summed up for all possible values of $\red Y_{N+1}$, which in the image-example above would be:
+
+![](cond_prob_saitama.png){width=50%}
+
+with a sum ($\red y$) over all possible character names of the series.
+
+
 
 So if the agent has the probability for the "unsupervised case", then with a simple computation it also has the probability for the "supervised case", and many other cases that cannot be categorized as "unsupervised" or "supervised" (there is also a connection with "generative" vs "discriminative" algorithms here).
 

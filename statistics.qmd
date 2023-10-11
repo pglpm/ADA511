@@ -101,13 +101,13 @@ Consider the statistical population defined as follows:
 
 - *units:* the bookings at a specific hotel during a specific time period
 - *variate:* the market segment of the booking
-- *variate domain:* the set of five values $\set{\cat{Offline},\  \cat{Online},\  \cat{Corporate},\  \cat{Aviation},\  \cat{Complementary},\  \cat{Complementary}}$
+- *variate domain:* the set of five values $\set{\cat{Aviation}, \cat{Complementary},  \cat{Corporate}, \cat{Offline},  \cat{Online}}$
 
 The population data is stored in the file [`hotel_bookings-market.csv`](datasets/hotel_bookings-market.csv). Each row of the file corresponds to a unit, and lists the unit id (this is not a variate in the present population) and the market segment.
 
 Use any method you like (a script in your favourite programming language, counting by hand, or whatever) to answer these questions:
 
-- what is the size of the population?
+- What is the size of the population?
 - What are the absolute frequencies of the five values?
 - What are their relative frequencies?
 - Which units have the value $\cat{Corporate}$?
@@ -262,11 +262,11 @@ $$\begin{aligned}
 
 In communicating statistics about a population it is always best to report and, when possible, visually show (for instance as marginal distributions) the full joint frequency distribution of the population's variates.
 
-Sometimes one can only share a more limited amount of information about the frequency distribution, or wants to emphasize particular aspects of it -- which are also aspects of the population. Different kinds of aspects can be chosen; some of them are only defined for specific types of variates. They are often called "summary statistics". Below we give a brief description of some common ones, emphasizing when they are appropriate and when they are not. These summaries can also be used for probability distributions.
+Sometimes one wants to share some sort of "summary" of the frequency distribution, emphasizing particular aspects of it; because these are also aspects of the population. Different kinds of aspects can be chosen; some of them are only defined for specific types of variates. They are often called "summary statistics" or "descriptive statistics". Below we give a brief description of some common ones, emphasizing when they are appropriate and when they are not. These summaries can also be used for probability distributions.
 
 ### Mode
 
-The mode is the value having the highest frequency (or probability, if we're speaking about an agent's beliefs rather than a population). There can be more than one mode.
+The [**mode**]{.blue} is the value having the highest frequency (or probability, if we're speaking about an agent's beliefs rather than a population). There can be more than one mode.
 
 The mode is defined for any distribution over discrete values, also for nominal quantities.
 
@@ -284,9 +284,108 @@ Be careful in relying too much on the "mode" for a continuous quantity. Continuo
 :::
 
 
-
-
 ### Median and quartiles
 
+Recall ([§ @sec-basic-types]) that an *ordinal* or an *interval* quantity or variate have values that can be ranked in a specific order. If there is a value for which the sum of the frequencies of all values of rank lower than that value equals the sum of the frequencies of all values of rank higher than that value, then that value is called the [**median**]{.blue} of the distribution. See the following histogram as an example:
+
+![](median_example.png){width=100%}
+The value $\cat{e}$ is the median of this frequency distribution, because $f(\cat{c})+f(\cat{d}) = f(\cat{f})+f(\cat{g})+f(\cat{h})+f(\cat{i})= 47.6\%$
+
+If there is no such separating value, then sightly different definitions of median exist in the literature; but the approximate idea is the same: a value that somehow divides the domain into two parts of roughly equal (50%) total frequency. This idea can be also applied to continuous distributions represented by densities.
+
+The notion of median can be generalized to that of a value that separates the domain into a lower-rank part with total frequency 1/4, and a higher-rank part with total frequency 3/4; and also to that of a value separating into a 3/4 vs 1/4 proportion instead. These values are called the [*first quartile*]{.blue} and [*third quartile*]{.blue}. The two quartiles and the median (also called second quartile) divide the domain into four parts of roughly equal 25% frequencies.
+
+*If* the variate or quantity under consideration is of interval type, then it's possible to take the difference between the third and first quartile, called the [*interquartile range*]{.blue}.
+
+
 ### Mean and standard deviation
+
+For an interval quantity $X$ with values $\set{x_1, x_2, \dotsc}$ for which it makes sense to take the sum, it is possible to define the [**mean**]{.blue} and [**standard deviation**]{.blue}:
+
+$$
+\bar{X} \defd \sum_i x_i\cdot f(x_i)
+\qquad
+\sigma(X) \defd \sqrt{\sum_i (x_i-\bar{X})^2\cdot f(x_i)}
+$$
+
+we assume that their meaning is more or less familiar to you.
+
+
+
+### Uses and pitfalls
+
+For a nominal variate or quantity it doesn't make sense to speak of median, quartiles, mean, standard deviation, because its possible values cannot be ranked or added.
+
+For an ordinal variate or quantity it doesn't make sense to speak of mean or standard deviation, because its possible values cannot be added.
+
+\
+
+The mean and standard deviation can make sense and can be useful in some circumstances. But note that even if the values of a quantity can be summed, their mean (and standard deviation) may not quite make sense.
+
+Consider the number of patients visiting a hospital in 100 consecutive days. It is possible to consider the mean number of patients per day. This number has a meaning: if this number of patients visited the hospital every day for 100 days, then the total number of visits would be equal to the actual total. The same reasoning can be made for the number of nurses working in the hospital every day for 100 days, and their mean.
+
+Now consider the daily ratios of patients to nurses, for those 100 days. These ratios are numbers, so we can take their mean. But what does such a mean represent? if we multiply it by 100, we don't obtain the total of anything. Also, if we consider the total number of patients and total number of nurses in 100 days, their ratio will *not* be equal to the "mean ratio" we calculated.
+
+The example above is not meant to say that a mean of ratios never makes sense, but to point out that mean and standard deviation are often overused. In [chapter @sec-pop-samples] we will discuss other problems that may arise in using mean and standard deviation.
+
+In general, when in doubt, we recommend to use median and quartiles or median and interquartile range, which are more generally meaningful and enjoy several other properties (for example so-called "robustness") useful in doing statistics.
+
+\
+
+Note, in any case, that the present discussion regards the question of how to provide summary information *besides* the full frequency (or probability) distribution. If our problem is to **choose one value** out of the possible ones, then that's a *decision-making problem*, which must be solved by specifying utilities and maximizing the expected utility, as preliminary discussed in [chapter @sec-framework] and as will be discussed more in detail towards the final chapters.
+
+
+
+::: {.callout-caution}
+## {{< fa book >}} Study reading
+- § 2.6 of [*Risk Assessment and Decision Analysis with Bayesian Networks*](https://hvl.instructure.com/courses/25074/modules/items/664427)
+
+- § "**The median estimate**" of [*Meaningful expression of uncertainty in measurement*](https://doi.org/10.1007/s00769-021-01485-5)
+
+- [*The Median Isn't the Message*](https://doi.org/10.1001/virtualmentor.2013.15.1.mnar1-1301)
+:::
+
+
+## Outliers vs out-of-population units {#sec-outliers}
+
+
+The term "outlier" frequently appears in problems related to statistics and probability, often in conjunction with some summary statistics described above. Unfortunately the definitions of this term can be confusing or misleading. With the notion of outlier often there also comes a barrage of "methods" or rules meant to "deal" with outliers. Some such rules, for instance the rule of discarding any datapoints lying at more than three standard deviations from the mean, are often mindless and dangerous.
+
+So let's avoid the term "outlier" for the moment, and let's take a different perspective.
+
+\
+
+One reason why we consider a population of units is that we are interested in making inferences about some units in this population, for which we lack the values of some variates. As we shall see in the forthcoming chapters, such inferences can be made if we first try to infer the full joint frequency distribution for the variates of the population of interest.
+
+This kind of inference becomes more difficult if we have reckoned into the population *some units that actually don't belong there*.
+
+Suppose for instance that a hospital is interested in the age of female patients admitted in a year. In collecting data, some *male* patients are counted in. Then obviously the age frequencies obtained from the collected data will not reflect the age frequencies among females. The problem is that some [*out-of-population*]{.blue} units have been counted in by mistake.
+
+The way out-of-population units affect and distort the frequency count can be different from problem to problem.
+
+In our example, suppose that the wast majority of female patients could have age between 45--55 years, and that the male patients erroneously counted in also have age in the same range. Then the *bulk* of the frequency distribution will appear more inflated than it should be. Or suppose instead that the male patients erroneously reckoned have age between 80--90 years. In this case the old-age tail of the distribution will appear more inflated. As you see we can't a priori point to any "tail" or "bulk" as a problem.
+
+Low frequencies are relatively affected by out-of-population units more than high frequencies. Suppose 10 female patients out of 100 have age 52; frequency 10%. If one 52-year-old male patient is now included by mistake, the frequency becomes 11/101 ≈ 10.1%, or a 1% relative error. But if one female patient out of 100 has age 96 (1% frequency), and a male patient of the same age is now included by mistake, the frequency becomes 2/101 ≈ 1.98%, with a 98% relative error. This is the reason some people focus on distribution tails and "outliers", defined as data having with low-frequency values. (Note that this reasoning would concern any regions of low frequency, for example among two modes; not just tails.)
+
+Yet we cannot mindlessly attack low-frequency regions and data just because they could be more affected by out-of-population units. In many problems of data science, engineering, medicine, low-frequency cases are the most important ones (think of rare diseases, rare mineral elements, rare astronomical events, and so on). So if we alter or eliminate low-frequency data only because they *might* be out-of-population units, then we have dangerously affected all our inferences about such rare events.
+
+Moreover, how could we judge what the "correct" frequency should be? Many outlier methods *assume* that the true frequency of the population has a Gaussian shape, and alter or cut the tails based on this assumption. But how can we know if such an assumption is correct? It turns out that the tails of a distribution are important for checking such assumption. Then you see the full circularity behind such mindless methods.
+
+::: {.callout-caution}
+## {{< fa book >}} Study reading
+§ 2.1 of [*Risk Assessment and Decision Analysis with Bayesian Networks*](https://hvl.instructure.com/courses/25074/modules/items/664427)
+:::
+
+
+
+Which method should one use to face this problem, then? -- The answer is that there's no universal method. The approach depends on the specific problem. A data scientist must carefully examine all possible sources of out-of-population units, make inferences about them, and integrate these inferences in the general inference about the population of interest.
+
+There is literature discussing first-principle approaches of this kind for different scenarios, but we cannot discuss them in the present course.
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+Ch. 21 of [*Probability Theory*](https://hvl.instructure.com/courses/25074/modules/items/660090)
+:::
+::::
 
