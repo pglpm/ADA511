@@ -1,26 +1,34 @@
-# Machine learning - an introduction
+# Introduction to machine learning 
 {{< include macros.qmd >}}
 
-So far we have learned about concepts of doing inference, and about various properties of data. Now it is time to combine the two, and create a mathematical *model* that can use data from the past to make predictions about the unknown. Machine learning methods can be wildly different both in terms of operation and complexity, but they all behave as functions that take in a data point $\mathbf{x}$, a set of values $\theta$ which we call **parameters**, and returns the prediction $y$:
+So far we have learned about concepts of doing inference, and about various properties of data, and probability distributions. Now it is time to combine them into a simplified mathematical [**model**]{.blue}, that can use data from the past to make predictions about the unknown. Note that for the chapters in this part we are not building an *optimal* predictor machine anymore, but rather a *approximate* one, which serves the common operational constraint of being fast to compute. 
+
+Machine learning methods can be wildly different both in terms of operation and complexity. But they all behave as functions that take in a data point $x$, a set of values $\mathbf{w}$ which we call [**parameters**]{.blue}, and returns the prediction $\hat{y}$:
 
 $$ 
-    y = f(\mathbf{x}, \theta).
-$$
+    \hat{y} = f(x, \mathbf{w}).
+$$ {#eq-model-as-function}
 
-The prediction $y$ can be any quantity discussed in [§ @sec-basic-types] -- most commonly we want to classify the data (and we say we are doing *classification*), or we want to estimate some value (in which case we call it *regression*).
+The prediction $\hat{y}$ can be any quantity discussed in [section @sec-basic-types] -- most commonly we want to classify the data (and we say we are doing [*classification*]{.green}), or we want to estimate some value (in which case we call it [*regression*]{.green}). 
 
-# TODO discuss functional form
+It has been pointed out already -- and we will see it also in the coming chapters -- that often there *is actually not* a functional relationship between the inputs $\mathbf{x}$, and the property we want to predict. This leaves us with two possibilities for a solution:
 
+* If there is an *approximate* functional relationship, we can write an analytical function to model that. More specifically, we can write a **deterministic** function, which for a given input $x$ will repeatedly give an output $y$. Common machine learning methods will work well here. 
+* If there is *no* functional relationship, it does not make sense to make a model that tries to enforce one. Instead of having a model that outputs a deterministic value, we need instead, is one that outputs a probability distribution. 
 
-As engineers, when faced with the task of using data to model the behaviour of some system, our job is twofold. First, we need to select a suitable method to serve as the function $f$, and second, we need to find the optimal values for the parameters $\theta$. In [ADA501](https://www.hvl.no/en/studies-at-hvl/study-programmes/courses/2023/ADA501) we will see how to choose an analytical $f$ that corresponds to certain physical systems, while in our course, we will look at methods where $f$ can be practically anything. In fact, we will not even require $f$ to be a deterministic function -- consider for instance generative models like ChatGPT or DALL-E, which creates different outputs for the same input, each time it is run. 
+Because of the second point above, when we describe equation @eq-model-as-function, we will use the word "function" in the wide sense where we allow it to be non-deterministic. An example is [ChatGPT](https://chat.openai.com/), which will answer you differently if you ask it the same exact question twice. If you prefer more mathematical rigour, we could call $f$ a *process* instead, which is a more loose term.
 
-Finding the parameters $\theta$ is what takes us from a general method, to the specific solution to a problem. As we will see, the way of finding them differs between the various machine learning methods, but the principle is always the same: We need to choose a **loss function**, and then iteratively adjust $\theta$ so that the loss, when computed on known data, becomes as small as possible. The loss function should represent the difference between what the model outputs, and the correct answer -- the better the model, the smaller the difference. The choice of this loss function depends on what kind of problem we wish to solve, and we will look at the common ones shortly. But at this point we can already define the three main types of machine learning:
+Let us break down equation @eq-model-as-function. As engineers, when faced with the task of using data to model the behaviour of some system, our job is twofold. First, we need to select a suitable method to serve as the function $f$, and second, we need to find the optimal values for the parameters $\mathbf{w}$. In [ADA501](https://www.hvl.no/en/studies-at-hvl/study-programmes/courses/2023/ADA501) we will see how to choose an analytical $f$ that corresponds to certain physical systems, while in our course, we will look at methods where $f$ can be practically anything.
+
+Finding the parameters $\mathbf{w}$ is what takes us from a general method, to the specific solution to a problem. As we will see, the way of finding them differs between the various machine learning methods, but the principle is always the same: We need to choose a [**loss function**]{.blue}, and then iteratively adjust $\mathbf{w}$ so that the loss, when computed on known data, becomes as small as possible. The loss function should represent the difference between what the model outputs, and the correct answer -- the better the model, the smaller the difference. The choice of this loss function depends on what kind of problem we wish to solve, and we will look at the common ones shortly. But at this point we can already define the three main types of machine learning:
 
 * If we know the "correct answers" (the labels) for all entries in our data set, this is what the model should aim to learn, and we call it **supervised learning**. 
 * If we do not have the data labels, we can still write a loss function corresponding to what we want the model to do with the data. Most commonly, we want to find groups, or *clusters*, of similar-looking data points. If we provide a way of computing scores for good clusters, the model is left to find cluster labels by it self, and we call it **unsupervised learning**.
 * If the decision of a model on one data point affects the value of future data points, like for a self-driving car that may turn left and crash, or turn right and follow the road, we need a loss function that penalises certain actions and rewards others. This is called **reinforcement learning**.
 
-Having decided on a method to represent $f$ and found a set of parameters $\theta$, we say that these combined constitute our **model**. The model should have internalised the important correlations in the data and thereby allows us to make predictions, i.e. do *modelling*. If we do decision-making based on the output of the model as well, we typically call in an **agent**, since there is now some level of autonomy involved. In this chapter, however, we will stick to modelling problems in a supervised fashion.
+We saw already in [chapter @sec-2nd-connection-ML] that this categorisation is not great, since there is always an input $x$ and an output $\hat{y}$, so the difference lies mostly in how we go about to find the optimal parameters. Still, from a practical perspective, it is good to know these three terms. 
+
+Having decided on a method to represent $f$ and found a set of parameters $\mathbf{w}$, we say that these combined now constitute our [**model**]{.blue}. The model should have internalised the important correlations in the data and thereby allows us to make predictions, i.e. do [*modelling*]{.blue}. If we do decision-making based on the output of the model as well, we typically call in an [**agent**]{.blue}, since there is now some level of autonomy involved. In this chapter, however, we will stick to modelling problems in a supervised fashion.
 
 ## Hyperparameters and model complexity 
 
@@ -28,16 +36,18 @@ You may have heard the quote by statistician George Box:
 
 > All models are wrong, but some are useful. 
 
-Although coming off as a somewhat negative view on things, the quote still captures an important point about statistical modelling -- our goal is not to make a complete, 100\% accurate description of reality, but rather a simplified description that is meaningful in the context of our task at hand. The "correct" level of simplicity, in other words the optimal number of parameters $\theta$, can be hard to find. Often it will be influenced by practical considerations such as time and computing power, but it is *always* governed by the amount of data we have available. We will look at the theory of model selection later, but let us first consider a visual example, from which we can define some important concepts. 
+Although coming off as a somewhat negative view on things, the quote still captures an important point about statistical modelling -- our goal is not to make a complete, 100\% accurate description of reality, but rather a simplified description that is meaningful in the context of our task at hand. The "correct" level of simplicity, in other words the optimal number of parameters $\mathbf{w}$, can be hard to find. Often it will be influenced by practical considerations such as time and computing power, but it is *always* governed by the amount of data we have available. We will look at the theory of model selection later, but let us first consider a visual example, from which we can define some important concepts. 
 
-Imagine that you don't have a thermometer that shows the outside temperature. Never knowing whether you should wear a jacket or not when leaving the house, you finally have an idea: If you can construct a mathematical model for the outside temperature as a function of the time of day, then a look at the clock yould be enough to decide for or against bringing a jacket. You manage to borrow a thermometer for a day, and make ten measurements at different times, which will form the basis for the model:
+Imagine that you don't have a thermometer that shows the outside temperature. Never knowing whether you should wear a jacket or not when leaving the house, you get a great idea: If you can construct a mathematical model for the outside temperature as a function of the time of day, then a look at the clock yould be enough to decide for or against bringing a jacket. You manage to borrow a thermometer for a day, and make ten measurements at different times, which will form the basis for the model:
 
 {{< embed over_and_underfitting.ipynb#fig-simple-measurements >}} 
 
 The next step is to choose a function $f$. For one-dimensional data like this, we could for instance select among the group of polynomials, of the form
+
 $$
-    y (x, \mathbf{w}) = w_0 + w_1 x + w_2 x^2 + \dots + w_M x^M = \sum_{j=0}^{M} w_j x^j \,,
+    f (x, \mathbf{w}) = w_0 + w_1 x + w_2 x^2 + \dots + w_M x^M = \sum_{j=0}^{M} w_j x^j \,,
 $$
+
 where $M$ is the order of the polynomial. Recall that a zero'th order polymonial is just a constant value, so such a model would be represented with one single parameter. 
 A first-order polynomial is a linear function (two parameters), and the higher in order (and number of parameters) we go, the more "curves" the function can have. This already presents us with a problem. Which order polynomial (i.e. which value of $M$) should we choose? Let us try different ones, and for each case, *fit* the parameters, meaning we find the parameter values that yield the smallest difference from the measured data points:
 
@@ -47,15 +57,35 @@ Obviously, the constant function does a poor job of describing our data, and lik
 
 We say that the first and second model **underfit** the data. This can happen for two reasons: Either the model has too little complexity to be able to describe the data (which is the case in this example), or, potentially, the optimal parameter values have not been found. The opposite case is **overfitting**, as shown for the last model, where the complexity is too high and the model adapts to artifacts in the data. 
 
-This concept is also called the **bias-variance tradeoff**. We will not go into too much detail on this yet, but qualitatively, we can say that *bias* (used in this setting) is the difference between the predicted value and the true value, when averaging over different data sets. *Variance* (again when used in this setting) indicates how big the change in parameters, and hence in model predictions, we get from fitting to different data sets. Let us say you measure the temperature on ten different days, and for each day, you fit a model, like before. These may be the results:
+This concept is also called the [**bias-variance tradeoff**]{.blue}. We will not go into too much detail on this yet, but qualitatively, we can say that [*bias*]{.blue} (used in this setting) is the difference between the predicted value and the true value, when averaging over different data sets. [*Variance*]{.blue} (again when used in this setting) indicates how big the change in parameters, and hence in model predictions, we get from fitting to different data sets. Let us say you measure the temperature on ten different days, and for each day, you fit a model, like before. These may be the results:
 
 {{< embed over_and_underfitting.ipynb#fig-bias-variance-tradeoff >}}
 
-The blue dots are our "original" data points, plotted for reference, while the red lines corresponds to models fitted for each day's measurements. Due to fluctuations in the measurements, they are different, but note how the difference is related to the model complexity. Our linear models ($M=1$) are all quite similar, but neither capture the pattern in the data very well, so they all have high bias. The overly complex models ($M=9$) have zero bias on their repective dataset, but high variance. The optimal choice is likely somewhere in-between (hence the *tradeoff*), as for the $M=4$ models, which perform well without being overly sensitive to fluctuations in data. Since the value of $M$ is chosen by us, we call it a **hyperparameter**, to separate it from the regular parameters which are optimised by minimising the loss function. 
+The blue dots are our "original" data points, plotted for reference, while the red lines corresponds to models fitted for each day's measurements. Due to fluctuations in the measurements, they are different, but note how the difference is related to the model complexity. Our linear models ($M=1$) are all quite similar, but neither capture the pattern in the data very well, so they all have high bias. The overly complex models ($M=9$) have zero bias on their repective dataset, but high variance. The optimal choice is likely somewhere in-between (hence the *tradeoff*), as for the $M=4$ models, which perform well without being overly sensitive to fluctuations in data. Since the value of $M$ is chosen by us, we call it a [**hyperparameter**]{.blue}, to separate it from the regular parameters which are optimised by minimising the loss function. 
 
-## Model selection in practice
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercises
+@. Our simple temperature model relies on a series of assumptions, some which might be good, and some which might be (very) bad. State the ones you can think of, and evaluate if they are sensible. *Hints: are polynomials a good choice for $f$? Is the data representative?*
 
-Move or delete ??
+@. For the different models in [figure @fig-polynomial-fit] we started by choosing polymonial degree $M$, and then computed the parameters that minimized the difference between the data points and the model. Then we had a look at the results, compared them to our expectations, and decided that $M=0$ and $M=9$ were both unlikely. Can you think of a way to incorporate our initial expectations into the computation?
+:::
 
+
+## Model selection (in practice)
+
+As alluded to in the exercises above, there are ways of including both the data and our prior expectations when building a model, but it is, in fact, not very common to do so. In this section we will have a look at the typical *data science* approach, which relies on splitting the data in different sets. Starting from all our available data on a given problem that we wish to model, we divide it into 
+
+* the [*training set*]{.blue}, which is the data we will use to determine the model parameters $\mathbf{w}$,
+* the [*validation set*]{.red}, which is used to evaluate the model complexity (i.e. finding the optimal bias-variance tradeoff), and 
+* the [*test set*]{.green}, which is used to evaluate the final performance of the model.
+
+The benefit of this approach is that it is very simple to do. The downside, on the other hand, is that each set is necessarily smaller than the total, which subjects us to increased statistical uncertainty. The final parameters will be slightly less optimal than they could have been, and the measurement of the performance will be slightly less accurate. Still, it is common practice, and for the "standard" machine learning methods there is no direct way of simultaneously optimising for the model complexity.
+
+
+## Machine learning taxonomy
+
+Machine learning has been around for many decades, and the list of methods that fit under our simple definition of looking like equation @eq-model-as-function and learning their parameters from data, is very long. For a (non-exhaustive) systematic list, have a look at the methods that are implemented in [scikit-learn](https://scikit-learn.org/stable/supervised_learning.html#supervised-learning), a Python library dedicated to data analysis. 
+
+In this course we will not try to go through all of them, but rather focus on the fundamentals of what they all have in common. With this fundamental understanding, learning about new methods is like learning a new programming language -- each has their specific syntax and specific uses, but the underlying mechanism is the same. We will look at two important methods, that are inherently very different, but still accomplish the same end result. The first is decision trees (and the extension into *random forests*), while the second is neural networks. 
 
 
