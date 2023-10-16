@@ -50,16 +50,17 @@ finfo <- function(data, metadata, alphas, verbose=TRUE){
     variates <- metadata$variate
     nvariates <- nrow(metadata)
     rgvariates <- metadata[['domainsize']]
-    totlength <- prod(rgvariates)
+    SS <- prod(rgvariates)
     ##
     if(missing(alphas) || (is.logical(alphas) && alphas)){
-        alphas <- 4^seq(-1, round(log(totlength,4))+1, by=1)
+        alphas <- 8^seq(floor(-log2(SS)/3), 0, by=1)
     }
     ## print(alphas)
     names(rgvariates) <- variates
-    freqs <- numeric(totlength)
+    freqs <- numeric(SS)
     dim(freqs) <- rgvariates
     dimnames(freqs) <- apply(metadata,1,function(xx){unname(xx[paste0('V',1:(xx['domainsize']))])}, simplify=list)
+    names(dimnames(freqs)) <- variates
     if(verbose){cat('\nUpdating internal state of knowledge, please wait... ')}
     ## alphas <- array(0, dim=rgvariates,
     ##                 dimnames=apply(metadata,1,function(xx){unname(xx[paste0('V',1:(xx['domainsize']))])}, simplify=list))
@@ -68,73 +69,143 @@ finfo <- function(data, metadata, alphas, verbose=TRUE){
         ## for-loop faster than apply
         for(arow in 1:nrow(data)){
             temp <- rbind(as.character(data[arow,..variates]))
-            freqs[temp] <- freqs[temp] +1
+            freqs[temp] <- freqs[temp] + 1
         }
     }
-    if(is.null(dim(freqs))){
-        tempnames <- names(freqs)
-        dim(freqs) <- length(freqs)
-        dimnames(freqs) <- list(tempnames)
-    }
+    NN <- sum(freqs)
+    ## if(is.null(dim(freqs))){
+    ##     tempnames <- names(freqs)
+    ##     dim(freqs) <- length(freqs)
+    ##     dimnames(freqs) <- list(tempnames)
+    ## }
     ##
-    ## for-loop is faster
     ## timethis <- Sys.time()
-    palphas <- numeric(length(alphas))
-    for(i in 1:length(alphas)){
-        palphas[i] <- sum(lgamma(alphas[i]/totlength+freqs))- lgamma(alphas[i]+sum(freqs))
-    }
+    ## palphas <- numeric(length(alphas))
+    ## for(i in 1:length(alphas)){
+    ##     palphas[i] <- sum(lgamma(freqs + alphas[i]/SS))
+    ## }
     ## print(Sys.time()-timethis)
     ## timethis <- Sys.time()
-    ## palphas <- sapply(alphas, function(alpha){
-    ##     sum(lgamma(alpha/totlength+freqs)) - lgamma(alpha+sum(freqs))
-    ## })
+    ffs <- tabulate(c(freqs)+1)
+    iffs <- which(ffs > 0) - 1
+    ffs <- ffs[iffs+1]
+    palphas <- sapply(alphas, function(alpha){sum(ffs*lgamma(iffs + alpha))}) -
+        lgamma(SS*alphas+NN) - SS*lgamma(alphas) + lgamma(SS*alphas) 
+    ## print(Sys.time()-timethis)
+    ## ##
+    ## timethis <- Sys.time()
+    ## palphas2 <- sapply(alphas, function(alpha){sum(lgamma(freqs + alpha))})
     ## print(Sys.time()-timethis)
     if(verbose){cat('Done.\n')}
-    palphas <- palphas - totlength*lgamma(alphas/totlength) + lgamma(alphas) 
     palphas <- exp(palphas-max(palphas))
-    palphas <- palphas/sum(palphas)
+    ## palphas <- palphas/sum(palphas)
     ##
-    list(freqs=freqs, alphas=alphas, palphas=palphas, variates=metadata[['variate']], domainsize=metadata[['domainsize']])
+    list(freqs=freqs, alphas=alphas, palphas=palphas)
+}
+
+fprobability <- function(finfo, marginal=NULL, conditional=NULL){
+    variates <- names(dimnames(finfo$freqs))
+    ## ##
+    ## ## Sanity checks
+    ## if(!is.null(conditional) && !all(names(conditional) %in% variates)){
+    ##     stop('Unknown conditional variates.')
+    ## }
+    ## if(length(setdiff(variates, names(conditional))) < 1){
+    ##     stop('All variates are in the conditional.')
+    ## }
+    ## if(!is.null(marginal) && !all(marginal %in% variates)){
+    ##     stop('Unknown marginal variates.')
+    ## }
+    ## ## if(is.null(marginal)){
+    ## ##     marginal <- setdiff(variates, names(conditional))
+    ## ## }
+    ## if(!is.null(marginal) && length(intersect(marginal, names(conditional))) > 0){
+    ##     stop('Common variates in marginal and conditional.')
+    ## }
+    ## ##
+    ## Selection of conditional values
+    if(!is.null(conditional)){
+        conditional <- as.list(conditional)
+        iconditional <- match(names(conditional), variates)
+        totake <- as.list(rep(TRUE, length(variates)))
+        totake[iconditional] <- conditional
+        freqs <- do.call(`[`, c(list(finfo$freqs), totake))
+        if(is.null(dim(freqs))){
+            dim(freqs) <- length(freqs)
+            dimnames(freqs) <- dimnames(finfo$freqs)[-iconditional]
+        }
+    }else{
+        freqs <- finfo$freqs
+        iconditional <- NULL
+    }
+    ## Selection of marginal variates
+    if(!is.null(marginal)){
+        ## imarginal <- match(marginal, variates)
+        freqs <- apply(freqs, marginal, sum)
+        if(is.null(dim(freqs))){
+            dim(freqs) <- length(freqs)
+            dimnames(freqs) <- dimnames(finfo$freqs)[marginal]
+        }
+        alphas <- finfo$alphas*prod(dim(freqs)[-match(marginal, names(dimnames(freqs)))])
+    }else{
+        marginal <- setdiff(variates, names(conditional))
+        imarginal <- match(marginal, variates)
+        alphas <- finfo$alphas
+    }
+    ##
+    ## NN <- sum(finfo$freqs)
+    ## SS <- prod(dim(finfo$freqs)[c(imarginal,iconditional)])
+    ##
+    ## out <- 0L*freqs
+    ## for(i in 1:length(finfo$alphas)){
+    ##     temp <- freqs + finfo$alphas[i]/SS
+    ##     out <- out + finfo$palphas[i] * temp/sum(temp)
+    ## }
+    ## out/sum(finfo$palphas)
+    colSums(finfo$palphas *
+            aperm(sapply(alphas, function(alpha){
+                temp <- freqs + alpha
+                temp/sum(temp)
+            }, simplify='array'), c(length(dim(freqs))+1, 1:length(dim(freqs))))
+        )/sum(finfo$palphas)
 }
 
 fprobability1D <- function(finfo, prob, log=FALSE){
     extraDistr::ddirichlet(x=prob, alpha=rbind(finfo), log=log)
 }
 
-fmarginal <- function(finfo, variates){
-    whichvars <- match(variates, attr(finfo,'variates'))
-    temp <- apply(finfo, whichvars, sum, na.rm=T)
-    if(is.null(dim(temp))){
-        tempnames <- names(temp)
-        dim(temp) <- length(temp)
-        dimnames(temp) <- list(tempnames)
+fmarginal <- function(finfo, marginal){
+    imarginal <- match(marginal, names(dimnames(finfo$freqs)))
+    freqs <- apply(finfo$freqs, imarginal, sum)
+    if(is.null(dim(freqs))){
+        dim(freqs) <- length(freqs)
+        dimnames(freqs) <- dimnames(finfo$freqs)[imarginal]
     }
-    attr(temp,'variates') <- attr(finfo,'variates')[whichvars]
-    attr(temp,'domainsize') <- attr(finfo,'domainsize')[whichvars]
-    temp
+    list(freqs=freqs, alphas=finfo$alphas*prod(dim(finfo$freqs)[-imarginal]), palphas=finfo$palphas)
 }
 
-fconditional <- function(finfo, unitdata){
-    unitdata <- as.list(unitdata)
-    ncond <- match(names(unitdata), finfo$variates)
-    totake <- as.list(rep(TRUE, length(dim(finfo$freqs))))
-    totake[ncond] <- unitdata
+fconditional <- function(finfo, conditional){
+    variates <- names(dimnames(finfo$freqs))
+    conditional <- as.list(conditional)
+    iconditional <- match(names(conditional), variates)
+    totake <- as.list(rep(TRUE, length(variates)))
+    totake[iconditional] <- conditional
     freqs <- do.call('[', c(list(finfo$freqs), totake))
     ## freqs <- freqs # *sum(finfo)/sum(freqs)
     if(is.null(dim(freqs))){
-        tempnames <- names(freqs)
         dim(freqs) <- length(freqs)
-        dimnames(freqs) <- list(tempnames)
+        dimnames(freqs) <- dimnames(finfo$freqs)[-iconditional]
     }
-    list(freqs=freqs, alphas=finfo$alphas, palphas=finfo$palphas, variates=finfo$variates[-ncond], domainsize=finfo$domainsize[-ncond])
+    list(freqs=freqs, alphas=finfo$alphas, palphas=finfo$palphas)
 }
 
 
 fpredict <- function(finfo){
-    totlength <- length(finfo$freqs)
+    SS <- length(finfo$freqs)
+    NN <- sum(finfo$freqs)
     colSums(finfo$palphas *
         aperm(sapply(finfo$alphas, function(alpha){
-            out <- (finfo$freqs+alpha/totlength)/(totlength+alpha)
+            out <- finfo$freqs+alpha
             out/sum(out)
         }, simplify='array'), c(length(dim(finfo$freqs))+1, 1:length(dim(finfo$freqs))))
         )
