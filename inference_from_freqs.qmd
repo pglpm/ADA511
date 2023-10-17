@@ -91,7 +91,176 @@ In other cases, these hypothetically known frequencies would refer to the full p
 
 ## Inference about a single unit {#sec-1unit-freq-known}
 
-Now imagine that the agent must infer all $\bZ$ variates for a specific unit; in the [income]{.midgrey} example, for a specific USA citizen. This unit could have one particular combination of variate values or another; in the [income]{.midgrey} example it could have any one of the 54 001 920 possible combined values. The agent must assign a probability to each of these possibilities.^[Remember that this is what we mean when we say "drawing an inference"! (See [chap. @sec-what-inference] and [§ @sec-distribute-prob])]
+Now imagine that the agent, given the information $\if$ about the frequencies and some background information $\yI$, must infer all $\bZ$ variates for a specific unit $\yellow u$. In the [income]{.midgrey} case, it would be an inference about a specific USA citizen. This unit $\yellow u$ could have any particular combination of variate values; in the [income]{.midgrey} case it could have any one of the 54 001 920 possible combined values. The agent must assign a probability to each of these possibilities.^[Remember that this is what we mean when we say "drawing an inference"! (See [chap. @sec-what-inference] and [§ @sec-distribute-prob])] Which probability values should it assign?
 
+Intuitively we would say that the probability for a particular value $\blue Z\mo z$ should be equal to the frequency of that value in the full population. For instance, the probabilities that unit $\yellow u$ has the values $\blue z'$ or $\blue z''$ above would be
 
+$$
+\begin{aligned}
+&\P(\bZ_{\yellow u}\mo {\blue z'} \| \if \and \yI) =
+f(\bZ \mo {\blue z'}) = 0.860 369\%
+\\[1ex]
+&\P(\bZ_{\yellow u}\mo {\blue z''} \| \if \and \yI) =
+f(\bZ \mo {\blue z''}) = 0.260 058\%
+\end{aligned}
+$$
 
+This intuition is the same as in drawing balls, which may have different sets of labels, from an urn, given that we know the proportion of balls with each possible label set.
+
+But the equality above can actually be proven mathematically in this specific case: it follows from the assumption of exchangeability. Let's examine a very simple case to get an idea of how this proof works.
+
+### Exact calculation of the probabilities in a simple case
+
+Suppose we have an urn with three balls: two of them are marked $\yy$, and one $yn$. This is the simple case of a finite population with three units and a binary variate, let's call it $B$. We know that the frequency distribution is
+
+$$f(U\mo\yy) = 2/3 \qquad f(U\mo\yn) = 1/3$$
+
+Let's label the first ball we'll draw #1, the second #2, and the third #3. Our information $\if$ about the frequencies corresponds to the following composite sentence:
+
+:::{.column-page-inset-right}
+$$
+\if \ \equiv\ 
+(B_{1}\mo\yy \and 
+B_{2}\mo\yy \and 
+B_{3}\mo\yn)
+\lor
+(B_{1}\mo\yy \and 
+B_{2}\mo\yn \and 
+B_{3}\mo\yy)
+\lor
+(B_{1}\mo\yn \and 
+B_{2}\mo\yy \and 
+B_{3}\mo\yy)
+$$
+:::
+
+Given $\if$, we know that $\if$ is true: $\P(\if \| \if \and \yI)=1$, which means
+
+:::{.column-page-inset-right}
+$$
+\P\bigl[(B_{1}\mo\yy \and 
+B_{2}\mo\yy \and 
+B_{3}\mo\yn)
+\lor
+(B_{1}\mo\yy \and 
+B_{2}\mo\yn \and 
+B_{3}\mo\yy)
+\lor
+(B_{1}\mo\yn \and 
+B_{2}\mo\yy \and 
+B_{3}\mo\yy)
+\|[\big] \if, \yI\bigr] = 1
+$$
+:::
+
+Now use the `or`-rule, considering that the three `or`ed sentences are mutually exclusive:
+
+:::{.column-page-right}
+$$
+\begin{aligned}
+1&=\P\bigl[(B_{1}\mo\yy \and 
+B_{2}\mo\yy \and 
+B_{3}\mo\yn)
+\lor
+(B_{1}\mo\yy \and 
+B_{2}\mo\yn \and 
+B_{3}\mo\yy)
+\lor
+(B_{1}\mo\yn \and 
+B_{2}\mo\yy \and 
+B_{3}\mo\yy)
+\|[\big] \if \and \yI\bigr]
+\\[2ex]
+&=
+\P(B_{1}\mo\yy \and 
+B_{2}\mo\yy \and 
+B_{3}\mo\yn \|\if \and \yI)
++
+\P(B_{1}\mo\yy \and 
+B_{2}\mo\yn \and 
+B_{3}\mo\yy \|\if \and \yI)
++
+\P(B_{1}\mo\yn \and 
+B_{2}\mo\yy \and 
+B_{3}\mo\yy \|\if \and \yI)
+\end{aligned}
+$$
+:::
+
+According to our background information $\yI$, our degrees of belief are exchangeable. This means that the three probability summed up above must all have the same value, because in each of them $\yy$ appears twice and $\yn$ once. But if we are summing the same values thrice, and the sum is $1$, that that value must be $1/3$. Hence we find that
+
+$$
+\begin{aligned}
+&\P(B_{1}\mo\yy \and 
+B_{2}\mo\yy \and 
+B_{3}\mo\yn \|\if \and \yI)
+= 1/3
+\\
+&\P(B_{1}\mo\yy \and 
+B_{2}\mo\yn \and 
+B_{3}\mo\yy \|\if \and \yI)
+= 1/3
+\\
+&\P(B_{1}\mo\yn \and 
+B_{2}\mo\yy \and 
+B_{3}\mo\yy \|\if \and \yI)
+= 1/3
+\\[1ex]
+&\text{all other probabilities are zero}
+\end{aligned}
+$$
+
+Finally let's find the probability that the first ball we draw has mark $\yy$, that is, $\P(B_1\mo\yy \| \if\and \yI)$. It's a marginal probability ([§ @sec-marginal-probs]), so it's given by the sum
+
+$$
+\begin{aligned}
+\P(B_1\mo\yy \| \if\and \yI) &=
+\sum_{i=\yy}^{\yn}\sum_{j=\yy}^{\yn}
+\P(B_1\mo\yy \and B_2\mo i \and B_3\mo j \| \if\and \yI)
+\\[1ex]
+&=
+\P(B_1\mo\yy \and B_2\mo\yy \and B_3\mo\yy \| \if\and \yI) + {}
+\\ &\qquad
+\P(B_1\mo\yy \and B_2\mo\yy \and B_3\mo\yn \| \if\and \yI) + {}
+\\ &\qquad
+\P(B_1\mo\yy \and B_2\mo\yn \and B_3\mo\yy \| \if\and \yI) + {}
+\\ &\qquad
+\P(B_1\mo\yy \and B_2\mo\yn \and B_3\mo\yn \| \if\and \yI)
+\\[1ex]
+&= 0 + 1/3 + 1/3 + 0
+\\[1ex]
+&= 2/3
+\end{aligned}
+$$
+
+which is indeed equal to $f(B\mo\yy)$.
+
+\
+
+This simple example gives you an idea why our intuition for equating -- in specific circumstances -- probability with full-population frequencies, is actually a mathematical theorem: it follows from (1) knowledge of the full-population frequencies, and (2) **exchangeability**.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercises
+- Build a similar proof for a slightly different case; for example two balls with three possible marks each, or four balls with two possible marks each.
+
+- Consider the same problem, but in the case of background knowledge $\yJ$ where our degrees of belief are **not** exchangeable. For instance, give three *different* values to the probabilities
+    
+    $$
+\begin{gathered}
+\P(B_{1}\mo\yy \and 
+B_{2}\mo\yy \and 
+B_{3}\mo\yn \|\if \and \yJ)
+\\
+\P(B_{1}\mo\yy \and 
+B_{2}\mo\yn \and 
+B_{3}\mo\yy \|\if \and \yJ)
+\\
+\P(B_{1}\mo\yn \and 
+B_{2}\mo\yy \and 
+B_{3}\mo\yy \|\if \and \yJ)
+\end{gathered}
+$$
+    
+    in such a way that they still sum up to $1$. Then find by marginalization the probability that the first drawn ball has mark $\yy$. Is this probability still equal to the relative frequency of $\yy$?
+
+:::
