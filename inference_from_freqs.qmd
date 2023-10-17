@@ -10,33 +10,67 @@ When the full-population frequency distribution is known, the calculation of pro
 
 ## Notation {#sec-pop-inference-notation}
 
-In this and the following chapters we shall stick to a particular use of some symbols, and shall often take the "adult income" dataset (file [`income_nominal_data_all.csv`](datasets/income_nominal_data_all.csv) as example.
+In this and the following chapters we shall stick to a particular use of some symbols, and shall often take the simplified [income]{.midgrey} dataset (file [`income_nominal_data_all.csv`](datasets/income_nominal_data_all.csv) and its underlying population as an example.
 
-We consider an infinite population with any number of variates. For concreteness we assume these variates to have finite, discrete domains; but the formulae we obtain can be easily generalized to other kinds of variates. *We shall denote all the population variates, jointly, with $\bZ$*. In the case of the income dataset, for instance, the variate $\bZ$ stands for the joint variate
+We consider an infinite population with any number of variates. For concreteness we assume these variates to have finite, discrete domains; but the formulae we obtain can be easily generalized to other kinds of variates. *We shall denote all the population variates, jointly, with $\bZ$*. In the case of the income dataset, for instance, the variate $\bZ$ stands for the joint variate with nine components:
 
 $$
 \begin{aligned}
-\bZ &\defd (
-\cat{workclass} \and 
-\cat{education} \and 
-\cat{marital_status} \and 
-\cat{occupation} \and 
+\bZ &\defd (\blue
+\mathit{workclass} \and 
+\mathit{education} \and 
+\mathit{marital\_status} \and 
+\mathit{occupation} \and 
 {}\\ &\qquad
-\cat{relationship} \and
-\cat{race} \and 
-\cat{sex} \and 
-\cat{native_country} \and 
-\cat{income}
-)
+\blue\mathit{relationship} \and
+\mathit{race} \and 
+\mathit{sex} \and 
+\mathit{native\_country} \and 
+\mathit{income}
+\black)
 \end{aligned}
 $$
 
-\
+When we write $\blue Z \mo z$, the symbol $\blue z$ stands for some definite joint *values*, for instance $({\blue\cat{Without-pay} \and \cat{Doctorate} \and \dotsb \and \cat{Ireland} \and \cat{>50K}})$.
 
-In applications typical of "supervised learning" ([§ @sec-3-connection-ML]), the agent typically wants to draw inferences about *some* of the  $\bZ$ variates for a new unit, conditional on the values of the remaining variates.
+In applications typical of "supervised learning" ([§ @sec-3-connection-ML]), the agent wants to draw inferences about *some* of the  $\bZ$ variates for a new unit, conditional on the values of the *remaining* variates. We call the joint variates to be inferred the [**predictand**]{.blue}^[literally "what has to be predicted". In machine learning and other fields the terms "dependent variable", "class" or "label" (for nominal variates) are often used.], and we shall usually denote them jointly by the symbol $\rY$. We call the variates used to inform the inference the [**predictor**]{.blue}^[In machine learning and other fields the terms "independent variable" or "features" are often used], and we shall usually denote them jointly by the symbol $\gX$.
 
+
+In the [income]{.midgrey} problem, for instance, the agent (some USA census agency) would like to infer the $\red\mathit{income}$ variate of a person from the other eight demographic characteristics $\green\mathit{workclass} \and \mathit{education} \and \dotsb$ of that person. So in this inference problem we define
+
+$$
+\begin{aligned}
+\rY &\defd {\red\mathit{income}}
+\\[1ex]
+\gX &\defd ({\green\mathit{workclass} \and \mathit{education} \and \dotsb \and \mathit{sex} \and \mathit{native\_country}})
+\end{aligned}
+$$
+
+We shall, however, also consider slightly different inference problems, for example with $({\red\mathit{race} \and \mathit{sex}})$ as predictand and the remaining seven variates $({\green\mathit{workclass} \and \dotsb \and \mathit{income}})$ as predictors.
 
 
 ## Inference about a single unit {#sec-1unit-freq-known}
 
+Now suppose that the agent knows the *full-population joint frequency distribution* $\vf$. In the [income]{.midgrey} problem, for instance, this means that the agent knows, say, that the joint values
 
+$$
+\begin{aligned}
+z^*&\defd (
+\cat{Private} \and \cat{HS-grad} \and \cat{Married-civ-spouse} \and \cat{Machine-op-inspct} \and {}
+\\
+&\qquad\cat{Husband} \and \cat{White} \and \cat{Male} \and \cat{United-States} \and \cat{<=50K}
+)
+\end{aligned}
+$$
+
+occur with relative frequency $0.860369\%$ in the full population of interest (in this case all 340 millions or so USA citizens, considered in a short period of time). We write this as follows:
+
+$$f(Z\mo z^*) = 0.860369\%$$
+
+The agent knows these frequencies for *all possible combinations* of variate values.
+
+In other cases, these hypothetically known frequencies would refer to the full population of units: maybe even past, present, future, if they span a possibly unlimited time range.
+
+\
+
+Now imagine that the agent must infer all $\bZ$ variates for a specific unit; in the [income]{.midgrey} example, for a specific USA citizen. What probabilities should it assign to all possible value combinations?

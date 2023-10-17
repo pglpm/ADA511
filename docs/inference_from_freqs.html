@@ -70,7 +70,7 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="ada511styles.css">
 </head>
 
-<body class="nav-sidebar docked">
+<body class="nav-sidebar docked slimcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -411,7 +411,7 @@ ul.task-list li input[type="checkbox"] {
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -450,35 +450,61 @@ ul.task-list li input[type="checkbox"] {
 <p>Let’s now see how the exchangeability of an agent’s degrees of belief allows it to calculate probabilities about the units of a population. We shall do this calculation in two steps. First, in the case where <em>the agent knows the joint frequency distribution</em> (§§ <a href="statistics.html#sec-freq-distr"><span>21.2</span></a>, <a href="statistics.html#sec-joint-freq"><span>21.3</span></a>, <a href="samples.html#sec-limit-freqs"><span>23.2</span></a>) <em>for the full population</em>. Second, in the more general case where the agent lacks this population-frequency information.</p>
 <p>When the full-population frequency distribution is known, the calculation of probabilities is very intuitive and analogous to the stereotypical “drawing balls from an urn”. We shall rely on this intuition; keep in mind, however, that the probabilities are not assigned “by intuition”, but actually fully determined by the two basic pieces of knowledge or assumptions: <em>exchangeability</em> and <em>known population frequencies</em>. Some simple proof sketches of this will also be given.</p>
 </section>
-<section id="sec-pop-inference-notation" class="level2" data-number="28.2">
+<section id="sec-pop-inference-notation" class="level2 page-columns page-full" data-number="28.2">
 <h2 data-number="28.2" class="anchored" data-anchor-id="sec-pop-inference-notation"><span class="header-section-number">28.2</span> Notation</h2>
-<p>In this and the following chapters we shall stick to a particular use of some symbols, and shall often take the “adult income” dataset (file <a href="datasets/income_nominal_data_all.csv"><code>income_nominal_data_all.csv</code></a> as example.</p>
-<p>We consider an infinite population with any number of variates. For concreteness we assume these variates to have finite, discrete domains; but the formulae we obtain can be easily generalized to other kinds of variates. <em>We shall denote all the population variates, jointly, with <span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></em>. In the case of the income dataset, for instance, the variate <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> stands for the joint variate</p>
+<p>In this and the following chapters we shall stick to a particular use of some symbols, and shall often take the simplified <span class="midgrey">income</span> dataset (file <a href="datasets/income_nominal_data_all.csv"><code>income_nominal_data_all.csv</code></a> and its underlying population as an example.</p>
+<p>We consider an infinite population with any number of variates. For concreteness we assume these variates to have finite, discrete domains; but the formulae we obtain can be easily generalized to other kinds of variates. <em>We shall denote all the population variates, jointly, with <span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></em>. In the case of the income dataset, for instance, the variate <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> stands for the joint variate with nine components:</p>
 <p><span class="math display">\[
 \begin{aligned}
-{\color[RGB]{68,119,170}Z}&amp;\coloneqq(
-{\small\verb;workclass;} \mathbin{\mkern-0mu,\mkern-0mu}
-{\small\verb;education;} \mathbin{\mkern-0mu,\mkern-0mu}
-{\small\verb;marital_status;} \mathbin{\mkern-0mu,\mkern-0mu}
-{\small\verb;occupation;} \mathbin{\mkern-0mu,\mkern-0mu}
+{\color[RGB]{68,119,170}Z}&amp;\coloneqq(\color[RGB]{68,119,170}
+\mathit{workclass} \mathbin{\mkern-0mu,\mkern-0mu}
+\mathit{education} \mathbin{\mkern-0mu,\mkern-0mu}
+\mathit{marital\_status} \mathbin{\mkern-0mu,\mkern-0mu}
+\mathit{occupation} \mathbin{\mkern-0mu,\mkern-0mu}
 {}\\ &amp;\qquad
-{\small\verb;relationship;} \mathbin{\mkern-0mu,\mkern-0mu}
-{\small\verb;race;} \mathbin{\mkern-0mu,\mkern-0mu}
-{\small\verb;sex;} \mathbin{\mkern-0mu,\mkern-0mu}
-{\small\verb;native_country;} \mathbin{\mkern-0mu,\mkern-0mu}
-{\small\verb;income;}
-)
+\color[RGB]{68,119,170}\mathit{relationship} \mathbin{\mkern-0mu,\mkern-0mu}
+\mathit{race} \mathbin{\mkern-0mu,\mkern-0mu}
+\mathit{sex} \mathbin{\mkern-0mu,\mkern-0mu}
+\mathit{native\_country} \mathbin{\mkern-0mu,\mkern-0mu}
+\mathit{income}
+\color[RGB]{0,0,0})
 \end{aligned}
 \]</span></p>
-<p><br>
-</p>
-<p>In applications typical of “supervised learning” (<a href="connection-3-ML.html">§ &nbsp;<span>19</span></a>), the agent typically wants to draw inferences about <em>some</em> of the <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> variates for a new unit, conditional on the values of the remaining variates.</p>
+<p>When we write <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}Z \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}z\)</span>,</span> the symbol <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}z\)</span></span> stands for some definite joint <em>values</em>, for instance <span style="display:inline-block;"><span class="math inline">\(({\color[RGB]{68,119,170}{\small\verb;Without-pay;} \mathbin{\mkern-0mu,\mkern-0mu}{\small\verb;Doctorate;} \mathbin{\mkern-0mu,\mkern-0mu}\dotsb \mathbin{\mkern-0mu,\mkern-0mu}{\small\verb;Ireland;} \mathbin{\mkern-0mu,\mkern-0mu}{\small\verb;&gt;50K;}})\)</span>.</span></p>
+<div class="page-columns page-full"><p>In applications typical of “supervised learning” (<a href="connection-3-ML.html">§ &nbsp;<span>19</span></a>), the agent wants to draw inferences about <em>some</em> of the <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> variates for a new unit, conditional on the values of the <em>remaining</em> variates. We call the joint variates to be inferred the <span class="blue"><strong>predictand</strong></span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, and we shall usually denote them jointly by the symbol <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}Y}\)</span>.</span> We call the variates used to inform the inference the <span class="blue"><strong>predictor</strong></span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, and we shall usually denote them jointly by the symbol <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}X}\)</span>.</span></p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;literally “what has to be predicted”. In machine learning and other fields the terms “dependent variable”, “class” or “label” (for nominal variates) are often used.</p></li><li id="fn2"><p><sup>2</sup>&nbsp;In machine learning and other fields the terms “independent variable” or “features” are often used</p></li></div></div>
+<p>In the <span class="midgrey">income</span> problem, for instance, the agent (some USA census agency) would like to infer the <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}\mathit{income}\)</span></span> variate of a person from the other eight demographic characteristics <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}\mathit{workclass} \mathbin{\mkern-0mu,\mkern-0mu}\mathit{education} \mathbin{\mkern-0mu,\mkern-0mu}\dotsb\)</span></span> of that person. So in this inference problem we define</p>
+<p><span class="math display">\[
+\begin{aligned}
+{\color[RGB]{238,102,119}Y}&amp;\coloneqq{\color[RGB]{238,102,119}\mathit{income}}
+\\[1ex]
+{\color[RGB]{34,136,51}X}&amp;\coloneqq({\color[RGB]{34,136,51}\mathit{workclass} \mathbin{\mkern-0mu,\mkern-0mu}\mathit{education} \mathbin{\mkern-0mu,\mkern-0mu}\dotsb \mathbin{\mkern-0mu,\mkern-0mu}\mathit{sex} \mathbin{\mkern-0mu,\mkern-0mu}\mathit{native\_country}})
+\end{aligned}
+\]</span></p>
+<p>We shall, however, also consider slightly different inference problems, for example with <span style="display:inline-block;"><span class="math inline">\(({\color[RGB]{238,102,119}\mathit{race} \mathbin{\mkern-0mu,\mkern-0mu}\mathit{sex}})\)</span></span> as predictand and the remaining seven variates <span style="display:inline-block;"><span class="math inline">\(({\color[RGB]{34,136,51}\mathit{workclass} \mathbin{\mkern-0mu,\mkern-0mu}\dotsb \mathbin{\mkern-0mu,\mkern-0mu}\mathit{income}})\)</span></span> as predictors.</p>
 </section>
 <section id="sec-1unit-freq-known" class="level2" data-number="28.3">
 <h2 data-number="28.3" class="anchored" data-anchor-id="sec-1unit-freq-known"><span class="header-section-number">28.3</span> Inference about a single unit</h2>
+<p>Now suppose that the agent knows the <em>full-population joint frequency distribution</em> <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}\boldsymbol{f}}\)</span>.</span> In the <span class="midgrey">income</span> problem, for instance, this means that the agent knows, say, that the joint values</p>
+<p><span class="math display">\[
+\begin{aligned}
+z^*&amp;\coloneqq(
+{\small\verb;Private;} \mathbin{\mkern-0mu,\mkern-0mu}{\small\verb;HS-grad;} \mathbin{\mkern-0mu,\mkern-0mu}{\small\verb;Married-civ-spouse;} \mathbin{\mkern-0mu,\mkern-0mu}{\small\verb;Machine-op-inspct;} \mathbin{\mkern-0mu,\mkern-0mu}{}
+\\
+&amp;\qquad{\small\verb;Husband;} \mathbin{\mkern-0mu,\mkern-0mu}{\small\verb;White;} \mathbin{\mkern-0mu,\mkern-0mu}{\small\verb;Male;} \mathbin{\mkern-0mu,\mkern-0mu}{\small\verb;United-States;} \mathbin{\mkern-0mu,\mkern-0mu}{\small\verb;&lt;=50K;}
+)
+\end{aligned}
+\]</span></p>
+<p>occur with relative frequency <span style="display:inline-block;"><span class="math inline">\(0.860369\%\)</span></span> in the full population of interest (in this case all 340 millions or so USA citizens, considered in a short period of time). We write this as follows:</p>
+<p><span class="math display">\[f(Z\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}z^*) = 0.860369\%\]</span></p>
+<p>The agent knows these frequencies for <em>all possible combinations</em> of variate values.</p>
+<p>In other cases, these hypothetically known frequencies would refer to the full population of units: maybe even past, present, future, if they span a possibly unlimited time range.</p>
+<p><br>
+</p>
+<p>Now imagine that the agent must infer all <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> variates for a specific unit; in the <span class="midgrey">income</span> example, for a specific USA citizen. What probabilities should it assign to all possible value combinations?</p>
 
 
 </section>
+
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
