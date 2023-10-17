@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-10-02">
+<meta name="dcterms.date" content="2023-10-17">
 
-<title>ADA511 0.1 Data science and data-driven engineering - 16&nbsp; Marginal probability distributions</title>
+<title>ADA511 0.1 Data science and data-driven engineering - 28&nbsp; Inferences from frequencies</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -31,8 +31,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./conditional_probability.html" rel="next">
-<link href="./joint_probability.html" rel="prev">
+<link href="./glass_application_R.html" rel="next">
+<link href="./exchangeable_probabilities.html" rel="prev">
 <link href="./favicon.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -43,8 +43,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
-<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -81,7 +79,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./probability_distributions.html"><span class="green"><strong>Inference II</strong></span></a></li><li class="breadcrumb-item"><a href="./marginal_probability.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">[Marginal probability distributions]{.green}</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./exchangeable_probabilities.html"><span class="green"><strong>Inference III (under construction)</strong></span></a></li><li class="breadcrumb-item"><a href="./inference_from_freqs.html"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">[Inferences from frequencies]{.green}</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -99,7 +97,7 @@ ul.task-list li input[type="checkbox"] {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-02</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-17</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -262,7 +260,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./marginal_probability.html" class="sidebar-item-text sidebar-link active">
+  <a href="./marginal_probability.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><span class="green">Marginal probability distributions</span></span></span></a>
   </div>
 </li>
@@ -367,7 +365,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./inference_from_freqs.html" class="sidebar-item-text sidebar-link">
+  <a href="./inference_from_freqs.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title"><span class="green">Inferences from frequencies</span></span></span></a>
   </div>
 </li>
@@ -412,19 +410,17 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-marginal-probs" id="toc-sec-marginal-probs" class="nav-link active" data-scroll-target="#sec-marginal-probs"><span class="header-section-number">16.1</span> Marginal probability: neglecting some quantities</a></li>
-  <li><a href="#sec-marginal-dens" id="toc-sec-marginal-dens" class="nav-link" data-scroll-target="#sec-marginal-dens"><span class="header-section-number">16.2</span> Marginal density distributions</a></li>
-  <li><a href="#sec-marginal-scatter" id="toc-sec-marginal-scatter" class="nav-link" data-scroll-target="#sec-marginal-scatter"><span class="header-section-number">16.3</span> Marginal probabilities and scatter plots</a></li>
-  <li><a href="#sec-use-pitfall-marginal" id="toc-sec-use-pitfall-marginal" class="nav-link" data-scroll-target="#sec-use-pitfall-marginal"><span class="header-section-number">16.4</span> Uses and pitfalls of marginal probability distributions</a></li>
+  <li><a href="#sec-pop-freq-known" id="toc-sec-pop-freq-known" class="nav-link active" data-scroll-target="#sec-pop-freq-known"><span class="header-section-number">28.1</span> If the population frequency were known</a></li>
+  <li><a href="#sec-1unit-freq-known" id="toc-sec-1unit-freq-known" class="nav-link" data-scroll-target="#sec-1unit-freq-known"><span class="header-section-number">28.2</span> Inference about a single unit</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-prob-marginal" class="quarto-section-identifier"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><span class="green">Marginal probability distributions</span></span></span></h1>
+<h1 class="title"><span id="sec-inference-from-freqs" class="quarto-section-identifier"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title"><span class="green">Inferences from frequencies</span></span></span></h1>
 </div>
 
 
@@ -435,7 +431,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-10-02</p>
+      <p class="date">2023-10-17</p>
     </div>
   </div>
   
@@ -454,212 +450,12 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 
 </div>
-<section id="sec-marginal-probs" class="level2 page-columns page-full" data-number="16.1">
-<h2 data-number="16.1" class="anchored" data-anchor-id="sec-marginal-probs"><span class="header-section-number">16.1</span> Marginal probability: neglecting some quantities</h2>
-<p>In some situations an agent has a joint distribution of degrees of belief for the possible values of a joint quantity, but it needs to consider its belief in the value of <em>one</em> component quantity alone, <em>irrespective of what the values for the other components quantities might be</em>.</p>
-<p>Consider for instance the joint probability for the next-patient arrival scenario of <a href="joint_probability.html#tbl-urgent-arrival">table&nbsp;&nbsp;<span>15.1</span></a> from <a href="joint_probability.html#sec-repr-joint-prob">§ &nbsp;<span>15.2</span></a>, with joint quantity <span style="display:inline-block;"><span class="math inline">\((U,T)\)</span>.</span> We may be interested in the probability that the next patient will need <span style="display:inline-block;"><span class="math inline">\({\small\verb;urgent;}\)</span></span> care, <em>independently of how the patient is transported to the hospital</em>. This probability can be found, as usual, by analysing the problem in terms of <em>sentences</em> and using the <a href="probability_inference.html#sec-fundamental">basic rules of inference from § &nbsp;<span>8.4</span></a>.</p>
-<p>The sentence of interest is “<span class="midgrey">The next patient will require urgent care</span>”, or in symbols</p>
-<p><span class="math display">\[U \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;urgent;}\]</span></p>
-<p>which is equivalent to “<span class="midgrey">The next patient will require urgent care, and will arrive by ambulance, helicopter, or other means</span>”, or in symbols</p>
-<p><span class="math display">\[
-U \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;urgent;}\land
-(
-T \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;ambulance;}\lor
-T \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;helicopter;}\lor
-T \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;other;}
-)
-\]</span></p>
-<p>Using the <a href="derived_rules.html#sec-boolean">derived rules of Boolean algebra of § &nbsp;<span>9.2</span></a> we can rewrite this sentence in yet another way:</p>
-<p><span class="math display">\[
-(U \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;urgent;}\land T \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;ambulance;}) \lor
-(U \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;urgent;}\land T \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;helicopter;}) \lor
-(U \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;urgent;}\land T \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;other;})
-\]</span></p>
-<p>This last sentence is an <code>or</code> of <em>mutually exclusive</em> sentences. Its probability is therefore given by the <code>or</code> rule without the <code>and</code> terms (we now use the comma <span style="display:inline-block;">“<span class="math inline">\(\mathbin{\mkern-0mu,\mkern-0mu}\)</span>”</span> for <code>and</code>):</p>
-<div class="column-page-right">
-<p><span class="math display">\[
-\begin{aligned}
-&amp;\mathrm{P}(U \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;urgent;}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
-\\[1ex]
-&amp;\quad{}=
-\mathrm{P}\bigl[
-(U \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;urgent;}\mathbin{\mkern-0mu,\mkern-0mu}T \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;ambulance;}) \lor
-(U \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;urgent;}\mathbin{\mkern-0mu,\mkern-0mu}T \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;helicopter;}) \lor
-(U \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;urgent;}\mathbin{\mkern-0mu,\mkern-0mu}T \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;other;})
-\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}} \bigr]
-\\[1ex]
-&amp;\quad{}=\begin{aligned}[t]
-&amp;\mathrm{P}(U \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;urgent;}\mathbin{\mkern-0mu,\mkern-0mu}T \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;ambulance;}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}}) +{}
-\\
-&amp;\quad\mathrm{P}(U \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;urgent;}\mathbin{\mkern-0mu,\mkern-0mu}T \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;helicopter;}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}}) +{}
-\\
-&amp;\quad\mathrm{P}(U \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;urgent;}\mathbin{\mkern-0mu,\mkern-0mu}T \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;other;}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
-\end{aligned}
-\end{aligned}
-\]</span></p>
-</div>
-<p>We have found that the probability for a value of the urgency quantity <span style="display:inline-block;"><span class="math inline">\(U\)</span>,</span> independently of the value of the transportation quantity <span style="display:inline-block;"><span class="math inline">\(T\)</span>,</span> can be calculated by summing all joint probabilities with all possible <span style="display:inline-block;"><span class="math inline">\(T\)</span></span> values. Using the <span style="display:inline-block;"><span class="math inline">\(\sum\)</span>-notation</span> we can write this compactly:</p>
-<p><span class="math display">\[
-\mathrm{P}(U \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;urgent;}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}}) =
-\sum_{t}
-\mathrm{P}(U \mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}{\small\verb;urgent;}\mathbin{\mkern-0mu,\mkern-0mu}T\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}t \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}})
-\]</span></p>
-<p>where it’s understood that the sum index <span style="display:inline-block;"><span class="math inline">\(t\)</span></span> runs over the values <span style="display:inline-block;"><span class="math inline">\(\set{{\small\verb;ambulance;}, {\small\verb;helicopter;}, {\small\verb;other;}}\)</span>.</span></p>
-<p>This is called a <span class="blue"><strong>marginal probability</strong></span>.</p>
-<div class="callout callout-style-default callout-caution no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Using the values from <a href="joint_probability.html#tbl-urgent-arrival">table&nbsp;<span>15.1</span></a>, calculate:</p>
-<ul>
-<li>the marginal probability that the next patient will need urgent care</li>
-<li>the marginal probability that the next patient will arrive by helicopter</li>
-</ul>
-</div>
-</div>
-<p><br>
-</p>
-<p>Considering now a more generic case of a joint quantity with component quantities <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\)</span>,</span> the probability for a specific value of <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\)</span>,</span> conditional on some information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span></span> and irrespective of what the value of <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\)</span></span> might be, is given by</p>
-<p><span class="math display">\[
-\mathrm{P}({\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = \sum_{\color[RGB]{238,102,119}y} \mathrm{P}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y} \mathbin{\mkern-0mu,\mkern-0mu}{\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
-\]</span></p>
-<p>You may notice the similarity with the expression for a <em>combined probability</em> from <a href="probability_distributions.html#sec-combined-probs">§ &nbsp;<span>14.5</span></a>. Indeed a marginal probability is just a special case of a combined probability: we are combining all probabilities that exhaust the possibilities for the sentence <span style="display:inline-block;"><span class="math inline">\(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y\)</span>.</span></p>
-<div class="callout callout-style-default callout-caution no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise: test your understanding
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Using again the values from <a href="joint_probability.html#tbl-urgent-arrival">table&nbsp;<span>15.1</span></a>, calculate the probability that <em>the next patient will need urgent care and will be transported either by ambulance or by helicopter</em>.</p>
-</div>
-</div>
+<section id="sec-pop-freq-known" class="level2" data-number="28.1">
+<h2 data-number="28.1" class="anchored" data-anchor-id="sec-pop-freq-known"><span class="header-section-number">28.1</span> If the population frequency were known</h2>
+<p>Let’s now see how the exchangeability of an agent’s degrees of belief allows it to calculate probabilities about the units of a population. We shall do this calculation in two steps. First, in the case where <em>the agent knows the joint frequency distribution</em> (§§ <a href="statistics.html#sec-freq-distr"><span>21.2</span></a>, <a href="statistics.html#sec-joint-freq"><span>21.3</span></a>, <a href="samples.html#sec-limit-freqs"><span>23.2</span></a>) <em>for the full population</em>. Second, in the more general case where the agent lacks this population-frequency information.</p>
 </section>
-<section id="sec-marginal-dens" class="level2" data-number="16.2">
-<h2 data-number="16.2" class="anchored" data-anchor-id="sec-marginal-dens"><span class="header-section-number">16.2</span> Marginal density distributions</h2>
-<p>In the example of the previous section, suppose now that the quantities <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\)</span></span> are continuous. Then the joint probability is expressed by a density:</p>
-<p><span class="math display">\[\mathrm{p}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y} \mathbin{\mkern-0mu,\mkern-0mu}{\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\]</span></p>
-<p>with the usual meaning. The marginal probability density for <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\)</span></span> is still given by a sum, but this sum occurs over intervals of values of <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\)</span>,</span> intervals with very small widths; as a consequence the sum will have a very large number of terms. To remind ourselves of this fact, which can be very important in some situations, we use a different notation in terms of integrals:</p>
-<p><span class="math display">\[
-\mathrm{p}({\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = \int_{\color[RGB]{238,102,119}\varUpsilon} \mathrm{p}({\color[RGB]{238,102,119}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y} \mathbin{\mkern-0mu,\mkern-0mu}{\color[RGB]{34,136,51}X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\, \mathrm{d}{\color[RGB]{238,102,119}y}
-\]</span></p>
-<p>where <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}\varUpsilon\)</span></span> represents the domain of the quantity <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\)</span>.</span></p>
-<p>The fact that integrals appear is in some cases extremely useful, because it allows us to use the theory of integration to calculate marginal probabilities quickly and precisely, instead of having to compute sums of a large numbers of small terms – a procedure that can be computationally expensive and lead to numerical errors owing to underflow or similar phenomena.</p>
-<p><br>
-</p>
-</section>
-<section id="sec-marginal-scatter" class="level2 page-columns page-full" data-number="16.3">
-<h2 data-number="16.3" class="anchored" data-anchor-id="sec-marginal-scatter"><span class="header-section-number">16.3</span> Marginal probabilities and scatter plots</h2>
-<p>In the previous chapters we have often discussed scatter plots for representing probability distributions of various kinds: discrete, continuous, joint, mixed, and so on.</p>
-<p>One more advantage of the scatter plots for a joint distribution is that it can be quickly modified to represent any marginal, again with a scatter plot; whereas the use of a surface plot would require analytical calculations or approximations thereof.</p>
-<p>Consider for instance the joint probability density from <a href="joint_probability.html#sec-repr-joint-dens">§ &nbsp;<span>15.4</span></a>, represented by the formula</p>
-<div class="column-page-inset-right">
-<p><span class="math display">\[
-\mathrm{p}(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \mathbin{\mkern-0mu,\mkern-0mu}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) =
-\tfrac{3}{8\,\pi}\, \mathrm{e}^{-\frac{1}{2} (x-1)^2-(y-1)^2}+
-\tfrac{3}{64\,\pi}\,\mathrm{e}^{-\frac{1}{32} (x-2)^2-\frac{1}{2} (y-4)^2}+ \tfrac{1}{40\,\pi}\,\mathrm{e}^{-\frac{1}{8} (x-5)^2-\frac{1}{5} (y-2)^2}
-\]</span></p>
-</div>
-<p>and suppose we would like to visualize the marginal density for <span style="display:inline-block;"><span class="math inline">\(X\)</span>,&nbsp;&nbsp;</span><span style="display:inline-block;"><span class="math inline">\(\mathrm{p}(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>.</span> In order to represent it with a line plot, we would first have to calculate the integral of the formula above over all possible values of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>:</span></p>
-<div class="column-page-inset-right">
-<p><span class="math display">\[
-\mathrm{p}(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) =
-\int_{-\infty}^{\infty}
-\Bigl[
-\tfrac{3}{8\,\pi}\, \mathrm{e}^{-\frac{1}{2} (x-1)^2-(y-1)^2}+
-\tfrac{3}{64\,\pi}\,\mathrm{e}^{-\frac{1}{32} (x-2)^2-\frac{1}{2} (y-4)^2}+ \tfrac{1}{40\,\pi}\,\mathrm{e}^{-\frac{1}{8} (x-5)^2-\frac{1}{5} (y-2)^2}
-\Bigr]
-\, \mathrm{d}y
-\]</span></p>
-</div>
-<p>But suppose, instead, that we have stored the points used to represent the density as a scatter plot, as in <a href="joint_probability.html#fig-scatterXY">fig.&nbsp;&nbsp;<span>15.2</span></a>. Each of these points is a pair of coordinates <span style="display:inline-block;"><span class="math inline">\((x,y)\)</span>,</span> representing an <span style="display:inline-block;"><span class="math inline">\(X\)</span>-value</span> and a <span style="display:inline-block;"><span class="math inline">\(Y\)</span>-value.</span> It turns out that <em>these same points can be used to make a scatter-plot of the marginal density for <span class="math inline">\(X\)</span></em>, by considering their <span style="display:inline-block;"><span class="math inline">\(x\)</span>-coordinates</span> only. Often we use a subsample (unsystematically chosen) of them, so that the resulting one-dimensional scatter plot doesn’t become too congested and difficult to read.</p>
-<p>As an example, here is a scatter plot for the marginal density <span style="display:inline-block;"><span class="math inline">\(\mathrm{p}(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span></span> above, obtained by selecting a subset of 400 points from the scatter plot (<a href="joint_probability.html#fig-scatterXY">fig.&nbsp;&nbsp;<span>15.2</span></a>) for <span style="display:inline-block;"><span class="math inline">\(\mathrm{p}(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \mathbin{\mkern-0mu,\mkern-0mu}Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>;</span> the points are replaced by vertical lines for better visibility:</p>
-<div id="fig-scatterXY-marginalX" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="scatter_2d_marginalX.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;16.1: Scatter-plot representation of the marginal probability density <span class="math inline">\(\mathrm{p}(X\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span></figcaption>
-</figure>
-</div>
-<div class="callout callout-style-default callout-caution no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The points for the scatter plot of <a href="joint_probability.html#fig-scatterXY">fig.&nbsp;&nbsp;<span>15.2</span></a> (<a href="joint_probability.html#sec-repr-joint-dens">§ &nbsp;<span>15.4</span></a>) are saved in the file <a href="datasets/scatterXY_samples.csv"><code>scatterXY_samples.csv</code></a>. Use them to represent the marginal probability density <span style="display:inline-block;"><span class="math inline">\(\mathrm{p}(Y\mathord{\nonscript\mkern 1mu\textrm{\small=}\nonscript\mkern 1mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>,</span> for the other quantity <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> as a scatter plot.</p>
-</div>
-</div>
-</section>
-<section id="sec-use-pitfall-marginal" class="level2" data-number="16.4">
-<h2 data-number="16.4" class="anchored" data-anchor-id="sec-use-pitfall-marginal"><span class="header-section-number">16.4</span> Uses and pitfalls of marginal probability distributions</h2>
-<p>An agent’s probability distribution for a multi-dimensional joint quantity is not easily – or at all – visualizable. This shortcoming is even worse because, as discussed in <a href="monty.html#sec-monty-motivation">§ &nbsp;<span>10.1</span></a>, our intuition often fails us badly in multi-dimensional problems.</p>
-<p>Marginal probability distributions for one or two of the component quantities are useful because they offer us a little glimpse of the multi-dimensional “monster”. In concrete engineering and data-science problem, when we need to discuss a multi-dimensional distribution it is good practice to visually report at least its one-dimensional marginal distributions.</p>
-<p>In the machine-learning literature, one frequent application of this low-dimensional glimpse is for qualitatively assessing whether two multi-dimensional distributions are similar. Their one-dimensional marginals are visually compared and, if they overlap, one hopes (and some works in the literature even conclude) that the multi-dimensional distributions are somewhat similar as well.</p>
-<p><br>
-</p>
-<p>Unfortunately marginal distributions can also be quite deceiving:</p>
-<div class="callout callout-style-default callout-caution no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Here are three different joint probability densities for the joint quantity <span style="display:inline-block;"><span class="math inline">\((X,Y)\)</span>,</span> each density represented by a scatter plot with 200 points. the files containing the coordinates of the scatter-plot points are also given:</p>
-<p><strong>A</strong>. File <a href="datasets/scatterXY_A.csv"><code>scatterXY_A.csv</code></a>:<br>
-<img src="scatterXY_A.png" class="img-fluid" style="width:90.0%"></p>
-<p><strong>B</strong>. File <a href="datasets/scatterXY_B.csv"><code>scatterXY_B.csv</code></a>:<br>
-<img src="scatterXY_B.png" class="img-fluid" style="width:90.0%"></p>
-<p><strong>C</strong>. File <a href="datasets/scatterXY_C.csv"><code>scatterXY_C.csv</code></a>:<br>
-<img src="scatterXY_C.png" class="img-fluid" style="width:90.0%"></p>
-<p><br>
-</p>
-<ul>
-<li><p>Reproduce the three scatter plots above using the points from the three files, just to confirm that they are correct.</p></li>
-<li><p>For each density, plot the marginal density for the quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> as a scatter plot. Use the method described in <a href="#sec-marginal-scatter">§ &nbsp;<span>16.3</span></a>; do not subsample the points.<br>
-What can you say about the three marginal densities you obtain?<br>
-</p></li>
-<li><p>Do the same, but for the marginal densities for <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span><br>
-What can you say about the three marginal densities you obtain?</p></li>
-<li><p>If two joint probability distributions have the same marginals, can we conclude that they are identical, or at least similar?</p></li>
-</ul>
-</div>
-</div>
-<p><br>
-</p>
-<div class="callout callout-style-default callout-caution no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<i class="fa-solid fa-book" aria-label="book"></i> Study reading
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul>
-<li><p>§§ 5.3.2–5.3.3 of <a href="https://hvl.instructure.com/courses/25074/modules/items/664427"><em>Risk Assessment and Decision Analysis with Bayesian Networks</em></a></p></li>
-<li><p>§ 12.3 of <a href="https://hvl.instructure.com/courses/25074/modules/items/660089"><em>Artificial Intelligence</em></a></p></li>
-<li><p>§§ 5.1–5.5 of <a href="https://hvl.instructure.com/courses/25074/modules/items/675505"><em>Probability</em></a></p></li>
-</ul>
-</div>
-</div>
+<section id="sec-1unit-freq-known" class="level2" data-number="28.2">
+<h2 data-number="28.2" class="anchored" data-anchor-id="sec-1unit-freq-known"><span class="header-section-number">28.2</span> Inference about a single unit</h2>
 
 
 </section>
@@ -914,13 +710,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./joint_probability.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><span class="green">Joint probability distributions</span></span></span>
+      <a href="./exchangeable_probabilities.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="green">Exchangeable beliefs</span></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./conditional_probability.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probability and learning</span></span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./glass_application_R.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="red">The optimal predictor machine in action (for nominal quantities)</span></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
