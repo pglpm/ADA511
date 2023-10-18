@@ -53,32 +53,32 @@ We shall, however, also consider slightly different inference problems, for exam
 
 Now suppose that the agent knows the *full-population joint frequency distribution*. Let's make clearer what this means. In the [income]{.midgrey} problem, for instance, consider these two different joint values for the joint variate $\bZ$:
 
-<!-- `example_freqdistr.rds`, items 1 and 26 in reverse-ordered frequencies -->
+<!-- `example_freqdistr.rds`, items 2 and 26 in reverse-ordered frequencies -->
 $$
 \begin{aligned}
-{\blue z'}&\defd (
+{\blue z^{*}}&\defd (
 \cat{Private} \and \cat{HS-grad} \and \cat{Married-civ-spouse} \and \cat{Machine-op-inspct} \and {}
 \\
 &\qquad\cat{Husband} \and \cat{White} \and \cat{Male} \and \cat{United-States} \and \cat{<=50K}
 )
 \\[2ex]
-{\blue z''}&\defd (
-\cat{Self-emp-not-inc} \and \cat{HS-grad} \and \cat{Married-civ-spouse} \and \cat{Farming-fishing} \and {}
+{\blue z^{**}}&\defd (
+\cat{Self-emp-not-inc} \and \cat{HS-grad} \and \cat{Married-civ-spouse} \and {}
 \\
-&\qquad\cat{Husband} \and \cat{White} \and \cat{Male} \and \cat{United-States} \and \cat{<=50K}
+&\qquad \cat{Farming-fishing} \and \cat{Husband} \and \cat{White} \and \cat{Male} \and \cat{United-States} \and \cat{<=50K}
 )
 \end{aligned}
 $$
 
-The agent knows that the value $\blue Z\mo z'$ occurs in the full population of interest (in this case all 340 millions or so USA citizens, considered in a short period of time) with a relative frequency $0.860 369\%$; it also knows that the value $\blue Z\mo z''$ occurs with a relative frequency $0.260 058\%$. We write this as follows:
+The agent knows that the value $\blue Z\mo z^{*}$ occurs in the full population of interest (in this case all 340 millions or so USA citizens, considered in a short period of time) with a relative frequency $0.860 369\%$; it also knows that the value $\blue Z\mo z^{**}$ occurs with a relative frequency $0.260 058\%$. We write this as follows:
 
 $$
-f({\blue Z\mo z'}) = 0.860 369\% \ ,
+f({\blue Z\mo z^{*}}) = 0.860 369\% \ ,
 \qquad
-f({\blue Z\mo z''}) = 0.260 058\%
+f({\blue Z\mo z^{**}}) = 0.260 058\%
 $$
 
-The agent knows not only the frequencies of the two particular joint values $\blue z'$, $\blue z''$, but for *all possible* joint values, that is, for all possible combinations of values from the single variate. In the [income]{.midgrey} example there are 54 001 920 possible combinations, and therefore just as many relative frequencies. All these frequencies together form the full-population frequency distribution for $\bZ$, which we denote collectively with $\vf$ (note the boldface). This complete frequency information is denoted by the sentence $\if$.
+The agent knows not only the frequencies of the two particular joint values $\blue z^{*}$, $\blue z^{**}$, but for *all possible* joint values, that is, for all possible combinations of values from the single variate. In the [income]{.midgrey} example there are 54 001 920 possible combinations, and therefore just as many relative frequencies. All these frequencies together form the full-population frequency distribution for $\bZ$, which we denote collectively with $\vf$ (note the boldface). This complete frequency information is denoted by the sentence $\if$.
 
 :::{.callout-warning}
 ## {{< fa exclamation-circle >}} Don't confuse the full population with a sample from it
@@ -112,15 +112,15 @@ for any unit $\yellow u$.
 
 
 
-For instance, the probabilities that unit $\yellow u$ has the values $\blue z'$ or $\blue z''$ above would be
+For instance, the probabilities that unit $\yellow u$ has the values $\blue z^{*}$ or $\blue z^{**}$ above is
 
 $$
 \begin{aligned}
-&\P(\bZ_{\yellow u}\mo {\blue z'} \| \if \and \yI) =
-f(\bZ \mo {\blue z'}) = 0.860 369\%
+&\P(\bZ_{\yellow u}\mo {\blue z^{*}} \| \if \and \yI) =
+f(\bZ \mo {\blue z^{*}}) = 0.860 369\%
 \\[1ex]
-&\P(\bZ_{\yellow u}\mo {\blue z''} \| \if \and \yI) =
-f(\bZ \mo {\blue z''}) = 0.260 058\%
+&\P(\bZ_{\yellow u}\mo {\blue z^{**}} \| \if \and \yI) =
+f(\bZ \mo {\blue z^{**}}) = 0.260 058\%
 \end{aligned}
 $$
 
@@ -380,6 +380,31 @@ for any (different) units $\yellow u', u'', u''', \dotsc$ and any (even equal) v
 
 The formula above solves our initial problem: *How to calculate and encode the joint probability distribution for the full population?*, although it does so only in the case where the full-population frequencies $\vf$ are known. In this case this probability is encoded in the $\vf$ itself (which can be represented as a multidimensional array), and can be calculated for any desired joint probability distribution just by a multiplication.
 
+In the [income]{.midgrey} example from [§ @sec-know-freq], the probability that two units (citizens) $\yellow a$, $\yellow c$ have value $\blue Z\mo z^{**}$ and one unit $\yellow b$ has value $\blue Z \mo z^{*}$ is
+
+:::{.column-page-inset-right}
+$$
+\begin{aligned}
+\P(
+\bZ_{\yellow a}\mo {\blue z^{**}} \and
+\bZ_{\yellow b}\mo {\blue z^{*}} \and
+\bZ_{\yellow c}\mo {\blue z^{**}}
+\| \if \and \yI)
+&\approx
+f(\bZ \mo {\blue z^{**}}) \cdot
+f(\bZ \mo {\blue z^{*}}) \cdot
+f(\bZ \mo {\blue z^{**}})
+\\[1ex]
+&=
+0.260 058\% \cdot
+0.860 369\% \cdot
+0.260 058\%
+\\
+&= 0.000 005 818 7\%
+\end{aligned}
+$$
+:::
+
 :::{.callout-warning}
 ## {{< fa exclamation-circle >}} Always check whether the approximate formula above is appropriate
 As we have seen, the product formula above is strictly speaking *only approximate*. In situations where the full population has practically infinite size compared to (1) the number of units that the agent uses for learning, and (2) the number of units the agent will draw inferences about, then the formula can be used as if it were exact.
@@ -391,9 +416,83 @@ The probability calculus and the four fundamental rules allow us to handle probl
 
 ## No learning when full-population frequencies are known {#sec-no-learn-freqs}
 
+Imagine an agent with exchangeable beliefs $\yI$ and knowledge $\if$ of the full-population frequencies, who also has observed several units with values (possibly some identical) $\blue Z_{\yellow u'}\mo z' \and Z_{\yellow u''}\mo z'' \and Z_{\yellow u'''}\mo z''' \and \dotsb$. What is this agent's degree of belief that a new unit $\yellow u$ has value $\blue Z\mo z$?
 
+From our basic formula for this question,
+
+$$
+\begin{aligned}
+&\P(
+{\blue Z_{\yellow u}\mo z} \| 
+{\blue Z_{\yellow u'}\mo z'} \and 
+{\blue Z_{\yellow u''}\mo z''} \and 
+{\blue Z_{\yellow u'''}\mo z'''} \and 
+\dotsb \and \if \and \yI)
+\\[2ex]
+&\qquad{}=\frac{
+\P(
+{\blue Z_{\yellow u}\mo z} \and
+{\blue Z_{\yellow u'}\mo z'} \and 
+{\blue Z_{\yellow u''}\mo z''} \and 
+{\blue Z_{\yellow u'''}\mo z'''} \and 
+\dotsb \| \if \and \yI) 
+}{
+\sum_{\lblue z}
+\P(
+{\blue Z_{\yellow u}\mo {\lblue z}} \and
+{\blue Z_{\yellow u'}\mo z'} \and 
+{\blue Z_{\yellow u''}\mo z''} \and 
+{\blue Z_{\yellow u'''}\mo z'''} \and 
+\dotsb \| \if \and \yI) 
+}
+\\[2ex]
+&\qquad{}=\frac{
+f({\blue Z_{\yellow u}\mo z}) \cdot
+f({\blue Z_{\yellow u'}\mo z'}) \cdot 
+f({\blue Z_{\yellow u''}\mo z''}) \cdot 
+f({\blue Z_{\yellow u'''}\mo z'''}) \cdot
+\dotsb
+}{
+\sum_{\lblue z}
+f({\blue Z_{\yellow u}\mo z}) \cdot
+f({\blue Z_{\yellow u'}\mo z'}) \cdot 
+f({\blue Z_{\yellow u''}\mo z''}) \cdot 
+f({\blue Z_{\yellow u'''}\mo z'''}) \cdot
+\dotsb
+}
+\\[2ex]
+&\qquad{}=\frac{
+f({\blue Z_{\yellow u}\mo z}) \cdot
+\cancel{f({\blue Z_{\yellow u'}\mo z'})} \cdot 
+\cancel{f({\blue Z_{\yellow u''}\mo z''})} \cdot 
+\cancel{f({\blue Z_{\yellow u'''}\mo z'''})} \cdot
+\cancel{\dotsb}
+}{
+\underbracket[0.2ex]{\sum_{\lblue z}
+f({\blue Z_{\yellow u}\mo z})}_{{}=1} \cdot
+\cancel{f({\blue Z_{\yellow u'}\mo z'})} \cdot 
+\cancel{f({\blue Z_{\yellow u''}\mo z''})} \cdot 
+\cancel{f({\blue Z_{\yellow u'''}\mo z'''})} \cdot
+\cancel{\dotsb}
+}
+\\[2ex]
+&\qquad{}=
+f({\blue Z_{\yellow u}\mo z})
+\\[3ex]
+&\qquad{}\equiv
+\P({\blue Z_{\yellow u}\mo z} \| \if \and \yI)
+\end{aligned}
+$$
+
+so the information from the units $\yellow u'$, $\yellow u''$, and so on is *irrelevant* to this agent. In other words, this agent's inferences about some units are not affected  by the  observation of other units.
+
+The reason for this irrelevance is that the agent *already knows the full-population frequencies*. So the observation of the frequencies of some values provides no new information to the agent.
+
+Obviously this is not what we desire. But it is not a problem: the crucial point is that knowledge of full-population frequencies is only a hypothetical, idealized situation. In the next chapter we shall see that learning occurs when we go beyond this idealization.
+
+----
 
 ::: {.callout-caution}
 ## {{< fa book >}} Study reading
-Ch. 3 of [*Probability Theory*](https://hvl.instructure.com/courses/25074/modules/items/660090). This chapter is extremely instructive to understand how probability theory works.
+Ch. 3 of [*Probability Theory*](https://hvl.instructure.com/courses/25074/modules/items/660090). This chapter is extremely instructive in general to understand how probability theory works.
 :::
