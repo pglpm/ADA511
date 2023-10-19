@@ -65,6 +65,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -419,7 +422,10 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#sec-freq-not-known" id="toc-sec-freq-not-known" class="nav-link active" data-scroll-target="#sec-freq-not-known"><span class="header-section-number">29.1</span> Inference when population frequencies aren’t known</a></li>
-  <li><a href="#sec-learning-general" id="toc-sec-learning-general" class="nav-link" data-scroll-target="#sec-learning-general"><span class="header-section-number">29.2</span> Learning</a></li>
+  <li><a href="#sec-learning-general" id="toc-sec-learning-general" class="nav-link" data-scroll-target="#sec-learning-general"><span class="header-section-number">29.2</span> Learning</a>
+  <ul class="collapse">
+  <li><a href="#how-learning-works-under-exchangeability" id="toc-how-learning-works-under-exchangeability" class="nav-link" data-scroll-target="#how-learning-works-under-exchangeability">How learning works under exchangeability</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -709,9 +715,153 @@ f(C\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}
 </ul>
 </div>
 </div>
+<section id="how-learning-works-under-exchangeability" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="how-learning-works-under-exchangeability">How learning works under exchangeability</h3>
+<div class="page-columns page-full"><p>An agent having full-population frequency information does not learn<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> from observation of units, whereas an agent not having such information does learn from observation of units. This fact shows how learning from observed to unobserved units actually works. Crudely speaking, observations do not directly affect the beliefs about unobserved units, but instead affect the <strong>beliefs about the population frequencies</strong>. And these in turn affect the beliefs about unobserved units. Graphically this could be represented as follows:</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;remember the warning of <a href="inference_from_freqs.html#sec-no-learn-freqs">§ &nbsp;<span>28.6</span></a> about “learning”</p></li></div></div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  A([observed units]) --&gt; B([population frequencies]) --&gt; C([unobserved units])
+  %%
+  linkStyle 0 stroke:#47a,fill:#47a
+  linkStyle 1 stroke:#47a,fill:#47a
+  style A fill:#283,color:#fff,stroke-width:0px
+  style B fill:#bbb,color:#000,stroke-width:0px
+  style C fill:#e67,color:#fff,stroke-width:0px
+</pre>
+</div>
+</div>
+</div>
+</div>
+<p>This fact becomes indeed clear if we check how the agent’s beliefs about the frequency hypotheses change. In the cube-collection example of <a href="#sec-freq-not-known">§ &nbsp;<span>29.1</span></a>, the agent has initial probabilities</p>
+<p><span class="math display">\[
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K}) = 75\%
+\qquad
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K}) = 25\%
+\]</span></p>
+<p>where <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{f}'\)</span></span> gives frequency <span style="display:inline-block;"><span class="math inline">\(2/3\)</span></span> to <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}{\small\verb;Y;}}\)</span>,</span> and <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{f}''\)</span></span> gives frequency <span style="display:inline-block;"><span class="math inline">\(1/2\)</span></span> to <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}{\small\verb;Y;}}\)</span>.</span> How do these probabilities change, conditional on the agent’s observing that cube #2 is labelled <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;N;}}\)</span>?</span> We just need to use Bayes’s theorem. For the first hypothesis <span style="display:inline-block;"><span class="math inline">\(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\)</span>:</span></p>
+<div class="column-page-right">
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} C_2\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K}) &amp;=
+\frac{
+\mathrm{P}(C_2\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K}) \cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+}{
+\mathrm{P}(C_2\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K}) \cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
++
+\mathrm{P}(C_2\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K}) \cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+}
+\\[1ex]
+&amp;=
+\frac{
+f'(C\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}) \cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+}{
+f'(C\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}) \cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
++
+f''(C\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}) \cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+}
+\\[1ex]
+&amp;=
+\frac{
+\frac{1}{3} \cdot
+75\%
+}{
+\frac{1}{3} \cdot
+75\%
++
+\frac{1}{2} \cdot
+25\%
+}
+\\[2ex]
+&amp;=
+\boldsymbol{66.667\%}
+\end{aligned}
+\]</span></p>
+</div>
+<p>and an analogous calculation yields <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} C_1\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})=33.333\%\)</span>.</span></p>
+<p>This result makes sense, because according to the hypothesis <span style="display:inline-block;"><span class="math inline">\(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\)</span></span> there is a higher proportion of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;N;}}\)</span></span> cubes than according to <span style="display:inline-block;"><span class="math inline">\(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\)</span>,</span> and <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;N;}}\)</span></span> cube has been observed. The hypothesis <span style="display:inline-block;"><span class="math inline">\(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\)</span></span> therefore becomes slightly more plausible, and <span style="display:inline-block;"><span class="math inline">\(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\)</span></span> slightly less.</p>
+<p>Using the updated degree of belief above we also have another way to calculate the conditional probability <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(C_{1} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})\)</span>,</span> using the derived rule of “extension of the conversation” in a different way:</p>
+<div class="column-page-inset-right">
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{P}(C_{1} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+&amp;=
+\sum_{\boldsymbol{f}}
+\mathrm{P}(C_{1} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\\[2ex]
+\text{\color[RGB]{187,187,187}\scriptsize(no learning if frequencies are known)}\quad
+&amp;=\sum_{\boldsymbol{f}}
+\mathrm{P}(C_{1} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{}  F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\\[2ex]
+&amp;=
+\mathrm{P}(C_{1} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{}  F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
++{}
+\\[1ex]
+&amp;\qquad\mathrm{P}(C_{1} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{}  F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\\[2ex]
+&amp;=
+f'(C \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}})
+\cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
++{}
+\\[1ex]
+&amp;\qquad
+f''(C \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}})
+\cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\\[2ex]
+&amp;=
+{\color[RGB]{34,136,51}\frac{2}{3}} \cdot 66.667\%
++
+{\color[RGB]{34,136,51}\frac{1}{2}} \cdot 33.333\%
+\\[2ex]
+&amp;= \boldsymbol{61.111\%}
+\end{aligned}
+\]</span></p>
+</div>
+<p>The result is exactly as in <a href="#sec-learning-general">§ &nbsp;<span>29.2</span></a> – as it should be: remember from <a href="probability_inference.html">chapter&nbsp;&nbsp;<span>8</span></a> that the four rules of inference are built so as to mathematically guarantee this kind of logical self-consistency</p>
+<p><br>
+</p>
+<hr>
+<p><br>
+</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-book" aria-label="book"></i> Study reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Ch.&nbsp;4 of <a href="https://hvl.instructure.com/courses/25074/modules/items/660090"><em>Probability Theory</em></a></p></li>
+<li><p>§§ 8.1–8.6 of <a href="https://hvl.instructure.com/courses/25074/modules/items/675505"><em>Probability</em></a></p></li>
+</ul>
+</div>
+</div>
 
 
 </section>
+</section>
+
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

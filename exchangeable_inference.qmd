@@ -269,3 +269,142 @@ In particular, the observation of one $\yn$ cube has somewhat decreased the prob
     
 	Does it seem possible to increase the agent's belief to more than $2/3$? Explain why.
 :::
+
+### How learning works under exchangeability
+
+An agent having full-population frequency information does not learn^[remember the warning of [§ @sec-no-learn-freqs] about "learning"] from observation of units, whereas an agent not having such information does learn from observation of units. This fact shows how learning from observed to unobserved units actually works. Crudely speaking, observations do not directly affect the beliefs about unobserved units, but instead affect the **beliefs about the population frequencies**. And these in turn affect the beliefs about unobserved units. Graphically this could be represented as follows:
+
+```{mermaid}
+flowchart LR
+  A([observed units]) --> B([population frequencies]) --> C([unobserved units])
+  %%
+  linkStyle 0 stroke:#47a,fill:#47a
+  linkStyle 1 stroke:#47a,fill:#47a
+  style A fill:#283,color:#fff,stroke-width:0px
+  style B fill:#bbb,color:#000,stroke-width:0px
+  style C fill:#e67,color:#fff,stroke-width:0px
+```
+
+This fact becomes indeed clear if we check how the agent's beliefs about the frequency hypotheses change. In the cube-collection example of [§ @sec-freq-not-known], the agent has initial probabilities
+
+$$
+\P(F\mo\vfa \| \yul) = 75\%
+\qquad 
+\P(F\mo\vfb \| \yul) = 25\%
+$$
+
+where $\vfa$ gives frequency $2/3$ to $\yy$, and $\vfb$ gives frequency $1/2$ to $\yy$. How do these probabilities change, conditional on the agent's observing that cube #2 is labelled $\yn$? We just need to use Bayes's theorem. For the first hypothesis $F\mo\vfa$:
+
+:::{.column-page-right}
+$$
+\begin{aligned}
+\P(F\mo\vfa \| C_2\mo\yn \and \yul) &=
+\frac{
+\P(C_2\mo\yn \| F\mo\vfa \and \yul) \cdot
+\P(F\mo\vfa \| \yul)
+}{
+\P(C_2\mo\yn \| F\mo\vfa \and \yul) \cdot
+\P(F\mo\vfa \| \yul)
++
+\P(C_2\mo\yn \| F\mo\vfb \and \yul) \cdot
+\P(F\mo\vfb \| \yul)
+}
+\\[1ex]
+&=
+\frac{
+f'(C\mo\yn) \cdot
+\P(F\mo\vfa \| \yul)
+}{
+f'(C\mo\yn) \cdot
+\P(F\mo\vfa \| \yul)
++
+f''(C\mo\yn) \cdot
+\P(F\mo\vfb \| \yul)
+}
+\\[1ex]
+&=
+\frac{
+\frac{1}{3} \cdot
+75\%
+}{
+\frac{1}{3} \cdot
+75\%
++
+\frac{1}{2} \cdot
+25\%
+}
+\\[2ex]
+&=
+\boldsymbol{66.667\%}
+\end{aligned}
+$$
+:::
+
+and an analogous calculation yields $\P(F\mo\vfa \| C_1\mo\yy \and \yul)=33.333\%$.
+
+This result makes sense, because according to the hypothesis $F\mo\vfb$ there is a higher proportion of $\yn$ cubes than according to $F\mo\vfa$, and $\yn$ cube has been observed. The hypothesis $F\mo\vfb$ therefore becomes slightly more plausible, and $F\mo\vfa$ slightly less.
+
+Using the updated degree of belief above we also have another way to calculate the conditional probability $\P(C_{1} \mo \yy \| C_{2} \mo \yn \and \yul)$, using the derived rule of "extension of the conversation" in a different way:
+
+:::{.column-page-inset-right}
+$$
+\begin{aligned}
+\P(C_{1} \mo \yy \| C_{2} \mo \yn \and \yul)
+&=
+\sum_{\vf}
+\P(C_{1} \mo \yy \| C_{2} \mo \yn \and F\mo\vf \and \yul)
+\cdot
+\P(F\mo\vf \| C_{2} \mo \yn \and \yul)
+\\[2ex]
+\text{\grey\scriptsize(no learning if frequencies are known)}\quad
+&=\sum_{\vf}
+\P(C_{1} \mo \yy \|  F\mo\vf \and \yul)
+\cdot
+\P(F\mo\vf \| C_{2} \mo \yn \and \yul)
+\\[2ex]
+&=
+\P(C_{1} \mo \yy \|  F\mo\vfa \and \yul)
+\cdot
+\P(F\mo\vfa \| C_{2} \mo \yn \and \yul)
++{}
+\\[1ex]
+&\qquad\P(C_{1} \mo \yy \|  F\mo\vfb \and \yul)
+\cdot
+\P(F\mo\vfb \| C_{2} \mo \yn \and \yul)
+\\[2ex]
+&=
+f'(C \mo \yy)
+\cdot
+\P(F\mo\vfa \| C_{2} \mo \yn \and \yul)
++{}
+\\[1ex]
+&\qquad
+f''(C \mo \yy)
+\cdot
+\P(F\mo\vfb \| C_{2} \mo \yn \and \yul)
+\\[2ex]
+&=
+{\green\frac{2}{3}} \cdot 66.667\%
++
+{\green\frac{1}{2}} \cdot 33.333\%
+\\[2ex]
+&= \boldsymbol{61.111\%}
+\end{aligned}
+$$
+:::
+
+The result is exactly as in [§ @sec-learning-general] -- as it should be: remember from [chapter @sec-probability] that the four rules of inference are built so as to mathematically guarantee this kind of logical self-consistency
+
+\
+
+----
+
+\
+
+::: {.callout-caution}
+## {{< fa book >}} Study reading
+- Ch. 4 of [*Probability Theory*](https://hvl.instructure.com/courses/25074/modules/items/660090)
+
+- §§ 8.1--8.6 of [*Probability*](https://hvl.instructure.com/courses/25074/modules/items/675505)
+:::
+
