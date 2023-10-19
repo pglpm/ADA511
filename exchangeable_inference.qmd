@@ -2,4 +2,87 @@
 {{< include macros.qmd >}}
 {{< include macros_exchangeability.qmd >}}
 
+## When population frequencies aren't known {#sec-freq-not-known}
 
+In [chapter @sec-inference-from-freqs] we considered an agent that has exchangeable beliefs and that knows the full-population frequencies. The degrees of belief of such an agent have a very simple form: products of frequencies. But for such an agent the observations of units *doesn't give any useful information* for drawing inferences about new units: such observations provide frequencies which the agent already knows.
+
+Situations where we have complete frequency knowledge can be common in engineering problems, where the physical laws underlying the phenomena involved are known and computable. They are far less common in data-science and machine-learning applications: here we must consider agents that do not know the full-population frequencies.
+
+How does such an agent calculate probabilities about units? The answer is actually a simple application of Bayes's theorem with the "extension of the conversation" (§§ [-@sec-extension-conversation], [-@sec-bayes-theorem], [-@sec-bayes-extension], which boil down to applications of the `and` and `or` rules). A probability given that the frequency distribution is not known is equal to the average of the probabilities given each possible frequency distribution, weighted by the probabilities of the frequency distributions:
+
+$$
+\begin{aligned}
+&\P(
+\blue
+Z_{\yellow u'}\mo z' \and 
+Z_{\yellow u''}\mo z'' \and 
+\dotsb
+\black
+\| \yI
+)
+\\[2ex]
+&\qquad{}=
+\sum_{\vf}
+\P(
+\blue
+Z_{\yellow u'}\mo z' \and 
+Z_{\yellow u''}\mo z'' \and 
+\dotsb
+\black
+\| F\mo\vf \and \yI
+)
+\cdot
+\P(F\mo\vf \| \yI)
+\end{aligned}
+$$
+
+But we saw in [§ @sec-moreunit-freq-known] that the probability for a sequence of values given a known frequency is just the product of the value's frequencies. We thus have our long-sought formula:
+
+
+:::::{.column-page-right}
+:::{.callout-note style="font-size:120%"}
+##
+::::{style="font-size:120%"}
+
+If an agent has background information $\yI$ about a population saying that
+
+- beliefs about units are exchangeable
+- the population size is practically infinite
+
+then
+
+$$
+\P(
+\blue
+Z_{\yellow u'}\mo z' \and 
+Z_{\yellow u''}\mo z'' \and 
+\dotsb
+\black
+\| \yI
+)
+\approx
+\sum_{\vf}
+f(\blue Z\mo z'\black) \cdot
+f(\blue Z\mo z''\black) \cdot
+\,\dotsb\ 
+\cdot
+\P(F\mo\vf \| \yI)
+$$
+
+for any (different) units $\yellow u', u'', \dotsc$ and any (even equal) values $\blue z', z'', \dotsc$.
+
+In the sum above, $\vf$ runs over all possible frequency distributions for the full population.
+
+[More correctly the sum is an integral, because $F$ is a continuous quantity. We should write $\P(
+Z_{u'}\mo z' \and 
+\dotsb
+\| \yI
+) = \int 
+f(Z\mo z')  \cdot
+\,\dotsb\ 
+\cdot
+\p(\vf \| \yI)\,\di\vf$
+]{.grey .small}
+::::
+:::
+:::::

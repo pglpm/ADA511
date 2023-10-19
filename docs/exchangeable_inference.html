@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-10-18">
+<meta name="dcterms.date" content="2023-10-19">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 29&nbsp; General inference under exchangeability</title>
 <style>
@@ -97,7 +97,7 @@ ul.task-list li input[type="checkbox"] {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-18</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-19</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -412,10 +412,16 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-freq-not-known" id="toc-sec-freq-not-known" class="nav-link active" data-scroll-target="#sec-freq-not-known"><span class="header-section-number">29.1</span> When population frequencies aren’t known</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -430,7 +436,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-10-18</p>
+      <p class="date">2023-10-19</p>
     </div>
   </div>
   
@@ -449,8 +455,82 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 
 </div>
+<section id="sec-freq-not-known" class="level2 page-columns page-full" data-number="29.1">
+<h2 data-number="29.1" class="anchored" data-anchor-id="sec-freq-not-known"><span class="header-section-number">29.1</span> When population frequencies aren’t known</h2>
+<p>In <a href="inference_from_freqs.html">chapter&nbsp;&nbsp;<span>28</span></a> we considered an agent that has exchangeable beliefs and that knows the full-population frequencies. The degrees of belief of such an agent have a very simple form: products of frequencies. But for such an agent the observations of units <em>doesn’t give any useful information</em> for drawing inferences about new units: such observations provide frequencies which the agent already knows.</p>
+<p>Situations where we have complete frequency knowledge can be common in engineering problems, where the physical laws underlying the phenomena involved are known and computable. They are far less common in data-science and machine-learning applications: here we must consider agents that do not know the full-population frequencies.</p>
+<p>How does such an agent calculate probabilities about units? The answer is actually a simple application of Bayes’s theorem with the “extension of the conversation” (§§&nbsp;<a href="derived_rules.html#sec-extension-conversation"><span>9.4</span></a>, <a href="derived_rules.html#sec-bayes-theorem"><span>9.5</span></a>, <a href="derived_rules.html#sec-bayes-extension"><span>9.6</span></a>, which boil down to applications of the <code>and</code> and <code>or</code> rules). A probability given that the frequency distribution is not known is equal to the average of the probabilities given each possible frequency distribution, weighted by the probabilities of the frequency distributions:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}(
+\color[RGB]{68,119,170}
+Z_{\color[RGB]{204,187,68}u'}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z' \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+Z_{\color[RGB]{204,187,68}u''}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z'' \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+\dotsb
+\color[RGB]{0,0,0}
+\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}
+)
+\\[2ex]
+&amp;\qquad{}=
+\sum_{\boldsymbol{f}}
+\mathrm{P}(
+\color[RGB]{68,119,170}
+Z_{\color[RGB]{204,187,68}u'}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z' \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+Z_{\color[RGB]{204,187,68}u''}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z'' \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+\dotsb
+\color[RGB]{0,0,0}
+\nonscript\:\vert\nonscript\:\mathopen{} F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}
+)
+\cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\end{aligned}
+\]</span></p>
+<p>But we saw in <a href="inference_from_freqs.html#sec-moreunit-freq-known">§ &nbsp;<span>28.5</span></a> that the probability for a sequence of values given a known frequency is just the product of the value’s frequencies. We thus have our long-sought formula:</p>
+<div class="column-page-right">
+<div class="callout callout-style-default callout-note no-icon callout-titled" style="font-size:120%">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size:120%">
+<p>If an agent has background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span></span> about a population saying that</p>
+<ul>
+<li>beliefs about units are exchangeable</li>
+<li>the population size is practically infinite</li>
+</ul>
+<p>then</p>
+<p><span class="math display">\[
+\mathrm{P}(
+\color[RGB]{68,119,170}
+Z_{\color[RGB]{204,187,68}u'}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z' \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+Z_{\color[RGB]{204,187,68}u''}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z'' \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+\dotsb
+\color[RGB]{0,0,0}
+\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}
+)
+\approx
+\sum_{\boldsymbol{f}}
+f(\color[RGB]{68,119,170}Z\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z'\color[RGB]{0,0,0}) \cdot
+f(\color[RGB]{68,119,170}Z\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z''\color[RGB]{0,0,0}) \cdot
+\,\dotsb\
+\cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\]</span></p>
+<p>for any (different) units <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{204,187,68}u', u'', \dotsc\)</span></span> and any (even equal) values <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}z', z'', \dotsc\)</span>.</span></p>
+<p>In the sum above, <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{f}\)</span></span> runs over all possible frequency distributions for the full population.</p>
+<p><span class="grey small">More correctly the sum is an integral, because <span class="math inline">\(F\)</span> is a continuous quantity. We should write <span class="math inline">\(\mathrm{P}( Z_{u'}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z' \mathbin{\mkern-0.5mu,\mkern-0.5mu}\dotsb \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = \int f(Z\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z') \cdot \,\dotsb\  \cdot \mathrm{p}(\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\,\mathrm{d}\boldsymbol{f}\)</span></span></p>
+</div>
+</div>
+</div>
+</div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
