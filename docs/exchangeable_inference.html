@@ -416,7 +416,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-freq-not-known" id="toc-sec-freq-not-known" class="nav-link active" data-scroll-target="#sec-freq-not-known"><span class="header-section-number">29.1</span> When population frequencies aren’t known</a></li>
+  <li><a href="#sec-freq-not-known" id="toc-sec-freq-not-known" class="nav-link active" data-scroll-target="#sec-freq-not-known"><span class="header-section-number">29.1</span> Inference when population frequencies aren’t known</a></li>
+  <li><a href="#sec-learning-general" id="toc-sec-learning-general" class="nav-link" data-scroll-target="#sec-learning-general"><span class="header-section-number">29.2</span> Learning</a></li>
   </ul>
 </nav>
     </div>
@@ -456,7 +457,7 @@ ul.task-list li input[type="checkbox"] {
 
 </div>
 <section id="sec-freq-not-known" class="level2 page-columns page-full" data-number="29.1">
-<h2 data-number="29.1" class="anchored" data-anchor-id="sec-freq-not-known"><span class="header-section-number">29.1</span> When population frequencies aren’t known</h2>
+<h2 data-number="29.1" class="anchored" data-anchor-id="sec-freq-not-known"><span class="header-section-number">29.1</span> Inference when population frequencies aren’t known</h2>
 <p>In <a href="inference_from_freqs.html">chapter&nbsp;&nbsp;<span>28</span></a> we considered an agent that has exchangeable beliefs and that knows the full-population frequencies. The degrees of belief of such an agent have a very simple form: products of frequencies. But for such an agent the observations of units <em>doesn’t give any useful information</em> for drawing inferences about new units: such observations provide frequencies which the agent already knows.</p>
 <p>Situations where we have complete frequency knowledge can be common in engineering problems, where the physical laws underlying the phenomena involved are known and computable. They are far less common in data-science and machine-learning applications: here we must consider agents that do not know the full-population frequencies.</p>
 <p>How does such an agent calculate probabilities about units? The answer is actually a simple application of the “extension of the conversation” (<a href="derived_rules.html#sec-extension-conversation">§ &nbsp;<span>9.4</span></a>, which boil down to applications of the <code>and</code> and <code>or</code> rules). A probability given that the frequency distribution is not known is equal to the average of the probabilities given each possible frequency distribution, weighted by the probabilities of the frequency distributions:</p>
@@ -533,20 +534,106 @@ f(\color[RGB]{68,119,170}Z\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscrip
 <p>Let’s see how this formula works in the simple example of the urn with 3&nbsp;million balls from <a href="inference_from_freqs.html#sec-moreunit-freq-known">§ &nbsp;<span>28.5</span></a>. Suppose the agent knows that the urn contains:</p>
 <ul>
 <li><p>either a proportion 2/3 of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}{\small\verb;Y;}}\)</span></span> balls and 1/3 of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;N;}}\)</span></span> balls; denote these frequencies <span class="m">with <span class="math inline">\(\boldsymbol{f}'\)</span></span></p></li>
-<li><p>or a proporion 1/2 of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}{\small\verb;Y;}}\)</span></span> balls and 1/2 of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;N;}}\)</span></span> balls; denote these frequencies <span class="m">with <span class="math inline">\(\boldsymbol{f}''\)</span></span></p></li>
+<li><p>or a proportion 1/2 of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}{\small\verb;Y;}}\)</span></span> balls and 1/2 of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;N;}}\)</span></span> balls; denote these frequencies <span class="m">with <span class="math inline">\(\boldsymbol{f}''\)</span></span></p></li>
 </ul>
-<p>and assigns a <span style="display:inline-block;"><span class="math inline">\(75\%\)</span></span> degree of belief to the first hypothesis, and <span style="display:inline-block;"><span class="math inline">\(25\%\)</span></span> to the second (so the sentence <span style="display:inline-block;"><span class="math inline">\(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\lor F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\fvb\)</span></span> has probability <span style="display:inline-block;"><span class="math inline">\(1\)</span>):</span></p>
+<p>and assigns a <span style="display:inline-block;"><span class="math inline">\(75\%\)</span></span> degree of belief to the first hypothesis, and <span style="display:inline-block;"><span class="math inline">\(25\%\)</span></span> to the second (so the sentence <span style="display:inline-block;"><span class="math inline">\(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\lor F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\)</span></span> has probability <span style="display:inline-block;"><span class="math inline">\(1\)</span>):</span></p>
 <p><span class="math display">\[
 \mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{U}_{\text{L}}) = 75\%
 \qquad
 \mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{U}_{\text{L}}) = 25\%
 \]</span></p>
-<p>What is the agent’s degree of belief that the first drawn ball has mark <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}{\small\verb;Y;}}\)</span>?</span> According to the derived rule of extension of the conversation, that is, the main formula written above,</p>
+<p>What is the agent’s degree of belief that ball <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{204,187,68}a\)</span></span> has mark <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}{\small\verb;Y;}}\)</span>?</span> According to the derived rule of extension of the conversation, that is, the main formula written above:</p>
 <p><span class="math display">\[
-\mathrm{P}(B_1 \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{U}_{\text{L}}) =
+\begin{aligned}
+\mathrm{P}(B_{\color[RGB]{204,187,68}a} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{U}_{\text{L}})
+&amp;=
 \sum_{\boldsymbol{f}}
 f(B\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}) \cdot \mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{U}_{\text{L}})
+\\[1ex]
+&amp;=
+f'(B\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}) \cdot \mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{U}_{\text{L}}) +
+f''(B\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}) \cdot \mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{U}_{\text{L}})
+\\[1ex]
+&amp;=
+{\color[RGB]{34,136,51}\frac{2}{3}}\cdot 75\% +
+{\color[RGB]{34,136,51}\frac{1}{2}}\cdot 25\%
+\\[1ex]
+&amp;= \boldsymbol{62.5\%}
+\end{aligned}
 \]</span></p>
+<p>In an analogous way we can calculate the agent’s belief that ball <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{204,187,68}a\)</span></span> is <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}{\small\verb;Y;}}\)</span>,</span> ball <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{204,187,68}b\)</span></span> is <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;N;}}\)</span>,</span> and ball <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{204,187,68}c\)</span></span> is <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}{\small\verb;Y;}}\)</span>:</span></p>
+<div class="column-page-inset-right">
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{P}(B_{\color[RGB]{204,187,68}a} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}B_{\color[RGB]{204,187,68}b} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}B_{\color[RGB]{204,187,68}c} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{U}_{\text{L}})
+&amp;\approx
+\sum_{\boldsymbol{f}}
+f(B\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}) \cdot f(B\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}) \cdot f(B\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}) \cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{U}_{\text{L}})
+\\[2ex]
+&amp;=
+f'(B\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}) \cdot f'(B\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}) \cdot  f'(B\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}) \cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{U}_{\text{L}}) + {}
+\\[1ex]
+&amp;\qquad
+f''(B\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}) \cdot f''(B\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}) \cdot  f''(B\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}) \cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{U}_{\text{L}})
+\\[2ex]
+&amp;=
+{\color[RGB]{34,136,51}\frac{2}{3}}\cdot {\color[RGB]{238,102,119}\frac{1}{3}}\cdot {\color[RGB]{34,136,51}\frac{2}{3}}\cdot 75\% +
+{\color[RGB]{34,136,51}\frac{1}{2}}\cdot {\color[RGB]{238,102,119}\frac{1}{2}}\cdot {\color[RGB]{34,136,51}\frac{1}{2}}\cdot 25\%
+\\[2ex]
+&amp;\approx \boldsymbol{14.236\%}
+\end{aligned}
+\]</span></p>
+</div>
+</section>
+<section id="sec-learning-general" class="level2 page-columns page-full" data-number="29.2">
+<h2 data-number="29.2" class="anchored" data-anchor-id="sec-learning-general"><span class="header-section-number">29.2</span> Learning</h2>
+<p>Staying with the same urn scenario, let’s now ask what the agent’s degree of belief is that ball <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{204,187,68}a\)</span></span> has mark <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}{\small\verb;Y;}}\)</span>,</span> <em>given that the agent has observed ball <span class="math inline">\(\color[RGB]{204,187,68}b\)</span> to be <span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;N;}}\)</span></em>. In the case of an agent that knows the full-population frequencies we saw <a href="inference_from_freqs.html#sec-no-learn-freqs">§ &nbsp;<span>28.6</span></a> that this degree of belief is actually unaffected by other observations. What happens when the population frequencies are not known?</p>
+<p>The calculation is straightforward:</p>
+<div class="column-page-inset-right">
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{P}(B_{\color[RGB]{204,187,68}b} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} B_{\color[RGB]{204,187,68}a} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{U}_{\text{L}})
+&amp;=
+\frac{
+\mathrm{P}(B_{\color[RGB]{204,187,68}b} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}B_{\color[RGB]{204,187,68}a} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{U}_{\text{L}})
+}{
+\mathrm{P}(B_{\color[RGB]{204,187,68}a} \mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{U}_{\text{L}})
+}
+\\[2ex]
+&amp;\approx
+\frac{
+\sum_{\boldsymbol{f}}
+f(B\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{34,136,51}{\small\verb;Y;}}) \cdot f(B\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}) \cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{U}_{\text{L}})
+}{
+\sum_{\boldsymbol{f}}
+f(B\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}) \cdot
+\mathrm{P}(F\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{U}_{\text{L}})
+}
+\\[2ex]
+&amp;=
+\frac{
+{\color[RGB]{34,136,51}\frac{2}{3}}\cdot {\color[RGB]{238,102,119}\frac{1}{3}}\cdot 75\% +
+{\color[RGB]{34,136,51}\frac{1}{2}}\cdot {\color[RGB]{238,102,119}\frac{1}{2}}\cdot 25\%
+}{
+{\color[RGB]{238,102,119}\frac{1}{3}}\cdot 75\% +
+{\color[RGB]{238,102,119}\frac{1}{2}}\cdot 25\%
+}
+\\[2ex]
+&amp;\approx\frac{
+22.9167\%
+}{
+37.5000\%
+}
+\\[2ex]
+&amp;= \boldsymbol{61.111\%}
+\end{aligned}
+\]</span></p>
+</div>
+<p>The observation that <span style="display:inline-block;"><span class="math inline">\(B_{1}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;N;}}\)</span></span> has changed the agent’s belief</p>
 
 
 </section>

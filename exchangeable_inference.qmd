@@ -2,7 +2,7 @@
 {{< include macros.qmd >}}
 {{< include macros_exchangeability.qmd >}}
 
-## When population frequencies aren't known {#sec-freq-not-known}
+## Inference when population frequencies aren't known {#sec-freq-not-known}
 
 In [chapter @sec-inference-from-freqs] we considered an agent that has exchangeable beliefs and that knows the full-population frequencies. The degrees of belief of such an agent have a very simple form: products of frequencies. But for such an agent the observations of units *doesn't give any useful information* for drawing inferences about new units: such observations provide frequencies which the agent already knows.
 
@@ -93,9 +93,9 @@ Let's see how this formula works in the simple example of the urn with 3 millio
 
 - either a proportion 2/3 of $\yy$ balls and 1/3 of $\yn$ balls; denote these frequencies [with $\vfa$]{.m}
 
-- or a proporion 1/2 of $\yy$ balls and 1/2 of $\yn$ balls; denote these frequencies [with $\vfb$]{.m}
+- or a proportion 1/2 of $\yy$ balls and 1/2 of $\yn$ balls; denote these frequencies [with $\vfb$]{.m}
 
-and assigns a $75\%$ degree of belief to the first hypothesis, and $25\%$ to the second (so the sentence $F\mo\vfa \lor F\mo\fvb$ has probability $1$):
+and assigns a $75\%$ degree of belief to the first hypothesis, and $25\%$ to the second (so the sentence $F\mo\vfa \lor F\mo\vfb$ has probability $1$):
 
 $$
 \P(F\mo\vfa \| \yul) = 75\%
@@ -103,12 +103,102 @@ $$
 \P(F\mo\vfb \| \yul) = 25\%
 $$
 
-What is the agent's degree of belief that the first drawn ball has mark $\yy$? According to the derived rule of extension of the conversation, that is, the main formula written above,
+What is the agent's degree of belief that  ball $\yellow a$ has mark $\yy$? According to the derived rule of extension of the conversation, that is, the main formula written above:
 
 $$
-\P(B_1 \mo \yy \| \yul) =
+\begin{aligned}
+\P(B_{\yellow a} \mo \yy \| \yul)
+&=
 \sum_{\vf}
 f(B\mo\yy) \cdot \P(F\mo\vf \| \yul)
+\\[1ex]
+&=
+f'(B\mo\yy) \cdot \P(F\mo\vfa \| \yul) +
+f''(B\mo\yy) \cdot \P(F\mo\vfb \| \yul)
+\\[1ex]
+&=
+{\green\frac{2}{3}}\cdot 75\% +
+{\green\frac{1}{2}}\cdot 25\%
+\\[1ex]
+&= \boldsymbol{62.5\%}
+\end{aligned}
 $$
 
+In an analogous way we can calculate the agent's belief that ball $\yellow a$ is $\yy$, ball $\yellow b$ is  $\yn$, and ball $\yellow c$ is $\yy$:
 
+:::{.column-page-inset-right}
+$$
+\begin{aligned}
+\P(B_{\yellow a} \mo \yy \and B_{\yellow b} \mo \yn \and B_{\yellow c} \mo \yy \| \yul)
+&\approx
+\sum_{\vf}
+f(B\mo\yy) \cdot f(B\mo\yn) \cdot f(B\mo\yy) \cdot
+\P(F\mo\vf \| \yul)
+\\[2ex]
+&=
+f'(B\mo\yy) \cdot f'(B\mo\yn) \cdot  f'(B\mo\yy) \cdot 
+\P(F\mo\vfa \| \yul) + {}
+\\[1ex]
+&\qquad
+f''(B\mo\yy) \cdot f''(B\mo\yn) \cdot  f''(B\mo\yy) \cdot 
+\P(F\mo\vfb \| \yul)
+\\[2ex]
+&=
+{\green\frac{2}{3}}\cdot {\red\frac{1}{3}}\cdot {\green\frac{2}{3}}\cdot 75\% +
+{\green\frac{1}{2}}\cdot {\red\frac{1}{2}}\cdot {\green\frac{1}{2}}\cdot 25\%
+\\[2ex]
+&\approx \boldsymbol{14.236\%}
+\end{aligned}
+$$
+:::
+
+
+## Learning {#sec-learning-general}
+
+Staying with the same urn scenario, let's now ask what the agent's degree of belief is that ball $\yellow a$ has mark $\yy$, *given that the agent has observed ball $\yellow b$ to be $\yn$*. In the case of an agent that knows the full-population frequencies we saw [§ @sec-no-learn-freqs] that this degree of belief is actually unaffected by other observations. What happens when the population frequencies are not known?
+
+The calculation is straightforward:
+
+:::{.column-page-inset-right}
+$$
+\begin{aligned}
+\P(B_{\yellow b} \mo \yy \| B_{\yellow a} \mo \yn \and \yul)
+&=
+\frac{
+\P(B_{\yellow b} \mo \yy \and B_{\yellow a} \mo \yn \| \yul)
+}{
+\P(B_{\yellow a} \mo \yn \| \yul)
+}
+\\[2ex]
+&\approx
+\frac{
+\sum_{\vf}
+f(B\mo\yy) \cdot f(B\mo\yn) \cdot
+\P(F\mo\vf \| \yul)
+}{
+\sum_{\vf}
+f(B\mo\yn) \cdot
+\P(F\mo\vf \| \yul)
+}
+\\[2ex]
+&=
+\frac{
+{\green\frac{2}{3}}\cdot {\red\frac{1}{3}}\cdot 75\% +
+{\green\frac{1}{2}}\cdot {\red\frac{1}{2}}\cdot 25\%
+}{
+{\red\frac{1}{3}}\cdot 75\% +
+{\red\frac{1}{2}}\cdot 25\%
+}
+\\[2ex]
+&\approx\frac{
+22.9167\%
+}{
+37.5000\%
+}
+\\[2ex]
+&= \boldsymbol{61.111\%}
+\end{aligned}
+$$
+:::
+
+The observation that $B_{1}\mo\yn$ has changed the agent's belief
