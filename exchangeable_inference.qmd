@@ -13,22 +13,18 @@ How does such an agent calculate probabilities about units? The answer is actual
 $$
 \begin{aligned}
 &\P(
-\blue
-Z_{\yellow u'}\mo z' \and 
-Z_{\yellow u''}\mo z'' \and 
+\bZ_{u'}\mo {\blue z'} \and 
+\bZ_{u''}\mo {\blue z''} \and 
 \dotsb
-\black
 \| \yI
 )
 \\[2ex]
 &\qquad{}=
 \sum_{\vf}
 \P(
-\blue
-Z_{\yellow u'}\mo z' \and 
-Z_{\yellow u''}\mo z'' \and 
+\bZ_{u'}\mo {\blue z'} \and 
+\bZ_{u''}\mo {\blue z''} \and 
 \dotsb
-\black
 \| F\mo\vf \and \yI
 )
 \cdot
@@ -53,32 +49,30 @@ then
 
 $$
 \P(
-\blue
-Z_{\yellow u'}\mo z' \and 
-Z_{\yellow u''}\mo z'' \and 
+\bZ_{u'}\mo {\blue z'} \and 
+\bZ_{u''}\mo {\blue z''} \and 
 \dotsb
-\black
 \| \yI
 )
 \approx
 \sum_{\vf}
-f(\blue Z\mo z'\black) \cdot
-f(\blue Z\mo z''\black) \cdot
+f(\bZ\mo {\blue z'}\black) \cdot
+f(\bZ\mo {\blue z''}\black) \cdot
 \,\dotsb\ 
 \cdot
 \P(F\mo\vf \| \yI)
 $$
 
-for any (different) units $\yellow u', u'', \dotsc$ and any (even equal) values $\blue z', z'', \dotsc$.
+for any (different) units $u', u'', \dotsc$ and any (even equal) values $\blue z', z'', \dotsc$.
 
 In the sum above, $\vf$ runs over all possible frequency distributions for the full population.
 
 [More correctly the sum is an integral, because $F$ is a continuous quantity. We should write $\P(
-Z_{u'}\mo z' \and 
+\bZ_{u'}\mo {\blue z'} \and 
 \dotsb
 \| \yI
 ) = \int 
-f(Z\mo z')  \cdot
+f(\bZ\mo {\blue z'})  \cdot
 \,\dotsb\ 
 \cdot
 \p(\vf \| \yI)\,\di\vf$
@@ -123,8 +117,8 @@ f'(C\mo\yy) \cdot \P(F\mo\vfa \| \yul) +
 f''(C\mo\yy) \cdot \P(F\mo\vfb \| \yul)
 \\[1ex]
 &=
-{\green\frac{2}{3}}\cdot 75\% +
-{\green\frac{1}{2}}\cdot 25\%
+{\lblue\frac{2}{3}}\cdot 75\% +
+{\lblue\frac{1}{2}}\cdot 25\%
 \\[1ex]
 &= \boldsymbol{62.5\%}
 \end{aligned}
@@ -150,8 +144,8 @@ f''(C\mo\yy) \cdot f''(C\mo\yn) \cdot  f''(C\mo\yy) \cdot
 \P(F\mo\vfb \| \yul)
 \\[2ex]
 &=
-{\green\frac{2}{3}}\cdot {\red\frac{1}{3}}\cdot {\green\frac{2}{3}}\cdot 75\% +
-{\green\frac{1}{2}}\cdot {\red\frac{1}{2}}\cdot {\green\frac{1}{2}}\cdot 25\%
+{\lblue\frac{2}{3}}\cdot {\yellow\frac{1}{3}}\cdot {\lblue\frac{2}{3}}\cdot 75\% +
+{\lblue\frac{1}{2}}\cdot {\yellow\frac{1}{2}}\cdot {\lblue\frac{1}{2}}\cdot 25\%
 \\[2ex]
 &\approx \boldsymbol{14.236\%}
 \end{aligned}
@@ -229,11 +223,11 @@ f(C\mo\yn) \cdot
 \\[2ex]
 &=
 \frac{
-{\green\frac{2}{3}}\cdot {\red\frac{1}{3}}\cdot 75\% +
-{\green\frac{1}{2}}\cdot {\red\frac{1}{2}}\cdot 25\%
+{\lblue\frac{2}{3}}\cdot {\yellow\frac{1}{3}}\cdot 75\% +
+{\lblue\frac{1}{2}}\cdot {\yellow\frac{1}{2}}\cdot 25\%
 }{
-{\red\frac{1}{3}}\cdot 75\% +
-{\red\frac{1}{2}}\cdot 25\%
+{\yellow\frac{1}{3}}\cdot 75\% +
+{\yellow\frac{1}{2}}\cdot 25\%
 }
 \\[2ex]
 &\approx\frac{
@@ -285,7 +279,47 @@ flowchart LR
   style C fill:#e67,color:#fff,stroke-width:0px
 ```
 
-This fact becomes indeed clear if we check how the agent's beliefs about the frequency hypotheses change. In the cube-collection example of [§ @sec-freq-not-known], the agent has initial probabilities
+as opposed to this:
+
+:::{.columns}
+::::{.column width="15%"}
+
+::::
+
+::::{.column width="70%"}
+```{mermaid}
+flowchart LR
+  A([observed units]) --> B([population frequencies]) --> C([unobserved units])
+  A ---> C
+  %%
+  linkStyle 0 stroke:#47a
+  linkStyle 1 stroke:#47a
+  linkStyle 2 stroke:#47a
+  style A fill:#283,color:#fff,stroke-width:0px
+  style B fill:#bbb,color:#000,stroke-width:0px
+  style C fill:#e67,color:#fff,stroke-width:0px
+```
+::::
+
+:::
+
+:::{.callout-important}
+## {{< fa exclamation-triangle >}} Informational connections
+The graphs above represent [**informational**]{.purple} connections, not "causal". The directed arrows roughly mean "...provides information about..."; they do not mean "...causes...".
+
+In the first graph, the lack of an arrow from [*observed units*]{.green} to [*unobserved units*]{.red} means that all information provided by the observed units for the unobserved ones is fully contained in the information about frequencies.
+:::
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+[*On the notion of cause*](https://hvl.instructure.com/courses/25074/modules/items/719861)
+:::
+::::
+
+\
+
+The informational relation between observed units, frequencies, and unobserved units becomes clear if we check how the agent's beliefs about the frequency hypotheses change as observations are made. In the cube-collection example of [§ @sec-freq-not-known], the agent has initial probabilities
 
 $$
 \P(F\mo\vfa \| \yul) = 75\%
@@ -344,7 +378,7 @@ and an analogous calculation yields $\P(F\mo\vfa \| C_1\mo\yy \and \yul)=33.333\
 
 This result makes sense, because according to the hypothesis $F\mo\vfb$ there is a higher proportion of $\yn$ cubes than according to $F\mo\vfa$, and $\yn$ cube has been observed. The hypothesis $F\mo\vfb$ therefore becomes slightly more plausible, and $F\mo\vfa$ slightly less.
 
-Using the updated degree of belief above we also have another way to calculate the conditional probability $\P(C_{1} \mo \yy \| C_{2} \mo \yn \and \yul)$, using the derived rule of "extension of the conversation" in a different way:
+Using the updated degree of belief above we also have another way to calculate the conditional probability $\P(C_{1} \mo \yy \| C_{2} \mo \yn \and \yul)$, using the derived rule of "extension of the conversation" in a different manner:
 
 :::{.column-page-inset-right}
 $$
@@ -356,7 +390,7 @@ $$
 \cdot
 \P(F\mo\vf \| C_{2} \mo \yn \and \yul)
 \\[2ex]
-\text{\grey\scriptsize(no learning if frequencies are known)}\quad
+\text{\grey\scriptsize(no learning if frequencies are known)}\enspace
 &=\sum_{\vf}
 \P(C_{1} \mo \yy \|  F\mo\vf \and \yul)
 \cdot
@@ -384,20 +418,16 @@ f''(C \mo \yy)
 \P(F\mo\vfb \| C_{2} \mo \yn \and \yul)
 \\[2ex]
 &=
-{\green\frac{2}{3}} \cdot 66.667\%
+{\lblue\frac{2}{3}} \cdot 66.667\%
 +
-{\green\frac{1}{2}} \cdot 33.333\%
+{\lblue\frac{1}{2}} \cdot 33.333\%
 \\[2ex]
 &= \boldsymbol{61.111\%}
 \end{aligned}
 $$
 :::
 
-The result is exactly as in [§ @sec-learning-general] -- as it should be: remember from [chapter @sec-probability] that the four rules of inference are built so as to mathematically guarantee this kind of logical self-consistency
-
-\
-
-----
+The result is exactly as in [§ @sec-learning-general] -- as it should be: remember from [chapter @sec-probability] that the four rules of inference are built so as to mathematically guarantee this kind of logical self-consistency.
 
 \
 
@@ -408,3 +438,24 @@ The result is exactly as in [§ @sec-learning-general] -- as it should be: rem
 - §§ 8.1--8.6 of [*Probability*](https://hvl.instructure.com/courses/25074/modules/items/675505)
 :::
 
+\
+
+## How to assign the probabilities for the frequencies? {#sec-prob-for-freqs}
+
+
+
+$$
+\P(
+\bZ_{u'}\mo {\blue z'} \and 
+\bZ_{u''}\mo {\blue z''} \and 
+\dotsb
+\| \yI
+)
+\approx
+\sum_{\vf}
+f(\bZ\mo {\blue z'}\black) \cdot
+f(\bZ\mo {\blue z''}\black) \cdot
+\,\dotsb\ 
+\cdot
+\P(F\mo\vf \| \yI)
+$$
