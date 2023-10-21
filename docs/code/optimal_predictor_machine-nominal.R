@@ -63,7 +63,7 @@ buildK <- function(data, metadata, alphas, verbose=FALSE){
     ## Building a discrete mixture of Dirichlet distributions
     ## with concentration params alphas
     if(missing(alphas) || is.null(alphas)){
-        alphas <- 2^seq(floor(-log2(SS)), 0, by=1)
+        alphas <- 2^seq(floor(-log2(SS)), 2, by=1)
     }else if(is.logical(alphas) && alphas){
         alphas <- 1/sqrt(SS)
     }
@@ -193,7 +193,7 @@ plotsamples1D <- function(K, n=100, predict=TRUE){
     ##
     tplot(y=t(samples), x=1:ncol(samples), type='b',
       xticks=1:ncol(samples), xlabels=dimnames(samples)[[2]],
-      xlab=attr(samples,'variates'), ylab='frequency',
+      xlab=bquote(italic(.(names(dimnames(samples))[2]))), ylab='frequency',
       ylim=c(0,NA),
       lty=1, lwd=1, pch=16, col=7, alpha=0.5, cex=0.75
       )
