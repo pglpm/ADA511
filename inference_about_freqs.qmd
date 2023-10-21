@@ -37,7 +37,7 @@ But we saw in [§ @sec-moreunit-freq-known] that the probability for a sequenc
 
 :::::{.column-page-inset-right}
 :::{.callout-note style="font-size:120%"}
-## de Finetti's theorem
+## de Finetti's representation theorem
 ::::{style="font-size:120%"}
 
 If an agent has background information $\yI$ about a population saying that
@@ -526,7 +526,7 @@ Luckily, if\ \ $\P(F\mo\vf \| \yI)$\ \ is "open-minded", that is, if it doesn't 
 
 ### The Dirichlet-mixture belief distribution for frequency distributions over nominal variates
 
-In this course we sadly shall not examine in depth any mathematical expressions for belief distributions over frequencies. We briefly discuss here one belief distribution that is used in the prototype "optimal predictor machine" applied in the following chapters. We call it the [**Dirichlet-mixture**]{.blue} belief distribution. The state of knowledge underlying this distribution will be denoted $\yK$.
+In this course we sadly shall not examine in depth any mathematical expressions for belief distributions over frequencies. We briefly discuss here one belief distribution that is used in the prototype "optimal predictor machine" applied in the following chapters. We shall call it the [**Dirichlet-mixture**]{.blue} belief distribution. The state of knowledge underlying this distribution will be denoted $\yK$.
 
 The Dirichlet-mixture distribution is appropriate for frequency distributions over discrete, *nominal* variates, or joint variates with all nominal components. It is not appropriate to discrete ordinal variates, because it implicitly assumes that there is no natural order to the variate values.
 
@@ -625,6 +625,103 @@ Calculate the formula above (disregard the missing proportionality constant) for
 :::
 
 
+### Joint probabilities about units with the Dirichlet-mixture distribution
 
+A mathematical advantage of the Dirichlet-mixture belief distribution is that some formulae where it enters can be computed exactly. The most important is the formula in de Finetti's representation theorem ([§ @sec-freq-not-known]).
 
+Take a sequence of observations for $N$ units, for which the variate $\bZ$ is seen to have values $\blue z_1, z_2, \dotsc, z_N$. Some or even all of these $N$ values might be identical; denote by $\#\bz$ the multiplicity with which value $\bz$ occurs in the sequence. For instance, in the cube-collection example, the sequence
 
+$$
+C_1\mo\yy \and C_2\mo\yy \and C_3\mo\yn \and C_4\mo\yy
+$$
+
+has $\#\yy = 3$ and $\#\yn = 1$, whereas the sequence^[Remember that the agent has exchangeable beliefs, so the units' IDs don't matter ([§ @sec-exchaneable-distr])!]
+
+$$
+C_{32}\mo\yn \and C_{102}\mo\yn \and C_{8}\mo\yn
+$$
+
+has $\#\yy = 0$ and $\#\yn = 3$.
+
+With the Dirichlet-mixture distribution we have the following general equality:
+
+$$
+\begin{aligned}
+\P(
+\blue Z_{1}\mo z_1 \and 
+\dotsb
+\and
+Z_{N}\mo  z_N
+\black
+\| \yK
+)
+&=
+\int
+f(\bZ\mo {\blue z_{1}}\black) \cdot
+\,\dotsb\, \cdot
+f(\bZ\mo {\blue z_{N}}\black) \cdot
+\p(F\mo\vf \| \yK)
+\,\di\vf
+\\[2ex]
+&=
+\sum_{\alpha=\alpha_{\text{min}}}^{\alpha_{\text{max}}}
+\frac{
+\prod_{\bz} \bigl(2^{\alpha} + \#\bz - 1\bigr)!
+}{
+\bigl(M\,2^{\alpha} + N -1 \bigr)!
+}
+\ \cdot\ 
+\sum_{\alpha=\alpha_{\text{min}}}^{\alpha_{\text{max}}}
+\frac{
+\bigl(M\,2^{\alpha} -1 \bigr)!
+}{
+{\bigl(2^{\alpha} - 1\bigr)!}^M
+}
+\end{aligned}
+$$
+
+The second factor (where no $\#\bz$ or $N$ appear) is the same whenever we deal with the same population (it only depends on $M$), so it disappears whenever we take ratios of probabilities like the one above.
+
+As a concrete numerical example,
+
+:::{.column-page-right}
+$$
+\begin{aligned}
+\P(
+\underbracket[0.1ex]{C_1\mo\yy \and C_2\mo\yy \and C_3\mo\yn \and C_4\mo\yy}_{
+\grey N=4\quad \#\cat{Y}=3\quad \#\cat{N}=1
+}
+\| \yK
+)
+&=
+\sum_{\alpha=-1}^{2}
+\frac{
+\bigl(2^{\alpha} + 3 - 1\bigr)! \cdot
+\bigl(2^{\alpha} + 1 - 1\bigr)!
+}{
+\bigl(2\cdot 2^{\alpha} + 4 -1 \bigr)!
+}
+\ \cdot\ 
+\sum_{\alpha=-1}^{2}
+\frac{
+\bigl(2\cdot 2^{\alpha} -1 \bigr)!
+}{
+{\bigl(2^{\alpha} - 1\bigr)!}^2
+}
+\\[1ex]
+&=
+\boldsymbol{0.042 331}
+\end{aligned}
+$$
+:::
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Using the formula above, calculate:
+
+- $\P(C_1\mo\yy\| \yK)$ ; does the result make sense?
+
+- $\P(C_{32}\mo\yn \and C_{102}\mo\yn \and C_{8}\mo\yn\| \yK)$
+
+<!-- 0.293431 -->
+:::
