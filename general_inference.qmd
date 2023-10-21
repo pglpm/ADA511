@@ -1,0 +1,117 @@
+# [Final inference formulae]{.green} {#sec-final-inference}
+{{< include macros.qmd >}}
+{{< include macros_exchangeability.qmd >}}
+
+We finally have all ingredients and formulae to use the probability calculus to make many kinds of inferences about some units in a population, given observations from other units. Keep in mind the minimal assumptions we are making: (1) beliefs about units are exchangeable, (2)the population size is practically infinite. Remember that these assumptions also underlie all machine-learning algorithms for "supervised" and "unsupervised" learning.
+
+We still use the general scenario and notation of [§ @sec-pop-inference-notation].
+
+## Recap of the main inference formulae {#sec-recap-general-formulae}
+
+All inferences about units of a population rely on the joint probability for any number of units, which is given by the following formula ([§ @sec-freq-not-known]):
+
+:::{.callout-note}
+## de Finetti's representation
+
+$$
+\P(
+\bZ_{u'}\mo {\blue z'} \and 
+\bZ_{u''}\mo {\blue z''} \and 
+\dotsb
+\| \yI
+)
+\approx
+\sum_{\vf}
+f(\bZ\mo {\blue z'}\black) \cdot
+f(\bZ\mo {\blue z''}\black) \cdot
+\,\dotsb\ 
+\cdot
+\P(F\mo\vf \| \yI)
+$$
+
+:::
+
+Where $\P(F\mo\vf\|\yI)$ is problem-dependent and must be specified by the agent.
+
+
+This formula can then be used to draw two main kinds of inferences:
+
+:::{.callout-note}
+## Inferences about all variates $Z$ of a new unit, given observed units ("unsupervised learning")
+
+$$
+\begin{aligned}
+    &\P\bigl(
+	{\red Z_{N+1} \mo z_{N+1}}
+	\pmb{\|[\big]} 
+    \green Z_N \mo z_N \and 
+	\dotsb \and 
+	Z_1 \mo z_1 \and X_1 \mo x_1 
+    \black\and {\yI} \bigr)
+	\\[2ex]
+	&\qquad{}
+	=
+	\frac{
+	    \P\bigl(
+	\red Z_{N+1} \mo z_{N+1}
+	\black \and
+    \green Z_N \mo z_N \and X_N \mo x_N
+	\and
+	\dotsb \and 
+	\green Z_1 \mo z_1 
+    \black\pmb{\|[\big]} {\yI} \bigr)
+}{
+	 \sum_{\purple z} \P\bigl(
+	{\red Z_{N+1} \mo {\purple z}} 
+		\and
+    \green Z_N \mo z_N \and 
+	\dotsb \and 
+	Z_1 \mo z_1 
+    \black\pmb{\|[\big]}  {\yI} \bigr)
+}
+\end{aligned}
+$$
+:::
+
+::::{.column-body-outset-right}
+:::{.callout-note}
+## Inferences about some variates $Y$ of a new unit, given other of its variates $X$ and given observed units ("supervised learning")
+
+$$
+\begin{aligned}
+    &\P\bigl(
+	{\red Y_{N+1} \mo y_{N+1}}
+	\pmb{\|[\big]} 
+	{\red X_{N+1} \mo x_{N+1}}\, \and\,
+    \green Y_N \mo y_N \and X_N \mo x_N \and
+	\dotsb \and 
+	Y_1 \mo y_1 \and X_1 \mo x_1 
+    \black\and {\yI} \bigr)
+	\\[2ex]
+	&\qquad{}=
+	\frac{
+	    \P\bigl(
+	\red Y_{N+1} \mo y_{N+1} \and
+	\red X_{N+1} \mo x_{N+1}
+	\black
+		\and
+    \green Y_N \mo y_N \and X_N \mo x_N
+	\and
+	\dotsb \and 
+	\green Y_1 \mo y_1 \and X_1 \mo x_1 
+    \black\pmb{\|[\big]} {\yI} \bigr)
+}{
+	 \sum_{\purple y} \P\bigl(
+	{\red Y_{N+1} \mo {\purple y}} \and
+	{\red X_{N+1} \mo x_{N+1}}
+		\and
+    \green Y_N \mo y_N \and X_N \mo x_N \and
+	\dotsb \and 
+	Y_1 \mo y_1 \and X_1 \mo x_1 
+    \black\pmb{\|[\big]}  {\yI} \bigr)
+}
+\end{aligned}
+$$
+
+:::
+::::

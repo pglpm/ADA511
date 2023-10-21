@@ -1,0 +1,630 @@
+# [Inference about frequencies]{.green} {#sec-inference-exch}
+{{< include macros.qmd >}}
+{{< include macros_exchangeability.qmd >}}
+
+## Inference when population frequencies aren't known {#sec-freq-not-known}
+
+In [chapter @sec-inference-from-freqs] we considered an agent that has exchangeable beliefs and that knows the full-population frequencies. The degrees of belief of such an agent have a very simple form: products of frequencies. But for such an agent the observations of units *doesn't give any useful information* for drawing inferences about new units: such observations provide frequencies which the agent already knows.
+
+Situations where we have complete frequency knowledge can be common in engineering problems, where the physical laws underlying the phenomena involved are known and computable. They are far less common in data-science and machine-learning applications: here we must consider agents that do not know the full-population frequencies.
+
+How does such an agent calculate probabilities about units? The answer is actually a simple application of the "extension of the conversation" ([§ @sec-extension-conversation], which boil down to applications of the `and` and `or` rules). A probability given that the frequency distribution is not known is equal to the average of the probabilities given each possible frequency distribution, weighted by the probabilities of the frequency distributions:
+
+$$
+\begin{aligned}
+&\P(
+\bZ_{u'}\mo {\blue z'} \and 
+\bZ_{u''}\mo {\blue z''} \and 
+\dotsb
+\| \yI
+)
+\\[2ex]
+&\qquad{}=
+\sum_{\vf}
+\P(
+\bZ_{u'}\mo {\blue z'} \and 
+\bZ_{u''}\mo {\blue z''} \and 
+\dotsb
+\| F\mo\vf \and \yI
+)
+\cdot
+\P(F\mo\vf \| \yI)
+\end{aligned}
+$$
+
+But we saw in [§ @sec-moreunit-freq-known] that the probability for a sequence of values given a known frequency is just the product of the value's frequencies. We thus have our long-sought formula:
+
+
+:::::{.column-page-inset-right}
+:::{.callout-note style="font-size:120%"}
+## de Finetti's theorem
+::::{style="font-size:120%"}
+
+If an agent has background information $\yI$ about a population saying that
+
+- beliefs about units are exchangeable
+- the population size is practically infinite
+
+then
+
+$$
+\P(
+\bZ_{u'}\mo {\blue z'} \and 
+\bZ_{u''}\mo {\blue z''} \and 
+\dotsb
+\| \yI
+)
+\approx
+\sum_{\vf}
+f(\bZ\mo {\blue z'}\black) \cdot
+f(\bZ\mo {\blue z''}\black) \cdot
+\,\dotsb\ 
+\cdot
+\P(F\mo\vf \| \yI)
+$$
+
+for any (different) units $u', u'', \dotsc$ and any (even equal) values $\blue z', z'', \dotsc$.
+
+In the sum above, $\vf$ runs over all possible frequency distributions for the full population.
+
+[More correctly the sum is an integral, because $F$ is a continuous quantity. We should write $\P(
+\bZ_{u'}\mo {\blue z'} \and 
+\dotsb
+\| \yI
+) = \int 
+f(\bZ\mo {\blue z'})  \cdot
+\,\dotsb\ 
+\cdot
+\p(\vf \| \yI)\,\di\vf$
+]{.grey .small}
+::::
+:::
+:::::
+
+This result is called [**de Finetti's representation theorem**]{.blue} for exchangeable belief distributions. It must be emphasized that **this result is actually independent of any real or imaginary population frequencies**. We took a route to it through the idea of population frequencies only to help our intuition. If for any reason you find the idea of a "limit frequency for an infinite population" somewhat suspicious, then don't worry: the formula above actually does not rely on it. The formula results from the assumption has exchangeable beliefs about a collection of units that can potentially be continued without end.
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+[*Foresight: Its logical laws, its subjective sources*](https://hvl.instructure.com/courses/25074/modules/items/720159). This essay gives much insight on our reasoning process in making forecasts and learning from experience.
+:::
+::::
+
+\
+
+Let's see how this formula works in the simple example of the collection of 3 million cubes from [§ @sec-moreunit-freq-known]. Suppose that the agent:
+
+:::{.column-margin}
+![](cubes.jpg){width=50%}
+:::
+
+- knows that the collection consists of:
+    
+    + either a proportion 2/3 of $\yy$ cubes and 1/3 of $\yn$ cubes; denote these frequencies [with $\vfa$]{.m}
+    
+    + or a proportion 1/2 of $\yy$ cubes and 1/2 of $\yn$ cubes; denote these frequencies [with $\vfb$]{.m}
+
+- assigns a $75\%$ degree of belief to the first hypothesis, and $25\%$ to the second (so the sentence $F\mo\vfa \lor F\mo\vfb$ has probability $1$):
+    
+    $$
+\P(F\mo\vfa \| \yul) = 75\%
+\qquad 
+\P(F\mo\vfb \| \yul) = 25\%
+$$
+
+What is the agent's degree of belief that cube #1 is labelled $\yy$? According to the derived rule of extension of the conversation, that is, the main formula written above, we find:
+
+$$
+\begin{aligned}
+\P(C_{1} \mo \yy \| \yul)
+&=
+\sum_{\vf}
+f(C\mo\yy) \cdot \P(F\mo\vf \| \yul)
+\\[1ex]
+&=
+f'(C\mo\yy) \cdot \P(F\mo\vfa \| \yul) +
+f''(C\mo\yy) \cdot \P(F\mo\vfb \| \yul)
+\\[1ex]
+&=
+{\lblue\frac{2}{3}}\cdot 75\% +
+{\lblue\frac{1}{2}}\cdot 25\%
+\\[1ex]
+&= \boldsymbol{62.5\%}
+\end{aligned}
+$$
+
+In an analogous way we can calculate, for instance, the agent's belief that cube #1 is $\yy$, cube #2 is  $\yn$, and cube #3 is $\yy$:
+
+:::{.column-page-inset-right}
+$$
+\begin{aligned}
+\P(C_{1} \mo \yy \and C_{2} \mo \yn \and C_{3} \mo \yy \| \yul)
+&\approx
+\sum_{\vf}
+f(C\mo\yy) \cdot f(C\mo\yn) \cdot f(C\mo\yy) \cdot
+\P(F\mo\vf \| \yul)
+\\[2ex]
+&=
+f'(C\mo\yy) \cdot f'(C\mo\yn) \cdot  f'(C\mo\yy) \cdot 
+\P(F\mo\vfa \| \yul) + {}
+\\[1ex]
+&\qquad
+f''(C\mo\yy) \cdot f''(C\mo\yn) \cdot  f''(C\mo\yy) \cdot 
+\P(F\mo\vfb \| \yul)
+\\[2ex]
+&=
+{\lblue\frac{2}{3}}\cdot {\yellow\frac{1}{3}}\cdot {\lblue\frac{2}{3}}\cdot 75\% +
+{\lblue\frac{1}{2}}\cdot {\yellow\frac{1}{2}}\cdot {\lblue\frac{1}{2}}\cdot 25\%
+\\[2ex]
+&\approx \boldsymbol{14.236\%}
+\end{aligned}
+$$
+:::
+
+\
+
+This formula generalizes to any population, any variates, and any number of hypotheses about the frequencies.
+
+Mathematical and, even more, computational complications arise when we consider *all possible* frequency distributions, since there is a practically infinite number of them; they form a continuum in fact. But do not let these practical difficulties affect the intuitive picture behind them, which is simple to grasp once you've considered some simple examples.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Consider a state of knowledge $\se{K}'$ according to which:
+
+::::{}
+- The cube collection may have a proportion $0/10$ of $\yy$ cubes (and $9/10$ of $\yn$ cubes); call this frequency distribution $\vf_0$
+- The cube collection may have a proportion $1/10$ of $\yy$ cubes; call this $\vf_1$
+- and so on... up to
+- a proportion $10/10$ of $\yy$ cubes; call this $\vf_{10}$
+::::
+
+- The probability of each of these frequency hypotheses is $1/11$, that is:
+    
+	$$
+	\begin{aligned}
+	&\P(F\mo\vf_{0} \| \se{K}') = 1/11 \\[1ex]
+	&\P(F\mo\vf_{1} \| \se{K}') = 1/11 \\[1ex]
+	&\dotso\\[1ex]
+	&\P(F\mo\vf_{10} \| \se{K}') = 1/11
+	\end{aligned}
+	$$
+
+Calculate the probabilities
+
+$$
+\P(C_1\mo\yy \and C_2\mo\yy \|\se{K}') \qquad
+\P(C_1\mo\yy \and C_2\mo\yn \|\se{K}') \qquad
+\P(C_1\mo\yn \and C_2\mo\yn \|\se{K}')
+$$
+<!-- 0.35 0.15 0.35 -->
+
+Do they all have the same value? Try to explain why or why not.
+:::
+
+
+## Learning from observed units {#sec-learning-general}
+
+Staying with the same cube-collection scenario, let's now ask what the agent's degree of belief is that cube #1 is labelled $\yy$, *given that the agent has observed cube #2 to be $\yn$*. In the case of an agent that knows the full-population frequencies we saw [§ @sec-no-learn-freqs] that this degree of belief is actually unaffected by other observations. What happens when the population frequencies are not known?
+
+The calculation is straightforward:
+
+:::{.column-page-inset-right}
+$$
+\begin{aligned}
+\P(C_{1} \mo \yy \| C_{2} \mo \yn \and \yul)
+&=
+\frac{
+\P(C_{1} \mo \yy \and C_{2} \mo \yn \| \yul)
+}{
+\P(C_{2} \mo \yn \| \yul)
+}
+\\[2ex]
+&\approx
+\frac{
+\sum_{\vf}
+f(C\mo\yy) \cdot f(C\mo\yn) \cdot
+\P(F\mo\vf \| \yul)
+}{
+\sum_{\vf}
+f(C\mo\yn) \cdot
+\P(F\mo\vf \| \yul)
+}
+\\[2ex]
+&=
+\frac{
+{\lblue\frac{2}{3}}\cdot {\yellow\frac{1}{3}}\cdot 75\% +
+{\lblue\frac{1}{2}}\cdot {\yellow\frac{1}{2}}\cdot 25\%
+}{
+{\yellow\frac{1}{3}}\cdot 75\% +
+{\yellow\frac{1}{2}}\cdot 25\%
+}
+\\[2ex]
+&\approx\frac{
+22.9167\%
+}{
+37.5000\%
+}
+\\[2ex]
+&= \boldsymbol{61.111\%}
+\end{aligned}
+$$
+:::
+
+Knowledge that $C_{2}\mo\yn$ thus *does* affect the agent's belief about $C_{1}\mo\yy$:
+
+$$
+\P(C_{1} \mo \yy \|  \yul) = 62.5\%
+\qquad
+\P(C_{1} \mo \yy \| C_{2} \mo \yn \and \yul) \approx 61.1\%
+$$
+
+In particular, the observation of one $\yn$ cube has somewhat decreased the probability of observing a new $\yy$ one.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+- Calculate the minimal number of $\yn$ observations needed for lowering the agent's degree of belief of observing a $\yy$ to $55\%$ or less.
+<!-- 0.611111 0.595238 0.578431 0.562016 0.547198 -->
+    
+	Does it seem possible to lower the agent's belief to less than $50\%$? Explain why.
+
+- Calculate the minimal number of $\yy$ observations needed for increasing the agent's degree of belief of observing a $\yy$ to $65\%$ or more.
+<!-- 0.633333 0.640351 0.646119 0.650766 -->
+    
+	Does it seem possible to increase the agent's belief to more than $2/3$? Explain why.
+:::
+
+## How learning works: learning about frequencies {#sec-learn-freqs}
+
+An agent having full-population frequency information does not learn^[remember the warning of [§ @sec-no-learn-freqs] about "learning"] from observation of units, whereas an agent not having such information does learn from observation of units. This fact shows how learning from observed to unobserved units actually works. Crudely speaking, observations do not directly affect the beliefs about unobserved units, but instead affect the **beliefs about the population frequencies**. And these in turn affect the beliefs about unobserved units. Graphically this could be represented as follows:
+
+```{mermaid}
+flowchart LR
+  A([observed units]) --> B([population frequencies]) --> C([unobserved units])
+  %%
+  linkStyle 0 stroke:#47a,fill:#47a
+  linkStyle 1 stroke:#47a,fill:#47a
+  style A fill:#283,color:#fff,stroke-width:0px
+  style B fill:#bbb,color:#000,stroke-width:0px
+  style C fill:#e67,color:#fff,stroke-width:0px
+```
+
+as opposed to this:
+
+:::{.columns}
+::::{.column width="15%"}
+
+::::
+
+::::{.column width="70%"}
+```{mermaid}
+flowchart LR
+  A([observed units]) --> B([population frequencies]) --> C([unobserved units])
+  A ---> C
+  %%
+  linkStyle 0 stroke:#47a
+  linkStyle 1 stroke:#47a
+  linkStyle 2 stroke:#47a
+  style A fill:#283,color:#fff,stroke-width:0px
+  style B fill:#bbb,color:#000,stroke-width:0px
+  style C fill:#e67,color:#fff,stroke-width:0px
+```
+::::
+
+:::
+
+:::{.callout-important}
+## {{< fa exclamation-triangle >}} Information connections
+The graphs above represent [**informational**]{.purple} connections, not "causal". The directed arrows roughly mean "...provides information about..."; they do not mean "...causes...".
+
+In the first graph, the lack of an arrow from [*observed units*]{.green} to [*unobserved units*]{.red} means that all information provided by the observed units for the unobserved ones is fully contained in the information about frequencies.
+:::
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+[*On the notion of cause*](https://hvl.instructure.com/courses/25074/modules/items/719861)
+:::
+::::
+
+\
+
+The informational relation between observed units, frequencies, and unobserved units becomes clear if we check how the agent's beliefs about the frequency hypotheses change as observations are made. In the cube-collection example of [§ @sec-freq-not-known], the agent has initial probabilities
+
+$$
+\P(F\mo\vfa \| \yul) = 75\%
+\qquad 
+\P(F\mo\vfb \| \yul) = 25\%
+$$
+
+where $\vfa$ gives frequency $2/3$ to $\yy$, and $\vfb$ gives frequency $1/2$ to $\yy$. How do these probabilities change, conditional on the agent's observing that cube #2 is labelled $\yn$? We just need to use Bayes's theorem. For the first hypothesis $F\mo\vfa$:
+
+:::{.column-page-right}
+$$
+\begin{aligned}
+\P(F\mo\vfa \| C_2\mo\yn \and \yul) &=
+\frac{
+\P(C_2\mo\yn \| F\mo\vfa \and \yul) \cdot
+\P(F\mo\vfa \| \yul)
+}{
+\P(C_2\mo\yn \| F\mo\vfa \and \yul) \cdot
+\P(F\mo\vfa \| \yul)
++
+\P(C_2\mo\yn \| F\mo\vfb \and \yul) \cdot
+\P(F\mo\vfb \| \yul)
+}
+\\[1ex]
+&=
+\frac{
+f'(C\mo\yn) \cdot
+\P(F\mo\vfa \| \yul)
+}{
+f'(C\mo\yn) \cdot
+\P(F\mo\vfa \| \yul)
++
+f''(C\mo\yn) \cdot
+\P(F\mo\vfb \| \yul)
+}
+\\[1ex]
+&=
+\frac{
+\frac{1}{3} \cdot
+75\%
+}{
+\frac{1}{3} \cdot
+75\%
++
+\frac{1}{2} \cdot
+25\%
+}
+\\[2ex]
+&=
+\boldsymbol{66.667\%}
+\end{aligned}
+$$
+:::
+
+and an analogous calculation yields $\P(F\mo\vfa \| C_1\mo\yy \and \yul)=33.333\%$.
+
+This result makes sense, because according to the hypothesis $F\mo\vfb$ there is a higher proportion of $\yn$ cubes than according to $F\mo\vfa$, and $\yn$ cube has been observed. The hypothesis $F\mo\vfb$ therefore becomes slightly more plausible, and $F\mo\vfa$ slightly less.
+
+Using the updated degree of belief above we also have another way to calculate the conditional probability $\P(C_{1} \mo \yy \| C_{2} \mo \yn \and \yul)$, using the derived rule of "extension of the conversation" in a different manner:
+
+:::{.column-page-inset-right}
+$$
+\begin{aligned}
+\P(C_{1} \mo \yy \| C_{2} \mo \yn \and \yul)
+&=
+\sum_{\vf}
+\P(C_{1} \mo \yy \| C_{2} \mo \yn \and F\mo\vf \and \yul)
+\cdot
+\P(F\mo\vf \| C_{2} \mo \yn \and \yul)
+\\[2ex]
+\text{\grey\scriptsize(no learning if frequencies are known)}\enspace
+&=\sum_{\vf}
+\P(C_{1} \mo \yy \|  F\mo\vf \and \yul)
+\cdot
+\P(F\mo\vf \| C_{2} \mo \yn \and \yul)
+\\[2ex]
+&=
+\P(C_{1} \mo \yy \|  F\mo\vfa \and \yul)
+\cdot
+\P(F\mo\vfa \| C_{2} \mo \yn \and \yul)
++{}
+\\[1ex]
+&\qquad\P(C_{1} \mo \yy \|  F\mo\vfb \and \yul)
+\cdot
+\P(F\mo\vfb \| C_{2} \mo \yn \and \yul)
+\\[2ex]
+&=
+f'(C \mo \yy)
+\cdot
+\P(F\mo\vfa \| C_{2} \mo \yn \and \yul)
++{}
+\\[1ex]
+&\qquad
+f''(C \mo \yy)
+\cdot
+\P(F\mo\vfb \| C_{2} \mo \yn \and \yul)
+\\[2ex]
+&=
+{\lblue\frac{2}{3}} \cdot 66.667\%
++
+{\lblue\frac{1}{2}} \cdot 33.333\%
+\\[2ex]
+&= \boldsymbol{61.111\%}
+\end{aligned}
+$$
+:::
+
+The result is exactly as in [§ @sec-learning-general] -- as it should be: remember from [chapter @sec-probability] that the four rules of inference are built so as to mathematically guarantee this kind of logical self-consistency.
+
+\
+
+The fact that the agent is actually learning about the full-population frequencies allows it to draw improved inferences not only about units, but also about characteristics intrinsic to the population itself, and also about its own performance in future inferences. For instance, the agent can even forecast the maximal accuracy that can be obtained in future inferences. We shall quickly explore these possibilities in a later chapter.
+
+::: {.callout-caution}
+## {{< fa book >}} Study reading
+- Ch. 4 of [*Probability Theory*](https://hvl.instructure.com/courses/25074/modules/items/660090)
+
+- §§ 8.1--8.6 of [*Probability*](https://hvl.instructure.com/courses/25074/modules/items/675505)
+
+- Skim through [*De finetti's theorem on exchangeable variables*](https://hvl.instructure.com/courses/25074/modules/items/720135)
+:::
+
+\
+
+## How to assign the probabilities for the frequencies? {#sec-prob-for-freqs}
+
+The general formula we found for the joint probability:
+
+$$
+\P(
+\bZ_{u'}\mo {\blue z'} \and 
+\bZ_{u''}\mo {\blue z''} \and 
+\dotsb
+\| \yI
+)
+\approx
+\sum_{\vf}
+f(\bZ\mo {\blue z'}\black) \cdot
+f(\bZ\mo {\blue z''}\black) \cdot
+\,\dotsb\ 
+\cdot
+\P(F\mo\vf \| \yI)
+$$
+
+allows us to draw many kinds of predictions about units, which we'll explore in the next chapter.
+
+But how does the agent assign\ \ [$\P(F\mo\vf \| \yI)$ ,]{.m}\ \ that is, the probability distribution (in fact, a density) over all possible frequency distributions? There is no general answer to this important question, for two main reasons.
+
+First, a proper answer is obviously problem-dependent. In fact\ \ [**$\P(F\mo\vf \| \yI)$\ \ is the place where the agent encodes any background information relevant to the problem**]{.blue}.
+
+Take the simple example of the tosses of a coin. If you (the agent) examines the coin and the tossing method and they seem ordinary to you, then you might assign probabilities like these:
+
+$$
+\begin{aligned}
+&\P(F\mo\pr{always heads} \| \yi[o]) \approx 0
+\\
+&\P(F\mo\pr{always tails} \| \yi[o]) \approx 0
+\\
+&\P(F\mo\pr{50\% heads 50\% tails} \| \yi[o]) \approx \text{\small very high}
+\end{aligned}
+$$
+
+But if you are told that the coin is a magician's one, with either two heads or two tails, and you don't know which, then you might assign probabilities like these:
+
+$$
+\begin{aligned}
+&\P(F\mo\pr{always heads} \| \yi[m]) = 1/2
+\\
+&\P(F\mo\pr{always tails} \| \yi[m]) = 1/2
+\\
+&\P(F\mo\pr{50\% heads 50\% tails} \| \yi[m]) = 0
+\end{aligned}
+$$
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Assume the state of knowledge $\yi[m]$ above and calculate:
+
+- $\P(\pr{heads 1st toss} \| \yi[m])$, the probability of heads at the first toss.
+
+- $\P(\pr{heads 2nd toss} \| \pr{heads 1st toss} \and \yi[m])$, the probability of heads at the second toss, given that heads was observed at the first.
+
+Explain your findings.
+:::
+
+Second, for complex situations with many variates of different types it is may be mathematically and computationally difficult to write down and encode\ \ [$\P(F\mo\vf \| \yI)$ .]{.m}\ \ Moreover, the multidimensional characteristics and quirks of this belief distribution can be difficult to grasp and understand.
+
+Yet it is a result of probability theory ([§ @sec-inference-origin]) that **we cannot avoid specifying $\P(F\mo\vf \| \yI)$**. Any "methods" that claim to avoid the specification of that probability distribution *are* covertly specifying one instead, and hiding it from sight. It is therefore best to have this distribution at least open to inspection rather than hidden.
+
+\
+
+Luckily, if\ \ $\P(F\mo\vf \| \yI)$\ \ is "open-minded", that is, if it doesn't exclude a priori any frequency distribution $\vf$, or in other words if it doesn't assign strictly zero belief to any $\vf$, then with enough data the updated belief distribution \ \ $\P(F\mo\vf \| \se{data} \and \yI)$\ \ will actually converge to the true frequency distribution of the full population. The tricky word here is "enough". In some problems a dozen observed units might be enough; in other problems a million observed units might not be enough yet.
+
+\
+
+### The Dirichlet-mixture belief distribution for frequency distributions over nominal variates
+
+In this course we sadly shall not examine in depth any mathematical expressions for belief distributions over frequencies. We briefly discuss here one belief distribution that is used in the prototype "optimal predictor machine" applied in the following chapters. We call it the [**Dirichlet-mixture**]{.blue} belief distribution. The state of knowledge underlying this distribution will be denoted $\yK$.
+
+The Dirichlet-mixture distribution is appropriate for frequency distributions over discrete, *nominal* variates, or joint variates with all nominal components. It is not appropriate to discrete ordinal variates, because it implicitly assumes that there is no natural order to the variate values.
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+Some of the theoretical basis for the choice of this belief distribution can be found in chapters 4--5 of [*The Estimation of Probabilities*](https://hvl.instructure.com/courses/25074/modules/items/720141).
+:::
+::::
+
+
+
+
+Suppose we have a simple or joint nominal variate $\bZ$ which can assume $M$ different values (these can be joint values, as in the examples of [§ @sec-know-freq]). As usual $\vf$ denotes a specific frequency distribution for the variate values. For a specific value $\bz$, $f(\bz)$ is the relative frequency with which that value occurs in the full population.
+
+The Dirichlet-mixture distribution assigns to $\vf$ a probability density proportional to the following formula:
+
+$$\p(F\mo\vf \| \yK) \propto
+\sum_{\alpha}\prod_{\bz} f(\bz)^{2^\alpha -1}
+$$
+
+The proportionality constant is just the number that ensures that the integral of the density above over all possible frequency distributions equals 1.
+
+The product "$\prod_{\bz}$" is over all $M$ possible values of $\bZ$. The sum "$\sum_{\alpha}$" is over an *integer* (positive or negative) parameter $\alpha$ that runs between a minimum and maximum value. In the applications of the next chapters the values are chosen as follows:
+
+$$
+2^{\alpha_{\text{min}}} \approx \frac{1}{M}
+\qquad
+2^{\alpha_{\text{max}}} = 4
+$$
+
+These minimum and maximum values turn out not to matter in most applications, even if we make $\alpha_{\text{min}}$ even lower or $\alpha_{\text{max}}$ even higher.
+
+\
+
+Let's see how this formula concretely looks like in the simple example of the large cube-collection (which had many analogies with coin tosses). 
+
+The variate $C$ can assume two values $\set{\yy,\yn}$, so $M=2$ in this case. The frequency distribution consists in two frequencies:
+
+$$f(\yy) \qquad f(\yn)$$
+
+of which only one can be chosen independently, since they must sum up to 1.
+
+Then
+
+$$
+2^{\alpha_{\text{min}}} \approx \frac{1}{2}\ ,
+\quad
+2^{\alpha_{\text{max}}} = 4
+\qquad\Longrightarrow\qquad
+\alpha_{\text{min}} = -1 \ ,
+\quad
+\alpha_{\text{max}} = 2
+$$
+
+and the agent's belief distribution for the frequencies is proportional to^[the proportionality constant, which can be calculated exactly in this case, is $1/(\pi+\frac{493}{420}) \approx 0.231 728$.]
+
+$$
+\begin{aligned}
+\p(F\mo\vf \| \yK) &\propto
+\sum_{\alpha}\prod_{\bz} f(\bz)^{2^\alpha -1}
+\\[1ex]
+&\propto
+f(\yy)^{2^{-1}-1}\cdot f(\yn)^{2^{-1}-1}
++ f(\yy)^{2^{0}-1}\cdot f(\yn)^{2^{0}-1}
++{} \\&\qquad
+f(\yy)^{2^{1}-1}\cdot f(\yn)^{2^{1}-1}
++ f(\yy)^{2^{2}-1}\cdot f(\yn)^{2^{2}-1}
+\\[1ex]
+&\propto
+\frac{1}{\sqrt{f(\yy)}}\cdot \frac{1}{\sqrt{f(\yn)}}
++ 1
++ f(\yy)\cdot f(\yn)
++ f(\yy)^{3}\cdot f(\yn)^{3}
+\end{aligned}
+$$
+
+We can visualize this distribution with a generalized scatter plot ([§ @sec-repr-general-distr]) of 100 frequencies, each represented by a line histogram ([§ @sec-discr-prob-distr]):
+
+![](samples_cubes.png){width=100%}
+
+we see that all possible frequency distributions are considered by this belief distribution.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+Calculate the formula above (disregard the missing proportionality constant) for these three frequency distributions:
+
+1. $f(\yy)=0.5\quad f(\yn)=0.5$
+<!-- 3.26562 -->
+
+2. $f(\yy)=0.75\quad f(\yn)=0.25$
+<!-- 3.50349 -->
+
+3. $f(\yy)=0.99\quad f(\yn)=0.01$
+<!-- 11.0603 -->
+:::
+
+
+
+
+

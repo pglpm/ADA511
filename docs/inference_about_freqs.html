@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-10-21">
+
+<title>ADA511 0.1 Data science and data-driven engineering - 29&nbsp; Inference about frequencies</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./general_inference.html" rel="next">
+<link href="./inference_from_freqs.html" rel="prev">
+<link href="./favicon.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="ada511styles.css">
+</head>
+
+<body class="nav-sidebar docked slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./exchangeable_probabilities.html"><span class="green"><strong>Inference III (under construction)</strong></span></a></li><li class="breadcrumb-item"><a href="./inference_about_freqs.html"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">[Inference about frequencies]{.green}</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-21</span></a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dear student<br> and aspiring data engineer</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text"><strong>An invitation</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Accept or discard?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Framework</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./basic_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Basic decision problems</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-1-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title"><span class="red">First connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title"><span class="green">What is an inference?</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sentences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title"><span class="green">Sentences</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./truth_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><span class="green">Truth inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title"><span class="green">Probability inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./derived_rules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><span class="green">Shortcut rules</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./monty.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title"><span class="green">Monty Hall and related inference problems</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-2-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><span class="red">Second connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title"><span class="yellow">Quantities and data types</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types_multi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title"><span class="yellow">Joint quantities and complex data types</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title"><span class="green">Probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./joint_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><span class="green">Joint probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./marginal_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><span class="green">Marginal probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conditional_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probability and learning</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./information.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="green">Information, relevance, independence, association</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-3-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title"><span class="red">Third connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./populations_variates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title"><span class="yellow">Populations and variates</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title"><span class="yellow">Statistics</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./subpopulations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><span class="yellow">Subpopulations and conditional frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./samples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title"><span class="yellow">Infinite populations and samples</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text"><span class="red"><strong>Machine learning</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine_learning_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Introduction to machine learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./decision_trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Decision trees</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural_networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Neural networks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference III (under construction)</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exchangeable_probabilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="green">Exchangeable beliefs</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference_from_freqs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title"><span class="green">Inferences from frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference_about_freqs.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="green">Inference about frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./general_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title"><span class="green">Final inference formulae</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./OPM_application_nominal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title"><span class="red">The optimal predictor machine for glass forensics</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text"><span class="lightblue"><strong>Decision theory</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./making_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title"><span class="lightblue">Making decisions</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./missing_parts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="grey small">To be deleted</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-freq-not-known" id="toc-sec-freq-not-known" class="nav-link active" data-scroll-target="#sec-freq-not-known"><span class="header-section-number">29.1</span> Inference when population frequencies aren’t known</a></li>
+  <li><a href="#sec-learning-general" id="toc-sec-learning-general" class="nav-link" data-scroll-target="#sec-learning-general"><span class="header-section-number">29.2</span> Learning from observed units</a></li>
+  <li><a href="#sec-learn-freqs" id="toc-sec-learn-freqs" class="nav-link" data-scroll-target="#sec-learn-freqs"><span class="header-section-number">29.3</span> How learning works: learning about frequencies</a></li>
+  <li><a href="#sec-prob-for-freqs" id="toc-sec-prob-for-freqs" class="nav-link" data-scroll-target="#sec-prob-for-freqs"><span class="header-section-number">29.4</span> How to assign the probabilities for the frequencies?</a>
+  <ul class="collapse">
+  <li><a href="#the-dirichlet-mixture-belief-distribution-for-frequency-distributions-over-nominal-variates" id="toc-the-dirichlet-mixture-belief-distribution-for-frequency-distributions-over-nominal-variates" class="nav-link" data-scroll-target="#the-dirichlet-mixture-belief-distribution-for-frequency-distributions-over-nominal-variates">The Dirichlet-mixture belief distribution for frequency distributions over nominal variates</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-inference-exch" class="quarto-section-identifier"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="green">Inference about frequencies</span></span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2023-10-21</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="hidden">
+<p><span class="math display">\[
+\DeclarePairedDelimiters{\set}{\{}{\}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\]</span></p>
+</div>
+<div class="hidden">
+
+</div>
+<section id="sec-freq-not-known" class="level2 page-columns page-full" data-number="29.1">
+<h2 data-number="29.1" class="anchored" data-anchor-id="sec-freq-not-known"><span class="header-section-number">29.1</span> Inference when population frequencies aren’t known</h2>
+<p>In <a href="inference_from_freqs.html">chapter&nbsp;&nbsp;<span>28</span></a> we considered an agent that has exchangeable beliefs and that knows the full-population frequencies. The degrees of belief of such an agent have a very simple form: products of frequencies. But for such an agent the observations of units <em>doesn’t give any useful information</em> for drawing inferences about new units: such observations provide frequencies which the agent already knows.</p>
+<p>Situations where we have complete frequency knowledge can be common in engineering problems, where the physical laws underlying the phenomena involved are known and computable. They are far less common in data-science and machine-learning applications: here we must consider agents that do not know the full-population frequencies.</p>
+<p>How does such an agent calculate probabilities about units? The answer is actually a simple application of the “extension of the conversation” (<a href="derived_rules.html#sec-extension-conversation">§ &nbsp;<span>9.4</span></a>, which boil down to applications of the <code>and</code> and <code>or</code> rules). A probability given that the frequency distribution is not known is equal to the average of the probabilities given each possible frequency distribution, weighted by the probabilities of the frequency distributions:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}(
+{\color[RGB]{68,119,170}Z}_{u'}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{68,119,170}z'} \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+{\color[RGB]{68,119,170}Z}_{u''}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{68,119,170}z''} \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+\dotsb
+\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}
+)
+\\[2ex]
+&amp;\qquad{}=
+\sum_{\boldsymbol{f}}
+\mathrm{P}(
+{\color[RGB]{68,119,170}Z}_{u'}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{68,119,170}z'} \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+{\color[RGB]{68,119,170}Z}_{u''}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{68,119,170}z''} \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+\dotsb
+\nonscript\:\vert\nonscript\:\mathopen{} F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}
+)
+\cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\end{aligned}
+\]</span></p>
+<p>But we saw in <a href="inference_from_freqs.html#sec-moreunit-freq-known">§ &nbsp;<span>28.5</span></a> that the probability for a sequence of values given a known frequency is just the product of the value’s frequencies. We thus have our long-sought formula:</p>
+<div class="column-page-inset-right">
+<div class="callout callout-style-default callout-note no-icon callout-titled" style="font-size:120%">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+de&nbsp;Finetti’s theorem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size:120%">
+<p>If an agent has background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span></span> about a population saying that</p>
+<ul>
+<li>beliefs about units are exchangeable</li>
+<li>the population size is practically infinite</li>
+</ul>
+<p>then</p>
+<p><span class="math display">\[
+\mathrm{P}(
+{\color[RGB]{68,119,170}Z}_{u'}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{68,119,170}z'} \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+{\color[RGB]{68,119,170}Z}_{u''}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{68,119,170}z''} \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+\dotsb
+\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}
+)
+\approx
+\sum_{\boldsymbol{f}}
+f({\color[RGB]{68,119,170}Z}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{68,119,170}z'}\color[RGB]{0,0,0}) \cdot
+f({\color[RGB]{68,119,170}Z}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{68,119,170}z''}\color[RGB]{0,0,0}) \cdot
+\,\dotsb\
+\cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\]</span></p>
+<p>for any (different) units <span style="display:inline-block;"><span class="math inline">\(u', u'', \dotsc\)</span></span> and any (even equal) values <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}z', z'', \dotsc\)</span>.</span></p>
+<p>In the sum above, <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{f}\)</span></span> runs over all possible frequency distributions for the full population.</p>
+<p><span class="grey small">More correctly the sum is an integral, because <span class="math inline">\(F\)</span> is a continuous quantity. We should write <span class="math inline">\(\mathrm{P}( {\color[RGB]{68,119,170}Z}_{u'}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{68,119,170}z'} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\dotsb \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = \int f({\color[RGB]{68,119,170}Z}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{68,119,170}z'}) \cdot \,\dotsb\  \cdot \mathrm{p}(\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\,\mathrm{d}\boldsymbol{f}\)</span></span></p>
+</div>
+</div>
+</div>
+</div>
+<p>This result is called <span class="blue"><strong>de&nbsp;Finetti’s representation theorem</strong></span> for exchangeable belief distributions. It must be emphasized that <strong>this result is actually independent of any real or imaginary population frequencies</strong>. We took a route to it through the idea of population frequencies only to help our intuition. If for any reason you find the idea of a “limit frequency for an infinite population” somewhat suspicious, then don’t worry: the formula above actually does not rely on it. The formula results from the assumption has exchangeable beliefs about a collection of units that can potentially be continued without end.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-rocket" aria-label="rocket"></i> For the extra curious
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://hvl.instructure.com/courses/25074/modules/items/720159"><em>Foresight: Its logical laws, its subjective sources</em></a>. This essay gives much insight on our reasoning process in making forecasts and learning from experience.</p>
+</div>
+</div>
+</div></div><p><br>
+</p>
+<p>Let’s see how this formula works in the simple example of the collection of 3&nbsp;million cubes from <a href="inference_from_freqs.html#sec-moreunit-freq-known">§ &nbsp;<span>28.5</span></a>. Suppose that the agent:</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><img src="cubes.jpg" class="img-fluid" style="width:50.0%"></p>
+</div></div><ul>
+<li><p>knows that the collection consists of:</p>
+<ul>
+<li><p>either a proportion 2/3 of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span></span> cubes and 1/3 of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}{\small\verb;N;}}\)</span></span> cubes; denote these frequencies <span class="m">with <span class="math inline">\(\boldsymbol{f}'\)</span></span></p></li>
+<li><p>or a proportion 1/2 of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span></span> cubes and 1/2 of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}{\small\verb;N;}}\)</span></span> cubes; denote these frequencies <span class="m">with <span class="math inline">\(\boldsymbol{f}''\)</span></span></p></li>
+</ul></li>
+<li><p>assigns a <span style="display:inline-block;"><span class="math inline">\(75\%\)</span></span> degree of belief to the first hypothesis, and <span style="display:inline-block;"><span class="math inline">\(25\%\)</span></span> to the second (so the sentence <span style="display:inline-block;"><span class="math inline">\(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\lor F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\)</span></span> has probability <span style="display:inline-block;"><span class="math inline">\(1\)</span>):</span></p>
+<p><span class="math display">\[
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K}) = 75\%
+\qquad
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K}) = 25\%
+\]</span></p></li>
+</ul>
+<p>What is the agent’s degree of belief that cube #1 is labelled <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span>?</span> According to the derived rule of extension of the conversation, that is, the main formula written above, we find:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{P}(C_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+&amp;=
+\sum_{\boldsymbol{f}}
+f(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}) \cdot \mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+\\[1ex]
+&amp;=
+f'(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}) \cdot \mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K}) +
+f''(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}) \cdot \mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+\\[1ex]
+&amp;=
+{\color[RGB]{102,204,238}\frac{2}{3}}\cdot 75\% +
+{\color[RGB]{102,204,238}\frac{1}{2}}\cdot 25\%
+\\[1ex]
+&amp;= \boldsymbol{62.5\%}
+\end{aligned}
+\]</span></p>
+<p>In an analogous way we can calculate, for instance, the agent’s belief that cube #1 is <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span>,</span> cube #2 is <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}{\small\verb;N;}}\)</span>,</span> and cube #3 is <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span>:</span></p>
+<div class="column-page-inset-right">
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{P}(C_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}C_{2} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}C_{3} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+&amp;\approx
+\sum_{\boldsymbol{f}}
+f(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}) \cdot f(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}) \cdot f(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}) \cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+\\[2ex]
+&amp;=
+f'(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}) \cdot f'(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}) \cdot  f'(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}) \cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K}) + {}
+\\[1ex]
+&amp;\qquad
+f''(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}) \cdot f''(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}) \cdot  f''(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}) \cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+\\[2ex]
+&amp;=
+{\color[RGB]{102,204,238}\frac{2}{3}}\cdot {\color[RGB]{204,187,68}\frac{1}{3}}\cdot {\color[RGB]{102,204,238}\frac{2}{3}}\cdot 75\% +
+{\color[RGB]{102,204,238}\frac{1}{2}}\cdot {\color[RGB]{204,187,68}\frac{1}{2}}\cdot {\color[RGB]{102,204,238}\frac{1}{2}}\cdot 25\%
+\\[2ex]
+&amp;\approx \boldsymbol{14.236\%}
+\end{aligned}
+\]</span></p>
+</div>
+<p><br>
+</p>
+<p>This formula generalizes to any population, any variates, and any number of hypotheses about the frequencies.</p>
+<p>Mathematical and, even more, computational complications arise when we consider <em>all possible</em> frequency distributions, since there is a practically infinite number of them; they form a continuum in fact. But do not let these practical difficulties affect the intuitive picture behind them, which is simple to grasp once you’ve considered some simple examples.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Consider a state of knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{K}'\)</span></span> according to which:</p>
+<div>
+<ul>
+<li>The cube collection may have a proportion <span class="math inline">\(0/10\)</span> of <span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span> cubes (and <span class="math inline">\(9/10\)</span> of <span class="math inline">\({\color[RGB]{204,187,68}{\small\verb;N;}}\)</span> cubes); call this frequency distribution <span class="math inline">\(\boldsymbol{f}_0\)</span></li>
+<li>The cube collection may have a proportion <span class="math inline">\(1/10\)</span> of <span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span> cubes; call this <span class="math inline">\(\boldsymbol{f}_1\)</span></li>
+<li>and so on… up to</li>
+<li>a proportion <span class="math inline">\(10/10\)</span> of <span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span> cubes; call this <span class="math inline">\(\boldsymbol{f}_{10}\)</span></li>
+</ul>
+</div>
+<ul>
+<li><p>The probability of each of these frequency hypotheses is <span style="display:inline-block;"><span class="math inline">\(1/11\)</span>,</span> that is:</p>
+<p><span class="math display">\[
+  \begin{aligned}
+  &amp;\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}_{0} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K}') = 1/11 \\[1ex]
+  &amp;\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}_{1} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K}') = 1/11 \\[1ex]
+  &amp;\dotso\\[1ex]
+  &amp;\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}_{10} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K}') = 1/11
+  \end{aligned}
+  \]</span></p></li>
+</ul>
+<p>Calculate the probabilities</p>
+<p><span class="math display">\[
+\mathrm{P}(C_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}C_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{K}') \qquad
+\mathrm{P}(C_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}C_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{K}') \qquad
+\mathrm{P}(C_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}C_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{K}')
+\]</span> </p>
+<p>Do they all have the same value? Try to explain why or why not.</p>
+</div>
+</div>
+</section>
+<section id="sec-learning-general" class="level2 page-columns page-full" data-number="29.2">
+<h2 data-number="29.2" class="anchored" data-anchor-id="sec-learning-general"><span class="header-section-number">29.2</span> Learning from observed units</h2>
+<p>Staying with the same cube-collection scenario, let’s now ask what the agent’s degree of belief is that cube #1 is labelled <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span>,</span> <em>given that the agent has observed cube #2 to be <span class="math inline">\({\color[RGB]{204,187,68}{\small\verb;N;}}\)</span></em>. In the case of an agent that knows the full-population frequencies we saw <a href="inference_from_freqs.html#sec-no-learn-freqs">§ &nbsp;<span>28.6</span></a> that this degree of belief is actually unaffected by other observations. What happens when the population frequencies are not known?</p>
+<p>The calculation is straightforward:</p>
+<div class="column-page-inset-right">
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{P}(C_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+&amp;=
+\frac{
+\mathrm{P}(C_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}C_{2} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+}{
+\mathrm{P}(C_{2} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+}
+\\[2ex]
+&amp;\approx
+\frac{
+\sum_{\boldsymbol{f}}
+f(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}) \cdot f(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}) \cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+}{
+\sum_{\boldsymbol{f}}
+f(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}) \cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+}
+\\[2ex]
+&amp;=
+\frac{
+{\color[RGB]{102,204,238}\frac{2}{3}}\cdot {\color[RGB]{204,187,68}\frac{1}{3}}\cdot 75\% +
+{\color[RGB]{102,204,238}\frac{1}{2}}\cdot {\color[RGB]{204,187,68}\frac{1}{2}}\cdot 25\%
+}{
+{\color[RGB]{204,187,68}\frac{1}{3}}\cdot 75\% +
+{\color[RGB]{204,187,68}\frac{1}{2}}\cdot 25\%
+}
+\\[2ex]
+&amp;\approx\frac{
+22.9167\%
+}{
+37.5000\%
+}
+\\[2ex]
+&amp;= \boldsymbol{61.111\%}
+\end{aligned}
+\]</span></p>
+</div>
+<p>Knowledge that <span style="display:inline-block;"><span class="math inline">\(C_{2}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\)</span></span> thus <em>does</em> affect the agent’s belief about <span style="display:inline-block;"><span class="math inline">\(C_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span>:</span></p>
+<p><span class="math display">\[
+\mathrm{P}(C_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{}  \mathsfit{K}) = 62.5\%
+\qquad
+\mathrm{P}(C_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K}) \approx 61.1\%
+\]</span></p>
+<p>In particular, the observation of one <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}{\small\verb;N;}}\)</span></span> cube has somewhat decreased the probability of observing a new <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span></span> one.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Calculate the minimal number of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}{\small\verb;N;}}\)</span></span> observations needed for lowering the agent’s degree of belief of observing a <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span></span> to <span style="display:inline-block;"><span class="math inline">\(55\%\)</span></span> or less. </p>
+<p>Does it seem possible to lower the agent’s belief to less than <span style="display:inline-block;"><span class="math inline">\(50\%\)</span>?</span> Explain why.</p></li>
+<li><p>Calculate the minimal number of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span></span> observations needed for increasing the agent’s degree of belief of observing a <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span></span> to <span style="display:inline-block;"><span class="math inline">\(65\%\)</span></span> or more. </p>
+<p>Does it seem possible to increase the agent’s belief to more than <span style="display:inline-block;"><span class="math inline">\(2/3\)</span>?</span> Explain why.</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="sec-learn-freqs" class="level2 page-columns page-full" data-number="29.3">
+<h2 data-number="29.3" class="anchored" data-anchor-id="sec-learn-freqs"><span class="header-section-number">29.3</span> How learning works: learning about frequencies</h2>
+<div class="page-columns page-full"><p>An agent having full-population frequency information does not learn<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> from observation of units, whereas an agent not having such information does learn from observation of units. This fact shows how learning from observed to unobserved units actually works. Crudely speaking, observations do not directly affect the beliefs about unobserved units, but instead affect the <strong>beliefs about the population frequencies</strong>. And these in turn affect the beliefs about unobserved units. Graphically this could be represented as follows:</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;remember the warning of <a href="inference_from_freqs.html#sec-no-learn-freqs">§ &nbsp;<span>28.6</span></a> about “learning”</p></li></div></div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  A([observed units]) --&gt; B([population frequencies]) --&gt; C([unobserved units])
+  %%
+  linkStyle 0 stroke:#47a,fill:#47a
+  linkStyle 1 stroke:#47a,fill:#47a
+  style A fill:#283,color:#fff,stroke-width:0px
+  style B fill:#bbb,color:#000,stroke-width:0px
+  style C fill:#e67,color:#fff,stroke-width:0px
+</pre>
+</div>
+</div>
+</div>
+</div>
+<p>as opposed to this:</p>
+<div class="columns">
+<div class="column" style="width:15%;">
+
+</div><div class="column" style="width:70%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  A([observed units]) --&gt; B([population frequencies]) --&gt; C([unobserved units])
+  A ---&gt; C
+  %%
+  linkStyle 0 stroke:#47a
+  linkStyle 1 stroke:#47a
+  linkStyle 2 stroke:#47a
+  style A fill:#283,color:#fff,stroke-width:0px
+  style B fill:#bbb,color:#000,stroke-width:0px
+  style C fill:#e67,color:#fff,stroke-width:0px
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i> Information connections
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The graphs above represent <span class="purple"><strong>informational</strong></span> connections, not “causal”. The directed arrows roughly mean “…provides information about…”; they do not mean “…causes…”.</p>
+<p>In the first graph, the lack of an arrow from <span class="green"><em>observed units</em></span> to <span class="red"><em>unobserved units</em></span> means that all information provided by the observed units for the unobserved ones is fully contained in the information about frequencies.</p>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-rocket" aria-label="rocket"></i> For the extra curious
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://hvl.instructure.com/courses/25074/modules/items/719861"><em>On the notion of cause</em></a></p>
+</div>
+</div>
+</div></div><p><br>
+</p>
+<p>The informational relation between observed units, frequencies, and unobserved units becomes clear if we check how the agent’s beliefs about the frequency hypotheses change as observations are made. In the cube-collection example of <a href="#sec-freq-not-known">§ &nbsp;<span>29.1</span></a>, the agent has initial probabilities</p>
+<p><span class="math display">\[
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K}) = 75\%
+\qquad
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K}) = 25\%
+\]</span></p>
+<p>where <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{f}'\)</span></span> gives frequency <span style="display:inline-block;"><span class="math inline">\(2/3\)</span></span> to <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span>,</span> and <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{f}''\)</span></span> gives frequency <span style="display:inline-block;"><span class="math inline">\(1/2\)</span></span> to <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span>.</span> How do these probabilities change, conditional on the agent’s observing that cube #2 is labelled <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}{\small\verb;N;}}\)</span>?</span> We just need to use Bayes’s theorem. For the first hypothesis <span style="display:inline-block;"><span class="math inline">\(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\)</span>:</span></p>
+<div class="column-page-right">
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} C_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K}) &amp;=
+\frac{
+\mathrm{P}(C_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K}) \cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+}{
+\mathrm{P}(C_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K}) \cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
++
+\mathrm{P}(C_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K}) \cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+}
+\\[1ex]
+&amp;=
+\frac{
+f'(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}) \cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+}{
+f'(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}) \cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
++
+f''(C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}) \cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K})
+}
+\\[1ex]
+&amp;=
+\frac{
+\frac{1}{3} \cdot
+75\%
+}{
+\frac{1}{3} \cdot
+75\%
++
+\frac{1}{2} \cdot
+25\%
+}
+\\[2ex]
+&amp;=
+\boldsymbol{66.667\%}
+\end{aligned}
+\]</span></p>
+</div>
+<p>and an analogous calculation yields <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} C_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})=33.333\%\)</span>.</span></p>
+<p>This result makes sense, because according to the hypothesis <span style="display:inline-block;"><span class="math inline">\(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\)</span></span> there is a higher proportion of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}{\small\verb;N;}}\)</span></span> cubes than according to <span style="display:inline-block;"><span class="math inline">\(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\)</span>,</span> and <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}{\small\verb;N;}}\)</span></span> cube has been observed. The hypothesis <span style="display:inline-block;"><span class="math inline">\(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\)</span></span> therefore becomes slightly more plausible, and <span style="display:inline-block;"><span class="math inline">\(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\)</span></span> slightly less.</p>
+<p>Using the updated degree of belief above we also have another way to calculate the conditional probability <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(C_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})\)</span>,</span> using the derived rule of “extension of the conversation” in a different manner:</p>
+<div class="column-page-inset-right">
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{P}(C_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+&amp;=
+\sum_{\boldsymbol{f}}
+\mathrm{P}(C_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\\[2ex]
+\text{\color[RGB]{187,187,187}\scriptsize(no learning if frequencies are known)}\enspace
+&amp;=\sum_{\boldsymbol{f}}
+\mathrm{P}(C_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{}  F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\\[2ex]
+&amp;=
+\mathrm{P}(C_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{}  F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
++{}
+\\[1ex]
+&amp;\qquad\mathrm{P}(C_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{}  F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\\[2ex]
+&amp;=
+f'(C \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}})
+\cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}'\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
++{}
+\\[1ex]
+&amp;\qquad
+f''(C \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}})
+\cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}''\nonscript\:\vert\nonscript\:\mathopen{} C_{2} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K})
+\\[2ex]
+&amp;=
+{\color[RGB]{102,204,238}\frac{2}{3}} \cdot 66.667\%
++
+{\color[RGB]{102,204,238}\frac{1}{2}} \cdot 33.333\%
+\\[2ex]
+&amp;= \boldsymbol{61.111\%}
+\end{aligned}
+\]</span></p>
+</div>
+<p>The result is exactly as in <a href="#sec-learning-general">§ &nbsp;<span>29.2</span></a> – as it should be: remember from <a href="probability_inference.html">chapter&nbsp;&nbsp;<span>8</span></a> that the four rules of inference are built so as to mathematically guarantee this kind of logical self-consistency.</p>
+<p><br>
+</p>
+<p>The fact that the agent is actually learning about the full-population frequencies allows it to draw improved inferences not only about units, but also about characteristics intrinsic to the population itself, and also about its own performance in future inferences. For instance, the agent can even forecast the maximal accuracy that can be obtained in future inferences. We shall quickly explore these possibilities in a later chapter.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-book" aria-label="book"></i> Study reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Ch.&nbsp;4 of <a href="https://hvl.instructure.com/courses/25074/modules/items/660090"><em>Probability Theory</em></a></p></li>
+<li><p>§§ 8.1–8.6 of <a href="https://hvl.instructure.com/courses/25074/modules/items/675505"><em>Probability</em></a></p></li>
+<li><p>Skim through <a href="https://hvl.instructure.com/courses/25074/modules/items/720135"><em>De&nbsp;finetti’s theorem on exchangeable variables</em></a></p></li>
+</ul>
+</div>
+</div>
+<p><br>
+</p>
+</section>
+<section id="sec-prob-for-freqs" class="level2 page-columns page-full" data-number="29.4">
+<h2 data-number="29.4" class="anchored" data-anchor-id="sec-prob-for-freqs"><span class="header-section-number">29.4</span> How to assign the probabilities for the frequencies?</h2>
+<p>The general formula we found for the joint probability:</p>
+<p><span class="math display">\[
+\mathrm{P}(
+{\color[RGB]{68,119,170}Z}_{u'}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{68,119,170}z'} \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+{\color[RGB]{68,119,170}Z}_{u''}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{68,119,170}z''} \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+\dotsb
+\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}
+)
+\approx
+\sum_{\boldsymbol{f}}
+f({\color[RGB]{68,119,170}Z}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{68,119,170}z'}\color[RGB]{0,0,0}) \cdot
+f({\color[RGB]{68,119,170}Z}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{68,119,170}z''}\color[RGB]{0,0,0}) \cdot
+\,\dotsb\
+\cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\]</span></p>
+<p>allows us to draw many kinds of predictions about units, which we’ll explore in the next chapter.</p>
+<p>But how does the agent assign&nbsp;&nbsp;<span class="m"><span class="math inline">\(\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span> ,</span>&nbsp;&nbsp;that is, the probability distribution (in fact, a density) over all possible frequency distributions? There is no general answer to this important question, for two main reasons.</p>
+<p>First, a proper answer is obviously problem-dependent. In fact&nbsp;&nbsp;<span class="blue"><strong><span class="math inline">\(\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>&nbsp;&nbsp;is the place where the agent encodes any background information relevant to the problem</strong></span>.</p>
+<p>Take the simple example of the tosses of a coin. If you (the agent) examines the coin and the tossing method and they seem ordinary to you, then you might assign probabilities like these:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\textsf{\small`always heads'} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{o}}) \approx 0
+\\
+&amp;\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\textsf{\small`always tails'} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{o}}) \approx 0
+\\
+&amp;\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\textsf{\small`50\% heads 50\% tails'} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{o}}) \approx \text{\small very high}
+\end{aligned}
+\]</span></p>
+<p>But if you are told that the coin is a magician’s one, with either two heads or two tails, and you don’t know which, then you might assign probabilities like these:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\textsf{\small`always heads'} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{m}}) = 1/2
+\\
+&amp;\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\textsf{\small`always tails'} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{m}}) = 1/2
+\\
+&amp;\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\textsf{\small`50\% heads 50\% tails'} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{m}}) = 0
+\end{aligned}
+\]</span></p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Assume the state of knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}_{\text{m}}\)</span></span> above and calculate:</p>
+<ul>
+<li><p><span class="math inline">\(\mathrm{P}(\textsf{\small`heads 1st toss'} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{m}})\)</span>, the probability of heads at the first toss.</p></li>
+<li><p><span class="math inline">\(\mathrm{P}(\textsf{\small`heads 2nd toss'} \nonscript\:\vert\nonscript\:\mathopen{} \textsf{\small`heads 1st toss'} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\text{m}})\)</span>, the probability of heads at the second toss, given that heads was observed at the first.</p></li>
+</ul>
+<p>Explain your findings.</p>
+</div>
+</div>
+<p>Second, for complex situations with many variates of different types it is may be mathematically and computationally difficult to write down and encode&nbsp;&nbsp;<span class="m"><span class="math inline">\(\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span> .</span>&nbsp;&nbsp;Moreover, the multidimensional characteristics and quirks of this belief distribution can be difficult to grasp and understand.</p>
+<p>Yet it is a result of probability theory (<a href="inference.html#sec-inference-origin">§ &nbsp;<span>5.2</span></a>) that <strong>we cannot avoid specifying <span class="math inline">\(\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span></strong>. Any “methods” that claim to avoid the specification of that probability distribution <em>are</em> covertly specifying one instead, and hiding it from sight. It is therefore best to have this distribution at least open to inspection rather than hidden.</p>
+<p><br>
+</p>
+<p>Luckily, if&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>&nbsp;&nbsp;is</span> “open-minded”, that is, if it doesn’t exclude a priori any frequency distribution <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{f}\)</span>,</span> or in other words if it doesn’t assign strictly zero belief to any <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{f}\)</span>,</span> then with enough data the updated belief distribution &nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{data} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})\)</span>&nbsp;&nbsp;will</span> actually converge to the true frequency distribution of the full population. The tricky word here is “enough”. In some problems a dozen observed units might be enough; in other problems a million observed units might not be enough yet.</p>
+<p><br>
+</p>
+<section id="the-dirichlet-mixture-belief-distribution-for-frequency-distributions-over-nominal-variates" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="the-dirichlet-mixture-belief-distribution-for-frequency-distributions-over-nominal-variates">The Dirichlet-mixture belief distribution for frequency distributions over nominal variates</h3>
+<p>In this course we sadly shall not examine in depth any mathematical expressions for belief distributions over frequencies. We briefly discuss here one belief distribution that is used in the prototype “optimal predictor machine” applied in the following chapters. We call it the <span class="blue"><strong>Dirichlet-mixture</strong></span> belief distribution. The state of knowledge underlying this distribution will be denoted <span style="display:inline-block;"><span class="math inline">\(\mathsfit{K}\)</span>.</span></p>
+<p>The Dirichlet-mixture distribution is appropriate for frequency distributions over discrete, <em>nominal</em> variates, or joint variates with all nominal components. It is not appropriate to discrete ordinal variates, because it implicitly assumes that there is no natural order to the variate values.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-rocket" aria-label="rocket"></i> For the extra curious
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Some of the theoretical basis for the choice of this belief distribution can be found in chapters&nbsp;4–5 of <a href="https://hvl.instructure.com/courses/25074/modules/items/720141"><em>The Estimation of Probabilities</em></a>.</p>
+</div>
+</div>
+</div></div><p>Suppose we have a simple or joint nominal variate <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> which can assume <span style="display:inline-block;"><span class="math inline">\(M\)</span></span> different values (these can be joint values, as in the examples of <a href="inference_from_freqs.html#sec-know-freq">§ &nbsp;<span>28.3</span></a>). As usual <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{f}\)</span></span> denotes a specific frequency distribution for the variate values. For a specific value <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(f({\color[RGB]{68,119,170}z})\)</span></span> is the relative frequency with which that value occurs in the full population.</p>
+<p>The Dirichlet-mixture distribution assigns to <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{f}\)</span></span> a probability density proportional to the following formula:</p>
+<p><span class="math display">\[\mathrm{p}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K}) \propto
+\sum_{\alpha}\prod_{{\color[RGB]{68,119,170}z}} f({\color[RGB]{68,119,170}z})^{2^\alpha -1}
+\]</span></p>
+<p>The proportionality constant is just the number that ensures that the integral of the density above over all possible frequency distributions equals 1.</p>
+<p>The product <span style="display:inline-block;">“<span class="math inline">\(\prod_{{\color[RGB]{68,119,170}z}}\)</span>”</span> is over all <span style="display:inline-block;"><span class="math inline">\(M\)</span></span> possible values of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span>.</span> The sum <span style="display:inline-block;">“<span class="math inline">\(\sum_{\alpha}\)</span>”</span> is over an <em>integer</em> (positive or negative) parameter <span style="display:inline-block;"><span class="math inline">\(\alpha\)</span></span> that runs between a minimum and maximum value. In the applications of the next chapters the values are chosen as follows:</p>
+<p><span class="math display">\[
+2^{\alpha_{\text{min}}} \approx \frac{1}{M}
+\qquad
+2^{\alpha_{\text{max}}} = 4
+\]</span></p>
+<p>These minimum and maximum values turn out not to matter in most applications, even if we make <span style="display:inline-block;"><span class="math inline">\(\alpha_{\text{min}}\)</span></span> even lower or <span style="display:inline-block;"><span class="math inline">\(\alpha_{\text{max}}\)</span></span> even higher.</p>
+<p><br>
+</p>
+<p>Let’s see how this formula concretely looks like in the simple example of the large cube-collection (which had many analogies with coin tosses).</p>
+<p>The variate <span style="display:inline-block;"><span class="math inline">\(C\)</span></span> can assume two values <span style="display:inline-block;"><span class="math inline">\(\set{{\color[RGB]{102,204,238}{\small\verb;Y;}},{\color[RGB]{204,187,68}{\small\verb;N;}}}\)</span>,</span> so <span style="display:inline-block;"><span class="math inline">\(M=2\)</span></span> in this case. The frequency distribution consists in two frequencies:</p>
+<p><span class="math display">\[f({\color[RGB]{102,204,238}{\small\verb;Y;}}) \qquad f({\color[RGB]{204,187,68}{\small\verb;N;}})\]</span></p>
+<p>of which only one can be chosen independently, since they must sum up to 1.</p>
+<p>Then</p>
+<p><span class="math display">\[
+2^{\alpha_{\text{min}}} \approx \frac{1}{2}\ ,
+\quad
+2^{\alpha_{\text{max}}} = 4
+\qquad\Longrightarrow\qquad
+\alpha_{\text{min}} = -1 \ ,
+\quad
+\alpha_{\text{max}} = 2
+\]</span></p>
+<div class="page-columns page-full"><p>and the agent’s belief distribution for the frequencies is proportional to<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;the proportionality constant, which can be calculated exactly in this case, is <span style="display:inline-block;"><span class="math inline">\(1/(\pi+\frac{493}{420}) \approx 0.231 728\)</span>.</span></p></li></div></div>
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{p}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{K}) &amp;\propto
+\sum_{\alpha}\prod_{{\color[RGB]{68,119,170}z}} f({\color[RGB]{68,119,170}z})^{2^\alpha -1}
+\\[1ex]
+&amp;\propto
+f({\color[RGB]{102,204,238}{\small\verb;Y;}})^{2^{-1}-1}\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})^{2^{-1}-1}
++ f({\color[RGB]{102,204,238}{\small\verb;Y;}})^{2^{0}-1}\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})^{2^{0}-1}
++{} \\&amp;\qquad
+f({\color[RGB]{102,204,238}{\small\verb;Y;}})^{2^{1}-1}\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})^{2^{1}-1}
++ f({\color[RGB]{102,204,238}{\small\verb;Y;}})^{2^{2}-1}\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})^{2^{2}-1}
+\\[1ex]
+&amp;\propto
+\frac{1}{\sqrt{f({\color[RGB]{102,204,238}{\small\verb;Y;}})}}\cdot \frac{1}{\sqrt{f({\color[RGB]{204,187,68}{\small\verb;N;}})}}
++ 1
++ f({\color[RGB]{102,204,238}{\small\verb;Y;}})\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})
++ f({\color[RGB]{102,204,238}{\small\verb;Y;}})^{3}\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})^{3}
+\end{aligned}
+\]</span></p>
+<p>We can visualize this distribution with a generalized scatter plot (<a href="joint_probability.html#sec-repr-general-distr">§ &nbsp;<span>15.7</span></a>) of 100 frequencies, each represented by a line histogram (<a href="probability_distributions.html#sec-discr-prob-distr">§ &nbsp;<span>14.2</span></a>):</p>
+<p><img src="samples_cubes.png" class="img-fluid" style="width:100.0%"></p>
+<p>we see that all possible frequency distributions are considered by this belief distribution.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Calculate the formula above (disregard the missing proportionality constant) for these three frequency distributions:</p>
+<ol type="1">
+<li><p><span class="math inline">\(f({\color[RGB]{102,204,238}{\small\verb;Y;}})=0.5\quad f({\color[RGB]{204,187,68}{\small\verb;N;}})=0.5\)</span> </p></li>
+<li><p><span class="math inline">\(f({\color[RGB]{102,204,238}{\small\verb;Y;}})=0.75\quad f({\color[RGB]{204,187,68}{\small\verb;N;}})=0.25\)</span> </p></li>
+<li><p><span class="math inline">\(f({\color[RGB]{102,204,238}{\small\verb;Y;}})=0.99\quad f({\color[RGB]{204,187,68}{\small\verb;N;}})=0.01\)</span> </p></li>
+</ol>
+</div>
+</div>
+
+
+</section>
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./inference_from_freqs.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title"><span class="green">Inferences from frequencies</span></span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./general_inference.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title"><span class="green">Final inference formulae</span></span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
