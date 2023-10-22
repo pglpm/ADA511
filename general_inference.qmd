@@ -95,7 +95,7 @@ $$
 $$
 :::
 
-And, if we split the variate $\bZ$ into two sets of [predictand]{.red} and [predictor]{.green} variates $(\rY \and \gX)$\ \ ([§ @sec-pop-inference-notation]):
+And, if we split the variate $\bZ$ into two sets of predictand and predictor variates $\blue(Y \and X)$\ \ ([§ @sec-pop-inference-notation]):
 
 ::::{.column-body-outset-right}
 :::{.callout-note}
@@ -141,7 +141,7 @@ $$
 
 \
 
-If $\bZ$, $\rY$, $\gX$ are each a single or joint nominal variate, and we consider an agent having a Dirichlet-mixture belief distribution ([§ @sec-prob-for-freqs]), the formulae above takes on concrete mathematical expressions:
+If $\bZ$, $\bY$, $\bX$ are each a single or joint nominal variate, and we consider an agent having a Dirichlet-mixture belief distribution ([§ @sec-prob-for-freqs]), the formulae above takes on concrete mathematical expressions, which can be rewritten as follows:
 
 ::::{.column-page-inset-right}
 :::{.callout-note}
@@ -158,14 +158,14 @@ Z_N \mo z_N
 Z_1 \mo z_1 
 \black \pmb{\|[\big]} \yK\bigr)
 =
-\sum_{\alpha=\alpha_{\text{min}}}^{\alpha_{\text{max}}}
+\sum_{\alpha=\amin}^{\amax}
 \frac{
 \prod_{\bz} \bigl(2^{\alpha} + {\blue\#z} - 1\bigr)!
 }{
 \bigl(M\,2^{\alpha} + N \bigr)!
 }
 \ \cdot\ 
-\sum_{\alpha=\alpha_{\text{min}}}^{\alpha_{\text{max}}}
+\sum_{\alpha=\amin}^{\amax}
 \frac{
 \bigl(M\,2^{\alpha} -1 \bigr)!
 }{
@@ -181,7 +181,7 @@ Z_1 \mo z_1
     \black\and \yK \bigr)
 	=
 	\frac{\displaystyle{}\enspace
-	\sum_{\alpha=\alpha_{\text{min}}}^{\alpha_{\text{max}}}
+	\sum_{\alpha=\amin}^{\amax}
 \frac{
 (2^{\alpha} + {\green\# z_{N+1}} )
 \cdot
@@ -191,7 +191,7 @@ Z_1 \mo z_1
 }
 	\enspace{}}{\displaystyle{}\enspace
 	\sum_{\green z^*}
-	\sum_{\alpha=\alpha_{\text{min}}}^{\alpha_{\text{max}}}
+	\sum_{\alpha=\amin}^{\amax}
 \frac{
 (2^{\alpha} + {\green\# z^*})
 \cdot
@@ -212,7 +212,7 @@ Z_1 \mo z_1
 	\\[2ex]
 	&\qquad\qquad\qquad{}=
 	\frac{\displaystyle{}\enspace
-	\sum_{\alpha=\alpha_{\text{min}}}^{\alpha_{\text{max}}}
+	\sum_{\alpha=\amin}^{\amax}
 \frac{
 \prod_{\green x}\bigl(2^{\alpha} + {\green\#(y_{N+1}, x)}\bigr)
 \cdot
@@ -224,7 +224,7 @@ Z_1 \mo z_1
 }
 	\enspace{}}{\displaystyle{}\enspace
 	\sum_{\green y^*}
-	\sum_{\alpha=\alpha_{\text{min}}}^{\alpha_{\text{max}}}
+	\sum_{\alpha=\amin}^{\amax}
 \frac{
 \prod_{\green x}\bigl(2^{\alpha} + {\green\#(y^*, x)}\bigr)
 \cdot
@@ -243,11 +243,136 @@ In the last two formulae, the counts $\green\#z$, $\green\#(y,x)$, and similar [
 :::
 ::::
 
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+The last three formulae above look complicated. They do because they contain abbreviations ("$\sum$", "$\prod$") of sums or products of many terms. But once you have written down a couple of concrete examples, their meaning should be clear.
+
+For the second formula, try to write it down for a concrete case in the Mars-prospecting scenario; say with $N=2$ and specific values for $z_1, z_2, z_3$, and verify that it is the correct expression of the more general formulae previously given. Use the property of the factorial
+
+$$(a+1)! = (a+1) \cdot a!$$
+
+:::
 
 
-### Examples
+### Example
 
-Let's see a simple application
+Let's see a simple step-by-step application of the formula for "unsupervised learning" in the Mars-prospecting scenario.
+
+The agent has exchangeable beliefs represented by a Dirichlet-mixture distribution. The variate of the population of interest has two possible values, so in the formulae above we have\ \ $\amin=-1$, $\amax=2$\ \ ([§ @sec-prob-for-freqs]).
+
+The agent has collected three rocks, and upon examination two of them contain haematite, one doesn't. The agent's data are therefore
+
+$$\yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn$$
+
+(remember that it doesn't matter how we label the rocks, because the agent's beliefs are exchangeable).
+
+What probability should the agent give to finding haematite in a newly collected rock? That is, what value should it assign to
+
+$$\P(\yR_4\mo\yy \| \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yK) \ ?$$
+
+There are different but logically equivalent ways of breaking down this calculation into steps. They also correspond to different ways of calculating the mathematical formulae. Here we examine one possibility.
+
+\
+
+[{{< fa 1 >}} {{< fa hand-point-right >}}]{.green}\ \ \ For the computation of the probability for $\yR_4\mo\yy$ we need to consider all alternative hypotheses. In this case there are only two alternatives, including the one of interest:
+
+$$\yR_4\mo\yy \qquad \yR_4\mo\yn$$
+
+\
+
+[{{< fa 2 >}} {{< fa hand-point-right >}}]{.green}\ \ \ We need to calculate the joint probabilities for the agent's data (about the three previous rocks) `and` each hypothesis in turn. In the present case, they are the two joint probabilities
+
+$$
+\begin{aligned}
+\P(\yR_4\mo\yy \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yK) 
+\\[1ex]
+\P(\yR_4\mo\yn \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yK) 
+\end{aligned}
+$$
+
+These probabilities will appear, summed together, in the denominator of a final fraction; whereas the probability containing the hypothesis of interest will appear, by itself, in the numerator.
+
+:::{.column-body-outset-right}
+
+[{{< fa 2 >}}a {{< fa hand-point-right >}}]{.green}\ \ In the first joint probability, $\yy$ appears thrice and $\yn$ appears one, so
+
+$$\#\yy = 3 \qquad \#\yn = 1 \qquad \text{\midgrey\small total} = 4$$
+
+The de Finetti representation formula then gives, besides a constant factor,
+
+$$\begin{aligned}
+\P(\yR_4\mo\yy \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yK) 
+&\propto
+\sum_{\alpha=-1}^{2}
+\frac{
+\bigl(2^{\alpha} + {\lblue 3} - 1\bigr)! \cdot
+\bigl(2^{\alpha} + {\yellow 1} - 1\bigr)!
+}{
+\bigl(2\cdot 2^{\alpha} + {\midgrey 4} -1 \bigr)!
+}
+\\[1ex]
+&\propto
+\boldsymbol{0.182 675}
+\end{aligned}
+$$
+
+
+[{{< fa 2 >}}b {{< fa hand-point-right >}}]{.green}\ \ In the second joint probability, $\yy$ appears twice and $\yn$ appears twice, so
+
+$$\#\yy = 2 \qquad \#\yn = 2 \qquad \text{\midgrey\small total} = 4$$
+
+We find, again besides the same constant factor,
+
+$$\begin{aligned}
+\P(\yR_4\mo\yn \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yK) 
+&\propto
+\sum_{\alpha=-1}^{2}
+\frac{
+\bigl(2^{\alpha} + {\lblue 2} - 1\bigr)! \cdot
+\bigl(2^{\alpha} + {\yellow 2} - 1\bigr)!
+}{
+\bigl(2\cdot 2^{\alpha} + {\midgrey 4} -1 \bigr)!
+}
+\\[1ex]
+&\propto
+\boldsymbol{0.114 468}
+\end{aligned}
+$$
+
+:::
+
+\
+
+[{{< fa 3 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The probability for the hypothesis of interest is given by the fraction
+
+:::{.column-page-inset-right}
+
+$$
+\begin{aligned}
+&\P(\yR_4\mo\yy \| \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yK)
+\\[1ex]
+&\qquad{}=
+\frac{
+\P(\yR_4\mo\yy \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yK)
+}{
+\P(\yR_4\mo\yy \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yK) +
+\P(\yR_4\mo\yn \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yK)
+}
+\\[1ex]
+&\qquad{}=
+\frac{0.182 675 }{0.182 675 + 0.114 468}
+\\[1ex]
+&\qquad{}=
+\boldsymbol{61.477\%}
+\end{aligned}
+$$
+
+:::
+
+
+
+
+
 
 
 ## How typical machine-learning problems are solved by the "optimal predictor machine"
