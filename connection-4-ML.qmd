@@ -302,7 +302,262 @@ probability distribution such as those discussed above must intrinsically enter 
 
 ## The underlying distribution {#sec-underlying-distribution}
 
-$\P({\red\boldsymbol{\dotsb}}\|{\green\boldsymbol{\dotsb}} \and \yI)$
+A remarkable trait of all the probabilities discussed in the above task categorization, even those for "hybrid" types of task, is that they can all be calculated from *one* probability distribution. We discussed and used this trait in [chapter @sec-learning].
+
+A conditional probability such as $\P({\red\boldsymbol{\dotsb}}\|{\green\boldsymbol{\dotsb}} \and \yI)$ can always be written, by the `and`-rule, as the ratio of two probabilities:
+
+$$
+\P({\red\boldsymbol{\dotsb}}\|{\green\boldsymbol{\dotsb}} \and \yI)
+=
+\frac{
+\P({\red\boldsymbol{\dotsb}}\and {\green\boldsymbol{\dotsb}} \| \yI)
+}{
+\P({\green\boldsymbol{\dotsb}} \| \yI)
+}
+$$
+
+Therefore we have for example
+
+:::{.column-page-inset-right}
+$$
+\begin{aligned}
+&\P(\red
+Z_{N+1}\mo z
+\black\|
+\green
+Z_{N}\mo z_{N}
+\and \dotsb \and
+Z_{1}\mo z_{1}
+\black \and \yI)
+=
+\frac{
+\P(\red
+Z_{N+1}\mo z
+\black\and
+\green
+Z_{N}\mo z_{N}
+\and \dotsb \and
+Z_{1}\mo z_{1}
+\black \| \yI)
+}{
+\P(
+\green
+Z_{N}\mo z_{N}
+\and \dotsb \and
+Z_{1}\mo z_{1}
+\black \| \yI)
+}
+\\[2em]
+&\P(\red
+Y_{N+1}\mo y
+\black\|
+\green
+X_{N+1}\mo x
+\, \and\, 
+Y_{N}\mo y_{N}
+\and
+X_{N}\mo x_{N}
+\and \dotsb \and
+Y_{1}\mo y_{1}
+\and
+X_{1}\mo x_{1}
+\black \and \yI)
+\\[2ex]
+&\qquad{}=
+\frac{
+\P(\red
+Y_{N+1}\mo y
+\black\and
+\green
+X_{N+1}\mo x
+\, \and\, 
+Y_{N}\mo y_{N}
+\and
+X_{N}\mo x_{N}
+\and \dotsb \and
+Y_{1}\mo y_{1}
+\and
+X_{1}\mo x_{1}
+\black \| \yI)
+}{
+\P(
+\green
+X_{N+1}\mo x
+\, \and\, 
+Y_{N}\mo y_{N}
+\and
+X_{N}\mo x_{N}
+\and \dotsb \and
+Y_{1}\mo y_{1}
+\and
+X_{1}\mo x_{1}
+\black \| \yI)
+}
+\\[2em]
+&\P(\red
+Y_{N+1}\mo y
+\black\|
+\green
+X_{N+1}\mo x
+\, \and\, 
+X_{N}\mo x_{N}
+\and \dotsb\and
+X_{1}\mo x_{1}
+\black \and \yI)
+\\[2ex]
+&\qquad{}=
+\frac{
+\P(\red
+Y_{N+1}\mo y
+\black\and
+\green
+X_{N+1}\mo x
+\, \and\, 
+X_{N}\mo x_{N}
+\and \dotsb\and
+X_{1}\mo x_{1}
+\black \| \yI)
+}{
+\P(
+\green
+X_{N+1}\mo x
+\, \and\, 
+X_{N}\mo x_{N}
+\and \dotsb\and
+X_{1}\mo x_{1}
+\black \| \yI)
+}
+\end{aligned}
+$$
+:::
+
+
+:::{.column-page-inset-right}
+$$
+\begin{aligned}
+&\P(\red
+Z_{N+1}\mo z
+\black\|
+\green
+Z_{N}\mo z_{N}
+\and \dotsb \and
+Z_{1}\mo z_{1}
+\black \and \yI)
+=
+\frac{
+\P(\red
+Z_{N+1}\mo z
+\black\and
+\green
+Z_{N}\mo z_{N}
+\and \dotsb \and
+Z_{1}\mo z_{1}
+\black \| \yI)
+}{
+\sum_{\purple z}
+\P(
+\red
+Z_{N+1}\mo {\purple z}
+\black\and\green
+Z_{N}\mo z_{N}
+\and \dotsb \and
+Z_{1}\mo z_{1}
+\black \| \yI)
+}
+\\[2em]
+&\P(\red
+Y_{N+1}\mo y
+\black\|
+\green
+X_{N+1}\mo x
+\, \and\, 
+Y_{N}\mo y_{N}
+\and
+X_{N}\mo x_{N}
+\and \dotsb \and
+Y_{1}\mo y_{1}
+\and
+X_{1}\mo x_{1}
+\black \and \yI)
+\\[2ex]
+&\qquad{}=
+\frac{
+\P(\red
+Y_{N+1}\mo y
+\black\and
+\green
+X_{N+1}\mo x
+\, \and\, 
+Y_{N}\mo y_{N}
+\and
+X_{N}\mo x_{N}
+\and \dotsb \and
+Y_{1}\mo y_{1}
+\and
+X_{1}\mo x_{1}
+\black \| \yI)
+}{
+\sum_{\purple y}
+\P(\red
+Y_{N+1}\mo {\purple y}
+\black\and
+\green
+X_{N+1}\mo x
+\, \and\, 
+Y_{N}\mo y_{N}
+\and
+X_{N}\mo x_{N}
+\and \dotsb \and
+Y_{1}\mo y_{1}
+\and
+X_{1}\mo x_{1}
+\black \| \yI)
+}
+\\[2em]
+&\P(\red
+Y_{N+1}\mo y
+\black\|
+\green
+X_{N+1}\mo x
+\, \and\, 
+X_{N}\mo x_{N}
+\and \dotsb\and
+X_{1}\mo x_{1}
+\black \and \yI)
+\\[2ex]
+&\qquad{}=
+\frac{
+\sum_{\yellow y_{N}, \dotsc, y_{1}}
+\P(\red
+Y_{N+1}\mo y
+\black\and
+\green
+X_{N+1}\mo x
+\black\, \and\, 
+\yellow
+Y_{N}\mo y_{N}
+\black\and\green
+X_{N}\mo x_{N}
+\black\and \dotsb\and
+\yellow
+Y_{1}\mo y_{1}
+\black\and\green
+X_{1}\mo x_{1}
+\black \| \yI)
+}{
+\P(
+\green
+X_{N+1}\mo x
+\, \and\, 
+X_{N}\mo x_{N}
+\and \dotsb\and
+X_{1}\mo x_{1}
+\black \| \yI)
+}
+\end{aligned}
+$$
+:::
+
 
 ## The omnipresence of decision-making in machine learning
 
