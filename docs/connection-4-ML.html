@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-10-23">
+
+<title>ADA511 0.1 Data science and data-driven engineering - 27&nbsp; Beyond machine learning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./exchangeable_probabilities.html" rel="next">
+<link href="./neural_networks.html" rel="prev">
+<link href="./favicon.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="ada511styles.css">
+</head>
+
+<body class="nav-sidebar docked slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./connection-4-ML.html"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">[Beyond machine learning]{.red}</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-23</span></a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dear student<br> and aspiring data engineer</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text"><strong>An invitation</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Accept or discard?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Framework</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./basic_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Basic decision problems</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-1-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title"><span class="red">First connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title"><span class="green">What is an inference?</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sentences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title"><span class="green">Sentences</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./truth_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><span class="green">Truth inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title"><span class="green">Probability inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./derived_rules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><span class="green">Shortcut rules</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./monty.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title"><span class="green">Monty Hall and related inference problems</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-2-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><span class="red">Second connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title"><span class="yellow">Quantities and data types</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types_multi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title"><span class="yellow">Joint quantities and complex data types</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title"><span class="green">Probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./joint_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><span class="green">Joint probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./marginal_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><span class="green">Marginal probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conditional_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probability and learning</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./information.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="green">Information, relevance, independence, association</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-3-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title"><span class="red">Third connection with machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./populations_variates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title"><span class="yellow">Populations and variates</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title"><span class="yellow">Statistics</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./subpopulations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><span class="yellow">Subpopulations and conditional frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./samples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title"><span class="yellow">Infinite populations and samples</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text"><span class="red"><strong>Machine learning</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine_learning_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Introduction to machine learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./decision_trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Decision trees</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural_networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Neural networks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-4-ML.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="red">Beyond machine learning</span></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference III</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exchangeable_probabilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title"><span class="green">Exchangeable beliefs</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference_from_freqs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="green">Inferences from frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference_about_freqs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title"><span class="green">Inference about frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./general_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title"><span class="green">Final inference formulae</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text"><span class="red"><strong>An Optimal Predictor Machine</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./OPM_application_nominal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title"><span class="red">The optimal predictor machine for glass forensics</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+ <span class="menu-text"><span class="lightblue"><strong>Decision theory</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./making_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title"><span class="lightblue">Making decisions</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./missing_parts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="grey small">To be deleted</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-ML-birds-eye" id="toc-sec-ML-birds-eye" class="nav-link active" data-scroll-target="#sec-ML-birds-eye"><span class="header-section-number">27.1</span> Machine learning from a bird’s-eye view</a></li>
+  <li><a href="#sec-cat-problems" id="toc-sec-cat-problems" class="nav-link" data-scroll-target="#sec-cat-problems"><span class="header-section-number">27.2</span> A task-oriented categorization of some machine-learning problems</a>
+  <ul class="collapse">
+  <li><a href="#interacting-agents-and-strategies" id="toc-interacting-agents-and-strategies" class="nav-link" data-scroll-target="#interacting-agents-and-strategies">Interacting agents and strategies</a></li>
+  <li><a href="#new-instance-given-vs-generated" id="toc-new-instance-given-vs-generated" class="nav-link" data-scroll-target="#new-instance-given-vs-generated">New instance: given vs generated</a></li>
+  <li><a href="#guessing-all-or-some" id="toc-guessing-all-or-some" class="nav-link" data-scroll-target="#guessing-all-or-some">Guessing: all or some</a></li>
+  <li><a href="#information-available-in-previous-instances" id="toc-information-available-in-previous-instances" class="nav-link" data-scroll-target="#information-available-in-previous-instances">Information available in previous instances</a></li>
+  </ul></li>
+  <li><a href="#sec-categ-probtheory" id="toc-sec-categ-probtheory" class="nav-link" data-scroll-target="#sec-categ-probtheory"><span class="header-section-number">27.3</span> Flexible categorization from the point of view of probability theory</a>
+  <ul class="collapse">
+  <li><a href="#notation" id="toc-notation" class="nav-link" data-scroll-target="#notation">Notation</a></li>
+  <li><a href="#fa-regular-star-the-agent-must-guess-all-characteristics-of-the-new-instance" id="toc-fa-regular-star-the-agent-must-guess-all-characteristics-of-the-new-instance" class="nav-link" data-scroll-target="#fa-regular-star-the-agent-must-guess-all-characteristics-of-the-new-instance"><span class="purple"><i class="fa-regular fa-star" aria-label="star"></i></span>&nbsp;&nbsp;The agent must guess <em>all</em> characteristics of the new instance</a></li>
+  <li><a href="#fa-star-half-alt-the-agent-must-guess-some-characteristics-of-the-new-instance-but-can-observe-other-characteristics-of-the-new-instance" id="toc-fa-star-half-alt-the-agent-must-guess-some-characteristics-of-the-new-instance-but-can-observe-other-characteristics-of-the-new-instance" class="nav-link" data-scroll-target="#fa-star-half-alt-the-agent-must-guess-some-characteristics-of-the-new-instance-but-can-observe-other-characteristics-of-the-new-instance"><span class="red"><i class="fa-solid fa-star-half-alt" aria-label="star-half-alt"></i></span>&nbsp;&nbsp;The agent must guess <em>some</em> characteristics of the new instance, but can observe other characteristics of the new instance</a></li>
+  <li><a href="#more-general-and-hybrid-tasks" id="toc-more-general-and-hybrid-tasks" class="nav-link" data-scroll-target="#more-general-and-hybrid-tasks">More general and hybrid tasks</a></li>
+  <li><a href="#fa-sign-out-alt-fa-cube-tasks-where-an-agent-must-itself-generate-a-new-instance" id="toc-fa-sign-out-alt-fa-cube-tasks-where-an-agent-must-itself-generate-a-new-instance" class="nav-link" data-scroll-target="#fa-sign-out-alt-fa-cube-tasks-where-an-agent-must-itself-generate-a-new-instance"><span class="yellow"><i class="fa-solid fa-sign-out-alt" aria-label="sign-out-alt"></i> <i class="fa-solid fa-cube" aria-label="cube"></i></span>&nbsp;&nbsp;Tasks where an agent must itself <em>generate</em> a new instance</a></li>
+  </ul></li>
+  <li><a href="#sec-underlying-distribution" id="toc-sec-underlying-distribution" class="nav-link" data-scroll-target="#sec-underlying-distribution"><span class="header-section-number">27.4</span> The underlying distribution</a></li>
+  <li><a href="#the-omnipresence-of-decision-making-in-machine-learning" id="toc-the-omnipresence-of-decision-making-in-machine-learning" class="nav-link" data-scroll-target="#the-omnipresence-of-decision-making-in-machine-learning"><span class="header-section-number">27.5</span> The omnipresence of decision-making in machine learning</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-4-connection-ML" class="quarto-section-identifier"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="red">Beyond machine learning</span></span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2023-10-23</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="hidden">
+<p><span class="math display">\[
+\DeclarePairedDelimiters{\set}{\{}{\}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\]</span></p>
+</div>
+<div class="hidden">
+
+</div>
+<div class="hidden">
+
+</div>
+<section id="sec-ML-birds-eye" class="level2" data-number="27.1">
+<h2 data-number="27.1" class="anchored" data-anchor-id="sec-ML-birds-eye"><span class="header-section-number">27.1</span> Machine learning from a bird’s-eye view</h2>
+<p>The last few chapters gave a brief introduction to and overview of popular machine-learning methods, their terminology, and the typical points of view they adopt. Now let’s try to look at them keeping in mind our main purpose in this course: <a href="index.html">exploring new methods, understanding their foundations, and thinking out of the box</a>.</p>
+<p>For our purpose, the common machine-learning categorization and terminology discussed in <a href="machine_learning_overview.html">chapter&nbsp;&nbsp;<span>24</span></a> are somewhat inadequate. Distinctions such as “supervised learning” vs “unsupervised learning” are of secondary importance to a data engineer (as opposed to a <a href="preface.html">“data mechanic”</a>) for several reasons:</p>
+<ul>
+<li><p><i class="fa-solid fa-shuffle" aria-label="shuffle"></i>&nbsp;&nbsp;They group together some types of tasks that are actually quite different from an inferential or decision-making viewpoint; and conversely they separate types of tasks that are quite similar.</p></li>
+<li><p><i class="fa-solid fa-bullseye" aria-label="bullseye"></i>&nbsp;&nbsp;They focus on procedures rather than on purposes.</p></li>
+</ul>
+<p>The important questions for us, in fact, are: <span class="blue">What do we wish to infer or choose?</span> and <span class="green">From which kind of information?</span> These questions define the problem we want to solve. The procedure may then be chosen depending on the theory, resources and technologies, other contingent factors, and so on.</p>
+<p>Let’s introduce a different categorization that tries to focus on the purpose or task, on the types of desired information and of available information, rather than on the procedure.</p>
+</section>
+<section id="sec-cat-problems" class="level2 page-columns page-full" data-number="27.2">
+<h2 data-number="27.2" class="anchored" data-anchor-id="sec-cat-problems"><span class="header-section-number">27.2</span> A task-oriented categorization of some machine-learning problems</h2>
+<p>The categorization below, of the types of <em>task</em> that machine-learning algorithms try to solve, is informal. It only provides a starting point from which to examine a new task. Many tasks will fall in between categories: every data-engineering or data-science problem is unique.</p>
+<section id="interacting-agents-and-strategies" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="interacting-agents-and-strategies">Interacting agents and strategies</h3>
+<p>We <em>exclude</em> from the start all tasks that require an agent to continuously and actively interact with its environment for acquiring information, making choices, getting feedback, and so on. Clearly these tasks are the domain of Decision Theory in its most complex form, with ramified decisions, <em>strategies</em>, and possibly the interaction with other decision-making agents. To explore and analyse this kind of tasks is beyond the purpose of this course.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-rocket" aria-label="rocket"></i> For the extra curious
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p><a href="https://hvl.instructure.com/courses/25074/modules/items/664382"><em>Decision Analysis</em></a></p></li>
+<li><p>Chapters 16–18 in <a href="https://hvl.instructure.com/courses/25074/modules/items/660089"><em>Artificial Intelligence</em></a></p></li>
+<li><p><a href="https://hvl.instructure.com/courses/25074/modules/items/720956"><em>Games and Decisions</em></a></p></li>
+</ul>
+</div>
+</div>
+</div></div><p>We consider tasks where multiple “instances” with similar characteristics are involved, and the agent has some task related to a “new instance”, possibly to be repeated an indefinite number of times.</p>
+</section>
+<section id="new-instance-given-vs-generated" class="level3">
+<h3 class="anchored" data-anchor-id="new-instance-given-vs-generated">New instance: given vs generated</h3>
+<p>A first distinction can be made between</p>
+<ul>
+<li><p><span class="yellow"><i class="fa-solid fa-sign-out-alt" aria-label="sign-out-alt"></i> <i class="fa-solid fa-cube" aria-label="cube"></i>&nbsp;&nbsp;tasks where an agent must itself <em>generate</em> a new instance</span></p></li>
+<li><p><span class="green"><i class="fa-solid fa-cube" aria-label="cube"></i> <i class="fa-solid fa-question" aria-label="question"></i>&nbsp;&nbsp;tasks where a new instance is given to an agent, who must <em>guess</em> some of its characteristics</span></p></li>
+</ul>
+<p>An example of the first type of task is image generation: an algorithm is given a collection of images and is asked to generate a new image based on them.</p>
+<p>We shall see that these two types of task are actually quite close to each other, from the point of view of Decision Theory and Probability Theory.</p>
+<div class="small midgrey">
+<p>The terms “discriminative” and “generative” are sometimes associated in machine learning with the two types of task. This association, however, is quite loose, because some tasks typically called “generative” actually belong to the first type. We shall therefore avoid these or other terms. It’s enough to keep in mind the distinction between the two types of task above.</p>
+</div>
+</section>
+<section id="guessing-all-or-some" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="guessing-all-or-some">Guessing: all or some</h3>
+<p>Focusing on the second type of task (a new instance is given to the agent), we can further divide it into two subtypes:</p>
+<ul>
+<li><p><span class="purple"><i class="fa-regular fa-star" aria-label="star"></i>&nbsp;&nbsp;the agent must guess <em>all</em> characteristics of the new instance</span></p></li>
+<li><p><span class="red"><i class="fa-solid fa-star-half-alt" aria-label="star-half-alt"></i>&nbsp;&nbsp;the agent must guess <em>some</em> characteristics of the new instance, but can observe other characteristics of the new instance</span></p></li>
+</ul>
+<p>An example of the first subtype of task is the “urgent vs non-urgent” problem of <a href="conditional_probability.html#sec-conditional-joint-sim">§ &nbsp;<span>17.3</span></a>: having observed incoming patients, some of which where urgent and some non-urgent, the agent must guess whether the next incoming patient will be urgent or not. No other kinds of information (transport, patient characteristics, and so on) are available for any patient.</p>
+<div class="page-columns page-full"><p>We shall call <span class="blue"><strong>predictands</strong></span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> the characteristics that the agent must guess in a new instance, and <span class="blue"><strong>predictors</strong></span> those that the agent can observe.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> The first subtype above can be viewed as a special case of the second where all characteristics are predictands, and there are no predictors.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;literally “what has to be predicted</p></li><li id="fn2"><p><sup>2</sup>&nbsp;In machine learning and other fields, the terms “dependent variable”, “class” or “label” (for nominal variates) are often used for “predictand”; and the terms “independent variable” or “features” are often used for “predictor”.</p></li></div></div>
+<div class="small midgrey">
+<p>The terms “unsupervised learning” and “supervised learning” are sometimes associated in machine learning with these two subtypes of task. But also in this case the association is loose and can be misleading. “Clustering” tasks, for example, are usually called “unsupervised” but they are examples of the second subtype above, where the agent has some predictors.</p>
+</div>
+</section>
+<section id="information-available-in-previous-instances" class="level3">
+<h3 class="anchored" data-anchor-id="information-available-in-previous-instances">Information available in previous instances</h3>
+<p>Finally we can further divide the second subtype above into two or three subsubtypes, depending on the information available to the agent about <em>previous instances</em>:</p>
+<ul>
+<li><p><span class="blue"><i class="fa-solid fa-star-half-alt" aria-label="star-half-alt"></i> <i class="fa-solid fa-star-half-alt" aria-label="star-half-alt"></i>&nbsp;&nbsp;all predictors and predictands of previous instances are known to the agent</span></p></li>
+<li><p><span class="lightblue"><i class="fa-solid fa-star-half" aria-label="star-half"></i> <i class="fa-solid fa-star-half" aria-label="star-half"></i>&nbsp;&nbsp;all predictors of previous instances, but not the predictands, are known to the agent</span></p></li>
+<li><p><span class="midgrey"><i class="fa-regular fa-star-half" aria-label="star-half"></i> <i class="fa-regular fa-star-half" aria-label="star-half"></i>&nbsp;&nbsp;all predictands of previous instances, but not the predictors, are known to the agent</span></p></li>
+</ul>
+<p><br>
+</p>
+<p>An example of the first subsubtype of task is image classification. The agent is for example given the following 128 × 128-pixel images and character-labels from the <a href="https://onepunchman.fandom.com">One Punch Man</a> series:</p>
+<p><img src="saitama_images.png" class="img-fluid" style="width:100.0%"></p>
+<p>and is then given one new 128 × 128-pixel image:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="saitama_new.png" class="img-fluid figure-img" width="128"></p>
+</figure>
+</div>
+<p>of which it must guess the character-label.</p>
+<p>In the example just given, the image is the predictor, the character-label is the predictand.</p>
+<p><br>
+</p>
+<p>A slight modification of the example above gives us a task of the second subsubtype. A different agent is given the images above, but without labels:</p>
+<p><img src="saitama_images_nolabels.png" class="img-fluid" style="width:100.0%"></p>
+<p>and must then guess some kind of “label” or “group” for the new image above – and possibly even for the images already given. The kind of “group” requested depends on the specific problem.</p>
+<p>In the new example above, the image is still the predictor, and the label or group is the predictand.</p>
+<div class="small midgrey">
+<p>The term “supervised learning” typically refer to the first subsubtype above.</p>
+<p>The term “unsupervised learning” can refer to the second subsubtype, for instance in “clustering” tasks. In a clustering task, the agent tries to guess which group or “cluster” an instance belong to, given a collection of similar instances, whose groups are not known either. The cluster effectively is the <em>predictand</em> quantity. In some cases the agent may want to guess the cluster not only of a new instance, but also of all previous instances.</p>
+<p>The third subsubtype is very rarely considered in machine learning, yet it is not an unrealistic task.</p>
+</div>
+<p>The types, subtypes, subsubtypes above are obviously not mutually exclusive or comprehensive. We can easily imagine scenarios where an agent has some predictors &amp; predictands available about <em>some</em> previous instances, but only predictors or only predictands available for other previous instances. This scenario falls in between the three subsubtypes above. In machine learning, hybrid situations like these are categorized as “missing data”.</p>
+</section>
+</section>
+<section id="sec-categ-probtheory" class="level2" data-number="27.3">
+<h2 data-number="27.3" class="anchored" data-anchor-id="sec-categ-probtheory"><span class="header-section-number">27.3</span> Flexible categorization from the point of view of probability theory</h2>
+<p>The categorization into subtypes and subsubtypes about agent’s guesses and available information can actually be presented in a more straightforward and flexible way using probability-theory notation.</p>
+<section id="notation" class="level3">
+<h3 class="anchored" data-anchor-id="notation">Notation</h3>
+<p>Let’s introduce some symbol conventions to be used in the next chapters. We shall denote with <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> all quantities of an instance that are of interest to the agent: those to be guessed and those that may be known. The quantities to be guessed in a new instance, that is, the predictands, will be denoted with <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Y}\)</span>.</span> The quantities that can be observed in a new instance, that is, the predictors, will be denoted with <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}X}\)</span>.</span> Therefore we have <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}= ({\color[RGB]{68,119,170}Y}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}X})\)</span>.</span> In cases where there are no predictors, <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}X}\)</span></span> is empty and we have <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}= {\color[RGB]{68,119,170}Y}\)</span>.</span></p>
+<p><span class="math inline">\({\color[RGB]{68,119,170}Z}_i\)</span>, <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Y}_i\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}X}_i\)</span></span> denote all quantities, the predictands, and the predictors for instance #<span style="display:inline-block;"><span class="math inline">\(i\)</span>.&nbsp;&nbsp;As</span> usual we number from <span style="display:inline-block;"><span class="math inline">\(i=1\)</span></span> to <span style="display:inline-block;"><span class="math inline">\(i=N\)</span></span> the instances that serve for learning, and <span style="display:inline-block;"><span class="math inline">\(i=N+1\)</span></span> is the new instance of interest to the agent.</p>
+<p>Recall (<a href="inference.html#sec-basic-elements-inference">§ &nbsp;<span>5.3</span></a>) that in the probability notation <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}({\color[RGB]{238,102,119}\boldsymbol{\dotsb}}\nonscript\:\vert\nonscript\:\mathopen{}{\color[RGB]{34,136,51}\boldsymbol{\dotsb}} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})\)</span>,</span> the <span class="red">proposal</span> contains what the agent’s belief is about, and the <span class="green">conditional</span> contains what’s supposed to be known to the agent, together with the background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>.</span></p>
+<p><br>
+</p>
+</section>
+<section id="fa-regular-star-the-agent-must-guess-all-characteristics-of-the-new-instance" class="level3">
+<h3 class="anchored" data-anchor-id="fa-regular-star-the-agent-must-guess-all-characteristics-of-the-new-instance"><span class="purple"><i class="fa-regular fa-star" aria-label="star"></i></span>&nbsp;&nbsp;The agent must guess <em>all</em> characteristics of the new instance</h3>
+<p>This kinds of guess is represented by the probability distribution</p>
+<p><span class="math display">\[
+\mathrm{P}(\color[RGB]{238,102,119}
+Z_{N+1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z
+\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{}
+\color[RGB]{34,136,51}
+Z_{N}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{N}
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}\dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{1}
+\color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
+\]</span></p>
+<p>for all possible values <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}z\)</span></span> in the domain of <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Z_{N+1}\)</span>.</span> The specific values <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}z_N, \dotsc, z_1\)</span></span> of all quantities <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> for the previous instances are known to the agent.</p>
+<p><br>
+</p>
+</section>
+<section id="fa-star-half-alt-the-agent-must-guess-some-characteristics-of-the-new-instance-but-can-observe-other-characteristics-of-the-new-instance" class="level3">
+<h3 class="anchored" data-anchor-id="fa-star-half-alt-the-agent-must-guess-some-characteristics-of-the-new-instance-but-can-observe-other-characteristics-of-the-new-instance"><span class="red"><i class="fa-solid fa-star-half-alt" aria-label="star-half-alt"></i></span>&nbsp;&nbsp;The agent must guess <em>some</em> characteristics of the new instance, but can observe other characteristics of the new instance</h3>
+<p>This kind of guess is represented by a probability distribution having</p>
+<p><span class="math display">\[
+\mathrm{P}(\color[RGB]{238,102,119}
+Y_{N+1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y
+\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{}
+\color[RGB]{34,136,51}
+X_{N+1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x
+\, \mathbin{\mkern-0.5mu,\mkern-0.5mu}\,
+\dotsb \,
+\color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
+\]</span></p>
+<p>for all possible values <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}y\)</span></span> in the domain of the predictands <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y_{N+1}\)</span>.</span> The value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}x\)</span></span> of the predictors for the new instance, <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X_{N+1}\)</span>,</span> is known to the agent.</p>
+<p>The remaining information contained in the conditional depends on the subsubtype of task discussed above:</p>
+<p><br>
+</p>
+<section id="fa-star-half-alt-fa-star-half-alt-all-predictors-and-predictands-of-previous-instances-are-known-to-the-agent" class="level4">
+<h4 class="anchored" data-anchor-id="fa-star-half-alt-fa-star-half-alt-all-predictors-and-predictands-of-previous-instances-are-known-to-the-agent"><span class="blue"><i class="fa-solid fa-star-half-alt" aria-label="star-half-alt"></i> <i class="fa-solid fa-star-half-alt" aria-label="star-half-alt"></i></span>&nbsp;&nbsp;All predictors and predictands of previous instances are known to the agent</h4>
+<p>This corresponds to the probability distribution</p>
+<p><span class="math display">\[
+\mathrm{P}(\color[RGB]{238,102,119}
+Y_{N+1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y
+\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{}
+\color[RGB]{34,136,51}
+X_{N+1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x
+\, \mathbin{\mkern-0.5mu,\mkern-0.5mu}\,
+Y_{N}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{N}
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}
+X_{N}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{N}
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}\dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+Y_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{1}
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}
+X_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{1}
+\color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
+\]</span></p>
+<p>for all possible <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}y\)</span>.</span> All information about predictands and predictors for the previous instances appear in the conditional.</p>
+<p>In the example above about image classification, a pictorial representation of this probability would be</p>
+<p><img src="saitama_example2.png" class="img-fluid" style="width:100.0%"></p>
+<p>where <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}y} \in \set{\color[RGB]{238,102,119}{\small\verb;Saitama;}, {\small\verb;Fubuki;}, {\small\verb;Genos;}, {\small\verb;MetalBat;}, \dotsc \color[RGB]{0,0,0}}\)</span>.</span></p>
+<p><br>
+</p>
+</section>
+<section id="fa-star-half-fa-star-half-all-predictors-of-previous-instances-but-not-the-predictands-are-known-to-the-agent" class="level4">
+<h4 class="anchored" data-anchor-id="fa-star-half-fa-star-half-all-predictors-of-previous-instances-but-not-the-predictands-are-known-to-the-agent"><span class="lightblue"><i class="fa-solid fa-star-half" aria-label="star-half"></i> <i class="fa-solid fa-star-half" aria-label="star-half"></i></span>&nbsp;&nbsp;All predictors of previous instances, but not the predictands, are known to the agent</h4>
+<p>This corresponds to the probability distribution</p>
+<p><span class="math display">\[
+\mathrm{P}(\color[RGB]{238,102,119}
+Y_{N+1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y
+\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{}
+\color[RGB]{34,136,51}
+X_{N+1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x
+\, \mathbin{\mkern-0.5mu,\mkern-0.5mu}\,
+X_{N}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{N}
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}\dotsb\mathbin{\mkern-0.5mu,\mkern-0.5mu}
+X_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{1}
+\color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
+\]</span></p>
+<p>for all possible <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}y\)</span>.</span> All information about predictors for the previous instances, but not that about the predictands, appear in the conditional.</p>
+</section>
+</section>
+<section id="more-general-and-hybrid-tasks" class="level3">
+<h3 class="anchored" data-anchor-id="more-general-and-hybrid-tasks">More general and hybrid tasks</h3>
+<p>Consider a task that doesn’t fit into any of the types discussed above: The agent wants to guess the predictands for a new instance, say #3, after observing that its predictors have value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}x\)</span>.</span> Of two previous instances, the agent knows the predictor value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}x_1\)</span></span> of the first, and the predictand value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}y_2\)</span></span> of the second. This task is expressed by the probability</p>
+<p><span class="math display">\[
+\mathrm{P}(\color[RGB]{238,102,119}
+Y_{3}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y
+\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{}
+\color[RGB]{34,136,51}
+X_{3}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x
+\, \mathbin{\mkern-0.5mu,\mkern-0.5mu}\,
+Y_{2}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{2}
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}
+X_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{1}
+\color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
+\]</span></p>
+<p><br>
+</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercises
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Write down the general probability expression for the task of subsubtype “<span class="midgrey">all predictands of previous instances, but not the predictors, are known to the agent</span>”.</p></li>
+<li><p>What kind of task does the following probability express?:</p>
+<p><span class="math display">\[
+\mathrm{P}(\color[RGB]{238,102,119}
+Y_{N+1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{N+1}
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}\dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+Y_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{1}
+\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{}
+\color[RGB]{34,136,51}
+X_{N+1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{N+1}
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}\dotsb\mathbin{\mkern-0.5mu,\mkern-0.5mu}
+X_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{1}
+\color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
+\]</span></p>
+<p>What kind of task could it represent, in machine-learning terminology?</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="fa-sign-out-alt-fa-cube-tasks-where-an-agent-must-itself-generate-a-new-instance" class="level3">
+<h3 class="anchored" data-anchor-id="fa-sign-out-alt-fa-cube-tasks-where-an-agent-must-itself-generate-a-new-instance"><span class="yellow"><i class="fa-solid fa-sign-out-alt" aria-label="sign-out-alt"></i> <i class="fa-solid fa-cube" aria-label="cube"></i></span>&nbsp;&nbsp;Tasks where an agent must itself <em>generate</em> a new instance</h3>
+<p>Our first categorical division mentioned the task of generating a new instance, given previous examples. In this kind of task there are possible alternatives that the agent could generate. How should one alternative be chosen? A moment’s thought shows that the <em>probabilities</em> for the alternatives should enter the choice.</p>
+<p>Suppose, as a very simple example, that an instance-generating agent has been shown, in an unsystematic order, 30 copies of the symbol <span class="green"><i class="fa-regular fa-circle-up" aria-label="circle-up"></i></span> and 10 copies of the symbol <span class="yellow"><i class="fa-regular fa-circle-down" aria-label="circle-down"></i></span>, and is asked to generate a new symbol out of these examples. Intuitively we expect it to generate <span class="green"><i class="fa-regular fa-circle-up" aria-label="circle-up"></i></span>, but cannot and don’t want to exclude the possibility that it could generate <span class="yellow"><i class="fa-regular fa-circle-down" aria-label="circle-down"></i></span>. These two generation possibilities should simply have different probabilities and, in the long run, appear with different frequencies.</p>
+<p>Also in this kind of task, therefore, we have the probability distribution</p>
+<p><span class="math display">\[
+\mathrm{P}(\color[RGB]{238,102,119}
+Z_{N+1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z
+\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{}
+\color[RGB]{34,136,51}
+Z_{N}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{N}
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}\dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{1}
+\color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
+\]</span></p>
+<p>In this task, the sentence <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Z_{N+1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z\)</span></span> represents not the hypothesis that a <em>given</em> new instance has value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}z\)</span>,</span> but the possibility of <em>generating</em> a new instance with that value.</p>
+<p><br>
+</p>
+<p>The general conclusion is that</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" style="font-size:120%">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size:120%">
+<p>probability distribution such as those discussed above must intrinsically enter all types of machine-learning algorithms.</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-underlying-distribution" class="level2" data-number="27.4">
+<h2 data-number="27.4" class="anchored" data-anchor-id="sec-underlying-distribution"><span class="header-section-number">27.4</span> The underlying distribution</h2>
+<p><span class="math inline">\(\mathrm{P}({\color[RGB]{238,102,119}\boldsymbol{\dotsb}}\nonscript\:\vert\nonscript\:\mathopen{}{\color[RGB]{34,136,51}\boldsymbol{\dotsb}} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})\)</span></p>
+</section>
+<section id="the-omnipresence-of-decision-making-in-machine-learning" class="level2 page-columns page-full" data-number="27.5">
+<h2 data-number="27.5" class="anchored" data-anchor-id="the-omnipresence-of-decision-making-in-machine-learning"><span class="header-section-number">27.5</span> The omnipresence of decision-making in machine learning</h2>
+<p>Many machine-learning textbooks say that</p>
+<blockquote class="blockquote">
+<p>in supervised learning the algorithm learns a functional relationship between some kind of input and some kind of output</p>
+</blockquote>
+<div class="page-columns page-full"><p>Such statement is misleading, because it seems to imply that a functional relationship actually exists from input to output, or from predictor to predictand – it’s only waiting to be discovered and “learned”. As we discussed in <a href="machine_learning_overview.html">chapter&nbsp;&nbsp;<span>24</span></a>, in many important problems and applications this is actually not true: <strong>there isn’t any functional relationship between input and output at all</strong>. Even if any possible “noise” were removed, there would still <em>not</em> be any functional relationship between the denoised, actual predictor and predictand (<a href="steven-seagal-emotion-chart.jpg" class="external">here is an example</a>).<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn3"><p><sup>3</sup>&nbsp;This is one more reason why we use the more general terms “predictor” &amp; “predictand”, rather that “input” &amp; “output”</p></li></div></div>
+<p>In many important problems there’s only a <em>statistical</em> relationship between predictands and predictors. In other words, whenever the agent saw a predictor value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x\)</span>,</span> the predictand value turned out to be <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y'\)</span></span> in a given number of instances, but also <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y''\)</span></span> in a given number of other instances, and so on.</p>
+<p>The lack of an actual predictor-predictand function has a very important consequence. If a machine-learning algorithm outputs just <em>one</em> predictand value, among the possible ones that are consistent with the predictor, then it means that <strong>the algorithm must choose one of the possibilities</strong>. How is this choice made? This is obviously a <strong>decision-making problem</strong>. As we know from chapters&nbsp;<a href="framework.html"><span>2</span></a> and&nbsp;<a href="basic_decisions.html"><span>3</span></a>, the optimal choice is determined by Decision Theory. Its determination requires:</p>
+<ul>
+<li><p><span class="green"><i class="fa-solid fa-scale-unbalanced-flip" aria-label="scale-unbalanced-flip"></i>&nbsp;&nbsp;the probabilities of the possible predictand values</span></p></li>
+<li><p><span class="blue"><i class="fa-solid fa-sack-dollar" aria-label="sack-dollar"></i>&nbsp;&nbsp;the utilities of the possible choices of values</span></p></li>
+</ul>
+<p>This point of view is also valid when there’s only one possible value: in this case the decision-making problem becomes trivial (one choice only), but it’s still correctly handled by decision theory.</p>
+<p><br>
+</p>
+<p>A decision-making step may also appear in tasks where the agent must generate a new instance. In some cases it may happen that a candidate alternative for generation should be discouraged, penalized, or even forbidden, because of particular circumstances; even if it would have been a probable candidate, given previous examples. Therefore also in this type of task there is an interplay between probabilities and utilities.</p>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./neural_networks.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Neural networks</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./exchangeable_probabilities.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title"><span class="green">Exchangeable beliefs</span></span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
