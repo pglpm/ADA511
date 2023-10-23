@@ -10,16 +10,16 @@ $$
 \black\land \underbracket[0ex]{\yellow\yI}_{\mathrlap{\yellow\uparrow\ \text{architecture?}}})
 $$
 
-The correspondence about [training data]{.green} and [architecture]{.yellow} seems somewhat convincing, the one about [outcome]{.red} will need more exploration, because it seems to involve some decision process -- and we haven't fully explored the machinery of decision-making yet.
+The correspondence about [training data]{.green} and [architecture]{.yellow} seems somewhat convincing, the one about [outcome]{.red} needs more exploration.
 
 Having introduced the notion of quantity in the latest chapters [-@sec-quantities-types-basic] and [-@sec-quantities-types-multi], we recognize that training data about a task instance concern some quantity and its value, so they can be expressed by a sentence like $D_i\mo d_i$, where
 
 - $i$ is the instance: $1,2,\dotsc,N$
-- $D_i$ describes the kind of data at instance $i$, for example "128 × 128 image with 24-bit colour depth"
+- $D_i$ describes the kind of data at instance $i$, for example "128 × 128 image with 24-bit colour depth, with a character label"
 - $d_i$ is the value of the data at instance $i$, for example the one here at the margin
 
 :::{.column-margin}
-![](saitama_smile.png){width=128}
+![label = "Saitama"](saitama_smile.png){width=128 fig-cap-location="center"}
 :::
 
 And similarly for the outcome of a new task instance where the algorithm is applied for real, which we consider as instance $N+1$. So we can rewrite the correspondence above as follows:
@@ -32,254 +32,131 @@ $$
 
 This kind of inference is what we explored in the "next-three-patients" scenario of [§ @sec-conditional-joint-sim] and some of the following sections.
 
+\
+
 Let's extend this tentative connection even further. It may be necessary to somewhat detach ourselves from common machine-learning terminology, either because it focuses on aspects that to us are secondary, or because it can be misleading if taken too literally or according to the everyday meaning of some words.
 
 \
 Machine-learning textbooks usually make a distinction between "supervised learning" and "unsupervised learning". This distinction or categorization is not very useful to a data engineer or data scientist, for several reasons:
 
+- {{< fa shuffle >}}\ \ It groups together some classes of problems that are quite different from an inferential viewpoint, and conversely separates classes of problems that are quite similar.
+
 - {{< fa bullseye >}}\ \ It focuses on a procedure rather than on a purpose. The important questions to us are: [What do we wish to infer or choose?]{.blue} and [From which kind of information?]{.green} These questions define the problem we want to solve. The procedure may then be chosen depending on other contingent factors, resources, and so on.
 
 <!-- It's somewhat like saying that the difference between car and aeroplane is that the latter has wings. Sure -- but *why?* The focus on wings misses the essential difference between these two means of transportation: they operate through different material media and exploit different kinds of physics; that's why the second has wings. -->
 
-- {{< fa shuffle >}}\ \ It groups together some classes of problems that are quite different from an inferential viewpoint, and conversely separates classes of problems that are quite similar.
 
-Below we shall introduce a different categorization that tries to focus on different cases of desired information and of available information.
+We shall introduce a different categorization that tries to focus on different cases of desired information and of available information.
 
 \
 
-A statement that is also common in machine-learning textbooks is that "[in supervised learning the algorithm learns a functional relationship between some kind of input and some kind of output]{.midgrey}". Such statement is misleading, because it seems to imply that a functional relationship actually exists between some quantities -- it's only waiting to be discovered and "learned". In many important problems and applications, for example in medicine, this is actually not true: **there isn't any functional relationship between input and output at all**. Even if any possible "noise" were removed, there still would *not* be any functional relationship between the clean, actual input and output ([here is an example](steven-seagal-emotion-chart.jpg){.external}). (From this point of view the very terms "input" and "output" become somewhat misleading.)
+A statement that is also common in machine-learning textbooks is that
+
+> in supervised learning the algorithm learns a functional relationship between some kind of input and some kind of output
+
+Such statement is misleading, because it seems to imply that a functional relationship actually exists between some quantities, only waiting to be discovered and "learned". In many important problems and applications, for example in medicine, this is actually not true: **there isn't any functional relationship between input and output at all**. Even if any possible "noise" were removed, there would still *not* be any functional relationship between the clean, actual input and output ([here is an example](steven-seagal-emotion-chart.jpg){.external}). From this point of view the very terms "input" and "output" become somewhat misleading.
 
 In many important problems there's only a *statistical* or *probabilistic* relationship between quantities that we can observe and quantities that we'd like to infer.
 
-The lack of a real input-output function has very important consequences. If a machine-learning algorithm yields only *one* output among the possible ones that are consistent with the input, then it means that **it must choose one of the possibilities**. How is this choice made? This is obviously a decision-making problem, and as we know from chapters [-@sec-framework] and [-@sec-basic-decisions] the optimal choice is determined by Decision Theory. Its determination requires:
+The lack of a real input-output function has a very important consequence. If a machine-learning algorithm yields only *one* output among the possible ones that are consistent with the input, then it means that **the machine-learning algorithm must choose one of the possibilities**. How is this choice made? This is obviously a decision-making problem, and as we know from chapters [-@sec-framework] and [-@sec-basic-decisions] the optimal choice is determined by Decision Theory. Its determination requires:
 
 1. the probabilities of the possible outputs
-
-2. the utilities of the possible choices
-
+2. the utilities of the possible choices of output
 
 
 
+## A task-oriented categorization of some machine-learning problems {#sec-cat-problems}
 
+Let's jot down a convenient categorization of the types of *task* that machine-learning algorithms try to solve. Such a categorization is not meant to be clear-cut; it only provides a starting point from which to examine a new task. Many tasks will fall in between categories: every data-engineering or data-science problem is unique. We consider tasks where multiple "instances" with similar characteristics are involved.
 
+### New instance: given vs generated
 
-Unfortunately the explanation given for this distinction is sometimes misleading:
+A first distinction can be made between
 
-- [{{< fa meh-rolling-eyes >}}]{.purple}\ \ Some books say that in supervised learning the algorithm "learns a functional relationship between some kind of input and some kind of output". This is usually *not* true: in the vast majority of applications there isn't any *functional* relationship between input and output at all; at most only a *statistical* or *probabilistic* one. This is clear from the fact that two training datapoints can have identical inputs but different outputs ([here is an example](steven-seagal-emotion-chart.jpg){.external}); and you remember from Calculus I that we can't speak of a function in this case. It's unclear how something that doesn't exist can be learned.
+- [{{< fa sign-out-alt >}} {{< fa cube >}}\ \ tasks where an agent must itself *generate* a new instance]{.yellow}
 
-    Books that give this kind of explanation are unfortunately oversimplifying things, to the point of being incorrect^[Paraphrasing [M. W. Zemansky](https://hvl.instructure.com/courses/25074/modules/items/679142):\
-	*"Teaching machine learning\
-	Is as easy as a song:\
-	You think you make it simpler\
-	When you make it slightly wrong!"*]. The algorithm is actually doing something more complex -- which we shall analyse in detail later.
+- [{{< fa cube >}} {{< fa question >}}\ \ tasks where a new instance is given to an agent, who must *guess* some of its characteristics]{.green}
 
+An example of the first type of task is image generation: an algorithm is given a collection of images and is asked to generate a new image based on them.
 
-- [{{< fa meh >}}]{.purple}\ \ Yet other books say that the distinction rests in the kind of data used for training: "input-output" pairs for supervised learning, and only "inputs" for unsupervised learning. It's good that this description doesn't mention "functions", but it is still unsatisfactory, because it confuses the means with the purpose. It's a little like saying that the difference between car and aeroplane is that the latter has wings. Sure -- but *why?* This description misses the essential difference between these two means of transportation: they operate through different material media and exploit different kinds of physics; that's why the second has wings.
+We shall see that these two types of task are actually quite close to each other, from the point of view of Decision Theory and Probability Theory.
 
-    Books that give this kind of explanation focus on a more "operational" kind of knowledge, which is sufficient for their specific goals. The very terms "supervised learning" and "unsupervised learning" indeed emphasize this operational side. But for our goal we need to look beyond operational differences and to understand their reasons.
-
-- [{{< fa smile >}}]{.lightblue}\ \ More enlightening books explain that the distinction rests in what the algorithm needs for each new application: in supervised learning, it uses features -- that is, additional information -- available at each new application instance; whereas in unsupervised learning it doesn't: no new instance-dependent information is given.
-
-    From this point of view, we also see that the distinction between "supervised" and "unsupervised" becomes less sharp: we can imagine to increase the information that's used at each new instance from zero ("unsupervised") to larger and larger amounts ("supervised").
-
-
-Going back to our tentative correspondence with inference and decision-making agents, we see a strong similarity between unsupervised & supervised learning and two kinds of inference:
-
-- In the unsupervised case, even if the quantities ${\green D_1}, {\green D_2}, {\green \dotsc}, {\green D_N}$  in the known instances and in the new instance ${\red D_{N+1}}$ might consist of joint or complex quantities ([chapter @sec-quantities-types-multi]), we are not interested in their possible decomposition into component quantities. So we still have the tentative connection above:
-
-    $$
-    \P(\underbracket[0ex]{\red D_{N+1} \mo d_{N+1}}_{\mathclap{\red\text{outcome?}}} \| 
-    \green\underbracket[0ex]{ D_N \mo d_N \and \dotsb  \and  D_1 \mo d_1}_{\mathclap{\green\text{training data?}}} 
-    \black\and \underbracket[0ex]{\yellow\yI}_{\mathrlap{\yellow\uparrow\ \text{architecture?}}})
-    $$
-
-    This is the kind of inference explored in the "next-three-patients" scenario of [§ @sec-conditional-joint-sim]. As another example or scenario, the agent may have been given information about a collection of images, and then tries to guess what the next image could be.
-
-
-- In the supervised case, the quantities in the known instances and in the new application are joint quantities:
-
-    $$
-	\begin{gathered}
-	{\green D_N} = ({\green Y_N}, {\green X_N}),
-	\ {\green\dotsc},\
-	{\green D_1} = ({\green Y_1}, {\green X_1})
-	\\[1ex]
-	{\red D_{N+1}} = ({\red Y_{N+1}}, {\green X_{N+1}})
-	\end{gathered}
-	$$
-	
-	and we are interested in the $X$ and $Y$ component quantities separately. For instance, the $X$-quantity could be a 128 × 128-pixel image, as in the example above, and the $Y$-quantity could be a name whose domain is all characters in the [One Punch Man](https://onepunchman.fandom.com) series: $\set{\cat{Saitama}, \cat{Genos}, \cat{Fubuki}, \cat{MetalBat}, \dotsc}$. The reason we make this separation is that, upon applying the algorithm in a new task instance, *one of these component quantities*, say $\red X_{N+1}$, *can actually be observed by the agent*; so it is known. It's the other component quantity, $\red Y_{N+1}$, that the agent is uncertain about. The $X$ quantities are often called "features"; and the $Y$ quantities, "labels" (or "classes"). The agent therefore needs to draw the following inference:
-
-    $$
-    \P\bigl(
-	{\red Y_{N+1} \mo y_{N+1}}
-	\pmb{\|[\big]} 
-	{\green X_{N+1} \mo x_{N+1}}\, \and\,
-    \green Y_N \mo y_N \and X_N \mo x_N \and
-	\dotsb \and 
-	Y_1 \mo y_1 \and X_1 \mo x_1 
-    \black\and {\yellow\yI} \bigr)
-    $$
-	
-	Or, to give an example with a pictorial representation:
-	
-	![](saitama_example.png){width=75%}
-    
-    This is the more complicated version of the "next-three-patients" scenario with "urgency & transportation", discussed in [§ @sec-conditional-joint-general].
-
-An interesting aspect of this new tentative correspondence is that there isn't any essential difference between unsupervised and supervised cases. Consider the last probability above; using the formula for a conditional probability ([§ @sec-conditional-probs]) we have
-
-:::{.column-page-right}
-$$
-\begin{aligned}
-    &\P\bigl(
-	{\red Y_{N+1} \mo y_{N+1}}
-	\pmb{\|[\big]} 
-	{\green X_{N+1} \mo x_{N+1}}\, \and\,
-    \green Y_N \mo y_N \and X_N \mo x_N \and
-	\dotsb \and 
-	Y_1 \mo y_1 \and X_1 \mo x_1 
-    \black\and {\yellow\yI} \bigr)
-	\\[2ex]
-	&\qquad{}=
-	\frac{
-	    \P\bigl(
-	\grey\overbracket[1px]{\vphantom{\Bigl(}
-	\red Y_{N+1} \mo y_{N+1} \and
-	\green X_{N+1} \mo x_{N+1}
-	}^\mathclap{{\red D_{N+1}\mo d_{N+1}}}
-	\black
-		\and
-		\grey\overbracket[1px]{\vphantom{\Bigl(}
-    \green Y_N \mo y_N \and X_N \mo x_N
-		}^\mathclap{{\green D_{N}\mo d_{N}}}\green
-	\and
-	\dotsb \and 
-		\grey\overbracket[1px]{\vphantom{\Bigl(}
-	\green Y_1 \mo y_1 \and X_1 \mo x_1 
-		}^\mathclap{{\green D_{1}\mo d_{1}}}
-    \black\pmb{\|[\big]} {\yellow\yI} \bigr)
-}{
-	 \sum_{\red y} \P\bigl(
-	{\red Y_{N+1} \mo y} \and
-	{\green X_{N+1} \mo x_{N+1}}
-		\and
-    \green Y_N \mo y_N \and X_N \mo x_N \and
-	\dotsb \and 
-	Y_1 \mo y_1 \and X_1 \mo x_1 
-    \black\pmb{\|[\big]}  {\yellow\yI} \bigr)
-}
-\end{aligned}
-$$
+:::{.small .midgrey}
+The terms "discriminative" and "generative" are sometimes associated in machine learning with the two types of task. This association, however, is quite loose, because some tasks typically called "generative" actually belong to the first type. We shall therefore avoid these or other terms. It's enough to keep in mind the distinction between the two types of task above.
 :::
 
-<!-- :::{.column-page-right} -->
-<!-- $$ -->
-<!-- \begin{aligned} -->
-<!--     &\P\bigl( -->
-<!-- 	{\red Y_{N+1} \mo y_{N+1}} -->
-<!-- 	\pmb{\|[\big]}  -->
-<!-- 	{\red X_{N+1} \mo x_{N+1}}\, \and\, -->
-<!--     \green Y_N \mo y_N \and X_N \mo x_N \and -->
-<!-- 	\dotsb \and  -->
-<!-- 	Y_1 \mo y_1 \and X_1 \mo x_1  -->
-<!--     \black\and {\yellow\yI} \bigr) -->
-<!-- 	\\[2ex] -->
-<!-- 	&\qquad{}= -->
-<!-- 	\frac{ -->
-<!-- 	    \P\bigl( -->
-<!-- 	{\red Y_{N+1} \mo y_{N+1}} \and -->
-<!-- 	{\red X_{N+1} \mo x_{N+1}} -->
-<!-- 	\black -->
-<!-- 		\pmb{\|[\big]}  -->
-<!--     \green Y_N \mo y_N \and X_N \mo x_N -->
-<!-- 	\and -->
-<!-- 	\dotsb \and  -->
-<!-- 	\green Y_1 \mo y_1 \and X_1 \mo x_1  -->
-<!--     \black\and {\yellow\yI} \bigr) -->
-<!-- }{ -->
-<!-- 	 \sum_{\red y_{N+1}} \P\bigl( -->
-<!-- 	{\red Y_{N+1} \mo y_{N+1}} \and -->
-<!-- 	{\red X_{N+1} \mo x_{N+1}} -->
-<!-- 		\pmb{\|[\big]}  -->
-<!--     \green Y_N \mo y_N \and X_N \mo x_N \and -->
-<!-- 	\dotsb \and  -->
-<!-- 	Y_1 \mo y_1 \and X_1 \mo x_1  -->
-<!--     \black\and {\yellow\yI} \bigr) -->
-<!-- } -->
-<!-- \\[2ex] -->
-<!-- &\P\bigl(\blue -->
-<!-- 	{Y_{\infty} \mo y_{\infty}} -->
-<!-- 	\and -->
-<!-- 	{X_{\infty} \mo x_{\infty}}\, \and\, -->
-<!-- 	\dotsb \and  -->
-<!--     Y_2 \mo y_2 \and X_2 \mo x_2 \and -->
-<!-- 	Y_1 \mo y_1 \and X_1 \mo x_1  -->
-<!--     \black\and {\yellow\yI} \bigr) -->
-<!-- \\[2ex] -->
-<!-- &f\bigl(\blue -->
-<!-- 	{Y_{\infty} \mo y_{\infty}} -->
-<!-- 	\and -->
-<!-- 	{X_{\infty} \mo x_{\infty}}\, \and\, -->
-<!-- 	\dotsb \and  -->
-<!--     Y_2 \mo y_2 \and X_2 \mo x_2 \and -->
-<!-- 	Y_1 \mo y_1 \and X_1 \mo x_1  -->
-<!--     \black \bigr) -->
-<!-- \\[2ex] -->
-<!-- &f\bigl(\blue -->
-<!-- 	{Y_{1000} \mo y_{1000}} -->
-<!-- 	\and -->
-<!-- 	{X_{1000} \mo x_{1000}}\, \and\, -->
-<!-- 	\dotsb \and  -->
-<!--     Y_2 \mo y_2 \and X_2 \mo x_2 \and -->
-<!-- 	Y_1 \mo y_1 \and X_1 \mo x_1  -->
-<!--     \black \bigr) -->
-<!-- \end{aligned} -->
-<!-- $$ -->
-<!-- ::: -->
 
-This is a fraction between the probability for the "unsupervised case" (which we wrote above compactly in terms of $D$ rather than $(Y,X)$), and the same probability summed up for all possible values of $\red Y_{N+1}$, which in the image-example above would be:
+### Guessing: all or some
 
-![](cond_prob_saitama.png){width=50%}
+Focusing on the second type of task (a new instance is given to the agent), we can further divide it into two subtypes:
 
-with a sum ($\red y$) over all possible character names of the series.
+- [{{< fa regular star >}}\ \ the agent must guess *all* characteristics of the new instance]{.purple}
 
+- [{{< fa star-half-alt >}}\ \ the agent must guess *some* characteristics of the new instance, but can observe other characteristics of the new instance]{.red}
 
+An example of the first subtype of task is the "urgent vs non-urgent" problem of [§ @sec-conditional-joint-sim]: having observed incoming patients, some of which where urgent and some non-urgent, the agent must guess whether the next incoming patient will be urgent or not. No other kinds of information (transport, patient characteristics, and so on) are available for any patient.
 
-So if the agent has the probability for the "unsupervised case", then with a simple computation it also has the probability for the "supervised case", and many other cases that cannot be categorized as "unsupervised" or "supervised" (there is also a connection with "generative" vs "discriminative" algorithms here).
+We shall call [**predictands**]{.blue}^[literally "what has to be predicted] the characteristics that the agent must guess in a new instance, and [**predictors**]{.blue} those that the agent can observe.^[In machine learning and other fields, the terms "dependent variable", "class" or "label" (for nominal variates) are often used for "predictand"; and the terms "independent variable" or "features" are often used for "predictor".] The first subtype above can be viewed as a special case of the second where all characteristics are predictands, and there are no predictors.
+
+:::{.small .midgrey}
+The terms "unsupervised learning" and "supervised learning" are sometimes associated in machine learning with these two subtypes of task. But also in this case the association is loose and can be misleading. "Clustering" tasks, for example, are usually called "unsupervised" but they are examples of the second subtype above, where the agent has some predictors.
+:::
+
+### Information available in previous instances
+
+Finally we can further divide the second subtype above into two or three subsubtypes, depending on the information available to the agent about *previous instances*:
+
+- [{{< fa star-half-alt >}} {{< fa star-half-alt >}}\ \ all predictors and predictands of previous instances are known to the agent ]{.blue}
+
+- [{{< fa star-half >}} {{< fa star-half >}}\ \ all predictors of previous instances, but not the predictands, are known to the agent]{.lightblue}
+
+- [{{< fa regular star-half >}} {{< fa regular star-half >}}\ \ all predictands of previous instances, but not the predictors, are known to the agent]{.midgrey}
 
 \
 
-We seem to have found a formula that should lie at the core of any machine-learning algorithm: the **formula for conditional probability**, which covers all possible inference cases: with or without features, with or without previous data, and many other cases. If we want that an inference algorithm which "learns" from example data, and possibly use features, shall be optimal, then it must operate on the conditional-probability formula in one way or another -- at least approximately.
+An example of the first subsubtype of task is image classification. The agent is for example given the following 128 × 128-pixel images and character-labels from the [One Punch Man](https://onepunchman.fandom.com) series:
 
-What does such an optimal algorithm require, in order to operate in full? From the discussion of [chapter @sec-learning] we see that it requires the following:
+![](saitama_images.png){width=100%}
 
-- [{{< fa cubes >}} A joint probability distribution about all quantities representing features and instances; past, present, and future.]{.yellow}
+and is then given one new 128 × 128-pixel image:
 
-    This joint probability distribution also expresses what kind of background knowledge the algorithm assumes, and therefore the kind of problems it can be applied to. It thus forms the "architecture" and "internal parameters" of the algorithm. For example, in [§ @sec-conditional-joint-sim] and its exercises we examined a joint distribution expressing the belief that "the more often a specific case is seen, the more probable it is at the next instance"; and also another distribution expressing the opposite belief: "the more often a specific case is seen, the *less* probable it is at the next instance".
+![](saitama_new.png){width=128 fig-align="center"}
 
-- [{{< fa arrow-right-to-bracket >}} Data from previous instances, that is, "training" or "learning" data.]{.green}
+of which it must guess the character-label.
 
-- [{{< fa arrow-right-to-bracket >}} Optionally, some quantities or "feature" data about the present instance.]{.lightblue}
+In the example just given, the image is the predictor, the character-label is the predictand.
 
-Of these three requirements, the first seems the most difficult to implement. How to *encode* a belief distribution about a possibly infinite number of quantities, some of which may refer to the future? And how to choose such a belief distribution in a reasonable way?
+\
 
-This is what we discuss in the next chapters.
+A slight modification of the example above gives us a task of the second subsubtype. A different agent is given the images above, but without labels:
+
+![](saitama_images_nolabels.png){width=100%}
+
+and must then guess some kind of "label" or "group" for the new image above -- and possibly even for the images already given. The kind of "group" requested depends on the specific problem.
+
+In the new example above, the image is still the predictor, and the label or group is the predictand.
+
+\
+
+:::{.small .midgrey}
+The term "supervised learning" typically refer to the first subsubtype above.
+
+The term "unsupervised learning" can refer to the second subsubtype, for instance in "clustering" tasks. In a clustering task, the agent tries to guess which group or "cluster" an instance belong to, given a collection of similar instances, whose groups are not known either. The cluster effectively is the *predictand* quantity. In some cases the agent may want to guess the cluster not only of a new instance, but also of all previous instances.
+
+The third subsubtype is very rarely considered in machine learning, yet it is not an unrealistic task.
+:::
+
+\
+
+The types, subtypes, subsubtypes above are obviously not mutually exclusive or comprehensive. We can easily imagine scenarios where an agent has some predictors \& predictands available about *some* previous instances, but only predictors or only predictands available for other previous instances. This scenario falls in between the three subsubtypes above. In machine learning, hybrid situations like these are categorized as "missing data".
 
 
+## Flexible categorization from the point of view of probability theory [#sec-categ-probtheory]
 
-<!-- ---- -->
+### Notation
 
-<!-- :::{.columns} -->
+Let's introduce some symbol conventions to be used in the next chapters.
 
-<!-- ::::{.column width=25%} -->
-<!-- :::: -->
 
-<!-- ::::{.column width=50%} -->
-<!-- ![](steven-seagal-emotion-chart.jpg){width=100%} -->
-<!-- [Example of dataset in which the same input (facial expression) is associated with different outputs (mood labels)]{.small} -->
-<!-- :::: -->
+***To be continued***
 
-<!-- ::::{.column width=25%} -->
-<!-- :::: -->
-<!-- ::: -->
