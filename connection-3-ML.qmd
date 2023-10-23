@@ -88,7 +88,7 @@ The terms "unsupervised learning" and "supervised learning" are sometimes associ
 
 Finally we can further divide the second subtype above into two or three subsubtypes, depending on the information available to the agent about *previous instances*:
 
-- [{{< fa star-half-alt >}} {{< fa star-half-alt >}}\ \ all predictors and predictands of previous instances are known to the agent ]{.blue}
+- [{{< fa star-half-alt >}} {{< fa star-half-alt >}}\ \ all predictors and predictands of previous instances are known to the agent]{.blue}
 
 - [{{< fa star-half >}} {{< fa star-half >}}\ \ all predictors of previous instances, but not the predictands, are known to the agent]{.lightblue}
 
@@ -137,28 +137,154 @@ The categorization into subtypes and subsubtypes about agent's guesses and avail
 
 Let's introduce some symbol conventions to be used in the next chapters. We shall denote with $\bZ$ all quantities of an instance that are of interest to the agent: those to be guessed and those that may be known. The quantities to be guessed in a new instance, that is, the predictands, will be denoted with $\bY$. The quantities that can be observed in a new instance, that is, the predictors, will be denoted with $\bX$. Therefore we have $\bZ = (\bY \and \bX)$. In cases where there are no predictors, $\bX$ is empty and we have $\bZ = \bY$.
 
-$\bZ_i$, $\bY_i$, $\bX_i$ will denote all quantities, the predictands, and the predictors of instance #$i$.
+$\bZ_i$, $\bY_i$, $\bX_i$ denote all quantities, the predictands, and the predictors for instance #$i$.\ \ As usual we number from $i=1$ to $i=N$ the instances that serve for learning, and $i=N+1$ is the new instance of interest to the agent.
 
-Recall that in the probability notation $\P(\dotsb\|\dotsb \and \yI)$
+Recall ([§ @sec-basic-elements-inference]) that in the probability notation $\P({\red\boldsymbol{\dotsb}}\|{\green\boldsymbol{\dotsb}} \and \yI)$, the [supposal]{.red} contains what the agent's belief is about, and the [conditional]{.green} contains what's supposed to be known to the agent, together with the background information $\yI$.
 
-***To be continued***
+\
+
+### [{{< fa regular star >}}]{.purple}\ \ The agent must guess *all* characteristics of the new instance
+
+This kinds of guess is represented by the probability distribution
+
+$$
+\P(\red
+Z_{N+1}\mo z
+\black\|
+\green
+Z_{N}\mo z_{N}
+\and \dotsb \and
+Z_{1}\mo z_{1}
+\black \and \yI)
+$$
+
+for all possible values $\red z$ in the domain of $\red Z_{N+1}$. The specific values $\green z_N, \dotsc, z_1$ of all quantities $\bZ$ for the previous instances are known to the agent.
+
+\
+
+### [{{< fa star-half-alt >}}]{.red}\ \ The agent must guess *some* characteristics of the new instance, but can observe other characteristics of the new instance
+
+This kind of guess is represented by a probability distribution having
+
+$$
+\P(\red
+Y_{N+1}\mo y
+\black\|
+\green
+X_{N+1}\mo x
+\, \and\, 
+\dotsb \,
+\black \and \yI)
+$$
+
+for all possible values $\red y$ in the domain of the predictands $\red Y_{N+1}$. The value $\green x$ of the predictors for the new instance, $\green X_{N+1}$, is known to the agent.
+
+The remaining information contained in the conditional depends on the subsubtype of task discussed above:
+
+\
+
+#### [{{< fa star-half-alt >}} {{< fa star-half-alt >}}]{.blue}\ \ All predictors and predictands of previous instances are known to the agent
+
+This corresponds to the probability distribution
+
+$$
+\P(\red
+Y_{N+1}\mo y
+\black\|
+\green
+X_{N+1}\mo x
+\, \and\, 
+Y_{N}\mo y_{N}
+\and
+X_{N}\mo x_{N}
+\and \dotsb \and
+Y_{1}\mo y_{1}
+\and
+X_{1}\mo x_{1}
+\black \and \yI)
+$$
+
+for all possible $\red y$. All information about predictands and predictors for the previous instances appear in the conditional.
+
+\
+
+#### [{{< fa star-half >}} {{< fa star-half >}}]{.lightblue}\ \ All predictors of previous instances, but not the predictands, are known to the agent
+
+This corresponds to the probability distribution
+
+$$
+\P(\red
+Y_{N+1}\mo y
+\black\|
+\green
+X_{N+1}\mo x
+\, \and\, 
+X_{N}\mo x_{N}
+\and \dotsb\and
+X_{1}\mo x_{1}
+\black \and \yI)
+$$
+
+for all possible $\red y$. All information about predictors for the previous instances, but not that about the predictands, appear in the conditional.
 
 
+### More general and hybrid tasks
+
+Consider a task that doesn't fit into any of the types discussed above: The agent wants to guess the predictands for a new instance, say #3, after observing that its predictors have value $\green x$. Of two previous instances, the agent knows the predictor value $\green x_1$ of the first, and the predictand value $\green y_2$ of the second. This task is expressed by the probability
+
+$$
+\P(\red
+Y_{3}\mo y
+\black\|
+\green
+X_{3}\mo x
+\, \and\, 
+Y_{2}\mo y_{2}
+\and
+X_{1}\mo x_{1}
+\black \and \yI)
+$$
+
+\
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercises
+
+- Write down the general probability expression for the task of subsubtype "[all predictands of previous instances, but not the predictors, are known to the agent]{.midgrey}".
+
+- What kind of task does the following probability express?:
+
+    $$
+\P(\red
+Y_{N+1}\mo y_{N+1}
+\and \dotsb \and
+Y_{1}\mo y_{1}
+\black\|
+\green
+X_{N+1}\mo x_{N+1}
+\and \dotsb\and
+X_{1}\mo x_{1}
+\black \and \yI)
+$$
+    
+	How could you call it, in machine-learning terminology?
+
+:::
 
 ## The omnipresence of decision-making in machine learning
 
-A statement that is also common in machine-learning textbooks is that
+Many machine-learning textbooks say that
 
 > in supervised learning the algorithm learns a functional relationship between some kind of input and some kind of output
 
-Such statement is misleading, because it seems to imply that a functional relationship actually exists between some quantities, only waiting to be discovered and "learned". In many important problems and applications, for example in medicine, this is actually not true: **there isn't any functional relationship between input and output at all**. Even if any possible "noise" were removed, there would still *not* be any functional relationship between the clean, actual input and output ([here is an example](steven-seagal-emotion-chart.jpg){.external}). From this point of view the very terms "input" and "output" become somewhat misleading.
+Such statement is misleading, because it seems to imply that a functional relationship actually exists from input to output, or from predictor to predictand -- it's only waiting to be discovered and "learned". As we discussed in [chapter @sec-ml-introduction], in many important problems and applications this is actually not true: **there isn't any functional relationship between input and output at all**. Even if any possible "noise" were removed, there would still *not* be any functional relationship between the denoised, actual predictor and predictand ([here is an example](steven-seagal-emotion-chart.jpg){.external}).^[This is one more reason why we use the more general terms "predictor" & "predictand", rather that "input" & "output"]
 
-In many important problems there's only a *statistical* or *probabilistic* relationship between quantities that we can observe and quantities that we'd like to infer.
+In many important problems there's only a *statistical* relationship between predictands and predictors. In other words, whenever the agent saw a predictor value $\green X\mo x$, the predictand value turned out to be $\green Y\mo y'$ in a given number of instances, but also $\green Y\mo y''$ in a given number of other instances, and so on.
 
-The lack of a real input-output function has a very important consequence. If a machine-learning algorithm yields only *one* output among the possible ones that are consistent with the input, then it means that **the machine-learning algorithm must choose one of the possibilities**. How is this choice made? This is obviously a decision-making problem, and as we know from chapters [-@sec-framework] and [-@sec-basic-decisions] the optimal choice is determined by Decision Theory. Its determination requires:
+The lack of an actual predictor-predictand function has a very important consequence. If a machine-learning algorithm outputs just *one* predictand value, among the possible ones that are consistent with the predictor, then it means that **the algorithm must choose one of the possibilities**. How is this choice made? This is obviously a **decision-making problem**. As we know from chapters [-@sec-framework] and [-@sec-basic-decisions], the optimal choice is determined by Decision Theory. Its determination requires:
 
-1. the probabilities of the possible outputs
-2. the utilities of the possible choices of output
+1. the probabilities of the possible predictand values
+2. the utilities of the possible choices of values
 
 
 
