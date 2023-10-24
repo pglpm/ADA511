@@ -6,15 +6,33 @@
 
 In the chapters of part [Inference I]{.green} we had an overview of how an agent can draw inferences and make predictions of the most general kind, expressed by general sentences, using the four fundamental rules of inference.
 
-Then, in the chapters of part [Inference II]{.green}, we successively narrowed our focus on more and more specialized kinds of inference typical of engineering and data-science problems and machine-learning algorithms: first, inferences about measurements and observations; and then inferences about multiple instances of similar measurements and observations. For these purposes we introduced a specialized language about quantities and data types (chapters of part [Data I]{.yellow}), and "populations" of similar data (chapters of part [Data II]{.yellow}).
+Then, in part [Inference II]{.green}, we successively narrowed our focus on more and more specialized kinds of inference, typical of engineering and data-science problems and machine-learning algorithms. First, inferences about measurements and observations; then, inferences about multiple instances of similar measurements and observations. The idea was that that an agent can arrive at sharper degrees of belief -- that is, learn -- by using information about "similar instances".
 
-The idea was that that an agent can arrive at sharper degrees of belief -- that is, learn -- by using information about "similar instances". We also found the main formula, derived from the four fundamental rules, that takes care of learning and prediction (also in both "supervised" and "unsupervised" machine learning):
+For these purposes we introduced a specialized language about quantities and data types in part [Data I]{.yellow}, and about "populations" of similar "units" in part [Data II]{.yellow}.
+
+In part [Machine learning]{.red} we got an overview of current machine-learning methods, and then focused on several types of "multi-instance" tasks that popular machine-learning algorithm, such as deep networks and random forests, are purported to solve. We found a remarkable result: a perfect agent -- one that operates according to Probability Theory -- can in principle perform *any and all* of those tasks by using the joint probability distribution
+
+$$
+\P(\blue
+Y_{N+1}\mo y_{N+1}
+\and
+X_{N+1}\mo x_{N+1}
+\and \dotsb \and
+Y_{1}\mo y_{1}
+\and
+X_{1}\mo x_{1}
+\black \| \yI)
+$$
+
+(specified for all possible values of $\blue x_{1}, \dotsc, x_{N+1}$ and $\blue y_{1}, \dotsc, y_{N+1}$ and $N$) in some calculations involving sums and divisions.
+
+For example, the task ("supervised learning") of predicting some variates (predictands) for a new unit, from knowledge of the other variates (predictors) for the same units, and of all variates for $N$ other units, is given by
 
 :::{.column-page-inset-right}
 $$
 \begin{aligned}
     &\P\bigl(
-	{\red Y_{N+1} \mo y_{N+1}}
+	{\red Y_{N+1} \mo y}
 	\pmb{\|[\big]} 
 	{\green X_{N+1} \mo x_{N+1}}\, \and\,
     \green Y_N \mo y_N \and X_N \mo x_N \and
@@ -25,7 +43,7 @@ $$
 	&\qquad{}=
 	\frac{
 	    \P\bigl(
-	\red Y_{N+1} \mo y_{N+1} \and
+	\red Y_{N+1} \mo y \and
 	\green X_{N+1} \mo x_{N+1}
 	\black
 		\and
@@ -48,26 +66,11 @@ $$
 $$
 :::
 
-To calculate this formula, an agent needs the joint probability distribution
-
-$$
-	    \P\bigl(
-	\blue Y_{N+1} \mo y_{N+1} \and
-	X_{N+1} \mo x_{N+1}
-	\black
-		\and
-    \blue Y_N \mo y_N \and X_N \mo x_N
-	\and
-	\dotsb \and 
-	Y_1 \mo y_1 \and X_1 \mo x_1 
-    \black\pmb{\|[\big]} {\yI} \bigr)
-$$
-
-for all possible values of $x_1,y_1$, $x_2, y_2$, $\dotsc$, and for a possibly unlimited number $N+1$ of instances.
-
 \
 
-We shall now narrow our focus further for one last time, on inferences where this probability distribution satisfies a property that greatly simplifies the calculations. Such special inferences are also typical of many machine-learning applications, including "supervised" and "unsupervised" learning.
+Our problem now is to (1) choose such a distribution according to reasonable assumptions and background information, (2) encode it in a computationally feasible way.
+
+For these two purposes we shall now narrow our focus further for one last time, on inferences where this probability distribution satisfies a property that is reasonable in some situations, and greatly simplifies the calculations. Such situations are typical of many machine-learning applications, including "supervised" and "unsupervised" learning.
 
 \
 
