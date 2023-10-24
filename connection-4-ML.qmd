@@ -621,7 +621,7 @@ $$
 
 **All these formulae, even for hybrid tasks, involve sums and ratios of only one distribution:**
 
-$$
+$$\boldsymbol{
 \P(\blue
 Y_{N+1}\mo y
 \and
@@ -631,17 +631,77 @@ Y_{1}\mo y_{1}
 \and
 X_{1}\mo x_{1}
 \black \| \yI)
+}
 $$
 
-Stop for a moment and contemplate some of the consequences of this remarkable fact:
+Stop for a moment and contemplate some of the consequences of this remarkable fact
 
-- [*An agent that can perform one of the tasks above also can, in principle, perform all other tasks*]{.blue}
+- [{{< fa arrows-spin >}}\ \ *An agent that can perform one of the tasks above also can, in principle, perform all other tasks.*]{.blue}
 
     This is why a perfect agent, working with probability, in principle does not have to worry about "supervised", "unsupervised", "missing data", "imputation", and similar situations. This also shows what was briefly mentioned before: all these task typologies are much closer to one another than it might look like from the perspective of current machine-learning methods.
+	
+:::{.column-margin}
+The acronym [*OPM*]{.green} ![](opm_fist2.png){height=2em} can stand for [*Optimal Predictor Machine*]{.green} or [*Omni-Predictor Machine*]{.green}
+:::
 
-- [*The probability distribution above encodes the agent's background knowledge and assumptions; different agents differ only in the values of that distribution.*]{.blue}
+- [{{< fa microchip >}}\ \ *The probability distribution above encodes the agent's background knowledge and assumptions; different agents differ only in the values of that distribution.*]{.blue}
 
     If two agents yield different probability values in the same task, with the same variates and same training data, the difference must come from the joint probability distribution above. And, since the data given to the agents are exactly the same, the difference is in the agents' background [information $\yI$.]{.m}
+
+- [{{< fa user-secret >}}\ \ *Data cannot "speak for themselves"*]{.blue}
+
+    For exactly the same data, we can choose two different distributions above , and therefore get different results. The data alone cannot determine the result: specific background information and assumptions, whether acknowledged or not, always affect the result.
+
+The qualification "in principle" in the first consequence is important. Some of the sums that enter the formulae above are computationally extremely expensive and, with current technologies and maths techniques, cannot be performed within a reasonable time. But *new technologies and new maths discoveries could make these calculations suddenly possible*, this is why a data engineer cannot simply brush them aside and forget them.
+
+As regards the third consequence, we shall see that there are states of knowledge which actually do converge to the same results, as the number of training data increases.
+
+
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+
+In a previous example of "hybrid" task we had the probability distribution
+
+$$
+\P(\red
+Y_{3}\mo y
+\black\|
+\green
+X_{3}\mo x
+\, \and\, 
+Y_{2}\mo y_{2}
+\and
+X_{1}\mo x_{1}
+\black \and \yI)
+$$
+
+Rewrite it in terms of the underlying joint distribution.
+:::
+
+## Plan for the next few chapters
+
+Our goal in building an "Optimal Predictor Machine" is now clear: we must find a way to
+
+- *assign* the joint probability distribution above, in such a way that it reflects some reasonable background information
+
+- *encode* the distribution in a computationally useful way
+
+The "encode" undertaking sounds quite challenging, because the number $N$ of units can in principle be infinite; we have an infinite probability distribution.
+
+In the next [Inference III] part we shall see that partially solving the "assign" undertaking actually makes the "encode" one feasible.
+
+\
+
+One question arise if we look at machine-learning methods. Some, and not the most popular, of these methods don't give us probabilities about values: they return *one* definite value. How do we reconcile this with the probabilistic point of view above? We shall answer this question in full in the last chapters, but a short answer can be already given now, as it's very intuitive.
+
+If there are several possible correct answers to a given guess, but a machine-learning algorithm is giving us only one answer, then the algorithm must be internally *choosing* one of them. In other words, it's internally doing decision-making. We know from chapters [@sec-framework] and [@sec-basic-decisions] that this process should obey Decision Theory and therefore *must* involve
+
+- [{{< fa scale-unbalanced-flip >}}\ \ the probabilities of the possible correct answers]{.green}
+
+- [{{< fa sack-dollar >}}\ \ the utilities of the possible choices of answer]{.blue}
+
+Non-probabilistic machine-learning algorithms must therefore be approximations of an Optimal Predictor Machine that, after computing probabilities, selects one unique answer by using utilities.
 
 
 
