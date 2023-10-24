@@ -820,6 +820,7 @@ The agent has obviously learned an association between $\ambu$ and $\urge$ from 
 
 \
 
+::::{.column-body-outset-right}
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercises
 - Make the same calculations, freely trying other combinations of information about the two previous patients.
@@ -827,20 +828,41 @@ The agent has obviously learned an association between $\ambu$ and $\urge$ from 
 - Do the same with three previous patients.
 
 - Explore and experiment with the inverse task: use urgency $U$ as predictor, and transportation $T$ as predictand.
+
+- Imagine that the urgency variate for the first patient, $U_1$, is not known (missing data). Using the formula for marginalization (see [§ @sec-underlying-distribution]), calculate the corresponding probability
+    
+	$$\P(U_3\mo\urge \| T_3\mo\ambu \and  
+U_2\mo\nonu \and T_2\mo\othe \and
+ T_1\mo\ambu \and
+\yD)$$
+
 :::
+::::
 
 ## Critique of the Dirichlet-mixture belief distribution {#sec-critique-dirmix}
 
 The two examples above reveal some characteristics of an agent based on the Dirichlet-mixture belief distribution:
 
-- In absence of previous data, it gives uniform distributions to any variate.
+- In absence of previous data, it assigns uniform probability distributions to any variate.
 
-- It is "eager" to learn from previous examples; in other words, its probabilities vary appreciably with even just a few observations.
+- It is "eager" to learn from previous examples; in other words, its probabilities vary appreciably even with only few observations.
 
-These characteristics can be appropriate to some inference tasks, but not to others. Note again that this is a matter of *background information* about the task one wants to solve.
+There are also other subtle characteristics connected to these, which we won't discuss here.
 
-This kind of agent is reasonable in situations where:
+These characteristics can be appropriate to some inference tasks, but not to others. It is again a matter of *background information* about the task one wants to solve.
+
+This background information can be reasonable in situations where:
 
 - There is very little information about the physics behind the variates and population, so one is willing to give a lot of weight to observed data. Contrast this with the coin-tossing scenario, where our physics knowledge about coins make us appreciably change our probabilities only after a large number of observations.
 
-- A large number of previous data is available, "large" relative to the domain size $M$ of the total variate $Z$.
+- A large number of previous observations is available, "large" relative to the domain size $M$ of the total variate $Z$.
+
+It is possible to modify the Dirichlet-mixture belief distribution in order to alter the characteristics above. Some modifications can assign more a-priori plausibility to some variate values than others, or make the initial belief less affected by observed data.
+
+These possibilities should remind us about the importance of assessing and specifying appropriate background information. No matter the amount of data, what the data eventually "tell" us acquires a meaning only with respect to the background information from which they are observed.
+
+----
+
+In the next chapter we discuss the code implementation of the formulae for the Dirichlet-mixture agent.
+
+

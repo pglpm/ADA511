@@ -1,7 +1,7 @@
 forecastK <- function(K, conditional=NULL){
 #### Calculate conditional or unconditional probability
     variates <- names(dimnames(K[['freqs']]))
-    SS <- length(K[['freqs']])
+    M <- length(K[['freqs']])
     ## Selection of conditional values
     ## select subarray of freqs corresponding to the conditional values
     if(!is.null(conditional)){
@@ -30,7 +30,7 @@ forecastK <- function(K, conditional=NULL){
     ## create an array of forecast variates and alphas
     freqs <- aperm(
         sapply(K[['alphas']], function(alpha){
-            log(SS*alpha + freqs)
+            log(M*alpha + freqs)
         }, simplify='array'),
         c(length(dim(freqs))+1, 1:length(dim(freqs)))
     )
