@@ -389,9 +389,7 @@ $$(a+1)! = (a+1) \cdot a!$$
 :::
 
 
-## Examples {#sec-dirmix-examples}
-
-### Forecast about one variate, given previous observations
+## Example 1: Forecast about one variate, given previous observations {#sec-dirmix-example1}
 
 Let's see a simple step-by-step application of the formulae in the Mars-prospecting scenario. In this task there are no predictors and only one predictand variate $\yR$: the presence of haematite. The agent observes the value of this variate in several rocks, and try to forecast its value in a new rock.
 
@@ -506,11 +504,25 @@ $$
 
 :::
 
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+The inference problem above has some analogy with coin tossing: there's just one, binary, variate. This agent could have been used to make forecasts about coin tosses.
+
+Consider the result above from the point of view of this analogy. Let's say that $\yy$ would be "heads", and $\yn$ "tails". Having observed four coin tosses, with three heads and one tail, the agent is giving a 61.5% probability for heads at the next toss.
+
+- Do you consider this probability reasonable? Why?
+
+- In which different coin-tossing circumstances would you consider this probability reasonable (given the same previous observation data)?
+
+:::
+
+
+
 <!-- *** discussion about comparison with coin toss *** -->
 
 
 
-### Forecast about one predictand, given predictor and previous observations
+## Example 2: Forecast about one predictand, given predictor and previous observations {#sec-dirmix-example2}
 
 Let's go back to the hospital scenario of [§ @sec-conditional-joint-general]. The units are patients coming into a hospital. The population is characterized by two nominal variates:
 
@@ -539,7 +551,11 @@ First let's get a glimpse of the agent's forecast if it were given *no* informat
 
 $$\P(U_3\mo\urge \| T_3\mo\ambu \and \yD)$$
 
+\
+
 [{{< fa 1 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The hypotheses are $U_3\mo\urge$ and $U_3\mo\nonu$
+
+\
 
 [{{< fa 2 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The joint probabilities for the hypotheses and previous data, since there's no information about previous patients, are simply
 
@@ -550,6 +566,8 @@ $$
 \P(U_3\mo\nonu \and T_3\mo\ambu \| \yD)
 $$
 :::
+
+\
 
 [{{< fa 2 >}}a {{< fa hand-point-right >}}]{.green}\ \ In the first joint probability above the value pair $(U\mo\urge \and T\mo\ambu)$ appears once, and the remaining five pairs appear zero times:
 
@@ -581,6 +599,8 @@ $$
 $$
 :::
 
+\
+
 [{{< fa 2 >}}b {{< fa hand-point-right >}}]{.green}\ \ In the second joint probability above the value pair $(U\mo\nonu \and T\mo\ambu)$ appears once, and the remaining five pairs appear zero times:
 
 :::{.column-body-outset-right}
@@ -610,6 +630,8 @@ $$
 \end{aligned}
 $$
 :::
+
+\
 
 [{{< fa 3 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The probability that this incoming patient is urgent is then
 
@@ -657,7 +679,11 @@ U_1\mo\urge \and T_1\mo\ambu \and
 $$
 :::
 
+\
+
 [{{< fa 1 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The hypotheses are again $U_3\mo\urge$ and $U_3\mo\nonu$
+
+\
 
 [{{< fa 2 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The joint probabilities for the hypotheses and known data are
 
@@ -676,6 +702,8 @@ U_1\mo\urge \and T_1\mo\ambu \|
 \end{aligned}
 $$
 :::
+
+\
 
 [{{< fa 2 >}}a {{< fa hand-point-right >}}]{.green}\ \ In the first joint probability above we have the following counts:
 
@@ -715,6 +743,7 @@ U_1\mo\urge \and T_1\mo\ambu \|
 $$
 :::
 
+\
 
 [{{< fa 2 >}}b {{< fa hand-point-right >}}]{.green}\ \ Second joint probability:
 
@@ -763,6 +792,7 @@ U_1\mo\urge \and T_1\mo\ambu \|
 $$
 :::
 
+\
 
 [{{< fa 3 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The probability that the third incoming patient is urgent is
 
@@ -792,8 +822,25 @@ The agent has obviously learned an association between $\ambu$ and $\urge$ from 
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercises
-Freely try other combinations of information for the previous patients, and also for three previous patients rather than two.
+- Make the same calculations, freely trying other combinations of information about the two previous patients.
+
+- Do the same with three previous patients.
+
+- Explore and experiment with the inverse task: use urgency $U$ as predictor, and transportation $T$ as predictand.
 :::
 
 ## Critique of the Dirichlet-mixture belief distribution {#sec-critique-dirmix}
 
+The two examples above reveal some characteristics of an agent based on the Dirichlet-mixture belief distribution:
+
+- In absence of previous data, it gives uniform distributions to any variate.
+
+- It is "eager" to learn from previous examples; in other words, its probabilities vary appreciably with even just a few observations.
+
+These characteristics can be appropriate to some inference tasks, but not to others. Note again that this is a matter of *background information* about the task one wants to solve.
+
+This kind of agent is reasonable in situations where:
+
+- There is very little information about the physics behind the variates and population, so one is willing to give a lot of weight to observed data. Contrast this with the coin-tossing scenario, where our physics knowledge about coins make us appreciably change our probabilities only after a large number of observations.
+
+- A large number of previous data is available, "large" relative to the domain size $M$ of the total variate $Z$.
