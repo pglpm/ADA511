@@ -2,6 +2,7 @@
 {{< include macros.qmd >}}
 {{< include macros_exchangeability.qmd >}}
 {{< include macros_opm.qmd >}}
+{{< include macros_marg_cond.qmd >}}
 
 ## A belief distribution for frequency distributions over nominal variates {#sec-intro-dirichlet-mix}
 
@@ -392,7 +393,7 @@ $$(a+1)! = (a+1) \cdot a!$$
 
 ### Forecast about one variate, given previous observations
 
-Let's see a simple step-by-step application of the formulae in the Mars-prospecting scenario.
+Let's see a simple step-by-step application of the formulae in the Mars-prospecting scenario. In this task there are no predictors and only one predictand variate $\yR$: the presence of haematite. The agent observes the value of this variate in several rocks, and try to forecast its value in a new rock.
 
 The agent has exchangeable beliefs represented by a Dirichlet-mixture distribution. The variate of the population of interest has two possible values, so in the formulae above we have\ \ $\amin=-1$, $\amax=2$\ \ ([§ @sec-prob-for-freqs]).
 
@@ -432,7 +433,7 @@ These probabilities will appear, summed together, in the denominator of a final 
 
 [{{< fa 2 >}}a {{< fa hand-point-right >}}]{.green}\ \ In the first joint probability, $\yy$ appears thrice and $\yn$ appears once, so
 
-$$\#\yy = 3 \qquad \#\yn = 1 \qquad \text{\midgrey\small total} = 4$$
+$$\#\yy = 3 \qquad \#\yn = 1 \qquad \text{\midgrey\small total} = {\midgrey 4}$$
 
 The de Finetti representation formula then gives, besides a constant factor,
 
@@ -455,7 +456,7 @@ $$
 
 [{{< fa 2 >}}b {{< fa hand-point-right >}}]{.green}\ \ In the second joint probability, $\yy$ appears twice and $\yn$ appears twice, so
 
-$$\#\yy = 2 \qquad \#\yn = 2 \qquad \text{\midgrey\small total} = 4$$
+$$\#\yy = 2 \qquad \#\yn = 2 \qquad \text{\midgrey\small total} = {\midgrey 4}$$
 
 We find, again besides the same constant factor,
 
@@ -509,4 +510,290 @@ $$
 
 
 
-### Forecast about one preictand, given predictor and previous observations
+### Forecast about one predictand, given predictor and previous observations
+
+Let's go back to the hospital scenario of [§ @sec-conditional-joint-general]. The units are patients coming into a hospital. The population is characterized by two nominal variates:
+
+- the patient's transportation mean $T$ at arrival, with domain $\set{\ambu, \heli, \othe}$
+- the patient's need of urgent care $U$, with domain $\set{\urge, \nonu}$
+
+The combined variate $(U \and T)$ has $M = 2\cdot3$ possible values, so we have parameters $\amin=-3$ and $\amax=2$.
+
+The agent's task is to forecast whether the next incoming patient will require urgent care or not ($U$), given information about the patient's transportation ($T$). So $U$ is the predictand variate, $T$ the predictor variate.
+
+At the moment the agent has a complete record of two previous patients:
+
+- $U_1\mo\ambu \and T_1\mo\ambu$
+- $U_2\mo\nonu \and T_2\mo\othe$
+
+A third patient is incoming by ambulance:
+
+- $T_3\mo\ambu$
+
+What is the probability that this patient requires urgent care?
+
+
+#### Initial belief
+
+First let's get a glimpse of the agent's forecast if it were given *no* information about previous patients. We therefore want to calculate the probability
+
+$$\P(U_3\mo\urge \| T_3\mo\ambu \and \yD)$$
+
+[{{< fa 1 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The hypotheses are $U_3\mo\urge$ and $U_3\mo\nonu$
+
+[{{< fa 2 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The joint probabilities for the hypotheses and previous data, since there's no information about previous patients, are simply
+
+:::{.column-body-outset-right}
+$$
+\P(U_3\mo\urge \and T_3\mo\ambu \| \yD)
+\qquad
+\P(U_3\mo\nonu \and T_3\mo\ambu \| \yD)
+$$
+:::
+
+[{{< fa 2 >}}a {{< fa hand-point-right >}}]{.green}\ \ In the first joint probability above the value pair $(U\mo\urge \and T\mo\ambu)$ appears once, and the remaining five pairs appear zero times:
+
+:::{.column-body-outset-right}
+$$\#(\urge, \ambu) = {\lblue 1} \qquad\text{\small five others }\#(\dotsc,\dotsc) = {\yellow 0}
+\qquad \text{\midgrey\small total} = {\midgrey 1}$$
+:::
+
+The de_Finetti formula gives, besides a constant factor,
+
+:::{.column-page-right}
+$$
+\begin{aligned}
+\P(U_3\mo\urge \and T_3\mo\ambu \| \yD)
+&\propto
+\sum_{\alpha=-3}^{2}
+\frac{
+\bigl(2^{\alpha} + {\lblue 1} - 1\bigr)! \cdot
+\underbracket[0.1ex]{\bigl(2^{\alpha} + {\yellow 0} - 1\bigr)! \cdot 
+\,\dotsb\, \cdot
+\bigl(2^{\alpha} + {\yellow 0} - 1\bigr)!}_{\text{\grey five factors}}
+}{
+\bigl(6\cdot 2^{\alpha} + {\midgrey 1} -1 \bigr)!
+}
+\\[1ex]
+&\propto
+\boldsymbol{25 301}
+\end{aligned}
+$$
+:::
+
+[{{< fa 2 >}}b {{< fa hand-point-right >}}]{.green}\ \ In the second joint probability above the value pair $(U\mo\nonu \and T\mo\ambu)$ appears once, and the remaining five pairs appear zero times:
+
+:::{.column-body-outset-right}
+$$\#(\nonu, \ambu) = {\lblue 1} \qquad\text{\small five others }\#(\dotsc,\dotsc) = {\yellow 0}
+\qquad \text{\midgrey\small total} = {\midgrey 1}$$
+:::
+
+The de_Finetti formula gives an identical result as before:
+
+:::{.column-page-right}
+$$
+\begin{aligned}
+\P(U_3\mo\nonu \and T_3\mo\ambu \| \yD)
+&\propto
+\sum_{\alpha=-3}^{2}
+\frac{
+\bigl(2^{\alpha} + {\lblue 1} - 1\bigr)! \cdot
+\underbracket[0.1ex]{\bigl(2^{\alpha} + {\yellow 0} - 1\bigr)! \cdot 
+\,\dotsb\, \cdot
+\bigl(2^{\alpha} + {\yellow 0} - 1\bigr)!}_{\text{\grey five factors}}
+}{
+\bigl(6\cdot 2^{\alpha} + {\midgrey 1} -1 \bigr)!
+}
+\\[1ex]
+&\propto
+\boldsymbol{25 301}
+\end{aligned}
+$$
+:::
+
+[{{< fa 3 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The probability that this incoming patient is urgent is then
+
+:::{.column-page-inset-right}
+
+$$
+\begin{aligned}
+&
+\P(U_3\mo\urge \| T_3\mo\ambu \and \yD)
+\\[1ex]
+&\qquad{}=
+\frac{
+\P(U_3\mo\urge \and T_3\mo\ambu \| \yD)
+}{
+\P(U_3\mo\urge \and T_3\mo\ambu \| \yD)
++
+\P(U_3\mo\nonu \and T_3\mo\ambu \| \yD)
+}
+\\[1ex]
+&\qquad{}=
+\frac{25 301 }{25 301 + 25 301}
+\\[1ex]
+&\qquad{}=
+\boldsymbol{50\%}
+\end{aligned}
+$$
+
+:::
+
+\
+
+This result shows that the agent's background information says that, a priori, urgent and non-urgent patients are equally plausible. This is a characteristic of the particular Dirichlet-mixture belief distribution we are using. It would actually be possible to slightly modify it so as to give a-priori different probabilities for the $\urge$ and $\nonu$ values, but we shall not pursue this possibility here.
+
+\
+
+#### Forecast after learning
+
+Now let's do an analogous calculation, but taking into account the information about the previous two patients. We therefore want to calculate the probability
+
+:::{.column-page-right}
+$$\P(U_3\mo\urge \| T_3\mo\ambu \and  
+U_2\mo\nonu \and T_2\mo\othe \and
+U_1\mo\urge \and T_1\mo\ambu \and
+\yD)
+$$
+:::
+
+[{{< fa 1 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The hypotheses are again $U_3\mo\urge$ and $U_3\mo\nonu$
+
+[{{< fa 2 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The joint probabilities for the hypotheses and known data are
+
+:::{.column-page-right}
+$$
+\begin{aligned}
+&\P(U_3\mo\urge \and T_3\mo\ambu \and  
+U_2\mo\nonu \and T_2\mo\othe \and
+U_1\mo\urge \and T_1\mo\ambu \|
+\yD)
+\\[1ex]
+&\P(U_3\mo\nonu \and T_3\mo\ambu \and  
+U_2\mo\nonu \and T_2\mo\othe \and
+U_1\mo\urge \and T_1\mo\ambu \|
+\yD)
+\end{aligned}
+$$
+:::
+
+[{{< fa 2 >}}a {{< fa hand-point-right >}}]{.green}\ \ In the first joint probability above we have the following counts:
+
+:::{.column-page-right}
+$$
+\#(\urge, \ambu) = {\blue 2} \quad
+\#(\nonu, \othe) = {\lblue 1} \quad
+\text{\small four others }\#(\dotsc,\dotsc) = {\yellow 0}
+\quad \text{\midgrey\small total} = {\midgrey 3}$$
+:::
+
+and therefore
+
+:::{.column-page-right}
+$$
+\begin{aligned}
+&\P(U_3\mo\urge \and T_3\mo\ambu \and  
+U_2\mo\nonu \and T_2\mo\othe \and
+U_1\mo\urge \and T_1\mo\ambu \|
+\yD)
+\\[2ex]
+&\qquad{}\propto
+\sum_{\alpha=-3}^{2}
+\frac{
+\bigl(2^{\alpha} + {\blue 2} - 1\bigr)! \cdot
+\bigl(2^{\alpha} + {\lblue 1} - 1\bigr)! \cdot
+\underbracket[0.1ex]{\bigl(2^{\alpha} + {\yellow 0} - 1\bigr)! \cdot 
+\,\dotsb\, \cdot
+\bigl(2^{\alpha} + {\yellow 0} - 1\bigr)!}_{\text{\grey four factors}}
+}{
+\bigl(6\cdot 2^{\alpha} + {\midgrey 3} -1 \bigr)!
+}
+\\[1ex]
+&\propto
+\boldsymbol{742.111}
+\end{aligned}
+$$
+:::
+
+
+[{{< fa 2 >}}b {{< fa hand-point-right >}}]{.green}\ \ Second joint probability:
+
+:::{.column-page-right}
+$$
+\begin{gathered}
+\#(\urge, \ambu) = {\lblue 1} \qquad
+\#(\nonu, \ambu) = {\lblue 1} \qquad
+\#(\nonu, \othe) = {\lblue 1}
+\\[1ex]
+\text{\small three others }\#(\dotsc,\dotsc) = {\yellow 0}
+\qquad \text{\midgrey\small total} = {\midgrey 3}
+\end{gathered}
+$$
+:::
+
+and therefore
+
+:::{.column-page-right}
+$$
+\begin{aligned}
+&\P(U_3\mo\nonu \and T_3\mo\ambu \and  
+U_2\mo\nonu \and T_2\mo\othe \and
+U_1\mo\urge \and T_1\mo\ambu \|
+\yD)
+\\[2ex]
+&\qquad{}\propto
+\sum_{\alpha=-3}^{2}
+\frac{
+\underbracket[0.1ex]{
+\bigl(2^{\alpha} + {\lblue 1} - 1\bigr)!
+\cdot\,\dotsb\, \cdot
+\bigl(2^{\alpha} + {\lblue 1} - 1\bigr)!
+}_{\text{\grey three factors}}
+\cdot
+\underbracket[0.1ex]{\bigl(2^{\alpha} + {\yellow 0} - 1\bigr)! \cdot 
+\,\dotsb\, \cdot
+\bigl(2^{\alpha} + {\yellow 0} - 1\bigr)!}_{\text{\grey three factors}}
+}{
+\bigl(6\cdot 2^{\alpha} + {\midgrey 3} -1 \bigr)!
+}
+\\[1ex]
+&\qquad{}\propto
+\boldsymbol{83.8344}
+\end{aligned}
+$$
+:::
+
+
+[{{< fa 3 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The probability that the third incoming patient is urgent is
+
+:::{.column-page-inset-right}
+
+$$
+\begin{aligned}
+&
+\P(U_3\mo\urge \| T_3\mo\ambu \and  
+U_2\mo\nonu \and T_2\mo\othe \and
+U_1\mo\urge \and T_1\mo\ambu \and
+\yD)
+\\[1ex]
+&\qquad{}=
+\frac{742.111}{742.111 + 83.8344}
+\\[1ex]
+&\qquad{}=
+\boldsymbol{89.850\%}
+\end{aligned}
+$$
+
+:::
+
+The agent has obviously learned an association between $\ambu$ and $\urge$ from the first patient.
+
+\
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercises
+Freely try other combinations of information for the previous patients, and also for three previous patients rather than two.
+:::
+
+## Critique of the Dirichlet-mixture belief distribution {#sec-critique-dirmix}
+
