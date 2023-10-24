@@ -8,7 +8,7 @@
 
 <meta name="dcterms.date" content="2023-10-24">
 
-<title>ADA511 0.1 Data science and data-driven engineering - 19&nbsp; Third connection with machine learning</title>
+<title>ADA511 0.1 Data science and data-driven engineering - 31&nbsp; Final inference formulae</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -31,8 +31,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./populations_variates.html" rel="next">
-<link href="./information.html" rel="prev">
+<link href="./dirichlet-mixture.html" rel="next">
+<link href="./inference_about_freqs.html" rel="prev">
 <link href="./favicon.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -43,6 +43,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -70,7 +72,7 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="ada511styles.css">
 </head>
 
-<body class="nav-sidebar docked slimcontent">
+<body class="nav-sidebar docked">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -79,7 +81,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./connection-3-ML.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">[Third connection with machine learning]{.red}</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./exchangeable_probabilities.html"><span class="green"><strong>Inference III</strong></span></a></li><li class="breadcrumb-item"><a href="./summary_formulae.html"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">[Final inference formulae]{.green}</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -280,7 +282,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./connection-3-ML.html" class="sidebar-item-text sidebar-link active">
+  <a href="./connection-3-ML.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title"><span class="red">Third connection with machine learning</span></span></span></a>
   </div>
 </li>
@@ -383,7 +385,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary_formulae.html" class="sidebar-item-text sidebar-link">
+  <a href="./summary_formulae.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title"><span class="green">Final inference formulae</span></span></span></a>
   </div>
 </li>
@@ -442,7 +444,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-3-connection-ML" class="quarto-section-identifier"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title"><span class="red">Third connection with machine learning</span></span></span></h1>
+<h1 class="title"><span id="sec-summary-formulae" class="quarto-section-identifier"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title"><span class="green">Final inference formulae</span></span></span></h1>
 </div>
 
 
@@ -472,35 +474,173 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 
 </div>
-<p>In <a href="connection-2-ML.html">chapter&nbsp;&nbsp;<span>11</span></a> we made a second <em>tentative</em> connection between the notions about probability explored until then, and notions from machine learning. We considered the possibility that a machine-learning algorithm is like an agent that has some <span class="yellow">built-in background information (corresponding to the algorithm’s architecture)</span>, has received <span class="green">pieces of information (corresponding to the data about perfectly known instances of the task, and possibly partial data about a new instance)</span>, and is assessing a <span class="red">not-previously known piece of information (other partial aspects of a new task instance)</span>:</p>
-<p><span class="math display">\[
-\mathrm{P}(\underbracket[0ex]{\color[RGB]{238,102,119}\mathsfit{D}_{N+1}}_{\mathclap{\color[RGB]{238,102,119}\text{outcome?}}} \nonscript\:\vert\nonscript\:\mathopen{}
-\color[RGB]{34,136,51}\underbracket[0ex]{\mathsfit{D}_N \land \dotsb \land \mathsfit{D}_2 \land \mathsfit{D}_1}_{\mathclap{\color[RGB]{34,136,51}\text{training data?}}}
-\color[RGB]{0,0,0}\land \underbracket[0ex]{\color[RGB]{204,187,68}\mathsfit{I}}_{\mathrlap{\color[RGB]{204,187,68}\uparrow\ \text{architecture?}}})
-\]</span></p>
-<p>The correspondence about <span class="green">training data</span> and <span class="yellow">architecture</span> seems somewhat convincing, the one about <span class="red">outcome</span> needs more exploration.</p>
-<p>Having introduced the notion of quantity in the latest chapters <a href="quantities_types.html"><span>12</span></a> and <a href="quantities_types_multi.html"><span>13</span></a>, we recognize that “training data” are nothing else but quantities with given values. So a datum <span style="display:inline-block;"><span class="math inline">\(\mathsfit{D}_i\)</span></span> can be expressed by a sentence like <span style="display:inline-block;"><span class="math inline">\(Z_i\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_i\)</span>,</span> where</p>
+<p>We finally have all theoretical ingredients and formulae to use the probability calculus for drawing many kinds of inferences about some units in a population, given observations from other units. Keep in mind the minimal assumptions we are making in these formulae – which also underlie all machine-learning algorithms for “supervised” and “unsupervised” learning:</p>
 <ul>
-<li><span class="math inline">\(i\)</span> is the instance: <span class="math inline">\(1,2,\dotsc,N, N+1\)</span></li>
-<li><span class="math inline">\(Z_i\)</span>, a quantity, describes the type of data at instance <span class="math inline">\(i\)</span>, for example “128 × 128 image with 24-bit colour depth, with a character label”</li>
-<li><span class="math inline">\(z_i\)</span> is the value of the quantity <span class="math inline">\(Z_i\)</span> at instance <span class="math inline">\(i\)</span>, for example the specific image &amp;&nbsp;label enclosed here:</li>
+<li>beliefs about units are exchangeable,</li>
+<li>the population size is practically infinite.</li>
 </ul>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="saitama_smile.png" class="img-fluid figure-img" width="128"></p>
-<figcaption class="figure-caption">label = “Saitama”</figcaption>
-</figure>
+<p>In the next part, <span class="red">An Optimal Predictor Machine</span>, we shall computationally implement these formulae and use them in a couple of simple and not-so-simple inference problems.</p>
+<p>Here we collect the main formulae for exchangeable beliefs and tasks about</p>
+<ul>
+<li><p><i class="fa-regular fa-star" aria-label="star"></i>&nbsp;&nbsp;forecasting all variates (no predictors)</p></li>
+<li><p><i class="fa-solid fa-star-half-alt" aria-label="star-half-alt"></i>&nbsp;&nbsp;forecasting predictands given predictors; all previous predictors and predictands known</p></li>
+</ul>
+<p>We still use the general scenario and notation of <a href="beyond-ML.html#sec-categ-probtheory">§ &nbsp;<span>27.3</span></a>.</p>
+<p><br>
+</p>
+<p>All inferences about units of a population rely on the joint probability for any number of units, which is given by the following formula (<a href="inference_about_freqs.html#sec-freq-not-known">§ &nbsp;<span>30.1</span></a>):</p>
+<div class="column-body-outset-right">
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
 </div>
-</div></div><p>We can therefore rewrite the correspondence above as follows:</p>
+<div class="callout-title-container flex-fill">
+Main formulae for some inference tasks under exchangeable beliefs
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<dl>
+<dt>de&nbsp;Finetti’s representation</dt>
+<dd>
+
+</dd>
+</dl>
 <p><span class="math display">\[
-\mathrm{P}(\underbracket[0ex]{\color[RGB]{238,102,119}Z_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{N+1}}_{\mathclap{\color[RGB]{238,102,119}\text{outcome?}}} \nonscript\:\vert\nonscript\:\mathopen{}
-\color[RGB]{34,136,51}\underbracket[0ex]{ Z_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_N \mathbin{\mkern-0.5mu,\mkern-0.5mu}\dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}Z_2 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_2 \mathbin{\mkern-0.5mu,\mkern-0.5mu}Z_1 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_1}_{\mathclap{\color[RGB]{34,136,51}\text{training data?}}}
-\color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\underbracket[0ex]{\color[RGB]{204,187,68}\mathsfit{I}}_{\mathrlap{\color[RGB]{204,187,68}\uparrow\ \text{architecture?}}})
+\begin{aligned}
+&amp;\mathrm{P}\bigl(
+\color[RGB]{68,119,170}Z_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{N+1}
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}
+Z_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_N
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}
+\dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+Z_1 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_1
+\color[RGB]{0,0,0}\pmb{\nonscript\:\big\vert\nonscript\:\mathopen{}} \mathsfit{I}\bigr)
+\\[2ex]
+&amp;\qquad{}=
+\sum_{\boldsymbol{f}}
+f({\color[RGB]{68,119,170}Z\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{N+1}}\color[RGB]{0,0,0}) \cdot
+f({\color[RGB]{68,119,170}Z\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{N}}\color[RGB]{0,0,0}) \cdot
+\, \dotsb\, \cdot
+f({\color[RGB]{68,119,170}Z\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{1}}\color[RGB]{0,0,0})
+\cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\end{aligned}
 \]</span></p>
-<p>This is the kind of inference that we explored in the “next-three-patients” scenario of <a href="conditional_probability.html#sec-conditional-joint-sim">§ &nbsp;<span>17.3</span></a> and in some of its following sections. In <a href="beyond-ML.html">chapter&nbsp;&nbsp;<span>27</span></a>, after a review of conventional machine-learning methods and terminology, we shall discuss with more care what these inferences are about, what kind of information they use, and how they can be concretely calculated.</p>
-<p>But we have been speaking of “task instances” and “instances of quantities” quite vaguely so far. These are important notions: the whole idea of “learning from examples” hinges on them. In the next few chapters we shall therefore make them more rigorous. The theory at makes them rigorous is <em>Statistics</em>. As a bonus we shall find out that a rigorous analysis of the notion of “instances” also leads to concrete formulae to calculate the probabilities discussed above.</p>
+<p>or, in terms of predictand <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Y}\)</span></span> and predictors <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}X}\)</span></span> variates:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}\bigl(
+\color[RGB]{68,119,170}Y_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{N+1}
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}
+X_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{N+1}
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}
+\dotsb
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}
+Y_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{1}
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}
+X_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{1}
+\color[RGB]{0,0,0}\pmb{\nonscript\:\big\vert\nonscript\:\mathopen{}} \mathsfit{I}\bigr)
+\\[2ex]
+&amp;\qquad{}=
+\sum_{\boldsymbol{f}}
+f({\color[RGB]{68,119,170}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{N+1} \mathbin{\mkern-0.5mu,\mkern-0.5mu}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{N+1}}) \cdot
+\, \dotsb\, \cdot
+f({\color[RGB]{68,119,170}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{1} \mathbin{\mkern-0.5mu,\mkern-0.5mu}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{1}})
+\cdot
+\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\end{aligned}
+\]</span></p>
+<p><span class="math inline">\(\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})\)</span> is problem-dependent and must be specified by the agent.</p>
+<p><br>
+</p>
+<p><br>
+</p>
+<dl>
+<dt><i class="fa-regular fa-star" aria-label="star"></i> Inferences about all variates <span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span> of a new unit, given observed units</dt>
+<dd>
+
+</dd>
+</dl>
+<p><span class="math display">\[
+\begin{aligned}
+    &amp;\mathrm{P}\bigl(
+    {\color[RGB]{238,102,119}Z_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{N+1}}
+    \pmb{\nonscript\:\big\vert\nonscript\:\mathopen{}}
+    \color[RGB]{34,136,51}Z_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_N \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+    \dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+    Z_1 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_1
+    \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\mathsfit{I}} \bigr)
+    \\[2ex]
+    &amp;\qquad{}
+    =
+    \frac{
+        \mathrm{P}\bigl(
+    \color[RGB]{238,102,119}Z_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{N+1}
+    \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}
+    \color[RGB]{34,136,51}Z_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_N
+    \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+    \dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+    \color[RGB]{34,136,51}Z_1 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_1
+    \color[RGB]{0,0,0}\pmb{\nonscript\:\big\vert\nonscript\:\mathopen{}} {\mathsfit{I}} \bigr)
+}{
+     \sum_{\color[RGB]{170,51,119}z} \mathrm{P}\bigl(
+    {\color[RGB]{238,102,119}Z_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{170,51,119}z}}
+        \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+    \color[RGB]{34,136,51}Z_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_N \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+    \dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+    Z_1 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_1
+    \color[RGB]{0,0,0}\pmb{\nonscript\:\big\vert\nonscript\:\mathopen{}}  {\mathsfit{I}} \bigr)
+}
+\end{aligned}
+\]</span></p>
+<p><br>
+</p>
+<p><br>
+</p>
+<dl>
+<dt><i class="fa-solid fa-star-half-alt" aria-label="star-half-alt"></i> Inferences about predictands <span class="math inline">\({\color[RGB]{68,119,170}Y}\)</span> of a new unit, given its predictors <span class="math inline">\({\color[RGB]{68,119,170}X}\)</span> and given both predictands &amp; predictors of observed units</dt>
+<dd>
+
+</dd>
+</dl>
+<p><span class="math display">\[
+\begin{aligned}
+    &amp;\mathrm{P}\bigl(
+    \color[RGB]{238,102,119}Y_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{N+1}
+\color[RGB]{0,0,0}\pmb{\nonscript\:\big\vert\nonscript\:\mathopen{}}
+    \color[RGB]{34,136,51}X_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{N+1}\, \mathbin{\mkern-0.5mu,\mkern-0.5mu}\,
+    Y_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_N \mathbin{\mkern-0.5mu,\mkern-0.5mu}X_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_N \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+    \dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+    Y_1 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_1 \mathbin{\mkern-0.5mu,\mkern-0.5mu}X_1 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_1
+    \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}\bigr)
+    \\[2ex]
+    &amp;\qquad{}=
+    \frac{
+        \mathrm{P}\bigl(
+    \color[RGB]{238,102,119}Y_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{N+1} \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}
+    \color[RGB]{34,136,51}X_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{N+1}
+        \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+Y_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_N \mathbin{\mkern-0.5mu,\mkern-0.5mu}X_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_N
+    \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+    \dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+Y_1 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_1 \mathbin{\mkern-0.5mu,\mkern-0.5mu}X_1 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_1
+    \color[RGB]{0,0,0}\pmb{\nonscript\:\big\vert\nonscript\:\mathopen{}} {\mathsfit{I}} \bigr)
+}{
+     \sum_{\color[RGB]{170,51,119}y} \mathrm{P}\bigl(
+    \color[RGB]{238,102,119}Y_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{170,51,119}y} \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}
+    \color[RGB]{34,136,51}X_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{N+1}
+        \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+Y_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_N \mathbin{\mkern-0.5mu,\mkern-0.5mu}X_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_N \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+    \dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+    Y_1 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_1 \mathbin{\mkern-0.5mu,\mkern-0.5mu}X_1 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_1
+    \color[RGB]{0,0,0}\pmb{\nonscript\:\big\vert\nonscript\:\mathopen{}}  {\mathsfit{I}} \bigr)
+}
+\end{aligned}
+\]</span></p>
+</div>
+</div>
+</div>
 
 
 
@@ -754,13 +894,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./information.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="green">Information, relevance, independence, association</span></span></span>
+      <a href="./inference_about_freqs.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title"><span class="green">Inference about frequencies</span></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./populations_variates.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title"><span class="yellow">Populations and variates</span></span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./dirichlet-mixture.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title"><span class="red">The Dirichlet-mixture belief distribution</span></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

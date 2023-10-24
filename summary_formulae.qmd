@@ -1,0 +1,192 @@
+# [Final inference formulae]{.green} {#sec-summary-formulae}
+{{< include macros.qmd >}}
+{{< include macros_exchangeability.qmd >}}
+
+We finally have all theoretical ingredients and formulae to use the probability calculus for drawing many kinds of inferences about some units in a population, given observations from other units. Keep in mind the minimal assumptions we are making in these formulae -- which also underlie all machine-learning algorithms for "supervised" and "unsupervised" learning:
+
+- beliefs about units are exchangeable,
+- the population size is practically infinite. 
+
+In the next part, [An Optimal Predictor Machine]{.red}, we shall computationally implement these formulae and use them in a couple of simple and not-so-simple inference problems.
+
+Here we collect the main formulae for exchangeable beliefs and tasks about
+
+- {{< fa regular star >}}\ \ forecasting all variates (no predictors)
+
+- {{< fa star-half-alt >}}\ \ forecasting predictands given predictors; all previous predictors and predictands known
+
+We still use the general scenario and notation of [§ @sec-categ-probtheory].
+
+\
+
+All inferences about units of a population rely on the joint probability for any number of units, which is given by the following formula ([§ @sec-freq-not-known]):
+
+::::{.column-body-outset-right}
+:::{.callout-note}
+## Main formulae for some inference tasks under exchangeable beliefs
+
+de Finetti's representation
+: 
+
+$$
+\begin{aligned}
+&\P\bigl(
+\blue Z_{N+1} \mo z_{N+1}
+\and
+Z_N \mo z_N
+\and
+\dotsb \and 
+Z_1 \mo z_1 
+\black \pmb{\|[\big]} \yI\bigr)
+\\[2ex]
+&\qquad{}=
+\sum_{\vf}
+f({\blue Z\mo z_{N+1}}\black) \cdot
+f({\blue Z\mo z_{N}}\black) \cdot
+\, \dotsb\, \cdot
+f({\blue Z\mo z_{1}}\black)
+\cdot
+\P(F\mo\vf \| \yI)
+\end{aligned}
+$$
+
+or, in terms of predictand $\bY$ and predictors $\bX$ variates:
+
+$$
+\begin{aligned}
+&\P\bigl(
+\blue Y_{N+1} \mo y_{N+1}
+\and
+X_{N+1} \mo x_{N+1}
+\and
+\dotsb
+\and
+Y_{1} \mo y_{1}
+\and
+X_{1} \mo x_{1}
+\black \pmb{\|[\big]} \yI\bigr)
+\\[2ex]
+&\qquad{}=
+\sum_{\vf}
+f({\blue Y\mo y_{N+1} \and X\mo x_{N+1}}) \cdot
+\, \dotsb\, \cdot
+f({\blue Y\mo y_{1} \and X\mo x_{1}})
+\cdot
+\P(F\mo\vf \| \yI)
+\end{aligned}
+$$
+
+<!-- $$ -->
+<!-- \P( -->
+<!-- \bZ_{}\mo {\blue z'} \and  -->
+<!-- \bZ_{u''}\mo {\blue z''} \and  -->
+<!-- \dotsb -->
+<!-- \| \yI -->
+<!-- ) -->
+<!-- \approx -->
+<!-- \sum_{\vf} -->
+<!-- f(\bZ\mo {\blue z'}\black) \cdot -->
+<!-- f(\bZ\mo {\blue z''}\black) \cdot -->
+<!-- \,\dotsb\  -->
+<!-- \cdot -->
+<!-- \P(F\mo\vf \| \yI) -->
+<!-- $$ -->
+
+$\P(F\mo\vf\|\yI)$ is problem-dependent and must be specified by the agent.
+
+\
+
+\
+
+{{< fa regular star >}} Inferences about all variates $\bZ$ of a new unit, given observed units
+: 
+
+$$
+\begin{aligned}
+    &\P\bigl(
+	{\red Z_{N+1} \mo z_{N+1}}
+	\pmb{\|[\big]} 
+    \green Z_N \mo z_N \and 
+	\dotsb \and 
+	Z_1 \mo z_1 
+    \black\and {\yI} \bigr)
+	\\[2ex]
+	&\qquad{}
+	=
+	\frac{
+	    \P\bigl(
+	\red Z_{N+1} \mo z_{N+1}
+	\black \and
+    \green Z_N \mo z_N
+	\and
+	\dotsb \and 
+	\green Z_1 \mo z_1 
+    \black\pmb{\|[\big]} {\yI} \bigr)
+}{
+	 \sum_{\purple z} \P\bigl(
+	{\red Z_{N+1} \mo {\purple z}} 
+		\and
+    \green Z_N \mo z_N \and 
+	\dotsb \and 
+	Z_1 \mo z_1 
+    \black\pmb{\|[\big]}  {\yI} \bigr)
+}
+\end{aligned}
+$$
+
+\
+
+\
+
+{{< fa star-half-alt >}} Inferences about predictands $\bY$ of a new unit, given its predictors $\bX$ and given both predictands & predictors of observed units
+: 
+
+$$
+\begin{aligned}
+    &\P\bigl(
+	\red Y_{N+1} \mo y_{N+1}
+\black \pmb{\|[\big]} 
+	\green X_{N+1} \mo x_{N+1}\, \and\,
+    Y_N \mo y_N \and X_N \mo x_N \and
+	\dotsb \and 
+	Y_1 \mo y_1 \and X_1 \mo x_1 
+    \black\and \yI \bigr)
+	\\[2ex]
+	&\qquad{}=
+	\frac{
+	    \P\bigl(
+	\red Y_{N+1} \mo y_{N+1} \black\and
+	\green X_{N+1} \mo x_{N+1}
+		\and
+ Y_N \mo y_N \and X_N \mo x_N
+	\and
+	\dotsb \and 
+ Y_1 \mo y_1 \and X_1 \mo x_1 
+    \black\pmb{\|[\big]} {\yI} \bigr)
+}{
+	 \sum_{\purple y} \P\bigl(
+	\red Y_{N+1} \mo {\purple y} \black\and
+	\green X_{N+1} \mo x_{N+1}
+		\and
+ Y_N \mo y_N \and X_N \mo x_N \and
+	\dotsb \and 
+	Y_1 \mo y_1 \and X_1 \mo x_1 
+    \black\pmb{\|[\big]}  {\yI} \bigr)
+}
+\end{aligned}
+$$
+
+:::
+::::
+
+
+
+
+
+
+<!-- ## How typical machine-learning problems are solved by the "optimal predictor machine" -->
+
+<!-- ### Missing values in training data -->
+
+
+<!-- ### "Generative" use: probability of predictor given the possible predictand values -->
