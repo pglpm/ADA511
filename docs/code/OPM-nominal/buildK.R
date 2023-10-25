@@ -17,7 +17,7 @@ buildK <- function(metadata, data=NULL, alphas=NULL){
     }
     ##
     ## Building a Dirichlet-mixture distribution
-    ## with concentration params alphas
+    ## with concentration parameters 'alphas'
     if(is.null(alphas)){
         alphas <- 2^seq(floor(-log2(M)), 2, by=1)
     }else if(is.logical(alphas) && alphas){
