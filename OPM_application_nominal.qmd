@@ -11,7 +11,11 @@ jupyter: ir
 
 ```{r}
 source('code/tplotfunctions.R')
-source('code/optimal_predictor_machine-nominal.R')
+source('code/OPM-nominal/buildP.R')
+source('code/OPM-nominal/forecastP.R')
+source('code/OPM-nominal/guessmetadata.R')
+source('code/OPM-nominal/plotFsamples1D.R')
+source('code/OPM-nominal/rF.R')
 ```
 ```{r}
 #| echo: false
@@ -71,7 +75,7 @@ Our agent at the moment doesn't know anything at all, not even about the existen
 Let us give it the basic background information about the population: the variates' names and domains. We do this through the function `finfo()`: it has a `data` argument, which we omit for the moment, and a `metadata` argument. The latter can simply be the name of the file containing the metadata (NB: this file must have a specific format):
 
 ```{r}
-priorknowledge <- buildK(metadata='datasets/glass_metadata-4_lev.csv')
+priorknowledge <- buildP(metadata='datasets/glass_metadata-4_lev.csv')
 ```
 
 The agent now possesses this basic background knowlege, encoded in the `priorknowledge` object. The encoding uses a particular mathematical representation which, however, is of no interest to us^[If you're curious you can have a glimpse at it with the command `str(priorknowledge)`, which displays structural information about an object.]. Other representations could also be used, but the knowledge would be the same. Think of this as encoding an image into a `png` or other lossless format: the representation of the image would be different, but the image would be the same.
@@ -86,7 +90,7 @@ Let's ask the agent: what is the marginal frequency distribution for the variate
 This probability distribution for the $\vType$ variate is calculated by the function `fmarginal()`. It has arguments `finfo`: the agent's information; and `variates`: the names of the variates of which we want the marginal frequencies:
 
 ```{r}
-priorknowledge_type <- fprobability(K=priorknowledge, marginal='Type', Kout=TRUE)
+priorknowledge_type <- forecastP(P=priorknowledge, marginal='Type', Kout=TRUE)
 
 ```
 
@@ -99,7 +103,7 @@ The function `plotsamples1D()` does this kind of visual representation. It has a
 How do you think this probability distribution will look like? what kind of marginal frequencies we do expect in the full population?
 
 ```{r}
-plotsamples1D(K=priorknowledge_type, n=100, predict=FALSE)
+plotsamples1D(P=priorknowledge_type, n=100, predict=FALSE)
 ```
 
 You see that anything goes: Some frequency distributions give frequency almost `1` to a specific value, and almost `0` to the others. Other frequency distributions spread out the frequencies more evenly, with some peaks here or there.
@@ -120,7 +124,7 @@ Before continuing, ask yourself the same question: which probabilities would you
 The agent's answer this time is a probability distribution over seven values, which we can draw faithfully. The function `plotsamples1D()` can draw this probability as well, if we give the argument `predict=TRUE` (default):
 
 ```{r}
-plotsamples1D(K=priorknowledge_type)
+plotsamples1D(P=priorknowledge_type)
 ```
 
 This plot shows the [probability distribution]{.blue} for the next unit in [blue]{.blue}, together with a sample of 100 possible frequency distributions for the $\vType$ variate over the full population. Note that samples are drawn anew every time, so they can look somewhat differently from time to time.^[To have reproducible plots, use `set.seed(314)` (or any integer you like) before calling the plot function.]
@@ -139,10 +143,10 @@ Inspect the agent's inferences for other variates.
 
 ### Learning from the sample data
 
-Now let's give the agent the data from the sample of 214 glass fragments. This is done again with the `buildK()` function, but providing the `data` argument, which can be the name of the data file:
+Now let's give the agent the data from the sample of 214 glass fragments. This is done again with the `buildP()` function, but providing the `data` argument, which can be the name of the data file:
 
 ```{r}
-postknowledge <- buildK(data='datasets/glass_data-4_lev.csv', metadata='datasets/glass_metadata-4_lev.csv')
+postknowledge <- buildP(data='datasets/glass_data-4_lev.csv', metadata='datasets/glass_metadata-4_lev.csv')
 ```
 
 The `postknowledge` object contains the agent's knowledge from the metadata and the sample data. This object can be used in the same way as the object representing the agent's background knowledge.
@@ -154,9 +158,9 @@ Now that the agent has learned from the data, we can ask it again what is the ma
 We calculate the probability for the possible marginal frequency distributions, and then plot it as a set of 100 representative samples:
 
 ```{r}
-postknowledge_type <- fprobability(K=postknowledge, marginal='Type', Kout=TRUE)
+postknowledge_type <- forecastP(P=postknowledge, marginal='Type', Kout=TRUE)
 
-plotsamples1D(K=postknowledge_type, predict=FALSE)
+plotsamples1D(P=postknowledge_type, predict=FALSE)
 ```
 
 This plot shows two important aspects of this probability distribution and of the agent's current state of knowledge:
@@ -185,7 +189,7 @@ Finally we ask the agent what $\vType$ value we should observe in the next glass
 ```{r}
 #| label: fig-unconditional-glass
 #| fig-cap: "[Frequency distributions for full population]{.grey}, and [probability distribution for next unit]{.blue}"
-plotsamples1D(K=postknowledge_type)
+plotsamples1D(P=postknowledge_type)
 ```
 
 
@@ -213,7 +217,7 @@ The detectives would like to know what's the possible origin of this fragment, t
 First, the agent can calculate the probability distribution over the *conditional frequencies* ([§ @sec-conditional-freqs]) of the $\vType$ values for the subpopulation ([§ @sec-subpopulations]) of units having the specific variate values above. This calculation is done with the function `fconditional()`, with arguments `finfo`: the agent's current knowledge, and `unitdata`: the partial data obtained from the unit.
 
 ```{r}
-condknowledge_type <- fprobability(K=postknowledge, marginal='Type', conditional=newfragment, Kout=TRUE)
+condknowledge_type <- forecastP(P=postknowledge, marginal='Type', conditional=newfragment, Kout=TRUE)
 ```
 
 The `condknowledge` object contains the agent's knowledge conditional on the variates given; this knowledge is about the remaining variates, which in this case are the single variate $\vType$ (so the `fmarginal()` calculation is actually redundant in this case).
@@ -225,7 +229,7 @@ Both inferences can be visualized in the usual way:
 ```{r}
 #| label: fig-conditional-glass
 #| fig-cap: "[Conditional frequency distributions for full population]{.grey}, and [conditional probability distribution for next unit]{.blue}"
-plotsamples1D(K=condknowledge_type)
+plotsamples1D(P=condknowledge_type)
 ```
 
 The agent thus gives a probability around $80\%$ to the fragment's being of $\cat{T1}$ type, around $10\%$ of being $\cat{T2}$ type, and around $5\%$ of being $\cat{T5}$ type. It also shows that further training data could change these probabilities by even $\pm 10\%$ or even $\pm 15\%$.

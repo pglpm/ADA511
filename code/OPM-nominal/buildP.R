@@ -1,4 +1,4 @@
-buildK <- function(metadata, data=NULL, alphas=NULL){
+buildP <- function(metadata, data=NULL, alphas=NULL){
 #### Build object encoding background knowledge and learned knowledge
 #### Requires 'data.table'
     ##
