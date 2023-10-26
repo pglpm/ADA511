@@ -70,7 +70,7 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="ada511styles.css">
 </head>
 
-<body class="nav-sidebar docked">
+<body class="nav-sidebar docked slimcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -435,10 +435,16 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-code-features" id="toc-sec-code-features" class="nav-link active" data-scroll-target="#sec-code-features"><span class="header-section-number">33.1</span> Code characteristics</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -475,11 +481,37 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 
 </div>
+<section id="sec-code-features" class="level2 page-columns page-full" data-number="33.1">
+<h2 data-number="33.1" class="anchored" data-anchor-id="sec-code-features"><span class="header-section-number">33.1</span> Code characteristics</h2>
 <p>A prototype R code for the Optimal Predictor Machine with Dirichlet-mixture background information is available at</p>
 <p><a href="https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal"><code>https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal</code></a></p>
-<p>It consists of two main functions <a href=""><code>buildP</code></a></p>
+<p>It consists of two main functions <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildP.R"><code>buildP()</code></a> and <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildP.R"><code>forecastP()</code></a> and some other helper functions.</p>
+<p>The code implements the formulae of the previous <a href="dirichlet-mixture.html">chapter&nbsp;&nbsp;<span>32</span></a> in a way that allows some of the versatility of the Optimal Predictor Machine discussed in §§&nbsp;<a href="beyond-ML.html#sec-categ-probtheory"><span>27.3</span></a>–<a href="beyond-ML.html#sec-underlying-distribution"><span>27.4</span></a>.</p>
+<p>The basic idea behind the code is to calculate the probability distribution for a new unit</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Recall that <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> denotes all (nominal) variates of the population</p>
+</div></div><p><span class="math display">\[
+\mathrm{P}(
+\color[RGB]{68,119,170}Z_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}
+\color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}
+\color[RGB]{0,0,0}\pmb{\nonscript\:\big\vert\nonscript\:\mathopen{}} \mathsfit{D}\bigr)
+\qquad\text{\small for all values }{\color[RGB]{68,119,170}z}
+\]</span></p>
+<p>Where <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{34,136,51}data}\)</span></span> represents all variate values of previous units.</p>
+<p>From this distribution, the code can then draw all possible inferences about the new unit. For instance, if the population has three variates <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}=({\color[RGB]{68,119,170}A}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}B}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C})\)</span>,</span> the code can calculate inferences such as</p>
+<ul>
+<li><p><span class="math inline">\(P({\color[RGB]{68,119,170}B}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span>: any one predictand variate, no (that is, unknown) predictors</p></li>
+<li><p><span class="math inline">\(P({\color[RGB]{68,119,170}A}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span>: any two predictand variates, no predictors</p></li>
+<li><p><span class="math inline">\(P({\color[RGB]{68,119,170}A}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}B}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span>: all three variates</p></li>
+<li><p><span class="math inline">\(P({\color[RGB]{68,119,170}B}\nonscript\:\vert\nonscript\:\mathopen{}{\color[RGB]{68,119,170}A}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span>: any one predictand variate, any other one predictor</p></li>
+<li><p><span class="math inline">\(P({\color[RGB]{68,119,170}B}\nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{68,119,170}A}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span>: any one predictand variate, any other two predictors</p></li>
+<li><p><span class="math inline">\(P({\color[RGB]{68,119,170}A}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C}\nonscript\:\vert\nonscript\:\mathopen{}{\color[RGB]{68,119,170}B}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span>: any two predictand variates, any other one predictor</p></li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

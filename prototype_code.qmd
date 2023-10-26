@@ -3,8 +3,46 @@
 {{< include macros_exchangeability.qmd >}}
 {{< include macros_opm.qmd >}}
 
+## Code characteristics {#sec-code-features}
+
 A prototype R code for the Optimal Predictor Machine with Dirichlet-mixture background information is available at
 
 [`https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal`](https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal)
 
-It consists of two main functions [`buildP`]()
+It consists of two main functions [`buildP()`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildP.R) and [`forecastP()`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildP.R) and some other helper functions.
+
+The code implements the formulae of the previous [chapter @sec-dirichlet-mix] in a way that allows some of the versatility of the Optimal Predictor Machine discussed in §§ [-@sec-categ-probtheory]--[-@sec-underlying-distribution].
+
+The basic idea behind the code is to calculate the probability distribution for a new unit
+
+:::{.column-margin}
+Recall that $\bZ$ denotes all (nominal) variates of the population
+:::
+
+$$
+\P(
+\blue Z_{N+1} \mo z
+\and
+\green\data
+\black \pmb{\|[\big]} \yD\bigr)
+\qquad\text{\small for all values }\bz
+$$
+
+Where $\data$ represents all variate values of previous units.
+
+From this distribution, the code can then draw all possible inferences about the new unit. For instance, if the population has three variates $\bZ=(\bA \and \bB \and \bC)$, the code can calculate inferences such as
+
+- $P(\bB\|\data \and \yD)$: any one predictand variate, no (that is, unknown) predictors
+
+- $P(\bA \and \bC\|\data \and \yD)$: any two predictand variates, no predictors
+
+- $P(\bA \and \bB \and \bC\|\data \and \yD)$: all three variates
+
+- $P(\bB\|\bA \and \data \and \yD)$: any one predictand variate, any other one predictor
+
+- $P(\bB\| \bA \and \bC \and\data \and  \yD)$: any one predictand variate, any other two predictors
+
+- $P(\bA \and \bC\|\bB \and \data \and \yD)$: any two predictand variates, any other one predictor
+
+
+
