@@ -387,7 +387,8 @@ and an analogous calculation yields $\P(F\mo\vfa \| \yR_1\mo\yy \and \yul)=33.33
 
 This result makes sense, because according to the hypothesis $F\mo\vfb$ there is a higher proportion of $\yn$-rocks than according to $F\mo\vfa$, and a $\yn$-rock has been observed. The hypothesis $F\mo\vfb$ therefore becomes slightly more plausible, and $F\mo\vfa$ slightly less.
 
-Using the updated degree of belief above we also have another way to calculate the conditional probability $\P(\yR_{1} \mo \yy \| \yR_{2} \mo \yn \and \yul)$, using the derived rule of "extension of the conversation" in a different manner:
+
+The updated degree of belief above for the frequencies also gives us an alternative (yet equivalent) way to calculate the conditional probability $\P(\yR_{1} \mo \yy \| \yR_{2} \mo \yn \and \yul)$. Use the derived rule of "extension of the conversation" in a different manner:
 
 :::{.column-page-inset-right}
 $$
@@ -438,7 +439,81 @@ $$
 
 The result is exactly as in [§ @sec-learning-general] -- as it should be: remember from [chapter @sec-probability] that the four rules of inference are built so as to mathematically guarantee this kind of logical self-consistency.
 
-\
+
+
+### An intuitive interpretation of population inference
+
+The general expression for the updated belief about frequencies has a very intuitive interpretation. Again using Bayes's theorem, but omitting the proportionality constant,
+
+:::{.column-page-right}
+$$
+\begin{aligned}
+\P(F\mo\vf \| \green Z_1\mo z_1 \and \dotsb \and Z_N\mo z_N \black \and \yul) 
+&\propto
+\P(\green Z_1\mo z_1 \and \dotsb \and Z_N\mo z_N \black 
+\| F\mo\vf \and \yul) 
+\cdot
+\P(F\mo\vf \| \yul)
+\\[2ex]
+&\propto
+\overbracket[0.1ex]{f(\green Z_1\mo z_1\black)  \cdot \,\dotsb\, 
+\cdot f(\green Z_N\mo z_N \black )}^{\midgrey\mathclap{\text{how well the frequency "fits" the data}}} 
+\ \cdot \ 
+\underbracket[0.1ex]{\P(F\mo\vf \| \yul)}_{\midgrey\mathclap{\text{how reasonable the frequency is}}}
+\end{aligned}
+$$
+:::
+
+This product can be interpreted as follows.
+
+Take a hypothetical frequency distribution $\vf$. If the data have high frequencies according to it, then the product
+
+$$f(\green Z_1\mo z_1\black)  \cdot \,\dotsb\, 
+\cdot f(\green Z_N\mo z_N \black )$$
+
+has a large value. Vice versa, if the data have low frequency according to it, that product has a small value. This product therefore expresses how well the hypothetical frequency distribution $\vf$ "fits" the observed data.
+
+On the other hand, if the factor
+
+$$\P(F\mo\vf \| \yul)$$
+
+has a large value, then the hypothetical $\vf$ is probable, or "reasonable", according to the background information $\yK$. Vice versa, if that factor has a low value, then the hypothetical $\vf$ is improbable or "unreasonable", owing to reasons expressed in the background information $\yK$.
+
+The agent's belief in the hypothetical $\vf$ is a balance between these two factors, the "fit" and the "reasonableness". This has a very important consequence:
+
+:::{.callout-note style="font-size:120%"}
+##
+::::{style="font-size:120%"}
+
+Probability inference does not need any "regularization methods" or any procedures against "over-fitting" or "under-fitting".
+
+In fact, *the very notions of over- or under-fitting refer to the background information $\yK$ and the initial belief $\P(F\mo\vf \| \yul)$*.
+
+Think about it: How can we say that an algorithm is over- or under-fitting, given that we do not know the ground truth? (if we knew the latter we would not be making inferences.) Such judgement reveals that we have some *preconceived* notion of what a reasonable distributions would look like.
+
+::::
+:::
+
+The agent's belief about new data is then an *average* of what the frequency of the new data would be *for all possible frequency distributions* $vf$:
+
+:::{.column-body-outset-right}
+$$
+\begin{aligned}
+&\P(\red Z_{N+1}\mo z_{N+1} \black \| \green Z_1\mo z_1 \and \dotsb \and Z_N\mo z_N \black \and \yul) 
+\\[2ex]
+&\qquad{}=
+\sum_{\vf}
+f({\red Z_{N+1}\mo z_{N+1}}) \cdot
+\P(F\mo\vf \| \green Z_1\mo z_1 \and \dotsb \and Z_N\mo z_N \black \and \yul)
+\end{aligned}
+$$
+:::
+
+Each possible $\vf$ is weighed by its credibility, which takes into account the fit of the possible frequency to observed data, and its reasonableness against the agent's background information.
+
+
+
+### Other uses of the belief distribution about frequencies
 
 The fact that the agent is actually learning about the full-population frequencies allows it to draw improved inferences not only about units, but also about characteristics intrinsic to the population itself, and also about its own performance in future inferences. For instance, the agent can even forecast the maximal accuracy that can be obtained in future inferences. We shall quickly explore these possibilities in a later chapter.
 
