@@ -21,7 +21,7 @@ plotFsamples1D <- function(P, n=100, predict=TRUE, file=NULL){
       lty=1, lwd=1, pch=16, col=7, alpha=0.5, cex=0.75
       )
     if(predict){
-        fmean <- fprobability(P=P, Kout=F)
+        fmean <- colMeans(samples)
         tplot(y=fmean, x=1:ncol(samples), type='b',
               lty=1, lwd=4, pch=18, col=1, alpha=0.25, cex=1, add=T
               )

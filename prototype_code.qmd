@@ -9,7 +9,7 @@ A prototype R code for the Optimal Predictor Machine with Dirichlet-mixture back
 
 [`https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal`](https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal)
 
-It consists of two main functions [`buildP()`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildP.R) and [`forecastP()`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildP.R) and some other helper functions.
+It consists of two main functions [`buildP()`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildP.R) and [`forecastP()`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildP.R) and some helper functions.
 
 The code implements the formulae of the previous [chapter @sec-dirichlet-mix] in a way that allows some of the versatility of the Optimal Predictor Machine discussed in §§ [-@sec-categ-probtheory]--[-@sec-underlying-distribution].
 
@@ -30,6 +30,8 @@ $$
 
 Where $\data$ represents all variate values of previous units.
 
+The crucial point here is that we calculate the distribution above *for all values $\bz$* but **not** for all possible alternative values that the data could have. We would need the latter in order to be able to handle missing variates in the data; so this flexibility is lost. But we're still retaining the flexibility of choosing whatever predictand/predictor division we like.
+
 From this distribution, the code can then draw all possible inferences about the new unit. For instance, if the population has three variates $\bZ=(\bA \and \bB \and \bC)$, the code can calculate inferences such as
 
 - $P(\bB\|\data \and \yD)$: any one predictand variate, no (that is, unknown) predictors
@@ -44,5 +46,40 @@ From this distribution, the code can then draw all possible inferences about the
 
 - $P(\bA \and \bC\|\bB \and \data \and \yD)$: any two predictand variates, any other one predictor
 
+\
+
+### Numerics
+
+The formulae of [chapter @sec-dirichlet-mix] cannot be computed as they're written. First, the factorials in the formulae generate very large numbers which lead to overflow and then `NaN`s in the ratios. Second, the sums over some variates may involve so many terms as to require a long computation time. In the end we would have to wait a long time just to see a string of `NaN`s.
+
+The first problem is dealt with, in the code, by rewriting the formulae in terms for logarithms and renormalizing numerators and denominators of fractions. The second problem is dealt with by reorganizing the sums as multiples of identical summands. These details are not discussed here.
+
+## Description of the main functions {#opm-functions}
+
+In typical order of use, the functions are the following. They may have some extra arguments that are omitted in this description:
+
+`guessmetadata(data, file)`
+: This function helps building a metadata file from a file of data.
+
+    - Argument `data` is either the file name of a dataset, or a dataset itself (`data.table`).
+    - Argument `file` is the name of the desired metadata file. If missing, and the `data` argument is a file name, a new file is created with same name but soffix `meta_`; otherwise the metadata go to `stdout`.
 
 
+`buildP(metadata, data=NULL)`
+: This is the main function. It creates an object (called "`P`") that encodes the probability distribution $\P(
+\blue Z \mo z
+\and
+\green\data
+\black \pmb{\|[\big]} \yD\bigr)$. The object consists of a list of a multidimensional array and three vectors.
+
+    - Argument `metadata` is either the name of a metadata file, or a metadata object itself (`data.table`).
+	- Argument `data` is either the file name of a dataset, or a dataset itself (`data.table`). If missing or `NULL`, No data are given to the machine, which therefore shows the initial beliefs of the agents.
+
+
+`forecastP(P, conditional=NULL)`
+: This function outputs the probability distribution for a given set of variates
+
+
+----
+
+[*To be continued*]{.grey}

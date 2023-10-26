@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-10-26">
+<meta name="dcterms.date" content="2023-10-27">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 33&nbsp; Code and computations</title>
 <style>
@@ -97,7 +97,7 @@ ul.task-list li input[type="checkbox"] {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-26</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-27</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -439,7 +439,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-code-features" id="toc-sec-code-features" class="nav-link active" data-scroll-target="#sec-code-features"><span class="header-section-number">33.1</span> Code characteristics</a></li>
+  <li><a href="#sec-code-features" id="toc-sec-code-features" class="nav-link active" data-scroll-target="#sec-code-features"><span class="header-section-number">33.1</span> Code characteristics</a>
+  <ul class="collapse">
+  <li><a href="#numerics" id="toc-numerics" class="nav-link" data-scroll-target="#numerics">Numerics</a></li>
+  </ul></li>
+  <li><a href="#opm-functions" id="toc-opm-functions" class="nav-link" data-scroll-target="#opm-functions"><span class="header-section-number">33.2</span> Description of the main functions</a></li>
   </ul>
 </nav>
     </div>
@@ -459,7 +463,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-10-26</p>
+      <p class="date">2023-10-27</p>
     </div>
   </div>
   
@@ -485,7 +489,7 @@ ul.task-list li input[type="checkbox"] {
 <h2 data-number="33.1" class="anchored" data-anchor-id="sec-code-features"><span class="header-section-number">33.1</span> Code characteristics</h2>
 <p>A prototype R code for the Optimal Predictor Machine with Dirichlet-mixture background information is available at</p>
 <p><a href="https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal"><code>https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal</code></a></p>
-<p>It consists of two main functions <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildP.R"><code>buildP()</code></a> and <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildP.R"><code>forecastP()</code></a> and some other helper functions.</p>
+<p>It consists of two main functions <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildP.R"><code>buildP()</code></a> and <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildP.R"><code>forecastP()</code></a> and some helper functions.</p>
 <p>The code implements the formulae of the previous <a href="dirichlet-mixture.html">chapter&nbsp;&nbsp;<span>32</span></a> in a way that allows some of the versatility of the Optimal Predictor Machine discussed in §§&nbsp;<a href="beyond-ML.html#sec-categ-probtheory"><span>27.3</span></a>–<a href="beyond-ML.html#sec-underlying-distribution"><span>27.4</span></a>.</p>
 <p>The basic idea behind the code is to calculate the probability distribution for a new unit</p>
 
@@ -500,6 +504,7 @@ ul.task-list li input[type="checkbox"] {
 \qquad\text{\small for all values }{\color[RGB]{68,119,170}z}
 \]</span></p>
 <p>Where <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{34,136,51}data}\)</span></span> represents all variate values of previous units.</p>
+<p>The crucial point here is that we calculate the distribution above <em>for all values <span class="math inline">\({\color[RGB]{68,119,170}z}\)</span></em> but <strong>not</strong> for all possible alternative values that the data could have. We would need the latter in order to be able to handle missing variates in the data; so this flexibility is lost. But we’re still retaining the flexibility of choosing whatever predictand/predictor division we like.</p>
 <p>From this distribution, the code can then draw all possible inferences about the new unit. For instance, if the population has three variates <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}=({\color[RGB]{68,119,170}A}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}B}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C})\)</span>,</span> the code can calculate inferences such as</p>
 <ul>
 <li><p><span class="math inline">\(P({\color[RGB]{68,119,170}B}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span>: any one predictand variate, no (that is, unknown) predictors</p></li>
@@ -509,6 +514,41 @@ ul.task-list li input[type="checkbox"] {
 <li><p><span class="math inline">\(P({\color[RGB]{68,119,170}B}\nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{68,119,170}A}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span>: any one predictand variate, any other two predictors</p></li>
 <li><p><span class="math inline">\(P({\color[RGB]{68,119,170}A}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C}\nonscript\:\vert\nonscript\:\mathopen{}{\color[RGB]{68,119,170}B}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span>: any two predictand variates, any other one predictor</p></li>
 </ul>
+<p><br>
+</p>
+<section id="numerics" class="level3">
+<h3 class="anchored" data-anchor-id="numerics">Numerics</h3>
+<p>The formulae of <a href="dirichlet-mixture.html">chapter&nbsp;&nbsp;<span>32</span></a> cannot be computed as they’re written. First, the factorials in the formulae generate very large numbers which lead to overflow and then <code>NaN</code>s in the ratios. Second, the sums over some variates may involve so many terms as to require a long computation time. In the end we would have to wait a long time just to see a string of <code>NaN</code>s.</p>
+<p>The first problem is dealt with, in the code, by rewriting the formulae in terms for logarithms and renormalizing numerators and denominators of fractions. The second problem is dealt with by reorganizing the sums as multiples of identical summands. These details are not discussed here.</p>
+</section>
+</section>
+<section id="opm-functions" class="level2" data-number="33.2">
+<h2 data-number="33.2" class="anchored" data-anchor-id="opm-functions"><span class="header-section-number">33.2</span> Description of the main functions</h2>
+<p>In typical order of use, the functions are the following. They may have some extra arguments that are omitted in this description:</p>
+<dl>
+<dt><code>guessmetadata(data, file)</code></dt>
+<dd>
+<p>This function helps building a metadata file from a file of data.</p>
+<ul>
+<li>Argument <code>data</code> is either the file name of a dataset, or a dataset itself (<code>data.table</code>).</li>
+<li>Argument <code>file</code> is the name of the desired metadata file. If missing, and the <code>data</code> argument is a file name, a new file is created with same name but soffix <code>meta_</code>; otherwise the metadata go to <code>stdout</code>.</li>
+</ul>
+</dd>
+<dt><code>buildP(metadata, data=NULL)</code></dt>
+<dd>
+<p>This is the main function. It creates an object (called “<code>P</code>”) that encodes the probability distribution <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}( \color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z \mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}\color[RGB]{0,0,0}\pmb{\nonscript\:\big\vert\nonscript\:\mathopen{}} \mathsfit{D}\bigr)\)</span>.</span> The object consists of a list of a multidimensional array and three vectors.</p>
+<ul>
+<li>Argument <code>metadata</code> is either the name of a metadata file, or a metadata object itself (<code>data.table</code>).</li>
+<li>Argument <code>data</code> is either the file name of a dataset, or a dataset itself (<code>data.table</code>). If missing or <code>NULL</code>, No data are given to the machine, which therefore shows the initial beliefs of the agents.</li>
+</ul>
+</dd>
+<dt><code>forecastP(P, conditional=NULL)</code></dt>
+<dd>
+This function outputs the probability distribution for a given set of variates
+</dd>
+</dl>
+<hr>
+<p><span class="grey"><em>To be continued</em></span></p>
 
 
 </section>
