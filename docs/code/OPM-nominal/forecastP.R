@@ -1,28 +1,28 @@
-forecastP <- function(P, marginal=NULL, conditional=NULL, Pout=FALSE){
+forecastP <- function(P, predictand=NULL, predictor=NULL, Pout=FALSE){
 #### Calculate conditional or unconditional probability
     variates <- names(dimnames(P[['freqs']]))
     M <- length(P[['freqs']])
     ##
-    ## Selection of conditional values
-    ## select subarray of freqs corresponding to the conditional values
-    if(!is.null(conditional)){
-        conditional <- as.list(conditional)
-        ## Check consistency of variates in metadata and conditional
-        if(length(setdiff(variates, names(conditional))) == 0){
-            stop('All variates are in the conditional')
+    ## Selection of predictor values
+    ## select subarray of freqs corresponding to the predictor values
+    if(!is.null(predictor)){
+        predictor <- as.list(predictor)
+        ## Check consistency of variates in metadata and predictor
+        if(length(setdiff(variates, names(predictor))) == 0){
+            stop('All variates are in the predictor')
         }
-        if(length(setdiff(names(conditional), variates)) > 0){
-            message('Discarding conditional variates not present in metadata')
+        if(length(setdiff(names(predictor), variates)) > 0){
+            message('Discarding predictor variates not present in metadata')
         }
-        conditional <- conditional[na.omit(match(variates, names(conditional)))]
+        predictor <- predictor[na.omit(match(variates, names(predictor)))]
         ##
-        iconditional <- match(names(conditional), variates)
+        ipredictor <- match(names(predictor), variates)
         totake <- as.list(rep(TRUE, length(variates)))
-        totake[iconditional] <- conditional
+        totake[ipredictor] <- predictor
         freqs <- do.call(`[`, c(list(P[['freqs']]), totake))
         if(is.null(dim(freqs))){
             dim(freqs) <- length(freqs)
-            dimnames(freqs) <- dimnames(P[['freqs']])[-iconditional]
+            dimnames(freqs) <- dimnames(P[['freqs']])[-ipredictor]
         }
     }else{
         freqs <- P[['freqs']]
@@ -31,7 +31,7 @@ forecastP <- function(P, marginal=NULL, conditional=NULL, Pout=FALSE){
     ## create an array of forecast variates and alphas
     freqs <- aperm(
         sapply(P[['alphas']], function(alpha){
-            log(M*alpha + freqs)
+            log(alpha + freqs)
         }, simplify='array'),
         c(length(dim(freqs))+1, 1:length(dim(freqs)))
     )
@@ -44,23 +44,23 @@ forecastP <- function(P, marginal=NULL, conditional=NULL, Pout=FALSE){
         dimnames(freqs) <- temp
         }
     ##
-    ## Selection of marginal variates
-    if(!is.null(marginal)){
-        ## Check consistency of variates in metadata and marginal
-        if(length(setdiff(marginal, variates)) > 0){
-            message('Discarding marginal variates not present in metadata')
+    ## Selection of predictand variates
+    if(!is.null(predictand)){
+        ## Check consistency of variates in metadata and predictand
+        if(length(setdiff(predictand, variates)) > 0){
+            message('Discarding predictand variates not present in metadata')
         }
-        marginal <- marginal[na.omit(match(variates, marginal))]
-        ## Check consistency of variates in conditional and marginal
-        if(length(intersect(marginal, names(conditional))) > 0){
-            stop('Some variates appear in marginal and conditional')
+        predictand <- predictand[na.omit(match(variates, predictand))]
+        ## Check consistency of variates in predictor and predictand
+        if(length(intersect(predictand, names(predictor))) > 0){
+            stop('Some variates appear in predictand and predictor')
         }
         ##
         ## Marginalize frequencies
-        freqs <- apply(freqs, marginal, sum)
+        freqs <- apply(freqs, predictand, sum)
         if(is.null(dim(freqs))){
             dim(freqs) <- length(freqs)
-            dimnames(freqs) <- dimnames(P[['freqs']])[marginal]
+            dimnames(freqs) <- dimnames(P[['freqs']])[predictand]
         }
     }
     freqs/sum(freqs)

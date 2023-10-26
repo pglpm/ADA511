@@ -64,10 +64,10 @@ buildP <- function(metadata, data=NULL, alphas=NULL){
     ffs <- ffs[iffs]
     valphas <- sapply(alphas, function(alpha){
         sum(ffs * lgamma(iffs-1 + alpha))
-    }) + logpalphas0
+    })  - M*lgamma(alphas) + lgamma(M*alphas) + logpalphas0
     ##
     ## Updated probabilities of alpha parameters, for frequency forecasts
-    palphas <- valphas - lgamma(M*alphas+NN) - M*lgamma(alphas) + lgamma(M*alphas)
+    palphas <- valphas - lgamma(M*alphas+NN)
     palphas <- exp(palphas-max(palphas))
     palphas <- palphas/sum(palphas)
     ##
