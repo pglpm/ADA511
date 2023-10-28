@@ -441,11 +441,12 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-code-features" id="toc-sec-code-features" class="nav-link active" data-scroll-target="#sec-code-features"><span class="header-section-number">33.1</span> Code characteristics</a>
+  <li><a href="#sec-code-range" id="toc-sec-code-range" class="nav-link active" data-scroll-target="#sec-code-range"><span class="header-section-number">33.1</span> Range of use of the code</a></li>
+  <li><a href="#sec-code-computations" id="toc-sec-code-computations" class="nav-link" data-scroll-target="#sec-code-computations"><span class="header-section-number">33.2</span> Computations needed in the code</a>
   <ul class="collapse">
   <li><a href="#numerics" id="toc-numerics" class="nav-link" data-scroll-target="#numerics">Numerics</a></li>
   </ul></li>
-  <li><a href="#opm-functions" id="toc-opm-functions" class="nav-link" data-scroll-target="#opm-functions"><span class="header-section-number">33.2</span> Description of the main functions</a></li>
+  <li><a href="#opm-functions" id="toc-opm-functions" class="nav-link" data-scroll-target="#opm-functions"><span class="header-section-number">33.3</span> Description of the main functions</a></li>
   </ul>
 </nav>
     </div>
@@ -489,12 +490,27 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <p><span class="yellow"><strong><i class="fa-solid fa-person-digging" aria-label="person-digging"></i> under construction <i class="fa-solid fa-person-digging" aria-label="person-digging"></i></strong></span></p>
 <hr>
-<section id="sec-code-features" class="level2 page-columns page-full" data-number="33.1">
-<h2 data-number="33.1" class="anchored" data-anchor-id="sec-code-features"><span class="header-section-number">33.1</span> Code characteristics</h2>
-<p>The concrete formulae discussed in the previous <a href="dirichlet-mixture.html">chapter&nbsp;&nbsp;<span>32</span></a> can be put into code, for use with generic statistical populations having only nominal variates. Software of this kind can in principle be written to allow for some or all of the task-versatility discussed in §§&nbsp;<a href="beyond-ML.html#sec-categ-probtheory"><span>27.3</span></a>–<a href="beyond-ML.html#sec-underlying-distribution"><span>27.4</span></a>, including for example the possibility of taking care (in a first-principled way!) of missing data. But the more versatile we make the software, the more memory, processing power, and computation time it will require.</p>
+<p>Before starting, let’s agree on some terminology in order not to get confused in the discussion below.</p>
+<ul>
+<li>We shall call <span class="blue"><em>task</em></span> a repetitive inference problem with a specified set of units and variates. For instance, a task could be the consecutive prediction of the urgency of incoming patients, given their mean of transportation. We assume that the details of the variates, such as their domain, are well specified. Possibly also a set of data from other patients is available, which we call “training data”.</li>
+<li>We shall call <span class="blue"><em>application</em></span> or <span class="blue"><em>instance</em></span> of the task a single inference about a specific new unit, for instance a new incoming patient, known to be arriving by helicopter.</li>
+</ul>
+<section id="sec-code-range" class="level2 page-columns page-full" data-number="33.1">
+<h2 data-number="33.1" class="anchored" data-anchor-id="sec-code-range"><span class="header-section-number">33.1</span> Range of use of the code</h2>
+<p>The concrete formulae discussed in the previous <a href="dirichlet-mixture.html">chapter&nbsp;&nbsp;<span>32</span></a> can be put into code, for use in different tasks involving only nominal variates. Software of this kind can in principle be written to allow for some or all of the versatility discussed in §§&nbsp;<a href="beyond-ML.html#sec-categ-probtheory"><span>27.3</span></a>–<a href="beyond-ML.html#sec-underlying-distribution"><span>27.4</span></a>, for example the possibility of taking care (in a first-principled way!) of partially missing training data. But the more versatile we make the software, the more memory, processing power, and computation time it will require.</p>
 <p>Roughly speaking, more versatility corresponds to calculations of the joint probability</p>
-<div class="column-body-outset-right small">
-<p><span class="math display">\[
+<div class="column-page-right">
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span id="eq-main-joint"><span class="math display">\[
 \mathrm{P}(
 \color[RGB]{68,119,170}
 Z_{L}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{L}
@@ -518,23 +534,26 @@ Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0
 }{
 {\bigl(\frac{2^{k}}{M} - 1\bigr)!}^M
 }
-\]</span></p>
+\quad
+\tag{33.1}\]</span></span></p>
+</div>
+</div>
 </div>
 <p>for more values of the quantities <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}Z_1, Z_2, \dotsc\)</span>.</span> For instance, if data about unit #4 are missing, then we need to calculate the joint probability above for several (possibly all) values of <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}Z_4\)</span>.</span> If data about two units are missing, then we need to do an analogous calculation for all possible <em>combinations</em> of values; and so on.</p>
-<p>For our prototype, let’s forgo versatility about units used as training data. From now on we abbreviate the set of training data from previous units as</p>
+<p>For our prototype, let’s forgo versatility about units used as training data. From now on we abbreviate the set of training data as</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>Recall that <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> denotes all (nominal) variates of the population</p>
 </div></div><p><span class="math display">\[
 \mathsfit{\color[RGB]{34,136,51}data}\coloneqq
-(\color[RGB]{68,119,170}
+(\color[RGB]{34,136,51}
 Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_1 \land
 Z_{2}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_2 \land \dotsb
 \color[RGB]{0,0,0})
 \]</span></p>
 <p>where <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}z_1, z_2, \dotsc\)</span></span> are specific values, stored in some training dataset. No values are missing.</p>
-<p>Since the training <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{34,136,51}data}\)</span></span> are given and fixed, we omit the suffix <span style="display:inline-block;">“<span class="math inline">\({}_{N+1}\)</span>”</span> that we have often used to indicate a “new” unit. So <span style="display:inline-block;">“<span class="math inline">\(\color[RGB]{68,119,170}Z\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z\)</span>”</span> simply refers to the variate <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> for the new unit.</p>
-<p>We allow for full versatility in forecasting a new unit. This means that we can decide, <em>on the spot for each new unit</em>, what the predictand variates are, and what the predictor variates (if any) are. For instance, if the population has three variates <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}=({\color[RGB]{68,119,170}A}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}B}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C})\)</span>,</span> our prototype can calculate, at each application on a new unit, inferences such as</p>
+<p>Since the training <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{34,136,51}data}\)</span></span> are given and fixed in a task, we omit the suffix <span style="display:inline-block;">“<span class="math inline">\({}_{N+1}\)</span>”</span> that we have often used to indicate a “new” unit. So <span style="display:inline-block;">“<span class="math inline">\(\color[RGB]{68,119,170}Z\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z\)</span>”</span> simply refers to the variate <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> in a new application of the task.</p>
+<p>We allow for full versatility in every new instance. This means that we can accommodate, <em>on the spot at each new instance</em>, what the predictand variates are, and what the predictor variates (if any) are. For example, if the population has three variates <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}=({\color[RGB]{68,119,170}A}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}B}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C})\)</span>,</span> our prototype can calculate, at each new application, inferences such as</p>
 <ul>
 <li><p><span class="math inline">\(P({\color[RGB]{68,119,170}B}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span>: any one predictand variate, no predictors</p></li>
 <li><p><span class="math inline">\(P({\color[RGB]{68,119,170}A}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span>: any two predictand variates, no predictors</p></li>
@@ -543,26 +562,110 @@ Z_{2}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0
 <li><p><span class="math inline">\(P({\color[RGB]{68,119,170}B}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{68,119,170}A}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span>: any one predictand variate, any other two predictors</p></li>
 <li><p><span class="math inline">\(P({\color[RGB]{68,119,170}A}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{}{\color[RGB]{68,119,170}B}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span>: any two predictand variates, any other one predictor</p></li>
 </ul>
-<p>To enjoy this versatility we need to calculate</p>
-<p><span class="math display">\[
+</section>
+<section id="sec-code-computations" class="level2 page-columns page-full" data-number="33.2">
+<h2 data-number="33.2" class="anchored" data-anchor-id="sec-code-computations"><span class="header-section-number">33.2</span> Computations needed in the code</h2>
+<p>To enjoy the versatility discussed above, the code needs to compute</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span id="eq-objectP"><span class="math display">\[
 \mathrm{P}(
 \color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z
 \mathbin{\mkern-0.5mu,\mkern-0.5mu}
 \color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}
-\color[RGB]{0,0,0}\pmb{\nonscript\:\big\vert\nonscript\:\mathopen{}} \mathsfit{D}\bigr)
-\]</span></p>
-<p>for all possible values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>.&nbsp;&nbsp;But</span> note that this calculation need to be done <em>only once</em>. For a new unit we only need to combine the results already obtained, as sums and fractions. In three-variate example above, if we need to forecast <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a\)</span></span> given <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c\)</span>,</span> we have to calculate</p>
-<p><span class="math display">\[
+\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
+\tag{33.2}\]</span></span></p>
+<p>for all possible values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>.</span></p>
+</div>
+</div>
+<p>But these computations must be done <em>only once</em> for a given task. For a new application we only need to combine these already-computed probabilities via sums and fractions. For example, in the three-variate case above, if in a new application we need to forecast <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a\)</span></span> given <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c\)</span>,</span> then we calculate</p>
+<div class="column-page-inset-right">
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>(example)</p>
+<p><span id="eq-forecast"><span class="math display">\[
 P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a \color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{}\color[RGB]{34,136,51}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})
 =
 \frac{
 \sum_{\color[RGB]{68,119,170}b}
-P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})
+P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
 }{
 \sum_{\color[RGB]{170,51,119}\alpha}\sum_{\color[RGB]{68,119,170}b}
-P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{170,51,119}\alpha} \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})
+P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{170,51,119}\alpha} \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
+}
+\quad
+\tag{33.3}\]</span></span></p>
+</div>
+</div>
+</div>
+<p>where all <span style="display:inline-block;"><span class="math inline">\(P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})\)</span></span> are already computed.</p>
+<div class="column-body-outset-right">
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Using the <code>and</code>-rule, prove (pay attention to the conditional <span style="display:inline-block;">“<span class="math inline">\(\nonscript\:\vert\nonscript\:\mathopen{}\)</span>”</span> bar):</p>
+<p><span class="math display">\[
+\frac{
+\sum_{\color[RGB]{68,119,170}b}
+P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
+}{
+\sum_{\color[RGB]{170,51,119}\alpha}\sum_{\color[RGB]{68,119,170}b}
+P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{170,51,119}\alpha} \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
+}
+=
+\frac{
+\sum_{\color[RGB]{68,119,170}b}
+P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})
+}{
+\sum_{\color[RGB]{170,51,119}\alpha}\sum_{\color[RGB]{68,119,170}b}
+P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{170,51,119}\alpha} \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})
 }
 \]</span></p>
+</div>
+</div>
+</div>
+<p>The exercise above shows that instead of <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(\color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})\)</span></span> we could calculate</p>
+<p><span class="math display">\[
+\mathrm{P}(
+\color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z
+\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{}
+\color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}
+\color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})
+\]</span></p>
+<p>once for all possible values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>,</span> and use that instead. Mathematically and logically the two ways are completely equivalent. Numerically they can be different as regards precision or possible overflow errors. Using <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}( \color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z \color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}\color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span></span> would be convenient if our basic formula&nbsp;(<a href="#eq-main-joint"><span>33.1</span></a>) didn’t contain the sum <span style="display:inline-block;"><span class="math inline">\(\sum_k\)</span></span> over the <span style="display:inline-block;"><span class="math inline">\(k\)</span></span> index. Our code shall instead use <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(\color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})\)</span></span> because it leads to slightly more precision in some situations.</p>
+<p><br>
+</p>
+<p>Our prototype software must therefore include two main functions:</p>
+<ul>
+<li><p>One function computes (<a href="#eq-objectP"><span>33.2</span></a>) once and for all in a given task, using the training <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{34,136,51}data}\)</span></span> and the metadata <span style="display:inline-block;"><span class="math inline">\(\mathsfit{D}\)</span></span> provided. The result can be stored in an array or similar object, let’s call it <code>P</code>.</p></li>
+<li><p>One function computes and outputs probabilities such as (<a href="#eq-forecast"><span>33.3</span></a>) at each new instance, using the stored object <code>P</code> as well as the predictor variates and values provided with that instance, and the predictand variates requested at that instance.</p></li>
+</ul>
+<hr>
+<hr>
+<p><em>below: old</em></p>
 <p>We have a choice of how a general-purpose code to build. For instance</p>
 <p>A prototype R code for the Optimal Predictor Machine with Dirichlet-mixture background information is available at</p>
 <p><a href="https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal"><code>https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal</code></a></p>
@@ -596,8 +699,8 @@ P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sma
 <p>The first problem is dealt with, in the code, by rewriting the formulae in terms for logarithms and renormalizing numerators and denominators of fractions. The second problem is dealt with by reorganizing the sums as multiples of identical summands. These details are not discussed here.</p>
 </section>
 </section>
-<section id="opm-functions" class="level2" data-number="33.2">
-<h2 data-number="33.2" class="anchored" data-anchor-id="opm-functions"><span class="header-section-number">33.2</span> Description of the main functions</h2>
+<section id="opm-functions" class="level2" data-number="33.3">
+<h2 data-number="33.3" class="anchored" data-anchor-id="opm-functions"><span class="header-section-number">33.3</span> Description of the main functions</h2>
 <p>In typical order of use, the functions are the following. They may have some extra arguments that are omitted in this description:</p>
 <dl>
 <dt><code>guessmetadata(data, file)</code></dt>

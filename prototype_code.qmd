@@ -7,13 +7,22 @@
 
 ----
 
-## Code characteristics {#sec-code-features}
+Before starting, let's agree on some terminology in order not to get confused in the discussion below.
 
-The concrete formulae discussed in the previous [chapter @sec-dirichlet-mix] can be put into code, for use with generic statistical populations having only nominal variates. Software of this kind can in principle be written to allow for some or all of the task-versatility discussed in §§ [-@sec-categ-probtheory]--[-@sec-underlying-distribution], including for example the possibility of taking care (in a first-principled way!) of missing data. But the more versatile we make the software, the more memory, processing power, and computation time it will require.
+- We shall call [*task*]{.blue} a repetitive inference problem with a specified set of units and variates. For instance, a task could be the consecutive prediction of the urgency of incoming patients, given their mean of transportation. We assume that the details of the variates, such as their domain, are well specified. Possibly also a set of data from other patients is available, which we call "training data".
+- We shall call [*application*]{.blue} or [*instance*]{.blue} of the task a single inference about a specific new unit, for instance a new incoming patient, known to be arriving by helicopter.
+
+
+## Range of use of the code {#sec-code-range}
+
+The concrete formulae discussed in the previous [chapter @sec-dirichlet-mix] can be put into code, for use in different tasks involving only nominal variates. Software of this kind can in principle be written to allow for some or all of the versatility discussed in §§ [-@sec-categ-probtheory]--[-@sec-underlying-distribution], for example the possibility of taking care (in a first-principled way!) of partially missing training data. But the more versatile we make the software, the more memory, processing power, and computation time it will require.
 
 Roughly speaking, more versatility corresponds to calculations of the joint probability
 
-:::{.column-body-outset-right .small}
+::::{.column-page-right}
+:::{.callout-note}
+##
+
 $$
 \P(
 \blue 
@@ -38,12 +47,15 @@ Z_{1}\mo z_1
 }{
 {\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
 }
-$$
+\quad
+$$ {#eq-main-joint}
+
 :::
+::::
 
 for more values of the quantities $\blue Z_1, Z_2, \dotsc$. For instance, if data about unit #4 are missing, then we need to calculate the joint probability above for several (possibly all) values of $\blue Z_4$. If data about two units are missing, then we need to do an analogous calculation for all possible *combinations* of values; and so on.
 
-For our prototype, let's forgo versatility about units used as training data. From now on we abbreviate the set of training data from previous units as
+For our prototype, let's forgo versatility about units used as training data. From now on we abbreviate the set of training data as
 
 :::{.column-margin}
 Recall that $\bZ$ denotes all (nominal) variates of the population
@@ -51,7 +63,7 @@ Recall that $\bZ$ denotes all (nominal) variates of the population
 
 $$
 \data \defd
-(\blue
+(\green
 Z_{1}\mo z_1 \land 
 Z_{2}\mo z_2 \land \dotsb 
 \black)
@@ -59,9 +71,9 @@ $$
 
 where $\blue z_1, z_2, \dotsc$ are specific values, stored in some training dataset. No values are missing.
 
-Since the training $\data$ are given and fixed, we omit the suffix "${}_{N+1}$" that we have often used to indicate a "new" unit. So "$\blue Z\mo z$" simply refers to the variate $\bZ$ for the new unit.
+Since the training $\data$ are given and fixed in a task, we omit the suffix "${}_{N+1}$" that we have often used to indicate a "new" unit. So "$\blue Z\mo z$" simply refers to the variate $\bZ$ in a new application of the task.
 
-We allow for full versatility in forecasting a new unit. This means that we can decide, *on the spot for each new unit*, what the predictand variates are, and what the predictor variates (if any) are. For instance, if the population has three variates $\bZ=(\bA \and \bB \and \bC)$, our prototype can calculate, at each application on a new unit, inferences such as
+We allow for full versatility in every new instance. This means that we can accommodate, *on the spot at each new instance*, what the predictand variates are, and what the predictor variates (if any) are. For example, if the population has three variates $\bZ=(\bA \and \bB \and \bC)$, our prototype can calculate, at each new application, inferences such as
 
 - $P(\bB\mo\dotso\|\data \and \yD)$: any one predictand variate, no predictors
 
@@ -76,29 +88,104 @@ We allow for full versatility in forecasting a new unit. This means that we can 
 - $P(\bA\mo\dotso \and \bC\mo\dotso\|\bB\mo\dotso \and \data \and \yD)$: any two predictand variates, any other one predictor
 
 
-To enjoy this versatility we need to calculate 
+## Computations needed in the code {#sec-code-computations}
+
+
+To enjoy the versatility discussed above, the code needs to compute
+
+:::{.callout-note}
+##
 
 $$
 \P(
 \blue Z \mo z
 \and
 \green\data
-\black \pmb{\|[\big]} \yD\bigr)
-$$
+\black \| \yD)
+$$ {#eq-objectP}
 
-for all possible values $\bz$.\ \ But note that this calculation need to be done *only once*. For a new unit we only need to combine the results already obtained, as sums and fractions. In three-variate example above, if we need to forecast $\red A\mo a$ given $\green C\mo c$, we have to calculate
+for all possible values $\bz$.
+:::
+
+But these computations must be done *only once* for a given task. For a new application we only need to combine these already-computed probabilities via sums and fractions. For example, in the three-variate case above, if in a new application we need to forecast $\red A\mo a$ given $\green C\mo c$, then we calculate
+
+::::{.column-page-inset-right}
+:::{.callout-note}
+##
+
+(example)
 
 $$
 P(\red A\mo a \black \|\green C\mo c \black \and \data \and \yD)
 =
 \frac{
 \sum_{\blue b}
-P(\red A\mo a \black \and \blue B\mo b \black \and \green C\mo c \black \and \data \and \yD)
+P(\red A\mo a \black \and \blue B\mo b \black \and \green C\mo c \black \and \data \| \yD)
 }{
 \sum_{\purple \alpha}\sum_{\blue b}
-P(\red A\mo {\purple \alpha} \black \and \blue B\mo b \black \and \green C\mo c \black \and \data \and \yD)
+P(\red A\mo {\purple \alpha} \black \and \blue B\mo b \black \and \green C\mo c \black \and \data \| \yD)
+}
+\quad
+$$ {#eq-forecast}
+
+:::
+::::
+
+where all $P(\red A\mo\dotso \black \and \blue B\mo\dotso \black \and \green C\mo\dotso \black \and \data \| \yD)$ are already computed.
+
+::::{.column-body-outset-right}
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+
+Using the `and`-rule, prove (pay attention to the conditional "$\|$" bar):
+
+$$
+\frac{
+\sum_{\blue b}
+P(\red A\mo a \black \and \blue B\mo b \black \and \green C\mo c \black \and \data \| \yD)
+}{
+\sum_{\purple \alpha}\sum_{\blue b}
+P(\red A\mo {\purple \alpha} \black \and \blue B\mo b \black \and \green C\mo c \black \and \data \| \yD)
+}
+=
+\frac{
+\sum_{\blue b}
+P(\red A\mo a \black \and \blue B\mo b \black \and \green C\mo c \black \| \data \and \yD)
+}{
+\sum_{\purple \alpha}\sum_{\blue b}
+P(\red A\mo {\purple \alpha} \black \and \blue B\mo b \black \and \green C\mo c \black \| \data \and \yD)
 }
 $$
+
+:::
+::::
+
+The exercise above shows that instead of $\P(\blue Z \mo z \black \and \green\data \black \| \yD)$ we could calculate
+
+$$
+\P(
+\blue Z \mo z
+\black \|
+\green\data
+\black \and  \yD)
+$$
+
+once for all possible values $\bz$, and use that instead. Mathematically and logically the two ways are completely equivalent. Numerically they can be different as regards precision or possible overflow errors. Using $\P( \blue Z \mo z \black \| \green\data \black \and \yD)$ would be convenient if our basic formula (@eq-main-joint) didn't contain the sum $\sum_k$ over the $k$ index. Our code shall instead use $\P(\blue Z \mo z \black \and \green\data \black \| \yD)$ because it leads to slightly more precision in some situations.
+
+\
+
+Our prototype software must therefore include two main functions:
+
+- One function computes (@eq-objectP) once and for all in a given task, using the training $\data$ and the metadata $\yD$ provided. The result can be stored in an array or similar object, let's call it `P`.
+
+- One function computes and outputs probabilities such as (@eq-forecast) at each new instance, using the stored object `P` as well as the predictor variates and values provided with that instance, and the predictand variates requested at that instance.
+
+----
+
+----
+
+*below: old*
+
 
 
 We have a choice of how a general-purpose code to build. For instance
