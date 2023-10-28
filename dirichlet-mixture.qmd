@@ -25,122 +25,147 @@ Suppose we have a simple or joint nominal variate $\bZ$ which can assume $M$ dif
 The Dirichlet-mixture distribution assigns to $\vf$ a probability density given by the following formula:
 
 $$\p(F\mo\vf \| \yD) =
-\frac{1}{1+\amax-\amin}
+\frac{1}{\amax-\amin+1}
 \sum_{\ya=\amin}^{\amax}
-\Biggl[\prod_{\bz} f(\bz)^{2^\ya -1} \Biggr]
+\Biggl[\prod_{\bz} f(\bz)^{\frac{2^\ya}{M} -1} \Biggr]
 \cdot
 \frac{
-\bigl(M\,2^{\ya} -1 \bigr)!
+\bigl(2^{\ya} -1 \bigr)!
 }{
-{\bigl(2^{\ya} - 1\bigr)!}^M
+{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
 }
 $$
 
-Besides some multiplicative constants, the probability is simply proportional to the product of all frequencies, raised to some powers.
-
-The product "$\prod_{\bz}$" is over all $M$ possible values of $\bZ$. The sum "$\sum_{\ya}$" is over an *integer* (positive or negative) parameter $\ya$ that runs between a minimum and maximum value. In the applications of the next chapters the values are chosen as follows:
+Besides some multiplicative constants, the probability is simply proportional to the product of all frequencies, raised to some powers. The product "$\prod_{\bz}$" is over all $M$ possible values of $\bZ$. The sum "$\sum_{\ya}$" is over an *integer* (positive or negative) index $\ya$ that runs between the minimum value $\amin$ and the maximum value $\amax$. In the applications of the next chapters these minimum and maximum are chosen as follows:
 
 $$
-2^{\amin} \approx \frac{1}{M}
+\amin=-17
 \qquad
-2^{\amax} = 4
+\amax=17
 $$
+
+so the sum $\sum_k$ runs over $2\cdot 17 +1= 35$ terms.
 
 In most applications it does not matter if we take a lower $\amin$ or a higher $\amax$.
 
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+In the calculations and exercises that follow, you're welcome to do them also with other $\amin$ and $\amax$ values, and see what happens.
+:::
+
+
+
 \
 
-Let's see how this formula concretely looks like in the simple example of the Mars-prospecting scenario (which had many analogies with coin tosses). 
+Let's see how this formula looks like in a concrete, simple example: the Mars-prospecting scenario (which has many analogies with coin tosses).
 
 The variate $\yR$ can assume two values $\set{\yy,\yn}$, so $M=2$ in this case. The frequency distribution consists in two frequencies:
 
 $$f(\yy) \qquad f(\yn)$$
 
-of which only one can be chosen independently, since they must sum up to 1.
+of which only one can be chosen independently, since they must sum up to 1. For instance we could consider $f(\yy)=0.5, f(\yn)=0.5$,\ \ or $f(\yy)=0.84, f(\yn)=0.16$,\ \ and so on.
 
-Then
+<!-- $$ -->
+<!-- 2^{\amin} \approx \frac{1}{2}\ , -->
+<!-- \quad -->
+<!-- 2^{\amax} = 4 -->
+<!-- \qquad\Longrightarrow\qquad -->
+<!-- \amin = -1 \ , -->
+<!-- \quad -->
+<!-- \amax = 2 -->
+<!-- $$ -->
 
-$$
-2^{\amin} \approx \frac{1}{2}\ ,
-\quad
-2^{\amax} = 4
-\qquad\Longrightarrow\qquad
-\amin = -1 \ ,
-\quad
-\amax = 2
-$$
+*Only for this example* we choose
 
-and the agent's belief distribution for the frequencies is
+$$\amin=0 \qquad \amax=2$$
+
+so that the sum $\sum_k$ runs over 3 terms rather than 35.
+
+The agent's belief distribution for the frequencies is
 
 $$
 \begin{aligned}
 \p(F\mo\vf \| \yD) &=
-\frac{1}{1+2+1}
-\sum_{\ya=-1}^{2}
-\Biggl[\prod_{\bz} f(\bz)^{2^\ya -1} \Biggr]
+\frac{1}{2-0+1}
+\sum_{\ya=0}^{2}
+\Biggl[\prod_{\bz=\yy}^{\yn} f(\bz)^{\frac{2^\ya}{2} -1} \Biggr]
 \cdot
 \frac{
-\bigl(2\cdot 2^{\ya} -1 \bigr)!
+\bigl(2^{\ya} -1 \bigr)!
 }{
-{\bigl(2^{\ya} - 1\bigr)!}^2
+{\bigl(\frac{2^{\ya}}{2} - 1\bigr)!}^2
 }
 \\[2ex]
 &=
-\frac{1}{1+2+1}
+\frac{1}{3}
 \Biggl[
-f(\yy)^{2^{-1}-1}\cdot f(\yn)^{2^{-1}-1}
+f(\yy)^{\frac{2^{0}}{2}-1}\cdot f(\yn)^{\frac{2^{0}}{2}-1}
 \cdot
 \frac{
-\bigl(2\cdot 2^{-1} -1 \bigr)!
+\bigl(2^{0} -1 \bigr)!
 }{
-{\bigl(2^{-1} - 1\bigr)!}^2
+{\bigl(\frac{2^{0}}{2} - 1\bigr)!}^2
 }
-+{} \\&\qquad
-f(\yy)^{2^{0}-1}\cdot f(\yn)^{2^{0}-1}
++{} \\[1ex]&\qquad
+f(\yy)^{\frac{2^{1}}{2}-1}\cdot f(\yn)^{\frac{2^{1}}{2}-1}
 \cdot
 \frac{
-\bigl(2\cdot 2^{0} -1 \bigr)!
+\bigl(2^{1} -1 \bigr)!
 }{
-{\bigl(2^{0} - 1\bigr)!}^2
+{\bigl(\frac{2^{1}}{2} - 1\bigr)!}^2
 }
-+{} \\&\qquad
-f(\yy)^{2^{1}-1}\cdot f(\yn)^{2^{1}-1}
++{} \\[1ex]&\qquad
+f(\yy)^{\frac{2^{2}}{2}-1}\cdot f(\yn)^{\frac{2^{2}}{2}-1}
 \cdot
 \frac{
-\bigl(2\cdot 2^{1} -1 \bigr)!
+\bigl(2^{2} -1 \bigr)!
 }{
-{\bigl(2^{1} - 1\bigr)!}^2
-}
-+{} \\&\qquad
-f(\yy)^{2^{2}-1}\cdot f(\yn)^{2^{2}-1}
-\cdot
-\frac{
-\bigl(2\cdot 2^{2} -1 \bigr)!
-}{
-{\bigl(2^{2} - 1\bigr)!}^2
+{\bigl(\frac{2^{2}}{2} - 1\bigr)!}^2
 }
 \Biggr]
 \\[2ex]
 &=
-\frac{1}{4}
+\frac{1}{3}
 \Biggl[
 \frac{1}{\sqrt{f(\yy)}}\cdot \frac{1}{\sqrt{f(\yn)}}
 \cdot \frac{1}{\pi}
-+{} \\&\qquad 1
-\cdot \frac{1}{1}
-+{} \\&\qquad f(\yy)\cdot f(\yn)
++{} \\[1ex]&\qquad
+1 \cdot 1 \cdot \frac{1}{1}
++{} \\[1ex]&\qquad f(\yy)\cdot f(\yn)
 \cdot \frac{6}{1}
-+{} \\&\qquad f(\yy)^{3}\cdot f(\yn)^{3}
-\cdot \frac{5040}{36}
 \Biggr]
 \end{aligned}
 $$
 
-We can visualize this distribution with a generalized scatter plot ([§ @sec-repr-general-distr]) of 100 frequency distributions, each represented by a line histogram ([§ @sec-discr-prob-distr]):
+\
+
+We can visualize this belief distribution (with $\amin=0,amax=2$) with a generalized scatter plot ([§ @sec-repr-general-distr]) of 100 frequency distributions, each represented by a line histogram ([§ @sec-discr-prob-distr]):
 
 ![](samples_rocks.png){width=100%}
 
-we see that all possible frequency distributions are considered by this belief distribution.
+Alternatively we can represent the probability density of the frequency $f(\yy)$:
+
+![](dirmix_pdf_rocks.png){width=100%}
+
+You can see some characteristics of this belief:
+
+- all possible frequency distributions are taken into account, that is, no frequency is judged impossible and given zero probability
+
+- a higher probability is given to frequency distributions that are almost 50%/50%, or that are almost 0%/100% or 100%/0%
+
+The second characteristic expresses the belief that the agent may more often deal with tasks where frequencies are almost symmetric (think of coin toss), or the opposite: tasks where, once you observe a phenomenon, you're quite sure you'll keep observing it. This latter case is typical of some physical phenomena; an example is given by Jaynes:
+
+> For example, in a chemical laboratory we find a jar containing an unknown and unlabeled compound. We are at first completely ignorant as to whether a small sample of this compound will dissolve in water or not. But having observed that one small sample does dissolve, we infer immediately that all samples of this compound are water soluble, and although this conclusion does not carry quite the force of deductive proof, we feel strongly that the inference was justified.
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+[*Prior probabilities*](https://hvl.instructure.com/courses/25074/modules/items/723829
+)
+:::
+::::
+
+
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
@@ -159,359 +184,225 @@ Calculate the formula above for these three frequency distributions:
 :::
 
 
-## Joint probabilities about units with the Dirichlet-mixture distribution {#sec-joint-prob-dirichlet}
+## Formula for joint probabilities about units with the Dirichlet-mixture distribution {#sec-joint-prob-dirichlet}
 
-A mathematical advantage of the Dirichlet-mixture belief distribution is that some formulae where it enters can be computed exactly. The most important is the formula in de Finetti's representation theorem ([§ @sec-freq-not-known]).
-
-Take a sequence of observations for $N+1$ units, for which the variate $\bZ$ is seen to have values $\blue z_1, z_2, \dotsc, z_{N+1}$. Some or even all of these $N+1$ values might be identical; denote by $\#\bz$ the multiplicity with which value $\bz$ occurs in the sequence. For instance, in the Mars-prospecting example, the sequence
-
-$$
-\yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yR_4\mo\yy
-$$
-
-has $N+1=4$, $\#\yy = 3$, and $\#\yn = 1$, whereas the sequence^[Remember that the agent has exchangeable beliefs, so the units' IDs don't matter ([§ @sec-exchaneable-distr])!]
-
-$$
-\yR_{32}\mo\yn \and \yR_{102}\mo\yn \and \yR_{8}\mo\yn
-$$
-
-has $N+1=4$, $\#\yy = 0$, and $\#\yn = 3$.
-
-With the Dirichlet-mixture distribution we have the following general equality:
+A mathematical advantage of the Dirichlet-mixture belief distribution is that some formulae where it enters can be computed exactly. The most important formula is de Finetti's representation theorem ([§ @sec-freq-not-known]), where the sum $\sum_{\vf}$ (really an integral $\int\,\di\vf$) can be calculated analytically in the case of the Dirichlet-mixture:
 
 :::{.column-body-outset-right}
 $$
 \begin{aligned}
 \P(
 \blue 
-Z_{N+1}\mo  z_{N+1}
+Z_{L}\mo  z_{L}
 \and
-\dotsb
+\dotsb \and
 Z_{1}\mo z_1
 \black
 \| \yD
 )
 &=
 \int
-f(\blue Z_{N+1}\mo  z_{N+1} \black) \cdot
+f(\blue Z_{L}\mo  z_{L} \black) \cdot
 \,\dotsb\, \cdot
 f(\blue Z_{1}\mo z_1 \black) \cdot
 \p(F\mo\vf \| \yD)
 \,\di\vf
 \\[2ex]
 &=
-\frac{1}{1+\amax-\amin}
+\frac{1}{\amax-\amin+1}
 \sum_{\ya=\amin}^{\amax}
 \frac{
-\prod_{\bz} \bigl(2^{\ya} + \#\bz - 1\bigr)!
+\prod_{\bz} \bigl(\frac{2^{\ya}}{M} + \#\bz - 1\bigr)!
 }{
-\bigl(M\,2^{\ya} + N \bigr)!
+\bigl(2^{\ya} + L -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(M\,2^{\ya} -1 \bigr)!
+\bigl(2^{\ya} -1 \bigr)!
 }{
-{\bigl(2^{\ya} - 1\bigr)!}^M
+{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
 }
 \end{aligned}
 $$
 :::
 
-As a concrete numerical example,
+where $\#\bz$ is the multiplicity with which the specific value $\bz$ occurs in the sequence $\blue z_1,\dotsc,z_{L}$.
+
+\
+
+Let's see how this formula looks like in an example from the Mars-prospecting scenario.
+
+Take the sequence^[Remember that the agent has exchangeable beliefs, so the units' IDs don't matter ([§ @sec-exchaneable-distr])!]
+
+$$
+\yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yR_4\mo\yy
+$$
+
+in this sequence, value $\yy$ appears thrice and value $\yn$ once, that is
+
+$$L=4 \qquad \#\yy = 3 \qquad \#\yn = 1$$
+
+In this case we have $M=2$, and we still take $\amin=0, \amax=2$. The formula above then becomes
 
 :::{.column-body-outset-right}
 $$
 \begin{aligned}
 &\P(
 \underbracket[0.1ex]{\yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yR_4\mo\yy}_{
-\grey N+1=4\quad \#\cat{Y}=3\quad \#\cat{N}=1
+\grey L=4\quad \#\cat{Y}=3\quad \#\cat{N}=1
 }
 \| \yD
 )
 \\
 &\qquad{}=
-\frac{1}{1+2+1}
-\sum_{\ya=-1}^{2}
+\frac{1}{\amax-\amin+1}
+\sum_{\ya=\amin}^{\amax}
 \frac{
-\bigl(2^{\ya} + {\lblue 3} - 1\bigr)! \cdot
-\bigl(2^{\ya} + {\yellow 1} - 1\bigr)!
+\prod_{\bz} \bigl(\frac{2^{\ya}}{M} + \#\bz - 1\bigr)!
 }{
-\bigl(2\cdot 2^{\ya} + 3 \bigr)!
+\bigl(2^{\ya} + L -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(2\cdot 2^{\ya} -1 \bigr)!
+\bigl(2^{\ya} -1 \bigr)!
 }{
-{\bigl(2^{\ya} - 1\bigr)!}^2
+{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
+}
+\\[2ex]
+&\qquad{}=
+\frac{1}{2-0+1}
+\sum_{\ya=\amin}^{\amax}
+\frac{
+\bigl(\frac{2^{\ya}}{2} + \#\yy - 1\bigr)!
+\cdot \bigl(\frac{2^{\ya}}{2} + \#\yn - 1\bigr)!
+}{
+\bigl(2^{\ya} + 4 -1 \bigr)!
+}
+\cdot
+\frac{
+\bigl(2^{\ya} -1 \bigr)!
+}{
+{\bigl(\frac{2^{\ya}}{2} - 1\bigr)!}^2
+}
+\\[2ex]
+&\qquad{}=
+\frac{1}{3}
+\sum_{\ya=-1}^{2}
+\frac{
+\bigl(\frac{2^{\ya}}{2} + {\lblue 3} - 1\bigr)! \cdot
+\bigl(\frac{2^{\ya}}{2} + {\yellow 1} - 1\bigr)!
+}{
+\bigl(2^{\ya} + 3 \bigr)!
+}
+\cdot
+\frac{
+\bigl(2^{\ya} -1 \bigr)!
+}{
+{\bigl(\frac{2^{\ya}}{2} - 1\bigr)!}^2
 }
 \\[1ex]
 &\qquad{}=
-\boldsymbol{0.051 702 9}
+\boldsymbol{0.048 735 1}
 \end{aligned}
 $$
 :::
 
 :::{.callout-caution}
-## {{< fa user-edit >}} Exercise
-Using the formula above, calculate:
+## {{< fa user-edit >}} Exercises
+- Using the formula above, calculate:
 
-- $\P(\yR_1\mo\yy\| \yD)$ ; does the result make sense?
+    - $\P(\yR_1\mo\yy\| \yD)$ ; does the result make sense?
 
-- $\P(\yR_{32}\mo\yn \and \yR_{102}\mo\yn \and \yR_{8}\mo\yn\| \yD)$
+    - $\P(\yR_{32}\mo\yn \and \yR_{102}\mo\yn \and \yR_{8}\mo\yn\| \yD)$
 
 <!-- ## [1] 0.5 -->
-<!-- ## [1] 0.232292 -->
+<!-- ## [1] 0.254167 -->
+
+- Try doing the calculation above on a computer, with $\amin=-17, \amax=17$. What happens?
 
 :::
 
 
+## Examples of inference tasks with the Dirichlet-mixture belief distribution {#sec-formulae-with-Dirmix}
 
-## Main inference formulae with the Dirichlet-mixture belief distribution {#sec-formulae-with-Dirmix}
+With the explicit formula
 
-Replacing the Dirichlet-mixture formula
-
-$$
-\p(F\mo\vf \| \yD) =
-\frac{1}{1+\amax-\amin}
-\sum_{\ya}
-\Biggl[\prod_{\bz} f(\bz)^{2^\ya -1} \Biggr]
-\cdot
-\frac{
-\bigl(M\,2^{\ya} -1 \bigr)!
-}{
-{\bigl(2^{\ya} - 1\bigr)!}^M
-}
-$$
-
-in the theoretical inference formulae summarized in [chapter @sec-summary-formulae], and simplifying the resulting expressions using some mathematical identities, we obtain the following concrete formulae:
-
-::::{.column-page-inset-right}
-:::{.callout-note}
-## Main formulae for some inference tasks under Dirichlet-mixture beliefs
-
-($\bZ, \bY, \bX$ are each a single nominal variate or a collection thereof)
-
-de Finetti's representation
-: 
+:::{.column-page-inset-right}
+::::{.callout-note}
+##
 
 $$
-\begin{aligned}
-&\P\bigl(
-\blue Z_{N+1} \mo z_{N+1}
+\P(
+\blue 
+Z_{L}\mo  z_{L}
 \and
-Z_N \mo z_N
-\and
-\dotsb \and 
-Z_1 \mo z_1 
-\black \pmb{\|[\big]} \yD\bigr)
-\\[2ex]
-&\qquad{}=
-\frac{1}{1+\amax-\amin}
+\dotsb \and
+Z_{1}\mo z_1
+\black
+\| \yD
+)
+=
+\frac{1}{\amax-\amin+1}
 \sum_{\ya=\amin}^{\amax}
 \frac{
-\prod_{\bz} \bigl(2^{\ya} + {\blue\#z} - 1\bigr)!
+\prod_{\bz} \bigl(\frac{2^{\ya}}{M} + \#\bz - 1\bigr)!
 }{
-\bigl(M\,2^{\ya} + N \bigr)!
+\bigl(2^{\ya} + L -1 \bigr)!
 }
- \cdot
+\cdot
 \frac{
-\bigl(M\,2^{\ya} -1 \bigr)!
+\bigl(2^{\ya} -1 \bigr)!
 }{
-{\bigl(2^{\ya} - 1\bigr)!}^M
+{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
 }
-\end{aligned}
 $$
 
-or, in terms of predictand $\bY$ and predictors $\bX$ variates:
+where $\#\bz$ is the number of times some value $\bz$ appears in the sequence
 
-$$
-\begin{aligned}
-&\P\bigl(
-\blue Y_{N+1} \mo y_{N+1}
-\and
-X_{N+1} \mo x_{N+1}
-\and
-\dotsb
-\and
-Y_{1} \mo y_{1}
-\and
-X_{1} \mo x_{1}
-\black \pmb{\|[\big]} \yD\bigr)
-\\[2ex]
-&\qquad{}=
-\frac{1}{1+\amax-\amin}
-\sum_{\ya=\amin}^{\amax}
-\frac{
-\prod_{\blue y, x} \bigl(2^{\ya} + {\blue\#(y,x)} - 1\bigr)!
-}{
-\bigl(M\,2^{\ya} + N \bigr)!
-}
-\cdot
-\frac{
-\bigl(M\,2^{\ya} -1 \bigr)!
-}{
-{\bigl(2^{\ya} - 1\bigr)!}^M
-}
-\end{aligned}
-$$
-
-In the formula above, $\blue\#(y, x)$ is the number of times the specific *pair* of values $\blue(y,x)$ appears in the proposal side of the probability.
-
-\
-
-\
-
-{{< fa regular star >}} Inferences about all variates $\bZ$ of a new unit, given observed units
-: 
-
-$$
-\begin{aligned}
-&\P\bigl(
-	\red Z_{N+1} \mo z_{N+1}
-\black \pmb{\|[\big]} 
-    \green Z_N \mo z_N \and 
-	\dotsb \and 
-	Z_1 \mo z_1 
-    \black\and \yD \bigr)
-\\[2ex]
-&\qquad{}=
-	\frac{\displaystyle{}\enspace
-	\sum_{\ya=\amin}^{\amax}
-\frac{
-(2^{\ya} + {\green\# z_{N+1}} )
-\cdot
-\prod_{\green z} \bigl(2^{\ya} + {\green\# z} - 1\bigr)!
-}{
-\bigl(M\,2^{\ya} + N \bigr)!
-}
-\cdot
-\frac{
-\bigl(M\,2^{\ya} -1 \bigr)!
-}{
-{\bigl(2^{\ya} - 1\bigr)!}^M
-}
-	\enspace{}}{\displaystyle{}\enspace
-	\sum_{\green z^*}
-	\sum_{\ya=\amin}^{\amax}
-\frac{
-(2^{\ya} + {\green\# z^*})
-\cdot
-\prod_{\green z} \bigl(2^{\ya} + {\green\# z} - 1\bigr)!
-}{
-\bigl(M\,2^{\ya} + N \bigr)!
-}
-\cdot
-\frac{
-\bigl(M\,2^{\ya} -1 \bigr)!
-}{
-{\bigl(2^{\ya} - 1\bigr)!}^M
-}
-	\enspace{}}
-\end{aligned}
-$$
-
-\
-
-\
-
-{{< fa star-half-alt >}} Inferences about predictands $\bY$ of a new unit, given its predictors $\bX$ and given both predictands & predictors of observed units
-: 
-
-$$
-\begin{aligned}
-    &\P\bigl(
-	\red Y_{N+1} \mo y_{N+1}
-\black \pmb{\|[\big]} 
-	\green X_{N+1} \mo x_{N+1}\, \and\,
- Y_N \mo y_N \and X_N \mo x_N \and
-	\dotsb \and 
-	Y_1 \mo y_1 \and X_1 \mo x_1 
-    \black\and \yD \bigr)
-	\\[2ex]
-	&\qquad\qquad\qquad{}=
-	\frac{\displaystyle{}\enspace
-	\sum_{\ya=\amin}^{\amax}
-\frac{
-\prod_{\green x}\bigl(2^{\ya} + {\green\#(y_{N+1}, x)}\bigr)
-\cdot
-\prod_{\green y} 
-\prod_{\green x} 
-\bigl(2^{\ya} + {\green\#(y, x)} - 1\bigr)!
-}{
-\bigl(M\,2^{\ya} + N \bigr)!
-}
-\cdot
-\frac{
-\bigl(M\,2^{\ya} -1 \bigr)!
-}{
-{\bigl(2^{\ya} - 1\bigr)!}^M
-}
-	\enspace{}}{\displaystyle{}\enspace
-	\sum_{\green y^*}
-	\sum_{\ya=\amin}^{\amax}
-\frac{
-\prod_{\green x}\bigl(2^{\ya} + {\green\#(y^*, x)}\bigr)
-\cdot
-\prod_{\green y} 
-\prod_{\green x} 
-\bigl(2^{\ya} + {\green\#(y, x)} - 1\bigr)!
-}{
-\bigl(M\,2^{\ya} + N \bigr)!
-}
-\cdot
-\frac{
-\bigl(M\,2^{\ya} -1 \bigr)!
-}{
-{\bigl(2^{\ya} - 1\bigr)!}^M
-}
-	\enspace{}}
-\end{aligned}
-$$
-
-\
-
-In the last two formulae, the counts $\green\#z$, $\green\#(y,x)$, and similar [**refer to the values present in the conditional**]{.green}.
-:::
 ::::
-
-:::{.callout-caution}
-## {{< fa user-edit >}} Exercise
-The four formulae above look complicated. They do because they contain abbreviations ("$\sum$", "$\prod$") of sums or products of many terms. But once you have written down a couple of concrete examples, their meaning should be clear.
-
-For the second formula, try to write it down for a concrete case in the Mars-prospecting scenario; say with $N=2$ and specific values for $z_1, z_2, z_3$, and verify that it is the correct expression of the more general formulae previously given. Use the property of the factorial
-
-$$(a+1)! = (a+1) \cdot a!$$
-
 :::
+
+we can now solve all the kinds of task involving multiple units that were discussed in [§ @sec-categ-probtheory]. Let's see a simple example of forecasting all variates for a new unit (no predictors), and another example where we guess a predictand given a predictor. We shall solve them step by step.
+
+
 
 
 ## Example 1: Forecast about one variate, given previous observations {#sec-dirmix-example1}
 
-Let's see a simple step-by-step application of the formulae in the Mars-prospecting scenario. In this task there are no predictors and only one predictand variate $\yR$: the presence of haematite. The agent observes the value of this variate in several rocks, and try to forecast its value in a new rock.
+In this task there are no predictors and only one predictand variate $\yR$: the presence of haematite. The agent observes the value of this variate in several rocks, and tries to forecast its value in a new rock.
 
-The agent has exchangeable beliefs represented by a Dirichlet-mixture distribution. The variate of the population of interest has two possible values, so in the formulae above we have\ \ $\amin=-1$, $\amax=2$\ \ ([§ @sec-prob-for-freqs]).
+The agent has exchangeable beliefs represented by a Dirichlet-mixture distribution. The variate of the population of interest has two possible values, so in the formulae above we have\ \ $M=2$. We still take $\amin=0$, $\amax=2$.
 
-The agent has collected three rocks, and upon examination two of them contain haematite, one doesn't. The agent's data are therefore
 
-$$\yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn$$
+The agent has collected three rocks. Upon examination, two of them contain haematite, one doesn't. The agent's data are therefore
 
-(remember that it doesn't matter how we label the rocks, because the agent's beliefs are exchangeable).
+$$\text{\small data:}\quad \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn$$
+
+(remember that it doesn't matter how the rocks are labelled, because the agent's beliefs are exchangeable).
 
 What probability should the agent give to finding haematite in a newly collected rock? That is, what value should it assign to
 
 $$\P(\yR_4\mo\yy \| \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yD) \ ?$$
 
-There are different but logically equivalent ways of breaking down this calculation into steps. They also correspond to different ways of calculating the mathematical formulae. Here we examine one possibility.
+
+Our main formula is
+
+:::{.column-body-outset-right}
+$$
+\P(\yR_4\mo\yy \| \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yD)
+=
+\frac{
+\P(\yR_4\mo\yy \and \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD)
+}{
+\sum_{{\purple r}=\yy}^{\yn}
+\P(\yR_4\mo{\purple r} \and  \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD)
+}
+$$
+:::
 
 \
 
-[{{< fa 1 >}} {{< fa hand-point-right >}}]{.green}\ \ \ For the computation of the probability for $\yR_4\mo\yy$ we need to consider all alternative hypotheses. In this case there are only two alternatives, including the one of interest:
-
-$$\yR_4\mo\yy \qquad \yR_4\mo\yn$$
-
-\
-
-[{{< fa 2 >}} {{< fa hand-point-right >}}]{.green}\ \ \ We need to calculate the joint probabilities for the agent's data (about the three previous rocks) `and` each hypothesis in turn. In the present case, they are the two joint probabilities
+[{{< fa 1 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The fraction above requires the computation of two joint probabilities:
 
 $$
 \begin{aligned}
@@ -521,68 +412,74 @@ $$
 \end{aligned}
 $$
 
-These probabilities will appear, summed together, in the denominator of a final fraction; whereas the probability containing the hypothesis of interest will appear, by itself, in the numerator.
+Note how they are associated with the two possible hypotheses about the new rock:
+
+$$\yR_4\mo\yy \qquad \yR_4\mo\yn$$
+
+of which the first one interests us.
+
 
 :::{.column-body-outset-right}
 
 [{{< fa 2 >}}a {{< fa hand-point-right >}}]{.green}\ \ In the first joint probability, $\yy$ appears thrice and $\yn$ appears once, so
 
-$$\#\yy = 3 \qquad \#\yn = 1 \qquad \text{\midgrey\small total} = {\midgrey 4}$$
+$$\#\yy = 3 \qquad \#\yn = 1 \qquad {\midgrey L} = {\midgrey 4}$$
 
-The de Finetti representation formula then gives
+The de Finetti representation formula gives
 
 $$\begin{aligned}
 &\P(\yR_4\mo\yy \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD) 
 \\[1ex]
 &\qquad{}=
-\frac{1+2-1}
-\sum_{\ya=-1}^{2}
+\frac{1}{2-0+1}
+\sum_{\ya=0}^{2}
 \frac{
-\bigl(2^{\ya} + {\lblue 3} - 1\bigr)! \cdot
-\bigl(2^{\ya} + {\yellow 1} - 1\bigr)!
+\bigl(\frac{2^{\ya}}{2} + {\lblue 3} - 1\bigr)! \cdot
+\bigl(\frac{2^{\ya}}{2} + {\yellow 1} - 1\bigr)!
 }{
-\bigl(2\cdot 2^{\ya} + {\midgrey 4} -1 \bigr)!
+\bigl(2^{\ya} + {\midgrey 4} -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(2\cdot 2^{\ya} -1 \bigr)!
+\bigl(2^{\ya} -1 \bigr)!
 }{
-{\bigl(2^{\ya} - 1\bigr)!}^2
+{\bigl(\frac{2^{\ya}}{2} - 1\bigr)!}^2
 }
 \\[1ex]
 &\qquad{}=
-\boldsymbol{0.051 702 9}
+\boldsymbol{0.048 735 1}
 \end{aligned}
 $$
 
+\
 
 [{{< fa 2 >}}b {{< fa hand-point-right >}}]{.green}\ \ In the second joint probability, $\yy$ appears twice and $\yn$ appears twice, so
 
-$$\#\yy = 2 \qquad \#\yn = 2 \qquad \text{\midgrey\small total} = {\midgrey 4}$$
+$$\#\yy = 2 \qquad \#\yn = 2 \qquad {\midgrey L} = {\midgrey 4}$$
 
 We find
 
 $$\begin{aligned}
-&\P(\yR_4\mo\yn \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD) 
+&\P(\yR_4\mo\yy \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD) 
 \\[1ex]
 &\qquad{}=
-\frac{1}{4}
-\sum_{\ya=-1}^{2}
+\frac{1}{2-0+1}
+\sum_{\ya=0}^{2}
 \frac{
-\bigl(2^{\ya} + {\lblue 2} - 1\bigr)! \cdot
-\bigl(2^{\ya} + {\yellow 2} - 1\bigr)!
+\bigl(\frac{2^{\ya}}{2} + {\lblue 2} - 1\bigr)! \cdot
+\bigl(\frac{2^{\ya}}{2} + {\yellow 2} - 1\bigr)!
 }{
-\bigl(2\cdot 2^{\ya} + {\midgrey 4} -1 \bigr)!
+\bigl(2^{\ya} + {\midgrey 4} -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(2\cdot 2^{\ya} -1 \bigr)!
+\bigl(2^{\ya} -1 \bigr)!
 }{
-{\bigl(2^{\ya} - 1\bigr)!}^2
+{\bigl(\frac{2^{\ya}}{2} - 1\bigr)!}^2
 }
 \\[1ex]
 &\qquad{}=
-\boldsymbol{0.037 533 3}
+\boldsymbol{0.033 209 3}
 \end{aligned}
 $$
 
@@ -590,13 +487,21 @@ $$
 
 \
 
-[{{< fa 3 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The probability for the hypothesis of interest is given by the fraction
+[{{< fa 3 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The probability for the hypothesis of interest is finally given by the fraction
 
 :::{.column-page-inset-right}
 
 $$
 \begin{aligned}
 &\P(\yR_4\mo\yy \| \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yD)
+\\[1ex]
+&\qquad{}=
+\frac{
+\P(\yR_4\mo\yy \and \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD)
+}{
+\sum_{{\purple r}=\yy}^{\yn}
+\P(\yR_4\mo{\purple r} \and  \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD)
+}
 \\[1ex]
 &\qquad{}=
 \frac{
@@ -607,43 +512,42 @@ $$
 }
 \\[1ex]
 &\qquad{}=
-\frac{0.0517029}{0.0517029 + 0.037 533 3}
+\frac{0.048 735 1}{0.048 735 1 + 0.033 209 3}
 \\[1ex]
 &\qquad{}=
-\boldsymbol{57.94\%}
+\boldsymbol{59.47\%}
 \end{aligned}
 $$
 
 :::
 
 :::{.callout-caution}
-## {{< fa user-edit >}} Exercise
-The inference problem above has some analogy with coin tossing: there's just one, binary, variate. This agent could have been used to make forecasts about coin tosses.
+## {{< fa user-edit >}} Exercises
+- The inference problem above has some analogy with coin tossing: there's just one, binary, variate. This agent could have been used to make forecasts about coin tosses.
 
-Consider the result above from the point of view of this analogy. Let's say that $\yy$ would be "heads", and $\yn$ "tails". Having observed four coin tosses, with three heads and one tail, the agent is giving a 58% probability for heads at the next toss.
+    Consider the result above from the point of view of this analogy. Let's say that $\yy$ would be "heads", and $\yn$ "tails". Having observed four coin tosses, with three heads and one tail, the agent is giving a 58% probability for heads at the next toss.
 
-- Do you consider this probability reasonable? Why?
+    - Do you consider this probability reasonable? Why?
 
-- In which different coin-tossing circumstances would you consider this probability reasonable (given the same previous observation data)?
+    - In which different coin-tossing circumstances would you consider this probability reasonable (given the same previous observation data)?
+
+- Try doing the calculation above on a computer, using the values\ \ $\amin=-17, \amax=17$.
+
+    If you use the formulae above as they're given, you'll probably get just `NaN`s. The formulae above must be rewritten in a different way in order not to generate overflow. The result would be $\boldsymbol{52.26\%}$.
 
 :::
-
-
-
-<!-- *** discussion about comparison with coin toss *** -->
-
 
 
 ## Example 2: Forecast about one predictand, given predictor and previous observations {#sec-dirmix-example2}
 
 Let's go back to the hospital scenario of [§ @sec-conditional-joint-general]. The units are patients coming into a hospital. The population is characterized by two nominal variates:
 
-- the patient's transportation mean $T$ at arrival, with domain $\set{\ambu, \heli, \othe}$
-- the patient's need of urgent care $U$, with domain $\set{\urge, \nonu}$
+- $T$: the patient's means of transportation at arrival, with domain $\set{\ambu, \heli, \othe}$
+- $U$: the patient's need of urgent care, with domain $\set{\urge, \nonu}$
 
-The combined variate $(U \and T)$ has $M = 2\cdot 3 = 6$ possible values, so we have parameters $\amin=-3$ and $\amax=2$.
+The combined variate $(U \and T)$ has\ \ $M = 2\cdot 3 = 6$\ \ possible values. We still use parameters $\amin=0$ and $\amax=2$ to use the de Finetti formula as-is without causing overflow errors.
 
-The agent's task is to forecast whether the next incoming patient will require urgent care or not ($U$), given information about the patient's transportation ($T$). So $U$ is the predictand variate, $T$ the predictor variate.
+The agent's task is to forecast whether the next incoming patient will require urgent care, given information about the patient's transportation. So $U$ is the predictand variate, $T$ the predictor variate.
 
 At the moment the agent has a complete record of two previous patients:
 
@@ -665,11 +569,7 @@ $$\P(U_3\mo\urge \| T_3\mo\ambu \and \yD)$$
 
 \
 
-[{{< fa 1 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The hypotheses are $U_3\mo\urge$ and $U_3\mo\nonu$
-
-\
-
-[{{< fa 2 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The joint probabilities for the hypotheses and previous data, since there's no information about previous patients, are simply
+[{{< fa 1 >}} {{< fa hand-point-right >}}]{.green}\ \ \ We need to calculate the two joint probabilities
 
 :::{.column-body-outset-right}
 $$
@@ -679,13 +579,15 @@ $$
 $$
 :::
 
+corresponding to the two hypotheses of interest, $U_3\mo\urge$ and $U_3\mo\nonu$.
+
 \
 
 [{{< fa 2 >}}a {{< fa hand-point-right >}}]{.green}\ \ In the first joint probability above the value pair $(U\mo\urge \and T\mo\ambu)$ appears once, and the remaining five pairs appear zero times:
 
 :::{.column-body-outset-right}
 $$\#(\urge, \ambu) = {\lblue 1} \qquad\text{\small five others }\#(\dotsc,\dotsc) = {\yellow 0}
-\qquad \text{\midgrey\small total} = {\midgrey 1}$$
+\qquad {\midgrey L} = {\midgrey 1}$$
 :::
 
 The de Finetti formula gives
@@ -696,21 +598,21 @@ $$
 &\P(U_3\mo\urge \and T_3\mo\ambu \| \yD)
 \\[2ex]
 &\qquad{}=
-\frac{1}{1+2+3}
-\sum_{\ya=-3}^{2}
+\frac{1}{2-0+1}
+\sum_{\ya=0}^{2}
 \frac{
-\bigl(2^{\ya} + {\lblue 1} - 1\bigr)! \cdot
-\underbracket[0.1ex]{\bigl(2^{\ya} + {\yellow 0} - 1\bigr)! \cdot 
+\bigl(\frac{2^{\ya}}{6} + {\lblue 1} - 1\bigr)! \cdot
+\underbracket[0.1ex]{\bigl(\frac{2^{\ya}}{6} + {\yellow 0} - 1\bigr)! \cdot 
 \,\dotsb\, \cdot
-\bigl(2^{\ya} + {\yellow 0} - 1\bigr)!}_{\text{\grey five factors}}
+\bigl(\frac{2^{\ya}}{6} + {\yellow 0} - 1\bigr)!}_{\text{\grey five factors}}
 }{
-\bigl(6\cdot 2^{\ya} + {\midgrey 1} -1 \bigr)!
+\bigl( 2^{\ya} + {\midgrey 1} -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(6\cdot 2^{\ya} -1 \bigr)!
+\bigl( 2^{\ya} -1 \bigr)!
 }{
-{\bigl(2^{\ya} - 1\bigr)!}^6
+{\bigl(\frac{2^{\ya}}{6} - 1\bigr)!}^6
 }
 \\[1ex]
 &\qquad{}=
@@ -725,7 +627,7 @@ $$
 
 :::{.column-body-outset-right}
 $$\#(\nonu, \ambu) = {\lblue 1} \qquad\text{\small five others }\#(\dotsc,\dotsc) = {\yellow 0}
-\qquad \text{\midgrey\small total} = {\midgrey 1}$$
+\qquad {\midgrey L} = {\midgrey 1}$$
 :::
 
 The de Finetti formula gives an identical result as before:
@@ -736,21 +638,21 @@ $$
 &\P(U_3\mo\nonu \and T_3\mo\ambu \| \yD)
 \\[2ex]
 &\qquad{}=
-\frac{1}{1+2+3}
-\sum_{\ya=-3}^{2}
+\frac{1}{2-0+1}
+\sum_{\ya=0}^{2}
 \frac{
-\bigl(2^{\ya} + {\lblue 1} - 1\bigr)! \cdot
-\underbracket[0.1ex]{\bigl(2^{\ya} + {\yellow 0} - 1\bigr)! \cdot 
+\bigl(\frac{2^{\ya}}{6} + {\lblue 1} - 1\bigr)! \cdot
+\underbracket[0.1ex]{\bigl(\frac{2^{\ya}}{6} + {\yellow 0} - 1\bigr)! \cdot 
 \,\dotsb\, \cdot
-\bigl(2^{\ya} + {\yellow 0} - 1\bigr)!}_{\text{\grey five factors}}
+\bigl(\frac{2^{\ya}}{6} + {\yellow 0} - 1\bigr)!}_{\text{\grey five factors}}
 }{
-\bigl(6\cdot 2^{\ya} + {\midgrey 1} -1 \bigr)!
+\bigl( 2^{\ya} + {\midgrey 1} -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(6\cdot 2^{\ya} -1 \bigr)!
+\bigl( 2^{\ya} -1 \bigr)!
 }{
-{\bigl(2^{\ya} - 1\bigr)!}^6
+{\bigl(\frac{2^{\ya}}{6} - 1\bigr)!}^6
 }
 \\[1ex]
 &\qquad{}=
@@ -774,6 +676,14 @@ $$
 \frac{
 \P(U_3\mo\urge \and T_3\mo\ambu \| \yD)
 }{
+\sum_{\purple u}
+\P(U_3\mo{\purple u} \and T_3\mo\ambu \| \yD)
+}
+\\[1ex]
+&\qquad{}=
+\frac{
+\P(U_3\mo\urge \and T_3\mo\ambu \| \yD)
+}{
 \P(U_3\mo\urge \and T_3\mo\ambu \| \yD)
 +
 \P(U_3\mo\nonu \and T_3\mo\ambu \| \yD)
@@ -791,13 +701,13 @@ $$
 
 \
 
-This result shows that the agent's background information says that, a priori, urgent and non-urgent patients are equally plausible. This is a characteristic of the particular Dirichlet-mixture belief distribution we are using. It would actually be possible to slightly modify it so as to give a-priori different probabilities for the $\urge$ and $\nonu$ values, but we shall not pursue this possibility here.
+The agent's background information says that, a priori, urgent and non-urgent patients are equally plausible. This is a characteristic of the particular Dirichlet-mixture belief distribution we are using. It would actually be possible to modify it so as to give a-priori different probabilities for the $\urge$ and $\nonu$ values; but we shall not pursue this possibility here.
 
 \
 
 #### Forecast after learning
 
-Now let's do an analogous calculation, but taking into account the information about the previous two patients. We therefore want to calculate the probability
+Now let's take into account the information about the previous two patients. We therefore want to calculate the probability
 
 :::{.column-page-right}
 $$\P(U_3\mo\urge \| T_3\mo\ambu \and  
@@ -809,11 +719,7 @@ $$
 
 \
 
-[{{< fa 1 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The hypotheses are again $U_3\mo\urge$ and $U_3\mo\nonu$
-
-\
-
-[{{< fa 2 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The joint probabilities for the hypotheses and known data are
+[{{< fa 1 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The hypotheses are again $U_3\mo\urge$ and $U_3\mo\nonu$, and we need the joint probabilities
 
 :::{.column-page-right}
 $$
@@ -833,14 +739,14 @@ $$
 
 \
 
-[{{< fa 2 >}}a {{< fa hand-point-right >}}]{.green}\ \ In the first joint probability above we have the following counts:
+[{{< fa 2 >}}a {{< fa hand-point-right >}}]{.green}\ \ The first joint probability has the following counts:
 
 :::{.column-page-right}
 $$
 \#(\urge, \ambu) = {\blue 2} \quad
 \#(\nonu, \othe) = {\lblue 1} \quad
 \text{\small four others }\#(\dotsc,\dotsc) = {\yellow 0}
-\quad \text{\midgrey\small total} = {\midgrey 3}$$
+\quad {\midgrey L} = {\midgrey 3}$$
 :::
 
 and therefore
@@ -854,33 +760,33 @@ U_1\mo\urge \and T_1\mo\ambu \|
 \yD)
 \\[2ex]
 &\qquad{}=
-\frac{1}{6}
-\sum_{\ya=-3}^{2}
+\frac{1}{3}
+\sum_{\ya=0}^{2}
 \frac{
-\bigl(2^{\ya} + {\blue 2} - 1\bigr)! \cdot
-\bigl(2^{\ya} + {\lblue 1} - 1\bigr)! \cdot
-\underbracket[0.1ex]{\bigl(2^{\ya} + {\yellow 0} - 1\bigr)! \cdot 
+\bigl(\frac{2^{\ya}}{6} + {\blue 2} - 1\bigr)! \cdot
+\bigl(\frac{2^{\ya}}{6} + {\lblue 1} - 1\bigr)! \cdot
+\underbracket[0.1ex]{\bigl(\frac{2^{\ya}}{6} + {\yellow 0} - 1\bigr)! \cdot 
 \,\dotsb\, \cdot
-\bigl(2^{\ya} + {\yellow 0} - 1\bigr)!}_{\text{\grey four factors}}
+\bigl(\frac{2^{\ya}}{6} + {\yellow 0} - 1\bigr)!}_{\text{\grey four factors}}
 }{
-\bigl(6\cdot 2^{\ya} + {\midgrey 3} -1 \bigr)!
+\bigl( 2^{\ya} + {\midgrey 3} -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(6\cdot 2^{\ya} -1 \bigr)!
+\bigl( 2^{\ya} -1 \bigr)!
 }{
-{\bigl(2^{\ya} - 1\bigr)!}^6
+{\bigl(\frac{2^{\ya}}{6} - 1\bigr)!}^6
 }
 \\[1ex]
 &\qquad{}=
-\boldsymbol{0.005 607 93}
+\boldsymbol{0.005 915 64}
 \end{aligned}
 $$
 :::
 
 \
 
-[{{< fa 2 >}}b {{< fa hand-point-right >}}]{.green}\ \ Second joint probability:
+[{{< fa 2 >}}b {{< fa hand-point-right >}}]{.green}\ \ Counts for the second joint probability:
 
 :::{.column-page-right}
 $$
@@ -890,7 +796,7 @@ $$
 \#(\nonu, \othe) = {\lblue 1}
 \\[1ex]
 \text{\small three others }\#(\dotsc,\dotsc) = {\yellow 0}
-\qquad \text{\midgrey\small total} = {\midgrey 3}
+\qquad {\midgrey L} = {\midgrey 3}
 \end{gathered}
 $$
 :::
@@ -906,37 +812,37 @@ U_1\mo\urge \and T_1\mo\ambu \|
 \yD)
 \\[2ex]
 &\qquad{}=
-\frac{1}{6}
-\sum_{\ya=-3}^{2}
+\frac{1}{3}
+\sum_{\ya=0}^{2}
 \frac{
 \underbracket[0.1ex]{
-\bigl(2^{\ya} + {\lblue 1} - 1\bigr)!
+\bigl(\frac{2^{\ya}}{6} + {\lblue 1} - 1\bigr)!
 \cdot\,\dotsb\, \cdot
-\bigl(2^{\ya} + {\lblue 1} - 1\bigr)!
+\bigl(\frac{2^{\ya}}{6} + {\lblue 1} - 1\bigr)!
 }_{\text{\grey three factors}}
 \cdot
-\underbracket[0.1ex]{\bigl(2^{\ya} + {\yellow 0} - 1\bigr)! \cdot 
+\underbracket[0.1ex]{\bigl(\frac{2^{\ya}}{6} + {\yellow 0} - 1\bigr)! \cdot 
 \,\dotsb\, \cdot
-\bigl(2^{\ya} + {\yellow 0} - 1\bigr)!}_{\text{\grey three factors}}
+\bigl(\frac{2^{\ya}}{6} + {\yellow 0} - 1\bigr)!}_{\text{\grey three factors}}
 }{
-\bigl(6\cdot 2^{\ya} + {\midgrey 3} -1 \bigr)!
+\bigl( 2^{\ya} + {\midgrey 3} -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(6\cdot 2^{\ya} -1 \bigr)!
+\bigl( 2^{\ya} -1 \bigr)!
 }{
-{\bigl(2^{\ya} - 1\bigr)!}^6
+{\bigl(\frac{2^{\ya}}{6} - 1\bigr)!}^6
 }
 \\[1ex]
 &\qquad{}=
-\boldsymbol{0.002 426 12}
+\boldsymbol{0.001 594 65}
 \end{aligned}
 $$
 :::
 
 \
 
-[{{< fa 3 >}} {{< fa hand-point-right >}}]{.green}\ \ \ The probability that the third incoming patient is urgent is
+[{{< fa 3 >}} {{< fa hand-point-right >}}]{.green}\ \ \ Finally, the probability that the third incoming patient is urgent is
 
 :::{.column-page-inset-right}
 
@@ -949,18 +855,17 @@ U_1\mo\urge \and T_1\mo\ambu \and
 \yD)
 \\[1ex]
 &\qquad{}=
-\frac{0.005 607 93}{0.005 607 93 + 0.002 426 12}
+\frac{0.005 915 64}{0.005 915 64 + 0.001 594 65}
 \\[1ex]
 &\qquad{}=
-\boldsymbol{69.80\%}
+\boldsymbol{78.77\%}
 \end{aligned}
 $$
 
 :::
 
-The agent has learned an association between $\ambu$ and $\urge$ from the first patient.
+The agent has learned an association between $\ambu$ and $\urge$ from the first patient. Note that if we had used the parameters $\amin=-17, \amax=17$, the result would have been more conservative: $\boldsymbol{58.11\%}$.
 
-\
 
 ::::{.column-page-inset-right}
 :::{.callout-caution}
@@ -993,9 +898,9 @@ The two examples above reveal some characteristics of an agent based on the Diri
 
 - In absence of previous data, it assigns uniform probability distributions to any variate.
 
-- It is somewhat "eager" to learn from previous examples: its probabilities vary appreciably even with only few observations.
+- It can be "eager" to learn from previous examples, that is, its probabilities may vary appreciably even with only few observations. The "eagerness" is determined by the parameters $\amin, \amax$. For a general-purpose agent, the values $\amin=-17, \amax=17$ are more reasonable.
 
-There are also other subtle characteristics connected to these, which we won't discuss here.
+There are also other subtle characteristics connected to the two above, which we won't discuss here.
 
 These characteristics can be appropriate to some inference tasks, but not to others. It is again a matter of *background information* about the task one wants to solve.
 

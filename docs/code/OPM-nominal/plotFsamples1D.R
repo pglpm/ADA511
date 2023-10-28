@@ -16,7 +16,8 @@ plotFsamples1D <- function(P, n=100, predict=TRUE, file=NULL){
     ##
     tplot(y=t(samples), x=1:ncol(samples), type='b',
       xticks=1:ncol(samples), xlabels=dimnames(samples)[[2]],
-      xlab=bquote(italic(.(names(dimnames(samples))[2]))), ylab='frequency',
+      xlab=bquote(italic(.(names(dimnames(samples))[2]))),
+      ylab='frequency',
       ylim=c(0,NA),
       lty=1, lwd=1, pch=16, col=7, alpha=0.5, cex=0.75
       )

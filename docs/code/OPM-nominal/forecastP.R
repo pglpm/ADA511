@@ -35,7 +35,8 @@ forecastP <- function(P, predictand=NULL, predictor=NULL, Pout=FALSE){
         }, simplify='array'),
         c(length(dim(freqs))+1, 1:length(dim(freqs)))
     )
-    freqs <- freqs - max(freqs) + P[['valphas']]
+    freqs <- freqs + P[['valphas']]
+    freqs <- freqs - max(freqs)
     ##
     temp <- dimnames(freqs)[-1]
     freqs <- colSums(exp(freqs))

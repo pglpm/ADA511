@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-10-26">
+<meta name="dcterms.date" content="2023-10-28">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 32&nbsp; The Dirichlet-mixture belief distribution</title>
 <style>
@@ -99,7 +99,7 @@ ul.task-list li input[type="checkbox"] {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-26</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-28</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -442,8 +442,8 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#sec-intro-dirichlet-mix" id="toc-sec-intro-dirichlet-mix" class="nav-link active" data-scroll-target="#sec-intro-dirichlet-mix"><span class="header-section-number">32.1</span> A belief distribution for frequency distributions over nominal variates</a></li>
-  <li><a href="#sec-joint-prob-dirichlet" id="toc-sec-joint-prob-dirichlet" class="nav-link" data-scroll-target="#sec-joint-prob-dirichlet"><span class="header-section-number">32.2</span> Joint probabilities about units with the Dirichlet-mixture distribution</a></li>
-  <li><a href="#sec-formulae-with-Dirmix" id="toc-sec-formulae-with-Dirmix" class="nav-link" data-scroll-target="#sec-formulae-with-Dirmix"><span class="header-section-number">32.3</span> Main inference formulae with the Dirichlet-mixture belief distribution</a></li>
+  <li><a href="#sec-joint-prob-dirichlet" id="toc-sec-joint-prob-dirichlet" class="nav-link" data-scroll-target="#sec-joint-prob-dirichlet"><span class="header-section-number">32.2</span> Formula for joint probabilities about units with the Dirichlet-mixture distribution</a></li>
+  <li><a href="#sec-formulae-with-Dirmix" id="toc-sec-formulae-with-Dirmix" class="nav-link" data-scroll-target="#sec-formulae-with-Dirmix"><span class="header-section-number">32.3</span> Examples of inference tasks with the Dirichlet-mixture belief distribution</a></li>
   <li><a href="#sec-dirmix-example1" id="toc-sec-dirmix-example1" class="nav-link" data-scroll-target="#sec-dirmix-example1"><span class="header-section-number">32.4</span> Example&nbsp;1: Forecast about one variate, given previous observations</a></li>
   <li><a href="#sec-dirmix-example2" id="toc-sec-dirmix-example2" class="nav-link" data-scroll-target="#sec-dirmix-example2"><span class="header-section-number">32.5</span> Example&nbsp;2: Forecast about one predictand, given predictor and previous observations</a></li>
   <li><a href="#sec-critique-dirmix" id="toc-sec-critique-dirmix" class="nav-link" data-scroll-target="#sec-critique-dirmix"><span class="header-section-number">32.6</span> When is the Dirichlet-mixture belief distribution appropriate?</a></li>
@@ -466,7 +466,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-10-26</p>
+      <p class="date">2023-10-28</p>
     </div>
   </div>
   
@@ -513,108 +513,131 @@ ul.task-list li input[type="checkbox"] {
 </div></div><p>Suppose we have a simple or joint nominal variate <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> which can assume <span style="display:inline-block;"><span class="math inline">\(M\)</span></span> different values (these can be joint values, as in the examples of <a href="inference_from_freqs.html#sec-know-freq">§ &nbsp;<span>29.2</span></a>). As usual <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{f}\)</span></span> denotes a specific frequency distribution for the variate values. For a specific value <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(f({\color[RGB]{68,119,170}z})\)</span></span> is the relative frequency with which that value occurs in the full population.</p>
 <p>The Dirichlet-mixture distribution assigns to <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{f}\)</span></span> a probability density given by the following formula:</p>
 <p><span class="math display">\[\mathrm{p}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D}) =
-\frac{1}{1+k_{\text{max}}-k_{\text{min}}}
-\sum_{k=k_{\text{min}}}^{k_{\text{max}}}
-\Biggl[\prod_{{\color[RGB]{68,119,170}z}} f({\color[RGB]{68,119,170}z})^{2^k-1} \Biggr]
+\frac{1}{k_{\text{ma}}-k_{\text{mi}}+1}
+\sum_{k=k_{\text{mi}}}^{k_{\text{ma}}}
+\Biggl[\prod_{{\color[RGB]{68,119,170}z}} f({\color[RGB]{68,119,170}z})^{\frac{2^k}{M} -1} \Biggr]
 \cdot
 \frac{
-\bigl(M\,2^{k} -1 \bigr)!
+\bigl(2^{k} -1 \bigr)!
 }{
-{\bigl(2^{k} - 1\bigr)!}^M
+{\bigl(\frac{2^{k}}{M} - 1\bigr)!}^M
 }
 \]</span></p>
-<p>Besides some multiplicative constants, the probability is simply proportional to the product of all frequencies, raised to some powers.</p>
-<p>The product <span style="display:inline-block;">“<span class="math inline">\(\prod_{{\color[RGB]{68,119,170}z}}\)</span>”</span> is over all <span style="display:inline-block;"><span class="math inline">\(M\)</span></span> possible values of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span>.</span> The sum <span style="display:inline-block;">“<span class="math inline">\(\sum_{k}\)</span>”</span> is over an <em>integer</em> (positive or negative) parameter <span style="display:inline-block;"><span class="math inline">\(k\)</span></span> that runs between a minimum and maximum value. In the applications of the next chapters the values are chosen as follows:</p>
+<p>Besides some multiplicative constants, the probability is simply proportional to the product of all frequencies, raised to some powers. The product <span style="display:inline-block;">“<span class="math inline">\(\prod_{{\color[RGB]{68,119,170}z}}\)</span>”</span> is over all <span style="display:inline-block;"><span class="math inline">\(M\)</span></span> possible values of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span>.</span> The sum <span style="display:inline-block;">“<span class="math inline">\(\sum_{k}\)</span>”</span> is over an <em>integer</em> (positive or negative) index <span style="display:inline-block;"><span class="math inline">\(k\)</span></span> that runs between the minimum value <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}\)</span></span> and the maximum value <span style="display:inline-block;"><span class="math inline">\(k_{\text{ma}}\)</span>.</span> In the applications of the next chapters these minimum and maximum are chosen as follows:</p>
 <p><span class="math display">\[
-2^{k_{\text{min}}} \approx \frac{1}{M}
+k_{\text{mi}}=-17
 \qquad
-2^{k_{\text{max}}} = 4
+k_{\text{ma}}=17
 \]</span></p>
-<p>In most applications it does not matter if we take a lower <span style="display:inline-block;"><span class="math inline">\(k_{\text{min}}\)</span></span> or a higher <span style="display:inline-block;"><span class="math inline">\(k_{\text{max}}\)</span>.</span></p>
+<p>so the sum <span style="display:inline-block;"><span class="math inline">\(\sum_k\)</span></span> runs over <span style="display:inline-block;"><span class="math inline">\(2\cdot 17 +1= 35\)</span></span> terms.</p>
+<p>In most applications it does not matter if we take a lower <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}\)</span></span> or a higher <span style="display:inline-block;"><span class="math inline">\(k_{\text{ma}}\)</span>.</span></p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In the calculations and exercises that follow, you’re welcome to do them also with other <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(k_{\text{ma}}\)</span></span> values, and see what happens.</p>
+</div>
+</div>
 <p><br>
 </p>
-<p>Let’s see how this formula concretely looks like in the simple example of the Mars-prospecting scenario (which had many analogies with coin tosses).</p>
+<p>Let’s see how this formula looks like in a concrete, simple example: the Mars-prospecting scenario (which has many analogies with coin tosses).</p>
 <p>The variate <span style="display:inline-block;"><span class="math inline">\(R\)</span></span> can assume two values <span style="display:inline-block;"><span class="math inline">\(\set{{\color[RGB]{102,204,238}{\small\verb;Y;}},{\color[RGB]{204,187,68}{\small\verb;N;}}}\)</span>,</span> so <span style="display:inline-block;"><span class="math inline">\(M=2\)</span></span> in this case. The frequency distribution consists in two frequencies:</p>
 <p><span class="math display">\[f({\color[RGB]{102,204,238}{\small\verb;Y;}}) \qquad f({\color[RGB]{204,187,68}{\small\verb;N;}})\]</span></p>
-<p>of which only one can be chosen independently, since they must sum up to 1.</p>
-<p>Then</p>
-<p><span class="math display">\[
-2^{k_{\text{min}}} \approx \frac{1}{2}\ ,
-\quad
-2^{k_{\text{max}}} = 4
-\qquad\Longrightarrow\qquad
-k_{\text{min}}= -1 \ ,
-\quad
-k_{\text{max}}= 2
-\]</span></p>
-<p>and the agent’s belief distribution for the frequencies is</p>
+<p>of which only one can be chosen independently, since they must sum up to 1. For instance we could consider <span style="display:inline-block;"><span class="math inline">\(f({\color[RGB]{102,204,238}{\small\verb;Y;}})=0.5, f({\color[RGB]{204,187,68}{\small\verb;N;}})=0.5\)</span>,&nbsp;&nbsp;or</span> <span style="display:inline-block;"><span class="math inline">\(f({\color[RGB]{102,204,238}{\small\verb;Y;}})=0.84, f({\color[RGB]{204,187,68}{\small\verb;N;}})=0.16\)</span>,&nbsp;&nbsp;and</span> so on.</p>
+<p><em>Only for this example</em> we choose</p>
+<p><span class="math display">\[k_{\text{mi}}=0 \qquad k_{\text{ma}}=2\]</span></p>
+<p>so that the sum <span style="display:inline-block;"><span class="math inline">\(\sum_k\)</span></span> runs over 3 terms rather than 35.</p>
+<p>The agent’s belief distribution for the frequencies is</p>
 <p><span class="math display">\[
 \begin{aligned}
 \mathrm{p}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D}) &amp;=
-\frac{1}{1+2+1}
-\sum_{k=-1}^{2}
-\Biggl[\prod_{{\color[RGB]{68,119,170}z}} f({\color[RGB]{68,119,170}z})^{2^k-1} \Biggr]
+\frac{1}{2-0+1}
+\sum_{k=0}^{2}
+\Biggl[\prod_{{\color[RGB]{68,119,170}z}={\color[RGB]{102,204,238}{\small\verb;Y;}}}^{{\color[RGB]{204,187,68}{\small\verb;N;}}} f({\color[RGB]{68,119,170}z})^{\frac{2^k}{2} -1} \Biggr]
 \cdot
 \frac{
-\bigl(2\cdot 2^{k} -1 \bigr)!
+\bigl(2^{k} -1 \bigr)!
 }{
-{\bigl(2^{k} - 1\bigr)!}^2
+{\bigl(\frac{2^{k}}{2} - 1\bigr)!}^2
 }
 \\[2ex]
 &amp;=
-\frac{1}{1+2+1}
+\frac{1}{3}
 \Biggl[
-f({\color[RGB]{102,204,238}{\small\verb;Y;}})^{2^{-1}-1}\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})^{2^{-1}-1}
+f({\color[RGB]{102,204,238}{\small\verb;Y;}})^{\frac{2^{0}}{2}-1}\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})^{\frac{2^{0}}{2}-1}
 \cdot
 \frac{
-\bigl(2\cdot 2^{-1} -1 \bigr)!
+\bigl(2^{0} -1 \bigr)!
 }{
-{\bigl(2^{-1} - 1\bigr)!}^2
+{\bigl(\frac{2^{0}}{2} - 1\bigr)!}^2
 }
-+{} \\&amp;\qquad
-f({\color[RGB]{102,204,238}{\small\verb;Y;}})^{2^{0}-1}\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})^{2^{0}-1}
++{} \\[1ex]&amp;\qquad
+f({\color[RGB]{102,204,238}{\small\verb;Y;}})^{\frac{2^{1}}{2}-1}\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})^{\frac{2^{1}}{2}-1}
 \cdot
 \frac{
-\bigl(2\cdot 2^{0} -1 \bigr)!
+\bigl(2^{1} -1 \bigr)!
 }{
-{\bigl(2^{0} - 1\bigr)!}^2
+{\bigl(\frac{2^{1}}{2} - 1\bigr)!}^2
 }
-+{} \\&amp;\qquad
-f({\color[RGB]{102,204,238}{\small\verb;Y;}})^{2^{1}-1}\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})^{2^{1}-1}
++{} \\[1ex]&amp;\qquad
+f({\color[RGB]{102,204,238}{\small\verb;Y;}})^{\frac{2^{2}}{2}-1}\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})^{\frac{2^{2}}{2}-1}
 \cdot
 \frac{
-\bigl(2\cdot 2^{1} -1 \bigr)!
+\bigl(2^{2} -1 \bigr)!
 }{
-{\bigl(2^{1} - 1\bigr)!}^2
-}
-+{} \\&amp;\qquad
-f({\color[RGB]{102,204,238}{\small\verb;Y;}})^{2^{2}-1}\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})^{2^{2}-1}
-\cdot
-\frac{
-\bigl(2\cdot 2^{2} -1 \bigr)!
-}{
-{\bigl(2^{2} - 1\bigr)!}^2
+{\bigl(\frac{2^{2}}{2} - 1\bigr)!}^2
 }
 \Biggr]
 \\[2ex]
 &amp;=
-\frac{1}{4}
+\frac{1}{3}
 \Biggl[
 \frac{1}{\sqrt{f({\color[RGB]{102,204,238}{\small\verb;Y;}})}}\cdot \frac{1}{\sqrt{f({\color[RGB]{204,187,68}{\small\verb;N;}})}}
 \cdot \frac{1}{\pi}
-+{} \\&amp;\qquad 1
-\cdot \frac{1}{1}
-+{} \\&amp;\qquad f({\color[RGB]{102,204,238}{\small\verb;Y;}})\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})
++{} \\[1ex]&amp;\qquad
+1 \cdot 1 \cdot \frac{1}{1}
++{} \\[1ex]&amp;\qquad f({\color[RGB]{102,204,238}{\small\verb;Y;}})\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})
 \cdot \frac{6}{1}
-+{} \\&amp;\qquad f({\color[RGB]{102,204,238}{\small\verb;Y;}})^{3}\cdot f({\color[RGB]{204,187,68}{\small\verb;N;}})^{3}
-\cdot \frac{5040}{36}
 \Biggr]
 \end{aligned}
 \]</span></p>
-<p>We can visualize this distribution with a generalized scatter plot (<a href="joint_probability.html#sec-repr-general-distr">§ &nbsp;<span>15.7</span></a>) of 100 frequency distributions, each represented by a line histogram (<a href="probability_distributions.html#sec-discr-prob-distr">§ &nbsp;<span>14.2</span></a>):</p>
+<p><br>
+</p>
+<p>We can visualize this belief distribution (with <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=0,amax=2\)</span>)</span> with a generalized scatter plot (<a href="joint_probability.html#sec-repr-general-distr">§ &nbsp;<span>15.7</span></a>) of 100 frequency distributions, each represented by a line histogram (<a href="probability_distributions.html#sec-discr-prob-distr">§ &nbsp;<span>14.2</span></a>):</p>
 <p><img src="samples_rocks.png" class="img-fluid" style="width:100.0%"></p>
-<p>we see that all possible frequency distributions are considered by this belief distribution.</p>
-<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<p>Alternatively we can represent the probability density of the frequency <span style="display:inline-block;"><span class="math inline">\(f({\color[RGB]{102,204,238}{\small\verb;Y;}})\)</span>:</span></p>
+<p><img src="dirmix_pdf_rocks.png" class="img-fluid" style="width:100.0%"></p>
+<p>You can see some characteristics of this belief:</p>
+<ul>
+<li><p>all possible frequency distributions are taken into account, that is, no frequency is judged impossible and given zero probability</p></li>
+<li><p>a higher probability is given to frequency distributions that are almost 50%/50%, or that are almost 0%/100% or 100%/0%</p></li>
+</ul>
+<p>The second characteristic expresses the belief that the agent may more often deal with tasks where frequencies are almost symmetric (think of coin toss), or the opposite: tasks where, once you observe a phenomenon, you’re quite sure you’ll keep observing it. This latter case is typical of some physical phenomena; an example is given by Jaynes:</p>
+<blockquote class="blockquote">
+<p>For example, in a chemical laboratory we find a jar containing an unknown and unlabeled compound. We are at first completely ignorant as to whether a small sample of this compound will dissolve in water or not. But having observed that one small sample does dissolve, we infer immediately that all samples of this compound are water soluble, and although this conclusion does not carry quite the force of deductive proof, we feel strongly that the inference was justified.</p>
+</blockquote>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-rocket" aria-label="rocket"></i> For the extra curious
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://hvl.instructure.com/courses/25074/modules/items/723829"><em>Prior probabilities</em></a></p>
+</div>
+</div>
+</div></div><div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
@@ -634,84 +657,115 @@ f({\color[RGB]{102,204,238}{\small\verb;Y;}})^{2^{2}-1}\cdot f({\color[RGB]{204,
 </div>
 </section>
 <section id="sec-joint-prob-dirichlet" class="level2 page-columns page-full" data-number="32.2">
-<h2 data-number="32.2" class="anchored" data-anchor-id="sec-joint-prob-dirichlet"><span class="header-section-number">32.2</span> Joint probabilities about units with the Dirichlet-mixture distribution</h2>
-<p>A mathematical advantage of the Dirichlet-mixture belief distribution is that some formulae where it enters can be computed exactly. The most important is the formula in de&nbsp;Finetti’s representation theorem (<a href="inference_about_freqs.html#sec-freq-not-known">§ &nbsp;<span>30.1</span></a>).</p>
-<p>Take a sequence of observations for <span style="display:inline-block;"><span class="math inline">\(N+1\)</span></span> units, for which the variate <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> is seen to have values <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}z_1, z_2, \dotsc, z_{N+1}\)</span>.</span> Some or even all of these <span style="display:inline-block;"><span class="math inline">\(N+1\)</span></span> values might be identical; denote by <span style="display:inline-block;"><span class="math inline">\(\#{\color[RGB]{68,119,170}z}\)</span></span> the multiplicity with which value <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span></span> occurs in the sequence. For instance, in the Mars-prospecting example, the sequence</p>
-<p><span class="math display">\[
-R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}
-\]</span></p>
-<div class="page-columns page-full"><p>has <span style="display:inline-block;"><span class="math inline">\(N+1=4\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(\#{\color[RGB]{102,204,238}{\small\verb;Y;}}= 3\)</span>,</span> and <span style="display:inline-block;"><span class="math inline">\(\#{\color[RGB]{204,187,68}{\small\verb;N;}}= 1\)</span>,</span> whereas the sequence<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;Remember that the agent has exchangeable beliefs, so the units’ IDs don’t matter (<a href="exchangeable_probabilities.html#sec-exchaneable-distr">§ &nbsp;<span>28.3</span></a>)!</p></li></div></div>
-<p><span class="math display">\[
-R_{32}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_{102}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_{8}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}
-\]</span></p>
-<p>has <span style="display:inline-block;"><span class="math inline">\(N+1=4\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(\#{\color[RGB]{102,204,238}{\small\verb;Y;}}= 0\)</span>,</span> and <span style="display:inline-block;"><span class="math inline">\(\#{\color[RGB]{204,187,68}{\small\verb;N;}}= 3\)</span>.</span></p>
-<p>With the Dirichlet-mixture distribution we have the following general equality:</p>
+<h2 data-number="32.2" class="anchored" data-anchor-id="sec-joint-prob-dirichlet"><span class="header-section-number">32.2</span> Formula for joint probabilities about units with the Dirichlet-mixture distribution</h2>
+<p>A mathematical advantage of the Dirichlet-mixture belief distribution is that some formulae where it enters can be computed exactly. The most important formula is de&nbsp;Finetti’s representation theorem (<a href="inference_about_freqs.html#sec-freq-not-known">§ &nbsp;<span>30.1</span></a>), where the sum <span style="display:inline-block;"><span class="math inline">\(\sum_{\boldsymbol{f}}\)</span></span> (really an integral <span style="display:inline-block;"><span class="math inline">\(\int\,\mathrm{d}\boldsymbol{f}\)</span>)</span> can be calculated analytically in the case of the Dirichlet-mixture:</p>
 <div class="column-body-outset-right">
 <p><span class="math display">\[
 \begin{aligned}
 \mathrm{P}(
 \color[RGB]{68,119,170}
-Z_{N+1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{N+1}
+Z_{L}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{L}
 \mathbin{\mkern-0.5mu,\mkern-0.5mu}
-\dotsb
+\dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
 Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_1
 \color[RGB]{0,0,0}
 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D}
 )
 &amp;=
 \int
-f(\color[RGB]{68,119,170}Z_{N+1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{N+1} \color[RGB]{0,0,0}) \cdot
+f(\color[RGB]{68,119,170}Z_{L}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{L} \color[RGB]{0,0,0}) \cdot
 \,\dotsb\, \cdot
 f(\color[RGB]{68,119,170}Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_1 \color[RGB]{0,0,0}) \cdot
 \mathrm{p}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
 \,\mathrm{d}\boldsymbol{f}
 \\[2ex]
 &amp;=
-\frac{1}{1+k_{\text{max}}-k_{\text{min}}}
-\sum_{k=k_{\text{min}}}^{k_{\text{max}}}
+\frac{1}{k_{\text{ma}}-k_{\text{mi}}+1}
+\sum_{k=k_{\text{mi}}}^{k_{\text{ma}}}
 \frac{
-\prod_{{\color[RGB]{68,119,170}z}} \bigl(2^{k} + \#{\color[RGB]{68,119,170}z}- 1\bigr)!
+\prod_{{\color[RGB]{68,119,170}z}} \bigl(\frac{2^{k}}{M} + \#{\color[RGB]{68,119,170}z}- 1\bigr)!
 }{
-\bigl(M\,2^{k} + N \bigr)!
+\bigl(2^{k} + L -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(M\,2^{k} -1 \bigr)!
+\bigl(2^{k} -1 \bigr)!
 }{
-{\bigl(2^{k} - 1\bigr)!}^M
+{\bigl(\frac{2^{k}}{M} - 1\bigr)!}^M
 }
 \end{aligned}
 \]</span></p>
 </div>
-<p>As a concrete numerical example,</p>
+<p>where <span style="display:inline-block;"><span class="math inline">\(\#{\color[RGB]{68,119,170}z}\)</span></span> is the multiplicity with which the specific value <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span></span> occurs in the sequence <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}z_1,\dotsc,z_{L}\)</span>.</span></p>
+<p><br>
+</p>
+<p>Let’s see how this formula looks like in an example from the Mars-prospecting scenario.</p>
+<div class="page-columns page-full"><p>Take the sequence<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;Remember that the agent has exchangeable beliefs, so the units’ IDs don’t matter (<a href="exchangeable_probabilities.html#sec-exchaneable-distr">§ &nbsp;<span>28.3</span></a>)!</p></li></div></div>
+<p><span class="math display">\[
+R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}
+\]</span></p>
+<p>in this sequence, value <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span></span> appears thrice and value <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}{\small\verb;N;}}\)</span></span> once, that is</p>
+<p><span class="math display">\[L=4 \qquad \#{\color[RGB]{102,204,238}{\small\verb;Y;}}= 3 \qquad \#{\color[RGB]{204,187,68}{\small\verb;N;}}= 1\]</span></p>
+<p>In this case we have <span style="display:inline-block;"><span class="math inline">\(M=2\)</span>,</span> and we still take <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=0, k_{\text{ma}}=2\)</span>.</span> The formula above then becomes</p>
 <div class="column-body-outset-right">
 <p><span class="math display">\[
 \begin{aligned}
 &amp;\mathrm{P}(
 \underbracket[0.1ex]{R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}}_{
-\color[RGB]{187,187,187}N+1=4\quad \#{\small\verb;Y;}=3\quad \#{\small\verb;N;}=1
+\color[RGB]{187,187,187}L=4\quad \#{\small\verb;Y;}=3\quad \#{\small\verb;N;}=1
 }
 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D}
 )
 \\
 &amp;\qquad{}=
-\frac{1}{1+2+1}
-\sum_{k=-1}^{2}
+\frac{1}{k_{\text{ma}}-k_{\text{mi}}+1}
+\sum_{k=k_{\text{mi}}}^{k_{\text{ma}}}
 \frac{
-\bigl(2^{k} + {\color[RGB]{102,204,238}3} - 1\bigr)! \cdot
-\bigl(2^{k} + {\color[RGB]{204,187,68}1} - 1\bigr)!
+\prod_{{\color[RGB]{68,119,170}z}} \bigl(\frac{2^{k}}{M} + \#{\color[RGB]{68,119,170}z}- 1\bigr)!
 }{
-\bigl(2\cdot 2^{k} + 3 \bigr)!
+\bigl(2^{k} + L -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(2\cdot 2^{k} -1 \bigr)!
+\bigl(2^{k} -1 \bigr)!
 }{
-{\bigl(2^{k} - 1\bigr)!}^2
+{\bigl(\frac{2^{k}}{M} - 1\bigr)!}^M
+}
+\\[2ex]
+&amp;\qquad{}=
+\frac{1}{2-0+1}
+\sum_{k=k_{\text{mi}}}^{k_{\text{ma}}}
+\frac{
+\bigl(\frac{2^{k}}{2} + \#{\color[RGB]{102,204,238}{\small\verb;Y;}}- 1\bigr)!
+\cdot \bigl(\frac{2^{k}}{2} + \#{\color[RGB]{204,187,68}{\small\verb;N;}}- 1\bigr)!
+}{
+\bigl(2^{k} + 4 -1 \bigr)!
+}
+\cdot
+\frac{
+\bigl(2^{k} -1 \bigr)!
+}{
+{\bigl(\frac{2^{k}}{2} - 1\bigr)!}^2
+}
+\\[2ex]
+&amp;\qquad{}=
+\frac{1}{3}
+\sum_{k=-1}^{2}
+\frac{
+\bigl(\frac{2^{k}}{2} + {\color[RGB]{102,204,238}3} - 1\bigr)! \cdot
+\bigl(\frac{2^{k}}{2} + {\color[RGB]{204,187,68}1} - 1\bigr)!
+}{
+\bigl(2^{k} + 3 \bigr)!
+}
+\cdot
+\frac{
+\bigl(2^{k} -1 \bigr)!
+}{
+{\bigl(\frac{2^{k}}{2} - 1\bigr)!}^2
 }
 \\[1ex]
 &amp;\qquad{}=
-\boldsymbol{0.051 702 9}
+\boldsymbol{0.048 735 1}
 \end{aligned}
 \]</span></p>
 </div>
@@ -721,34 +775,26 @@ f(\color[RGB]{68,119,170}Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercises
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Using the formula above, calculate:</p>
+<ul>
+<li><p>Using the formula above, calculate:</p>
 <ul>
 <li><p><span class="math inline">\(\mathrm{P}(R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})\)</span> ; does the result make sense?</p></li>
 <li><p><span class="math inline">\(\mathrm{P}(R_{32}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_{102}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_{8}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})\)</span></p></li>
+</ul></li>
+</ul>
+<ul>
+<li>Try doing the calculation above on a computer, with <span class="math inline">\(k_{\text{mi}}=-17, k_{\text{ma}}=17\)</span>. What happens?</li>
 </ul>
 </div>
 </div>
 </section>
 <section id="sec-formulae-with-Dirmix" class="level2 page-columns page-full" data-number="32.3">
-<h2 data-number="32.3" class="anchored" data-anchor-id="sec-formulae-with-Dirmix"><span class="header-section-number">32.3</span> Main inference formulae with the Dirichlet-mixture belief distribution</h2>
-<p>Replacing the Dirichlet-mixture formula</p>
-<p><span class="math display">\[
-\mathrm{p}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D}) =
-\frac{1}{1+k_{\text{max}}-k_{\text{min}}}
-\sum_{k}
-\Biggl[\prod_{{\color[RGB]{68,119,170}z}} f({\color[RGB]{68,119,170}z})^{2^k-1} \Biggr]
-\cdot
-\frac{
-\bigl(M\,2^{k} -1 \bigr)!
-}{
-{\bigl(2^{k} - 1\bigr)!}^M
-}
-\]</span></p>
-<p>in the theoretical inference formulae summarized in <a href="summary_formulae.html">chapter&nbsp;&nbsp;<span>31</span></a>, and simplifying the resulting expressions using some mathematical identities, we obtain the following concrete formulae:</p>
+<h2 data-number="32.3" class="anchored" data-anchor-id="sec-formulae-with-Dirmix"><span class="header-section-number">32.3</span> Examples of inference tasks with the Dirichlet-mixture belief distribution</h2>
+<p>With the explicit formula</p>
 <div class="column-page-inset-right">
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -756,230 +802,66 @@ f(\color[RGB]{68,119,170}Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Main formulae for some inference tasks under Dirichlet-mixture beliefs
+
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>(<span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}, {\color[RGB]{68,119,170}Y}, {\color[RGB]{68,119,170}X}\)</span></span> are each a single nominal variate or a collection thereof)</p>
-<dl>
-<dt>de&nbsp;Finetti’s representation</dt>
-<dd>
-
-</dd>
-</dl>
 <p><span class="math display">\[
-\begin{aligned}
-&amp;\mathrm{P}\bigl(
-\color[RGB]{68,119,170}Z_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{N+1}
-\mathbin{\mkern-0.5mu,\mkern-0.5mu}
-Z_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_N
+\mathrm{P}(
+\color[RGB]{68,119,170}
+Z_{L}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{L}
 \mathbin{\mkern-0.5mu,\mkern-0.5mu}
 \dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
-Z_1 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_1
-\color[RGB]{0,0,0}\pmb{\nonscript\:\big\vert\nonscript\:\mathopen{}} \mathsfit{D}\bigr)
-\\[2ex]
-&amp;\qquad{}=
-\frac{1}{1+k_{\text{max}}-k_{\text{min}}}
-\sum_{k=k_{\text{min}}}^{k_{\text{max}}}
+Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_1
+\color[RGB]{0,0,0}
+\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D}
+)
+=
+\frac{1}{k_{\text{ma}}-k_{\text{mi}}+1}
+\sum_{k=k_{\text{mi}}}^{k_{\text{ma}}}
 \frac{
-\prod_{{\color[RGB]{68,119,170}z}} \bigl(2^{k} + {\color[RGB]{68,119,170}\#z} - 1\bigr)!
+\prod_{{\color[RGB]{68,119,170}z}} \bigl(\frac{2^{k}}{M} + \#{\color[RGB]{68,119,170}z}- 1\bigr)!
 }{
-\bigl(M\,2^{k} + N \bigr)!
+\bigl(2^{k} + L -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(M\,2^{k} -1 \bigr)!
+\bigl(2^{k} -1 \bigr)!
 }{
-{\bigl(2^{k} - 1\bigr)!}^M
+{\bigl(\frac{2^{k}}{M} - 1\bigr)!}^M
 }
-\end{aligned}
 \]</span></p>
-<p>or, in terms of predictand <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Y}\)</span></span> and predictors <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}X}\)</span></span> variates:</p>
-<p><span class="math display">\[
-\begin{aligned}
-&amp;\mathrm{P}\bigl(
-\color[RGB]{68,119,170}Y_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{N+1}
-\mathbin{\mkern-0.5mu,\mkern-0.5mu}
-X_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{N+1}
-\mathbin{\mkern-0.5mu,\mkern-0.5mu}
-\dotsb
-\mathbin{\mkern-0.5mu,\mkern-0.5mu}
-Y_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{1}
-\mathbin{\mkern-0.5mu,\mkern-0.5mu}
-X_{1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{1}
-\color[RGB]{0,0,0}\pmb{\nonscript\:\big\vert\nonscript\:\mathopen{}} \mathsfit{D}\bigr)
-\\[2ex]
-&amp;\qquad{}=
-\frac{1}{1+k_{\text{max}}-k_{\text{min}}}
-\sum_{k=k_{\text{min}}}^{k_{\text{max}}}
-\frac{
-\prod_{\color[RGB]{68,119,170}y, x} \bigl(2^{k} + {\color[RGB]{68,119,170}\#(y,x)} - 1\bigr)!
-}{
-\bigl(M\,2^{k} + N \bigr)!
-}
-\cdot
-\frac{
-\bigl(M\,2^{k} -1 \bigr)!
-}{
-{\bigl(2^{k} - 1\bigr)!}^M
-}
-\end{aligned}
-\]</span></p>
-<p>In the formula above, <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}\#(y, x)\)</span></span> is the number of times the specific <em>pair</em> of values <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}(y,x)\)</span></span> appears in the proposal side of the probability.</p>
-<p><br>
-</p>
-<p><br>
-</p>
-<dl>
-<dt><i class="fa-regular fa-star" aria-label="star"></i> Inferences about all variates <span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span> of a new unit, given observed units</dt>
-<dd>
-
-</dd>
-</dl>
-<p><span class="math display">\[
-\begin{aligned}
-&amp;\mathrm{P}\bigl(
-    \color[RGB]{238,102,119}Z_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{N+1}
-\color[RGB]{0,0,0}\pmb{\nonscript\:\big\vert\nonscript\:\mathopen{}}
-    \color[RGB]{34,136,51}Z_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_N \mathbin{\mkern-0.5mu,\mkern-0.5mu}
-    \dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
-    Z_1 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_1
-    \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D}\bigr)
-\\[2ex]
-&amp;\qquad{}=
-    \frac{\displaystyle{}\enspace
-    \sum_{k=k_{\text{min}}}^{k_{\text{max}}}
-\frac{
-(2^{k} + {\color[RGB]{34,136,51}\# z_{N+1}} )
-\cdot
-\prod_{\color[RGB]{34,136,51}z} \bigl(2^{k} + {\color[RGB]{34,136,51}\# z} - 1\bigr)!
-}{
-\bigl(M\,2^{k} + N \bigr)!
-}
-\cdot
-\frac{
-\bigl(M\,2^{k} -1 \bigr)!
-}{
-{\bigl(2^{k} - 1\bigr)!}^M
-}
-    \enspace{}}{\displaystyle{}\enspace
-    \sum_{\color[RGB]{34,136,51}z^*}
-    \sum_{k=k_{\text{min}}}^{k_{\text{max}}}
-\frac{
-(2^{k} + {\color[RGB]{34,136,51}\# z^*})
-\cdot
-\prod_{\color[RGB]{34,136,51}z} \bigl(2^{k} + {\color[RGB]{34,136,51}\# z} - 1\bigr)!
-}{
-\bigl(M\,2^{k} + N \bigr)!
-}
-\cdot
-\frac{
-\bigl(M\,2^{k} -1 \bigr)!
-}{
-{\bigl(2^{k} - 1\bigr)!}^M
-}
-    \enspace{}}
-\end{aligned}
-\]</span></p>
-<p><br>
-</p>
-<p><br>
-</p>
-<dl>
-<dt><i class="fa-solid fa-star-half-alt" aria-label="star-half-alt"></i> Inferences about predictands <span class="math inline">\({\color[RGB]{68,119,170}Y}\)</span> of a new unit, given its predictors <span class="math inline">\({\color[RGB]{68,119,170}X}\)</span> and given both predictands &amp; predictors of observed units</dt>
-<dd>
-
-</dd>
-</dl>
-<p><span class="math display">\[
-\begin{aligned}
-    &amp;\mathrm{P}\bigl(
-    \color[RGB]{238,102,119}Y_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{N+1}
-\color[RGB]{0,0,0}\pmb{\nonscript\:\big\vert\nonscript\:\mathopen{}}
-    \color[RGB]{34,136,51}X_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{N+1}\, \mathbin{\mkern-0.5mu,\mkern-0.5mu}\,
-Y_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_N \mathbin{\mkern-0.5mu,\mkern-0.5mu}X_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_N \mathbin{\mkern-0.5mu,\mkern-0.5mu}
-    \dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
-    Y_1 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_1 \mathbin{\mkern-0.5mu,\mkern-0.5mu}X_1 \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_1
-    \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D}\bigr)
-    \\[2ex]
-    &amp;\qquad\qquad\qquad{}=
-    \frac{\displaystyle{}\enspace
-    \sum_{k=k_{\text{min}}}^{k_{\text{max}}}
-\frac{
-\prod_{\color[RGB]{34,136,51}x}\bigl(2^{k} + {\color[RGB]{34,136,51}\#(y_{N+1}, x)}\bigr)
-\cdot
-\prod_{\color[RGB]{34,136,51}y}
-\prod_{\color[RGB]{34,136,51}x}
-\bigl(2^{k} + {\color[RGB]{34,136,51}\#(y, x)} - 1\bigr)!
-}{
-\bigl(M\,2^{k} + N \bigr)!
-}
-\cdot
-\frac{
-\bigl(M\,2^{k} -1 \bigr)!
-}{
-{\bigl(2^{k} - 1\bigr)!}^M
-}
-    \enspace{}}{\displaystyle{}\enspace
-    \sum_{\color[RGB]{34,136,51}y^*}
-    \sum_{k=k_{\text{min}}}^{k_{\text{max}}}
-\frac{
-\prod_{\color[RGB]{34,136,51}x}\bigl(2^{k} + {\color[RGB]{34,136,51}\#(y^*, x)}\bigr)
-\cdot
-\prod_{\color[RGB]{34,136,51}y}
-\prod_{\color[RGB]{34,136,51}x}
-\bigl(2^{k} + {\color[RGB]{34,136,51}\#(y, x)} - 1\bigr)!
-}{
-\bigl(M\,2^{k} + N \bigr)!
-}
-\cdot
-\frac{
-\bigl(M\,2^{k} -1 \bigr)!
-}{
-{\bigl(2^{k} - 1\bigr)!}^M
-}
-    \enspace{}}
-\end{aligned}
-\]</span></p>
-<p><br>
-</p>
-<p>In the last two formulae, the counts <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}\#z\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}\#(y,x)\)</span>,</span> and similar <span class="green"><strong>refer to the values present in the conditional</strong></span>.</p>
+<p>where <span style="display:inline-block;"><span class="math inline">\(\#{\color[RGB]{68,119,170}z}\)</span></span> is the number of times some value <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span></span> appears in the sequence</p>
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-caution no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The four formulae above look complicated. They do because they contain abbreviations (<span style="display:inline-block;">“<span class="math inline">\(\sum\)</span>”</span>, <span style="display:inline-block;">“<span class="math inline">\(\prod\)</span>”</span>) of sums or products of many terms. But once you have written down a couple of concrete examples, their meaning should be clear.</p>
-<p>For the second formula, try to write it down for a concrete case in the Mars-prospecting scenario; say with <span style="display:inline-block;"><span class="math inline">\(N=2\)</span></span> and specific values for <span style="display:inline-block;"><span class="math inline">\(z_1, z_2, z_3\)</span>,</span> and verify that it is the correct expression of the more general formulae previously given. Use the property of the factorial</p>
-<p><span class="math display">\[(a+1)! = (a+1) \cdot a!\]</span></p>
-</div>
-</div>
+<p>we can now solve all the kinds of task involving multiple units that were discussed in <a href="beyond-ML.html#sec-categ-probtheory">§ &nbsp;<span>27.3</span></a>. Let’s see a simple example of forecasting all variates for a new unit (no predictors), and another example where we guess a predictand given a predictor. We shall solve them step by step.</p>
 </section>
 <section id="sec-dirmix-example1" class="level2 page-columns page-full" data-number="32.4">
 <h2 data-number="32.4" class="anchored" data-anchor-id="sec-dirmix-example1"><span class="header-section-number">32.4</span> Example&nbsp;1: Forecast about one variate, given previous observations</h2>
-<p>Let’s see a simple step-by-step application of the formulae in the Mars-prospecting scenario. In this task there are no predictors and only one predictand variate <span style="display:inline-block;"><span class="math inline">\(R\)</span>:</span> the presence of haematite. The agent observes the value of this variate in several rocks, and try to forecast its value in a new rock.</p>
-<p>The agent has exchangeable beliefs represented by a Dirichlet-mixture distribution. The variate of the population of interest has two possible values, so in the formulae above we have&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(k_{\text{min}}=-1\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(k_{\text{max}}=2\)</span>&nbsp;&nbsp;(</span><a href="inference_about_freqs.html#sec-prob-for-freqs">§ &nbsp;<span>30.4</span></a>).</p>
-<p>The agent has collected three rocks, and upon examination two of them contain haematite, one doesn’t. The agent’s data are therefore</p>
-<p><span class="math display">\[R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\]</span></p>
-<p>(remember that it doesn’t matter how we label the rocks, because the agent’s beliefs are exchangeable).</p>
+<p>In this task there are no predictors and only one predictand variate <span style="display:inline-block;"><span class="math inline">\(R\)</span>:</span> the presence of haematite. The agent observes the value of this variate in several rocks, and tries to forecast its value in a new rock.</p>
+<p>The agent has exchangeable beliefs represented by a Dirichlet-mixture distribution. The variate of the population of interest has two possible values, so in the formulae above we have&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(M=2\)</span>.</span> We still take <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=0\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(k_{\text{ma}}=2\)</span>.</span></p>
+<p>The agent has collected three rocks. Upon examination, two of them contain haematite, one doesn’t. The agent’s data are therefore</p>
+<p><span class="math display">\[\text{\small data:}\quad R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\]</span></p>
+<p>(remember that it doesn’t matter how the rocks are labelled, because the agent’s beliefs are exchangeable).</p>
 <p>What probability should the agent give to finding haematite in a newly collected rock? That is, what value should it assign to</p>
 <p><span class="math display">\[\mathrm{P}(R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D}) \ ?\]</span></p>
-<p>There are different but logically equivalent ways of breaking down this calculation into steps. They also correspond to different ways of calculating the mathematical formulae. Here we examine one possibility.</p>
+<p>Our main formula is</p>
+<div class="column-body-outset-right">
+<p><span class="math display">\[
+\mathrm{P}(R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})
+=
+\frac{
+\mathrm{P}(R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
+}{
+\sum_{{\color[RGB]{170,51,119}r}={\color[RGB]{102,204,238}{\small\verb;Y;}}}^{{\color[RGB]{204,187,68}{\small\verb;N;}}}
+\mathrm{P}(R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{170,51,119}r} \mathbin{\mkern-0.5mu,\mkern-0.5mu}R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
+}
+\]</span></p>
+</div>
 <p><br>
 </p>
-<p><span class="green"><i class="fa-solid fa-1" aria-label="1"></i> <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;&nbsp;For the computation of the probability for <span style="display:inline-block;"><span class="math inline">\(R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span></span> we need to consider all alternative hypotheses. In this case there are only two alternatives, including the one of interest:</p>
-<p><span class="math display">\[R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\qquad R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\]</span></p>
-<p><br>
-</p>
-<p><span class="green"><i class="fa-solid fa-2" aria-label="2"></i> <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;&nbsp;We need to calculate the joint probabilities for the agent’s data (about the three previous rocks) <code>and</code> each hypothesis in turn. In the present case, they are the two joint probabilities</p>
+<p><span class="green"><i class="fa-solid fa-1" aria-label="1"></i> <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;&nbsp;The fraction above requires the computation of two joint probabilities:</p>
 <p><span class="math display">\[
 \begin{aligned}
 \mathrm{P}(R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\, \mathbin{\mkern-0.5mu,\mkern-0.5mu}\, R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
@@ -987,68 +869,80 @@ Y_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0m
 \mathrm{P}(R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\, \mathbin{\mkern-0.5mu,\mkern-0.5mu}\, R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
 \end{aligned}
 \]</span></p>
-<p>These probabilities will appear, summed together, in the denominator of a final fraction; whereas the probability containing the hypothesis of interest will appear, by itself, in the numerator.</p>
+<p>Note how they are associated with the two possible hypotheses about the new rock:</p>
+<p><span class="math display">\[R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\qquad R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\]</span></p>
+<p>of which the first one interests us.</p>
 <div class="column-body-outset-right">
 <p><span class="green"><i class="fa-solid fa-2" aria-label="2"></i>a <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;In the first joint probability, <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span></span> appears thrice and <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}{\small\verb;N;}}\)</span></span> appears once, so</p>
-<p><span class="math display">\[\#{\color[RGB]{102,204,238}{\small\verb;Y;}}= 3 \qquad \#{\color[RGB]{204,187,68}{\small\verb;N;}}= 1 \qquad \text{\color[RGB]{119,119,119}\small total} = {\color[RGB]{119,119,119}4}\]</span></p>
-<p>The de&nbsp;Finetti representation formula then gives</p>
+<p><span class="math display">\[\#{\color[RGB]{102,204,238}{\small\verb;Y;}}= 3 \qquad \#{\color[RGB]{204,187,68}{\small\verb;N;}}= 1 \qquad {\color[RGB]{119,119,119}L} = {\color[RGB]{119,119,119}4}\]</span></p>
+<p>The de&nbsp;Finetti representation formula gives</p>
 <p><span class="math display">\[\begin{aligned}
 &amp;\mathrm{P}(R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\, \mathbin{\mkern-0.5mu,\mkern-0.5mu}\, R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
 \\[1ex]
 &amp;\qquad{}=
-\frac{1+2-1}
-\sum_{k=-1}^{2}
+\frac{1}{2-0+1}
+\sum_{k=0}^{2}
 \frac{
-\bigl(2^{k} + {\color[RGB]{102,204,238}3} - 1\bigr)! \cdot
-\bigl(2^{k} + {\color[RGB]{204,187,68}1} - 1\bigr)!
+\bigl(\frac{2^{k}}{2} + {\color[RGB]{102,204,238}3} - 1\bigr)! \cdot
+\bigl(\frac{2^{k}}{2} + {\color[RGB]{204,187,68}1} - 1\bigr)!
 }{
-\bigl(2\cdot 2^{k} + {\color[RGB]{119,119,119}4} -1 \bigr)!
+\bigl(2^{k} + {\color[RGB]{119,119,119}4} -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(2\cdot 2^{k} -1 \bigr)!
+\bigl(2^{k} -1 \bigr)!
 }{
-{\bigl(2^{k} - 1\bigr)!}^2
+{\bigl(\frac{2^{k}}{2} - 1\bigr)!}^2
 }
 \\[1ex]
 &amp;\qquad{}=
-\boldsymbol{0.051 702 9}
+\boldsymbol{0.048 735 1}
 \end{aligned}
 \]</span></p>
+<p><br>
+</p>
 <p><span class="green"><i class="fa-solid fa-2" aria-label="2"></i>b <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;In the second joint probability, <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span></span> appears twice and <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}{\small\verb;N;}}\)</span></span> appears twice, so</p>
-<p><span class="math display">\[\#{\color[RGB]{102,204,238}{\small\verb;Y;}}= 2 \qquad \#{\color[RGB]{204,187,68}{\small\verb;N;}}= 2 \qquad \text{\color[RGB]{119,119,119}\small total} = {\color[RGB]{119,119,119}4}\]</span></p>
+<p><span class="math display">\[\#{\color[RGB]{102,204,238}{\small\verb;Y;}}= 2 \qquad \#{\color[RGB]{204,187,68}{\small\verb;N;}}= 2 \qquad {\color[RGB]{119,119,119}L} = {\color[RGB]{119,119,119}4}\]</span></p>
 <p>We find</p>
 <p><span class="math display">\[\begin{aligned}
-&amp;\mathrm{P}(R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\, \mathbin{\mkern-0.5mu,\mkern-0.5mu}\, R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
+&amp;\mathrm{P}(R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\, \mathbin{\mkern-0.5mu,\mkern-0.5mu}\, R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
 \\[1ex]
 &amp;\qquad{}=
-\frac{1}{4}
-\sum_{k=-1}^{2}
+\frac{1}{2-0+1}
+\sum_{k=0}^{2}
 \frac{
-\bigl(2^{k} + {\color[RGB]{102,204,238}2} - 1\bigr)! \cdot
-\bigl(2^{k} + {\color[RGB]{204,187,68}2} - 1\bigr)!
+\bigl(\frac{2^{k}}{2} + {\color[RGB]{102,204,238}2} - 1\bigr)! \cdot
+\bigl(\frac{2^{k}}{2} + {\color[RGB]{204,187,68}2} - 1\bigr)!
 }{
-\bigl(2\cdot 2^{k} + {\color[RGB]{119,119,119}4} -1 \bigr)!
+\bigl(2^{k} + {\color[RGB]{119,119,119}4} -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(2\cdot 2^{k} -1 \bigr)!
+\bigl(2^{k} -1 \bigr)!
 }{
-{\bigl(2^{k} - 1\bigr)!}^2
+{\bigl(\frac{2^{k}}{2} - 1\bigr)!}^2
 }
 \\[1ex]
 &amp;\qquad{}=
-\boldsymbol{0.037 533 3}
+\boldsymbol{0.033 209 3}
 \end{aligned}
 \]</span></p>
 </div>
 <p><br>
 </p>
-<p><span class="green"><i class="fa-solid fa-3" aria-label="3"></i> <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;&nbsp;The probability for the hypothesis of interest is given by the fraction</p>
+<p><span class="green"><i class="fa-solid fa-3" aria-label="3"></i> <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;&nbsp;The probability for the hypothesis of interest is finally given by the fraction</p>
 <div class="column-page-inset-right">
 <p><span class="math display">\[
 \begin{aligned}
 &amp;\mathrm{P}(R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})
+\\[1ex]
+&amp;\qquad{}=
+\frac{
+\mathrm{P}(R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
+}{
+\sum_{{\color[RGB]{170,51,119}r}={\color[RGB]{102,204,238}{\small\verb;Y;}}}^{{\color[RGB]{204,187,68}{\small\verb;N;}}}
+\mathrm{P}(R_4\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{170,51,119}r} \mathbin{\mkern-0.5mu,\mkern-0.5mu}R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\mathbin{\mkern-0.5mu,\mkern-0.5mu}R_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{204,187,68}{\small\verb;N;}}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
+}
 \\[1ex]
 &amp;\qquad{}=
 \frac{
@@ -1059,10 +953,10 @@ Y_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0m
 }
 \\[1ex]
 &amp;\qquad{}=
-\frac{0.0517029}{0.0517029 + 0.037 533 3}
+\frac{0.048 735 1}{0.048 735 1 + 0.033 209 3}
 \\[1ex]
 &amp;\qquad{}=
-\boldsymbol{57.94\%}
+\boldsymbol{59.47\%}
 \end{aligned}
 \]</span></p>
 </div>
@@ -1072,15 +966,19 @@ Y_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0m
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercises
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The inference problem above has some analogy with coin tossing: there’s just one, binary, variate. This agent could have been used to make forecasts about coin tosses.</p>
+<ul>
+<li><p>The inference problem above has some analogy with coin tossing: there’s just one, binary, variate. This agent could have been used to make forecasts about coin tosses.</p>
 <p>Consider the result above from the point of view of this analogy. Let’s say that <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span></span> would be “heads”, and <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}{\small\verb;N;}}\)</span></span> “tails”. Having observed four coin tosses, with three heads and one tail, the agent is giving a 58% probability for heads at the next toss.</p>
 <ul>
 <li><p>Do you consider this probability reasonable? Why?</p></li>
 <li><p>In which different coin-tossing circumstances would you consider this probability reasonable (given the same previous observation data)?</p></li>
+</ul></li>
+<li><p>Try doing the calculation above on a computer, using the values&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=-17, k_{\text{ma}}=17\)</span>.</span></p>
+<p>If you use the formulae above as they’re given, you’ll probably get just <code>NaN</code>s. The formulae above must be rewritten in a different way in order not to generate overflow. The result would be <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{52.26\%}\)</span>.</span></p></li>
 </ul>
 </div>
 </div>
@@ -1089,11 +987,11 @@ Y_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0m
 <h2 data-number="32.5" class="anchored" data-anchor-id="sec-dirmix-example2"><span class="header-section-number">32.5</span> Example&nbsp;2: Forecast about one predictand, given predictor and previous observations</h2>
 <p>Let’s go back to the hospital scenario of <a href="conditional_probability.html#sec-conditional-joint-general">§ &nbsp;<span>17.4</span></a>. The units are patients coming into a hospital. The population is characterized by two nominal variates:</p>
 <ul>
-<li>the patient’s transportation mean <span class="math inline">\(T\)</span> at arrival, with domain <span class="math inline">\(\set{{\small\verb;ambulance;}, {\small\verb;helicopter;}, {\small\verb;other;}}\)</span></li>
-<li>the patient’s need of urgent care <span class="math inline">\(U\)</span>, with domain <span class="math inline">\(\set{{\small\verb;urgent;}, {\small\verb;non-urgent;}}\)</span></li>
+<li><span class="math inline">\(T\)</span>: the patient’s means of transportation at arrival, with domain <span class="math inline">\(\set{{\small\verb;ambulance;}, {\small\verb;helicopter;}, {\small\verb;other;}}\)</span></li>
+<li><span class="math inline">\(U\)</span>: the patient’s need of urgent care, with domain <span class="math inline">\(\set{{\small\verb;urgent;}, {\small\verb;non-urgent;}}\)</span></li>
 </ul>
-<p>The combined variate <span style="display:inline-block;"><span class="math inline">\((U \mathbin{\mkern-0.5mu,\mkern-0.5mu}T)\)</span></span> has <span style="display:inline-block;"><span class="math inline">\(M = 2\cdot 3 = 6\)</span></span> possible values, so we have parameters <span style="display:inline-block;"><span class="math inline">\(k_{\text{min}}=-3\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(k_{\text{max}}=2\)</span>.</span></p>
-<p>The agent’s task is to forecast whether the next incoming patient will require urgent care or not (<span style="display:inline-block;"><span class="math inline">\(U\)</span>),</span> given information about the patient’s transportation (<span style="display:inline-block;"><span class="math inline">\(T\)</span>).</span> So <span style="display:inline-block;"><span class="math inline">\(U\)</span></span> is the predictand variate, <span style="display:inline-block;"><span class="math inline">\(T\)</span></span> the predictor variate.</p>
+<p>The combined variate <span style="display:inline-block;"><span class="math inline">\((U \mathbin{\mkern-0.5mu,\mkern-0.5mu}T)\)</span></span> has&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(M = 2\cdot 3 = 6\)</span>&nbsp;&nbsp;possible</span> values. We still use parameters <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=0\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(k_{\text{ma}}=2\)</span></span> to use the de&nbsp;Finetti formula as-is without causing overflow errors.</p>
+<p>The agent’s task is to forecast whether the next incoming patient will require urgent care, given information about the patient’s transportation. So <span style="display:inline-block;"><span class="math inline">\(U\)</span></span> is the predictand variate, <span style="display:inline-block;"><span class="math inline">\(T\)</span></span> the predictor variate.</p>
 <p>At the moment the agent has a complete record of two previous patients:</p>
 <ul>
 <li><span class="math inline">\(U_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;ambulance;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}T_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;ambulance;}\)</span></li>
@@ -1110,10 +1008,7 @@ Y_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0m
 <p><span class="math display">\[\mathrm{P}(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\nonscript\:\vert\nonscript\:\mathopen{} T_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;ambulance;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\]</span></p>
 <p><br>
 </p>
-<p><span class="green"><i class="fa-solid fa-1" aria-label="1"></i> <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;&nbsp;The hypotheses are <span style="display:inline-block;"><span class="math inline">\(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;non-urgent;}\)</span></span></p>
-<p><br>
-</p>
-<p><span class="green"><i class="fa-solid fa-2" aria-label="2"></i> <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;&nbsp;The joint probabilities for the hypotheses and previous data, since there’s no information about previous patients, are simply</p>
+<p><span class="green"><i class="fa-solid fa-1" aria-label="1"></i> <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;&nbsp;We need to calculate the two joint probabilities</p>
 <div class="column-body-outset-right">
 <p><span class="math display">\[
 \mathrm{P}(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}T_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;ambulance;}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
@@ -1121,12 +1016,13 @@ Y_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0m
 \mathrm{P}(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;non-urgent;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}T_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;ambulance;}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
 \]</span></p>
 </div>
+<p>corresponding to the two hypotheses of interest, <span style="display:inline-block;"><span class="math inline">\(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;non-urgent;}\)</span>.</span></p>
 <p><br>
 </p>
 <p><span class="green"><i class="fa-solid fa-2" aria-label="2"></i>a <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;In the first joint probability above the value pair <span style="display:inline-block;"><span class="math inline">\((U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}T\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;ambulance;})\)</span></span> appears once, and the remaining five pairs appear zero times:</p>
 <div class="column-body-outset-right">
 <p><span class="math display">\[\#({\small\verb;urgent;}, {\small\verb;ambulance;}) = {\color[RGB]{102,204,238}1} \qquad\text{\small five others }\#(\dotsc,\dotsc) = {\color[RGB]{204,187,68}0}
-\qquad \text{\color[RGB]{119,119,119}\small total} = {\color[RGB]{119,119,119}1}\]</span></p>
+\qquad {\color[RGB]{119,119,119}L} = {\color[RGB]{119,119,119}1}\]</span></p>
 </div>
 <p>The de&nbsp;Finetti formula gives</p>
 <div class="column-page-inset-right">
@@ -1135,21 +1031,21 @@ Y_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0m
 &amp;\mathrm{P}(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}T_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;ambulance;}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
 \\[2ex]
 &amp;\qquad{}=
-\frac{1}{1+2+3}
-\sum_{k=-3}^{2}
+\frac{1}{2-0+1}
+\sum_{k=0}^{2}
 \frac{
-\bigl(2^{k} + {\color[RGB]{102,204,238}1} - 1\bigr)! \cdot
-\underbracket[0.1ex]{\bigl(2^{k} + {\color[RGB]{204,187,68}0} - 1\bigr)! \cdot
+\bigl(\frac{2^{k}}{6} + {\color[RGB]{102,204,238}1} - 1\bigr)! \cdot
+\underbracket[0.1ex]{\bigl(\frac{2^{k}}{6} + {\color[RGB]{204,187,68}0} - 1\bigr)! \cdot
 \,\dotsb\, \cdot
-\bigl(2^{k} + {\color[RGB]{204,187,68}0} - 1\bigr)!}_{\text{\color[RGB]{187,187,187}five factors}}
+\bigl(\frac{2^{k}}{6} + {\color[RGB]{204,187,68}0} - 1\bigr)!}_{\text{\color[RGB]{187,187,187}five factors}}
 }{
-\bigl(6\cdot 2^{k} + {\color[RGB]{119,119,119}1} -1 \bigr)!
+\bigl( 2^{k} + {\color[RGB]{119,119,119}1} -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(6\cdot 2^{k} -1 \bigr)!
+\bigl( 2^{k} -1 \bigr)!
 }{
-{\bigl(2^{k} - 1\bigr)!}^6
+{\bigl(\frac{2^{k}}{6} - 1\bigr)!}^6
 }
 \\[1ex]
 &amp;\qquad{}=
@@ -1162,7 +1058,7 @@ Y_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0m
 <p><span class="green"><i class="fa-solid fa-2" aria-label="2"></i>b <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;In the second joint probability above the value pair <span style="display:inline-block;"><span class="math inline">\((U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;non-urgent;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}T\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;ambulance;})\)</span></span> appears once, and the remaining five pairs appear zero times:</p>
 <div class="column-body-outset-right">
 <p><span class="math display">\[\#({\small\verb;non-urgent;}, {\small\verb;ambulance;}) = {\color[RGB]{102,204,238}1} \qquad\text{\small five others }\#(\dotsc,\dotsc) = {\color[RGB]{204,187,68}0}
-\qquad \text{\color[RGB]{119,119,119}\small total} = {\color[RGB]{119,119,119}1}\]</span></p>
+\qquad {\color[RGB]{119,119,119}L} = {\color[RGB]{119,119,119}1}\]</span></p>
 </div>
 <p>The de&nbsp;Finetti formula gives an identical result as before:</p>
 <div class="column-page-inset-right">
@@ -1171,21 +1067,21 @@ Y_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0m
 &amp;\mathrm{P}(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;non-urgent;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}T_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;ambulance;}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
 \\[2ex]
 &amp;\qquad{}=
-\frac{1}{1+2+3}
-\sum_{k=-3}^{2}
+\frac{1}{2-0+1}
+\sum_{k=0}^{2}
 \frac{
-\bigl(2^{k} + {\color[RGB]{102,204,238}1} - 1\bigr)! \cdot
-\underbracket[0.1ex]{\bigl(2^{k} + {\color[RGB]{204,187,68}0} - 1\bigr)! \cdot
+\bigl(\frac{2^{k}}{6} + {\color[RGB]{102,204,238}1} - 1\bigr)! \cdot
+\underbracket[0.1ex]{\bigl(\frac{2^{k}}{6} + {\color[RGB]{204,187,68}0} - 1\bigr)! \cdot
 \,\dotsb\, \cdot
-\bigl(2^{k} + {\color[RGB]{204,187,68}0} - 1\bigr)!}_{\text{\color[RGB]{187,187,187}five factors}}
+\bigl(\frac{2^{k}}{6} + {\color[RGB]{204,187,68}0} - 1\bigr)!}_{\text{\color[RGB]{187,187,187}five factors}}
 }{
-\bigl(6\cdot 2^{k} + {\color[RGB]{119,119,119}1} -1 \bigr)!
+\bigl( 2^{k} + {\color[RGB]{119,119,119}1} -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(6\cdot 2^{k} -1 \bigr)!
+\bigl( 2^{k} -1 \bigr)!
 }{
-{\bigl(2^{k} - 1\bigr)!}^6
+{\bigl(\frac{2^{k}}{6} - 1\bigr)!}^6
 }
 \\[1ex]
 &amp;\qquad{}=
@@ -1206,6 +1102,14 @@ Y_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0m
 \frac{
 \mathrm{P}(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}T_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;ambulance;}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
 }{
+\sum_{\color[RGB]{170,51,119}u}
+\mathrm{P}(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{170,51,119}u} \mathbin{\mkern-0.5mu,\mkern-0.5mu}T_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;ambulance;}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
+}
+\\[1ex]
+&amp;\qquad{}=
+\frac{
+\mathrm{P}(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}T_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;ambulance;}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
+}{
 \mathrm{P}(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}T_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;ambulance;}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
 +
 \mathrm{P}(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;non-urgent;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}T_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;ambulance;}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})
@@ -1221,13 +1125,13 @@ Y_N \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0m
 </div>
 <p><br>
 </p>
-<p>This result shows that the agent’s background information says that, a priori, urgent and non-urgent patients are equally plausible. This is a characteristic of the particular Dirichlet-mixture belief distribution we are using. It would actually be possible to slightly modify it so as to give a-priori different probabilities for the <span style="display:inline-block;"><span class="math inline">\({\small\verb;urgent;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\({\small\verb;non-urgent;}\)</span></span> values, but we shall not pursue this possibility here.</p>
+<p>The agent’s background information says that, a priori, urgent and non-urgent patients are equally plausible. This is a characteristic of the particular Dirichlet-mixture belief distribution we are using. It would actually be possible to modify it so as to give a-priori different probabilities for the <span style="display:inline-block;"><span class="math inline">\({\small\verb;urgent;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\({\small\verb;non-urgent;}\)</span></span> values; but we shall not pursue this possibility here.</p>
 <p><br>
 </p>
 </section>
 <section id="forecast-after-learning" class="level4 page-columns page-full">
 <h4 class="anchored" data-anchor-id="forecast-after-learning">Forecast after learning</h4>
-<p>Now let’s do an analogous calculation, but taking into account the information about the previous two patients. We therefore want to calculate the probability</p>
+<p>Now let’s take into account the information about the previous two patients. We therefore want to calculate the probability</p>
 <div class="column-page-right">
 <p><span class="math display">\[\mathrm{P}(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\nonscript\:\vert\nonscript\:\mathopen{} T_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;ambulance;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}
 U_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;non-urgent;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}T_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;other;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}
@@ -1237,10 +1141,7 @@ U_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 </div>
 <p><br>
 </p>
-<p><span class="green"><i class="fa-solid fa-1" aria-label="1"></i> <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;&nbsp;The hypotheses are again <span style="display:inline-block;"><span class="math inline">\(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;non-urgent;}\)</span></span></p>
-<p><br>
-</p>
-<p><span class="green"><i class="fa-solid fa-2" aria-label="2"></i> <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;&nbsp;The joint probabilities for the hypotheses and known data are</p>
+<p><span class="green"><i class="fa-solid fa-1" aria-label="1"></i> <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;&nbsp;The hypotheses are again <span style="display:inline-block;"><span class="math inline">\(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(U_3\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;non-urgent;}\)</span>,</span> and we need the joint probabilities</p>
 <div class="column-page-right">
 <p><span class="math display">\[
 \begin{aligned}
@@ -1258,13 +1159,13 @@ U_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 </div>
 <p><br>
 </p>
-<p><span class="green"><i class="fa-solid fa-2" aria-label="2"></i>a <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;In the first joint probability above we have the following counts:</p>
+<p><span class="green"><i class="fa-solid fa-2" aria-label="2"></i>a <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;The first joint probability has the following counts:</p>
 <div class="column-page-right">
 <p><span class="math display">\[
 \#({\small\verb;urgent;}, {\small\verb;ambulance;}) = {\color[RGB]{68,119,170}2} \quad
 \#({\small\verb;non-urgent;}, {\small\verb;other;}) = {\color[RGB]{102,204,238}1} \quad
 \text{\small four others }\#(\dotsc,\dotsc) = {\color[RGB]{204,187,68}0}
-\quad \text{\color[RGB]{119,119,119}\small total} = {\color[RGB]{119,119,119}3}\]</span></p>
+\quad {\color[RGB]{119,119,119}L} = {\color[RGB]{119,119,119}3}\]</span></p>
 </div>
 <p>and therefore</p>
 <div class="column-page-right">
@@ -1276,32 +1177,32 @@ U_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 \mathsfit{D})
 \\[2ex]
 &amp;\qquad{}=
-\frac{1}{6}
-\sum_{k=-3}^{2}
+\frac{1}{3}
+\sum_{k=0}^{2}
 \frac{
-\bigl(2^{k} + {\color[RGB]{68,119,170}2} - 1\bigr)! \cdot
-\bigl(2^{k} + {\color[RGB]{102,204,238}1} - 1\bigr)! \cdot
-\underbracket[0.1ex]{\bigl(2^{k} + {\color[RGB]{204,187,68}0} - 1\bigr)! \cdot
+\bigl(\frac{2^{k}}{6} + {\color[RGB]{68,119,170}2} - 1\bigr)! \cdot
+\bigl(\frac{2^{k}}{6} + {\color[RGB]{102,204,238}1} - 1\bigr)! \cdot
+\underbracket[0.1ex]{\bigl(\frac{2^{k}}{6} + {\color[RGB]{204,187,68}0} - 1\bigr)! \cdot
 \,\dotsb\, \cdot
-\bigl(2^{k} + {\color[RGB]{204,187,68}0} - 1\bigr)!}_{\text{\color[RGB]{187,187,187}four factors}}
+\bigl(\frac{2^{k}}{6} + {\color[RGB]{204,187,68}0} - 1\bigr)!}_{\text{\color[RGB]{187,187,187}four factors}}
 }{
-\bigl(6\cdot 2^{k} + {\color[RGB]{119,119,119}3} -1 \bigr)!
+\bigl( 2^{k} + {\color[RGB]{119,119,119}3} -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(6\cdot 2^{k} -1 \bigr)!
+\bigl( 2^{k} -1 \bigr)!
 }{
-{\bigl(2^{k} - 1\bigr)!}^6
+{\bigl(\frac{2^{k}}{6} - 1\bigr)!}^6
 }
 \\[1ex]
 &amp;\qquad{}=
-\boldsymbol{0.005 607 93}
+\boldsymbol{0.005 915 64}
 \end{aligned}
 \]</span></p>
 </div>
 <p><br>
 </p>
-<p><span class="green"><i class="fa-solid fa-2" aria-label="2"></i>b <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;Second joint probability:</p>
+<p><span class="green"><i class="fa-solid fa-2" aria-label="2"></i>b <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;Counts for the second joint probability:</p>
 <div class="column-page-right">
 <p><span class="math display">\[
 \begin{gathered}
@@ -1310,7 +1211,7 @@ U_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 \#({\small\verb;non-urgent;}, {\small\verb;other;}) = {\color[RGB]{102,204,238}1}
 \\[1ex]
 \text{\small three others }\#(\dotsc,\dotsc) = {\color[RGB]{204,187,68}0}
-\qquad \text{\color[RGB]{119,119,119}\small total} = {\color[RGB]{119,119,119}3}
+\qquad {\color[RGB]{119,119,119}L} = {\color[RGB]{119,119,119}3}
 \end{gathered}
 \]</span></p>
 </div>
@@ -1324,36 +1225,36 @@ U_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 \mathsfit{D})
 \\[2ex]
 &amp;\qquad{}=
-\frac{1}{6}
-\sum_{k=-3}^{2}
+\frac{1}{3}
+\sum_{k=0}^{2}
 \frac{
 \underbracket[0.1ex]{
-\bigl(2^{k} + {\color[RGB]{102,204,238}1} - 1\bigr)!
+\bigl(\frac{2^{k}}{6} + {\color[RGB]{102,204,238}1} - 1\bigr)!
 \cdot\,\dotsb\, \cdot
-\bigl(2^{k} + {\color[RGB]{102,204,238}1} - 1\bigr)!
+\bigl(\frac{2^{k}}{6} + {\color[RGB]{102,204,238}1} - 1\bigr)!
 }_{\text{\color[RGB]{187,187,187}three factors}}
 \cdot
-\underbracket[0.1ex]{\bigl(2^{k} + {\color[RGB]{204,187,68}0} - 1\bigr)! \cdot
+\underbracket[0.1ex]{\bigl(\frac{2^{k}}{6} + {\color[RGB]{204,187,68}0} - 1\bigr)! \cdot
 \,\dotsb\, \cdot
-\bigl(2^{k} + {\color[RGB]{204,187,68}0} - 1\bigr)!}_{\text{\color[RGB]{187,187,187}three factors}}
+\bigl(\frac{2^{k}}{6} + {\color[RGB]{204,187,68}0} - 1\bigr)!}_{\text{\color[RGB]{187,187,187}three factors}}
 }{
-\bigl(6\cdot 2^{k} + {\color[RGB]{119,119,119}3} -1 \bigr)!
+\bigl( 2^{k} + {\color[RGB]{119,119,119}3} -1 \bigr)!
 }
 \cdot
 \frac{
-\bigl(6\cdot 2^{k} -1 \bigr)!
+\bigl( 2^{k} -1 \bigr)!
 }{
-{\bigl(2^{k} - 1\bigr)!}^6
+{\bigl(\frac{2^{k}}{6} - 1\bigr)!}^6
 }
 \\[1ex]
 &amp;\qquad{}=
-\boldsymbol{0.002 426 12}
+\boldsymbol{0.001 594 65}
 \end{aligned}
 \]</span></p>
 </div>
 <p><br>
 </p>
-<p><span class="green"><i class="fa-solid fa-3" aria-label="3"></i> <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;&nbsp;The probability that the third incoming patient is urgent is</p>
+<p><span class="green"><i class="fa-solid fa-3" aria-label="3"></i> <i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i></span>&nbsp;&nbsp;&nbsp;Finally, the probability that the third incoming patient is urgent is</p>
 <div class="column-page-inset-right">
 <p><span class="math display">\[
 \begin{aligned}
@@ -1364,16 +1265,14 @@ U_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 \mathsfit{D})
 \\[1ex]
 &amp;\qquad{}=
-\frac{0.005 607 93}{0.005 607 93 + 0.002 426 12}
+\frac{0.005 915 64}{0.005 915 64 + 0.001 594 65}
 \\[1ex]
 &amp;\qquad{}=
-\boldsymbol{69.80\%}
+\boldsymbol{78.77\%}
 \end{aligned}
 \]</span></p>
 </div>
-<p>The agent has learned an association between <span style="display:inline-block;"><span class="math inline">\({\small\verb;ambulance;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\({\small\verb;urgent;}\)</span></span> from the first patient.</p>
-<p><br>
-</p>
+<p>The agent has learned an association between <span style="display:inline-block;"><span class="math inline">\({\small\verb;ambulance;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\({\small\verb;urgent;}\)</span></span> from the first patient. Note that if we had used the parameters <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=-17, k_{\text{ma}}=17\)</span>,</span> the result would have been more conservative: <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{58.11\%}\)</span>.</span></p>
 <div class="column-page-inset-right">
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1409,9 +1308,9 @@ T_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 <p>The two examples above reveal some characteristics of an agent based on the Dirichlet-mixture belief distribution:</p>
 <ul>
 <li><p>In absence of previous data, it assigns uniform probability distributions to any variate.</p></li>
-<li><p>It is somewhat “eager” to learn from previous examples: its probabilities vary appreciably even with only few observations.</p></li>
+<li><p>It can be “eager” to learn from previous examples, that is, its probabilities may vary appreciably even with only few observations. The “eagerness” is determined by the parameters <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span>.</span> For a general-purpose agent, the values <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=-17, k_{\text{ma}}=17\)</span></span> are more reasonable.</p></li>
 </ul>
-<p>There are also other subtle characteristics connected to these, which we won’t discuss here.</p>
+<p>There are also other subtle characteristics connected to the two above, which we won’t discuss here.</p>
 <p>These characteristics can be appropriate to some inference tasks, but not to others. It is again a matter of <em>background information</em> about the task one wants to solve.</p>
 <p>The background information implicit in the Dirichlet-mixture belief distribution can be reasonable in situations where:</p>
 <ul>
