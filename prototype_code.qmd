@@ -3,7 +3,105 @@
 {{< include macros_exchangeability.qmd >}}
 {{< include macros_opm.qmd >}}
 
+[**{{< fa person-digging >}} under construction {{< fa person-digging >}}**]{.yellow}
+
+----
+
 ## Code characteristics {#sec-code-features}
+
+The concrete formulae discussed in the previous [chapter @sec-dirichlet-mix] can be put into code, for use with generic statistical populations having only nominal variates. Software of this kind can in principle be written to allow for some or all of the task-versatility discussed in §§ [-@sec-categ-probtheory]--[-@sec-underlying-distribution], including for example the possibility of taking care (in a first-principled way!) of missing data. But the more versatile we make the software, the more memory, processing power, and computation time it will require.
+
+Roughly speaking, more versatility corresponds to calculations of the joint probability
+
+:::{.column-body-outset-right .small}
+$$
+\P(
+\blue 
+Z_{L}\mo  z_{L}
+\and
+\dotsb \and
+Z_{1}\mo z_1
+\black
+\| \yD
+)
+=
+\frac{1}{\amax-\amin+1}
+\sum_{\ya=\amin}^{\amax}
+\frac{
+\prod_{\bz} \bigl(\frac{2^{\ya}}{M} + \#\bz - 1\bigr)!
+}{
+\bigl(2^{\ya} + L -1 \bigr)!
+}
+\cdot
+\frac{
+\bigl(2^{\ya} -1 \bigr)!
+}{
+{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
+}
+$$
+:::
+
+for more values of the quantities $\blue Z_1, Z_2, \dotsc$. For instance, if data about unit #4 are missing, then we need to calculate the joint probability above for several (possibly all) values of $\blue Z_4$. If data about two units are missing, then we need to do an analogous calculation for all possible *combinations* of values; and so on.
+
+For our prototype, let's forgo versatility about units used as training data. From now on we abbreviate the set of training data from previous units as
+
+:::{.column-margin}
+Recall that $\bZ$ denotes all (nominal) variates of the population
+:::
+
+$$
+\data \defd
+(\blue
+Z_{1}\mo z_1 \land 
+Z_{2}\mo z_2 \land \dotsb 
+\black)
+$$
+
+where $\blue z_1, z_2, \dotsc$ are specific values, stored in some training dataset. No values are missing.
+
+Since the training $\data$ are given and fixed, we omit the suffix "${}_{N+1}$" that we have often used to indicate a "new" unit. So "$\blue Z\mo z$" simply refers to the variate $\bZ$ for the new unit.
+
+We allow for full versatility in forecasting a new unit. This means that we can decide, *on the spot for each new unit*, what the predictand variates are, and what the predictor variates (if any) are. For instance, if the population has three variates $\bZ=(\bA \and \bB \and \bC)$, our prototype can calculate, at each application on a new unit, inferences such as
+
+- $P(\bB\mo\dotso\|\data \and \yD)$: any one predictand variate, no predictors
+
+- $P(\bA\mo\dotso \and \bC\mo\dotso\|\data \and \yD)$: any two predictand variates, no predictors
+
+- $P(\bA\mo\dotso \and \bB\mo\dotso \and \bC\mo\dotso\|\data \and \yD)$: all three variates
+
+- $P(\bB\mo\dotso\|\bA\mo\dotso \and \data \and \yD)$: any one predictand variate, any other one predictor
+
+- $P(\bB\mo\dotso\| \bA\mo\dotso \and \bC\mo\dotso \and\data \and  \yD)$: any one predictand variate, any other two predictors
+
+- $P(\bA\mo\dotso \and \bC\mo\dotso\|\bB\mo\dotso \and \data \and \yD)$: any two predictand variates, any other one predictor
+
+
+To enjoy this versatility we need to calculate 
+
+$$
+\P(
+\blue Z \mo z
+\and
+\green\data
+\black \pmb{\|[\big]} \yD\bigr)
+$$
+
+for all possible values $\bz$.\ \ But note that this calculation need to be done *only once*. For a new unit we only need to combine the results already obtained, as sums and fractions. In three-variate example above, if we need to forecast $\red A\mo a$ given $\green C\mo c$, we have to calculate
+
+$$
+P(\red A\mo a \black \|\green C\mo c \black \and \data \and \yD)
+=
+\frac{
+\sum_{\blue b}
+P(\red A\mo a \black \and \blue B\mo b \black \and \green C\mo c \black \and \data \and \yD)
+}{
+\sum_{\purple \alpha}\sum_{\blue b}
+P(\red A\mo {\purple \alpha} \black \and \blue B\mo b \black \and \green C\mo c \black \and \data \and \yD)
+}
+$$
+
+
+We have a choice of how a general-purpose code to build. For instance
 
 A prototype R code for the Optimal Predictor Machine with Dirichlet-mixture background information is available at
 
@@ -15,9 +113,6 @@ The code implements the formulae of the previous [chapter @sec-dirichlet-mix] i
 
 The basic idea behind the code is to calculate the probability distribution for a new unit
 
-:::{.column-margin}
-Recall that $\bZ$ denotes all (nominal) variates of the population
-:::
 
 $$
 \P(
