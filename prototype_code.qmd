@@ -3,13 +3,75 @@
 {{< include macros_exchangeability.qmd >}}
 {{< include macros_opm.qmd >}}
 
-[**{{< fa person-digging >}} under construction {{< fa person-digging >}}**]{.yellow}
-
-----
-
-A concise documentation is here given of the R functions designed in [chapter @sec-code-design] and described in [§ @sec-code-computations], together with an example workflow for their use.
+A concise documentation is here given of the prototype R functions designed in [chapter @sec-code-design] and described in [§ @sec-code-computations], together with an example workflow for their use.
 
 The functions can be found in\
 [`https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal`](https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal)
+
+
+## Function documentation
+
+Optional arguments are written with `=...`, which specify their default values. Some additional optional arguments, mainly used for testing, are omitted in this documentation.
+
+{{< fa code >}} `guessmetadata(data, file=NULL)`
+: Input:
+    : - *`data`*: either a string with the file name of a dataset in `.csv` format (with header line), or a dataset given as a [`data.table` object](https://cran.r-project.org/package=data.table).
+	- *`file`*: a string specifying the file name of the metadata file. If no `file` is given and `data` is a file name, then `file` will be the same name as `data` but with the prefix `meta_`. If no `file` is given and `data` is not a string, then the metadata are output to `stdout`.
+	
+	Output:
+	: - either a `.csv` file containing the metadata, or a `data.table` object as `stdout`.
+
+\
+
+{{< fa code >}} `buildagent(metadata, data=NULL, kmi=-17, kma=17)`
+: Input:
+    : - *`metadata`*: either a string with the name of a metadata file in `.csv` format, or metadata given as a `data.table`.
+	- *`data`*: either a string with the file name of a *training* dataset in `.csv` format (with header line), or a training dataset given as a `data.table`.
+	- *`kmi`*: the $\amin$ parameter of formula (@eq-main-joint).
+	- *`kma`*: the $\amax$ parameter of formula (@eq-main-joint).
+	
+	Output:
+	: - an object of type `agent`, consisting of a list of one array and two vectors.
+
+\
+
+{{< fa code >}} `infer(agent, predictand=NULL, predictor=NULL)`
+: Input:
+    : - *`agent`*: an `agent` object.
+	- *`predictand`*: a vector of strings with the names of variates.
+	- *`predictor`*: either a list of elements of the form `variate=value`, or a corresponding one-row `data.table`.
+	
+	
+	Output:
+    : - the joint probability distribution $\P(\mathit{predictand} \| \mathit{predictor}\mo\cat{values} \and \data \and \yD)$ for all possible values of the predictands.
+	
+	Notes:
+	: - If *`predictors`* is present, the agent is acting as a "supervised-learning" algorithm. Otherwise it is acting as an "unsupervised-learning" algorithm. The obtained probabilities could be used to generate a new units similar to the ones observed.
+	    - If *`predictand`* is missing, the predictands are taken to be all variates not listed among the predictors (hence all variates, if no predictors are given).
+        - The variate names in the *`predictand`* and *`predictor`* inputs must match some variate names known to the agent. Unknown variate names are discarded. The function gives an error if predictand and predictor have variates in common.
+
+\
+
+{{< fa code >}} `decide(probs, utils=NULL, all=FALSE)`
+: Input:
+    : - *`probs`*: a probability distribution for one or more variates.
+	- *`utils`*: a named matrix or array of utilities. The **rows** of the matrix correspond to the available decisions, the **columns** or remaining array dimensions correspond to the possible values of the predictand variates.
+	- *`all`*: a boolean, `TRUE` if the output should have all decisions having maximal expected utilities (if more than one); `FALSE` (default) if the output should only have one of them, selected with equal probabilities.
+	
+	
+	Output:
+    : - a vector of strings with the decisions having maximal expected utility, if *`all`* is `TRUE`, or just one of them, selected with equal probability
+, if *`all`* is `FALSE` (the default).	
+	
+	Notes:
+	: - If *`utils`* is missing, a matrix of the form $\begin{bsmallmatrix}1&0\\0&1\end{bsmallmatrix}$ is assumed, corresponding to using *accuracy* as the decision metric.
+
+\
+
+----
+
+[**{{< fa person-digging >}} Further documentation will be added {{< fa person-digging >}}**]{.yellow}
+
+----
 
 

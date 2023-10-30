@@ -1,15 +1,14 @@
-guessmetadata <- function(data, file){
+guessmetadata <- function(data, file=NULL){
 #### Guess metadata information from dataset and save it in a metadata file
 #### Requires 'data.table'
     if(is.character(data)){
-            if(missing(file)){
+            if(is.null(file)){
                 file <- paste0('meta_',data)
             }
             data <- fread(data, na.strings='', header=TRUE)
         }else{
-            if(missing(file)){
+            if(is.null(file)){
                 cat("\n'file' argument missing: output to stdout\n")
-                file <- NULL
             }
         }
         ##

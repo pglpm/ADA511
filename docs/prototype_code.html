@@ -443,7 +443,13 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#function-documentation" id="toc-function-documentation" class="nav-link active" data-scroll-target="#function-documentation"><span class="header-section-number">34.1</span> Function documentation</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -483,13 +489,124 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 
 </div>
-<p><span class="yellow"><strong><i class="fa-solid fa-person-digging" aria-label="person-digging"></i> under construction <i class="fa-solid fa-person-digging" aria-label="person-digging"></i></strong></span></p>
-<hr>
-<p>A concise documentation is here given of the R functions designed in <a href="code_design.html">chapter&nbsp;&nbsp;<span>33</span></a> and described in <a href="code_design.html#sec-code-computations">§ &nbsp;<span>33.2</span></a>, together with an example workflow for their use.</p>
+<p>A concise documentation is here given of the prototype R functions designed in <a href="code_design.html">chapter&nbsp;&nbsp;<span>33</span></a> and described in <a href="code_design.html#sec-code-computations">§ &nbsp;<span>33.2</span></a>, together with an example workflow for their use.</p>
 <p>The functions can be found in<br>
 <a href="https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal"><code>https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal</code></a></p>
+<section id="function-documentation" class="level2" data-number="34.1">
+<h2 data-number="34.1" class="anchored" data-anchor-id="function-documentation"><span class="header-section-number">34.1</span> Function documentation</h2>
+<p>Optional arguments are written with <code>=...</code>, which specify their default values. Some additional optional arguments, mainly used for testing, are omitted in this documentation.</p>
+<dl>
+<dt><i class="fa-solid fa-code" aria-label="code"></i> <code>guessmetadata(data, file=NULL)</code></dt>
+<dd>
+<dl>
+<dt>Input:</dt>
+<dd>
+<ul>
+<li><em><code>data</code></em>: either a string with the file name of a dataset in <code>.csv</code> format (with header line), or a dataset given as a <a href="https://cran.r-project.org/package=data.table"><code>data.table</code> object</a>.</li>
+<li><em><code>file</code></em>: a string specifying the file name of the metadata file. If no <code>file</code> is given and <code>data</code> is a file name, then <code>file</code> will be the same name as <code>data</code> but with the prefix <code>meta_</code>. If no <code>file</code> is given and <code>data</code> is not a string, then the metadata are output to <code>stdout</code>.</li>
+</ul>
+</dd>
+<dt>Output:</dt>
+<dd>
+<ul>
+<li>either a <code>.csv</code> file containing the metadata, or a <code>data.table</code> object as <code>stdout</code>.</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><br>
+</p>
+<dl>
+<dt><i class="fa-solid fa-code" aria-label="code"></i> <code>buildagent(metadata, data=NULL, kmi=-17, kma=17)</code></dt>
+<dd>
+<dl>
+<dt>Input:</dt>
+<dd>
+<ul>
+<li><em><code>metadata</code></em>: either a string with the name of a metadata file in <code>.csv</code> format, or metadata given as a <code>data.table</code>.</li>
+<li><em><code>data</code></em>: either a string with the file name of a <em>training</em> dataset in <code>.csv</code> format (with header line), or a training dataset given as a <code>data.table</code>.</li>
+<li><em><code>kmi</code></em>: the <span class="math inline">\(k_{\text{mi}}\)</span> parameter of formula&nbsp;(<a href="code_design.html#eq-main-joint"><span>33.1</span></a>).</li>
+<li><em><code>kma</code></em>: the <span class="math inline">\(k_{\text{ma}}\)</span> parameter of formula&nbsp;(<a href="code_design.html#eq-main-joint"><span>33.1</span></a>).</li>
+</ul>
+</dd>
+<dt>Output:</dt>
+<dd>
+<ul>
+<li>an object of type <code>agent</code>, consisting of a list of one array and two vectors.</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><br>
+</p>
+<dl>
+<dt><i class="fa-solid fa-code" aria-label="code"></i> <code>infer(agent, predictand=NULL, predictor=NULL)</code></dt>
+<dd>
+<dl>
+<dt>Input:</dt>
+<dd>
+<ul>
+<li><em><code>agent</code></em>: an <code>agent</code> object.</li>
+<li><em><code>predictand</code></em>: a vector of strings with the names of variates.</li>
+<li><em><code>predictor</code></em>: either a list of elements of the form <code>variate=value</code>, or a corresponding one-row <code>data.table</code>.</li>
+</ul>
+</dd>
+<dt>Output:</dt>
+<dd>
+<ul>
+<li>the joint probability distribution <span class="math inline">\(\mathrm{P}(\mathit{predictand} \nonscript\:\vert\nonscript\:\mathopen{} \mathit{predictor}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;values;} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span> for all possible values of the predictands.</li>
+</ul>
+</dd>
+<dt>Notes:</dt>
+<dd>
+<ul>
+<li>If <em><code>predictors</code></em> is present, the agent is acting as a “supervised-learning” algorithm. Otherwise it is acting as an “unsupervised-learning” algorithm. The obtained probabilities could be used to generate a new units similar to the ones observed.</li>
+<li>If <em><code>predictand</code></em> is missing, the predictands are taken to be all variates not listed among the predictors (hence all variates, if no predictors are given).</li>
+<li>The variate names in the <em><code>predictand</code></em> and <em><code>predictor</code></em> inputs must match some variate names known to the agent. Unknown variate names are discarded. The function gives an error if predictand and predictor have variates in common.</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><br>
+</p>
+<dl>
+<dt><i class="fa-solid fa-code" aria-label="code"></i> <code>decide(probs, utils=NULL, all=FALSE)</code></dt>
+<dd>
+<dl>
+<dt>Input:</dt>
+<dd>
+<ul>
+<li><em><code>probs</code></em>: a probability distribution for one or more variates.</li>
+<li><em><code>utils</code></em>: a named matrix or array of utilities. The <strong>rows</strong> of the matrix correspond to the available decisions, the <strong>columns</strong> or remaining array dimensions correspond to the possible values of the predictand variates.</li>
+<li><em><code>all</code></em>: a boolean, <code>TRUE</code> if the output should have all decisions having maximal expected utilities (if more than one); <code>FALSE</code> (default) if the output should only have one of them, selected with equal probabilities.</li>
+</ul>
+</dd>
+<dt>Output:</dt>
+<dd>
+<ul>
+<li>a vector of strings with the decisions having maximal expected utility, if <em><code>all</code></em> is <code>TRUE</code>, or just one of them, selected with equal probability , if <em><code>all</code></em> is <code>FALSE</code> (the default).</li>
+</ul>
+</dd>
+<dt>Notes:</dt>
+<dd>
+<ul>
+<li>If <em><code>utils</code></em> is missing, a matrix of the form <span class="math inline">\(\begin{bsmallmatrix}1&amp;0\\0&amp;1\end{bsmallmatrix}\)</span> is assumed, corresponding to using <em>accuracy</em> as the decision metric.</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><br>
+</p>
+<hr>
+<p><span class="yellow"><strong><i class="fa-solid fa-person-digging" aria-label="person-digging"></i> Further documentation will be added <i class="fa-solid fa-person-digging" aria-label="person-digging"></i></strong></span></p>
+<hr>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
