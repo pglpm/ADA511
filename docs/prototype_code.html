@@ -448,6 +448,7 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#function-documentation" id="toc-function-documentation" class="nav-link active" data-scroll-target="#function-documentation"><span class="header-section-number">34.1</span> Function documentation</a></li>
+  <li><a href="#sec-opm-workflow" id="toc-sec-opm-workflow" class="nav-link" data-scroll-target="#sec-opm-workflow"><span class="header-section-number">34.2</span> Typical workflow</a></li>
   </ul>
 </nav>
     </div>
@@ -499,7 +500,7 @@ ul.task-list li input[type="checkbox"] {
 <dt><i class="fa-solid fa-code" aria-label="code"></i> <code>guessmetadata(data, file=NULL)</code></dt>
 <dd>
 <dl>
-<dt>Input:</dt>
+<dt>Arguments:</dt>
 <dd>
 <ul>
 <li><em><code>data</code></em>: either a string with the file name of a dataset in <code>.csv</code> format (with header line), or a dataset given as a <a href="https://cran.r-project.org/package=data.table"><code>data.table</code> object</a>.</li>
@@ -521,7 +522,7 @@ ul.task-list li input[type="checkbox"] {
 <dt><i class="fa-solid fa-code" aria-label="code"></i> <code>buildagent(metadata, data=NULL, kmi=-17, kma=17)</code></dt>
 <dd>
 <dl>
-<dt>Input:</dt>
+<dt>Arguments:</dt>
 <dd>
 <ul>
 <li><em><code>metadata</code></em>: either a string with the name of a metadata file in <code>.csv</code> format, or metadata given as a <code>data.table</code>.</li>
@@ -545,7 +546,7 @@ ul.task-list li input[type="checkbox"] {
 <dt><i class="fa-solid fa-code" aria-label="code"></i> <code>infer(agent, predictand=NULL, predictor=NULL)</code></dt>
 <dd>
 <dl>
-<dt>Input:</dt>
+<dt>Arguments:</dt>
 <dd>
 <ul>
 <li><em><code>agent</code></em>: an <code>agent</code> object.</li>
@@ -576,7 +577,7 @@ ul.task-list li input[type="checkbox"] {
 <dt><i class="fa-solid fa-code" aria-label="code"></i> <code>decide(probs, utils=NULL, all=FALSE)</code></dt>
 <dd>
 <dl>
-<dt>Input:</dt>
+<dt>Arguments:</dt>
 <dd>
 <ul>
 <li><em><code>probs</code></em>: a probability distribution for one or more variates.</li>
@@ -601,9 +602,96 @@ ul.task-list li input[type="checkbox"] {
 </dl>
 <p><br>
 </p>
-<hr>
-<p><span class="yellow"><strong><i class="fa-solid fa-person-digging" aria-label="person-digging"></i> Further documentation will be added <i class="fa-solid fa-person-digging" aria-label="person-digging"></i></strong></span></p>
-<hr>
+<p><span class="yellow small"><strong>(<i class="fa-solid fa-person-digging" aria-label="person-digging"></i> Further documentation will be added <i class="fa-solid fa-person-digging" aria-label="person-digging"></i>)</strong></span></p>
+<p><br>
+</p>
+</section>
+<section id="sec-opm-workflow" class="level2" data-number="34.2">
+<h2 data-number="34.2" class="anchored" data-anchor-id="sec-opm-workflow"><span class="header-section-number">34.2</span> Typical workflow</h2>
+<p>The workflow discussed here is just a guideline and reminder of important steps to be taken when applying an optimal agent to a given task. There cannot be more than a guideline, because each data-science and engineering problem is unique. Literally following some predefined, abstract workflow typically leads to sub-optimal results. Sub-optimal results can be acceptable in some unimportant problems, but are unacceptable in important problems, where, say, people’s lives can be involved, such as medical ones.</p>
+<p>We can roughly identify four main stages:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="opm_flow1.svg" class="img-fluid figure-img" style="width:50.0%"></p>
+</figure>
+</div>
+<ol type="1">
+<li><dl>
+<dt>Define the task</dt>
+<dd>
+In this stage we clarify what the task to be solved is – and <em>why</em>. Asking “why” often reveals the true needs and goals underlying the problem. If possible, the task is formalized. For example, the formal notions introduced in the parts <span class="yellow">Data I</span> and <span class="yellow">Data II</span> might be used: a specific statistical population is specified, with well-defined units and variates, and so on.
+</dd>
+</dl></li>
+</ol>
+<p><br>
+</p>
+<ol start="2" type="1">
+<li><dl>
+<dt>Collect &amp; prepare background info</dt>
+<dd>
+Background and metadata information are collected, examined, prepared. Remember that this kind of information is required in order to make sense of the data (<a href="beyond-ML.html#sec-underlying-distribution">§ &nbsp;<span>27.4</span></a>). In this stage we ask questions such as <span class="midgrey">“Is our belief about the task exchangeable?”</span>, <span class="midgrey">“Can the statistical population be considered infinite?”</span>, and similar question that make clear which kinds of ready-made methods and approximations are acceptable or not. This stage also helps for correcting possible deficiencies in the training data used in the next stage. For instance, some possible variate values might not appear in the training data, owing to their rarity in the statistical population.
+</dd>
+</dl>
+<p>In this stage it is especially important to specify:</p>
+<ul>
+<li>definition of units (what counts as “unit” and can be used as training data?)</li>
+<li>definition of variates and their domains</li>
+<li>initial probabilities</li>
+<li>possible decisions that may be required in the repeated task applications</li>
+<li>utilities associated with the decisions above</li>
+</ul></li>
+</ol>
+<p><br>
+</p>
+<ol start="3" type="1">
+<li><dl>
+<dt>Collect &amp; prepare training data</dt>
+<dd>
+Units similar to the units of our future inferences, but of which we have more complete information, are collected and examined. These are the “training data”. They are used in the next step to make the agent learn from examples. The problematic notion of similarity was discussed in <a href="populations_variates.html#sec-variates-populations">§ &nbsp;<span>20.2</span></a>: what counts as “similar” is difficult to decide, and often we shall have to revise our decision. Sometimes no units satisfactorily similar to those of interest are available. In this case we must assess which of their informational relationships can be considered similar, which may lead us to use the agent in slightly different ways. We must also check whether training units with partially missing variates can be used by our agent or not.
+</dd>
+</dl></li>
+</ol>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i> How many training data?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>“Data augmentation” is something necessary with particular machine-learning algorithms as a way to compensate or correct their internal background information, but does not apply to an optimal agent.</p>
+<p>The question <em>“how many training data should we use?”</em> does not make sense for an optimal agent which works according to probability theory and decision theory. The answer is simply “as many as you have available”.</p>
+<p>If no or few training data are available, then the optimal agent will automatically absorb as much information as possible from them, and combine it with its background information to draw optimal inferences and make optimal decisions.</p>
+<p>Giving artificial training data to the agent, just to increase the number of training data, is pointless and dangerous.</p>
+<p>Pointless, because the agent is, in fact, automatically “simulating” artificial data internally as needed, from its background information and the real training data available. This is exactly what the belief distribution <span style="display:inline-block;"><span class="math inline">\(\mathrm{p}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{34,136,51}data},\mathsfit{D})\)</span></span> is doing: remember that the agent is internally considering <em>all possible populations of data</em> (<a href="inference_about_freqs.html">chapter&nbsp;&nbsp;<span>30</span></a>).</p>
+<p>Dangerous, because artificial data may contain incorrect information, leading the agent to arrive at sub-optimal and potentially disastrously deceiving results.</p>
+</div>
+</div>
+<p><br>
+</p>
+<ol start="4" type="1">
+<li><dl>
+<dt>Prepare OPM agent</dt>
+<dd>
+The background information and training data (if any available) are finally fed to the agent.
+</dd>
+</dl></li>
+</ol>
+<p><br>
+</p>
+<ol start="5" type="1">
+<li><dl>
+<dt>Repeated application</dt>
+<dd>
+Inferences are drawn, and decision made, for each new application instance. With our prototype agent, the inferences and the decisions can in principle be different from instance to instance.
+</dd>
+</dl></li>
+</ol>
+<p><br>
+</p>
+<p><span class="yellow small"><strong>(<i class="fa-solid fa-person-digging" aria-label="person-digging"></i> Remaining steps to be added soon <i class="fa-solid fa-person-digging" aria-label="person-digging"></i>)</strong></span></p>
 
 
 </section>

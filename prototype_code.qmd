@@ -14,7 +14,7 @@ The functions can be found in\
 Optional arguments are written with `=...`, which specify their default values. Some additional optional arguments, mainly used for testing, are omitted in this documentation.
 
 {{< fa code >}} `guessmetadata(data, file=NULL)`
-: Input:
+: Arguments:
     : - *`data`*: either a string with the file name of a dataset in `.csv` format (with header line), or a dataset given as a [`data.table` object](https://cran.r-project.org/package=data.table).
 	- *`file`*: a string specifying the file name of the metadata file. If no `file` is given and `data` is a file name, then `file` will be the same name as `data` but with the prefix `meta_`. If no `file` is given and `data` is not a string, then the metadata are output to `stdout`.
 	
@@ -24,7 +24,7 @@ Optional arguments are written with `=...`, which specify their default values. 
 \
 
 {{< fa code >}} `buildagent(metadata, data=NULL, kmi=-17, kma=17)`
-: Input:
+: Arguments:
     : - *`metadata`*: either a string with the name of a metadata file in `.csv` format, or metadata given as a `data.table`.
 	- *`data`*: either a string with the file name of a *training* dataset in `.csv` format (with header line), or a training dataset given as a `data.table`.
 	- *`kmi`*: the $\amin$ parameter of formula (@eq-main-joint).
@@ -36,7 +36,7 @@ Optional arguments are written with `=...`, which specify their default values. 
 \
 
 {{< fa code >}} `infer(agent, predictand=NULL, predictor=NULL)`
-: Input:
+: Arguments:
     : - *`agent`*: an `agent` object.
 	- *`predictand`*: a vector of strings with the names of variates.
 	- *`predictor`*: either a list of elements of the form `variate=value`, or a corresponding one-row `data.table`.
@@ -53,7 +53,7 @@ Optional arguments are written with `=...`, which specify their default values. 
 \
 
 {{< fa code >}} `decide(probs, utils=NULL, all=FALSE)`
-: Input:
+: Arguments:
     : - *`probs`*: a probability distribution for one or more variates.
 	- *`utils`*: a named matrix or array of utilities. The **rows** of the matrix correspond to the available decisions, the **columns** or remaining array dimensions correspond to the possible values of the predictand variates.
 	- *`all`*: a boolean, `TRUE` if the output should have all decisions having maximal expected utilities (if more than one); `FALSE` (default) if the output should only have one of them, selected with equal probabilities.
@@ -68,10 +68,65 @@ Optional arguments are written with `=...`, which specify their default values. 
 
 \
 
-----
+[**({{< fa person-digging >}} Further documentation will be added {{< fa person-digging >}})**]{.yellow .small}
 
-[**{{< fa person-digging >}} Further documentation will be added {{< fa person-digging >}}**]{.yellow}
+\
 
-----
+## Typical workflow {#sec-opm-workflow}
 
+The workflow discussed here is just a guideline and reminder of important steps to be taken when applying an optimal agent to a given task. There cannot be more than a guideline, because each data-science and engineering problem is unique. Literally following some predefined, abstract workflow typically leads to sub-optimal results. Sub-optimal results can be acceptable in some unimportant problems, but are unacceptable in important problems, where, say, people's lives can be involved, such as medical ones.
 
+We can roughly identify four main stages:
+
+![](opm_flow1.svg){width=50% fig-align="center"}
+
+1. Define the task
+: In this stage we clarify what the task to be solved is -- and *why*. Asking "why" often reveals the true needs and goals underlying the problem. If possible, the task is formalized. For example, the formal notions introduced in the parts [Data I]{.yellow} and [Data II]{.yellow} might be used: a specific statistical population is specified, with well-defined units and variates, and so on.
+
+\
+
+2. Collect & prepare background info
+: Background and metadata information are collected, examined, prepared. Remember that this kind of information is required in order to make sense of the data ([§ @sec-underlying-distribution]). In this stage we ask questions such as ["Is our belief about the task exchangeable?"]{.midgrey}, ["Can the statistical population be considered infinite?"]{.midgrey}, and similar question that make clear which kinds of ready-made methods and approximations are acceptable or not. This stage also helps for correcting possible deficiencies in the training data used in the next stage. For instance, some possible variate values might not appear in the training data, owing to their rarity in the statistical population.
+    
+	In this stage it is especially important to specify:
+	
+	- definition of units (what counts as "unit" and can be used as training data?)
+	- definition of variates and their domains
+	- initial probabilities
+	- possible decisions that may be required in the repeated task applications
+	- utilities associated with the decisions above
+
+\
+
+3. Collect & prepare training data
+: Units similar to the units of our future inferences, but of which we have more complete information, are collected and examined. These are the "training data". They are used in the next step to make the agent learn from examples. The problematic notion of similarity was discussed in [§ @sec-variates-populations]: what counts as "similar" is difficult to decide, and often we shall have to revise our decision. Sometimes no units satisfactorily similar to those of interest are available. In this case we must assess which of their informational relationships can be considered similar, which may lead us to use the agent in slightly different ways. We must also check whether training units with partially missing variates can be used by our agent or not.
+
+:::{.callout-warning}
+## {{< fa exclamation-triangle >}} How many training data?
+
+"Data augmentation" is something necessary with particular machine-learning algorithms as a way to compensate or correct their internal background information, but does not apply to an optimal agent.
+
+The question *"how many training data should we use?"* does not make sense for an optimal agent which works according to probability theory and decision theory. The answer is simply "as many as you have available".
+
+If no or few training data are available, then the optimal agent will automatically absorb as much information as possible from them, and combine it with its background information to draw optimal inferences and make optimal decisions.
+
+Giving artificial training data to the agent, just to increase the number of training data, is pointless and dangerous.
+
+Pointless, because the agent is, in fact, automatically "simulating" artificial data internally as needed, from its background information and the real training data available. This is exactly what the belief distribution $\p(F\mo\vf \| \data,\yD)$ is doing: remember that the agent is internally considering *all possible populations of data* ([chapter @sec-inference-exch]).
+
+Dangerous, because artificial data may contain incorrect information, leading the agent to arrive at sub-optimal and potentially disastrously deceiving results.
+:::
+
+\
+
+4. Prepare OPM agent
+: The background information and training data (if any available) are finally fed to the agent.
+
+\
+
+5. Repeated application
+: Inferences are drawn, and decision made, for each new application instance. With our prototype agent, the inferences and the decisions can in principle be different from instance to instance.
+
+\
+
+[**({{< fa person-digging >}} Remaining steps to be added soon {{< fa person-digging >}})**]{.yellow .small}
