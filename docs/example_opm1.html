@@ -6,11 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Steffen Mæland">
-<meta name="author" content="PierGianLuca Porta Mana">
 <meta name="dcterms.date" content="2023-10-30">
 
-<title>ADA511 0.1 Data science and data-driven engineering</title>
+<title>ADA511 0.1 Data science and data-driven engineering - 35&nbsp; Example application: adult-income task</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -33,7 +65,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./preface.html" rel="next">
+<link href="./making_decisions.html" rel="next">
+<link href="./prototype_code.html" rel="prev">
 <link href="./favicon.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -44,8 +77,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
-<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -66,9 +97,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -76,7 +104,7 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="ada511styles.css">
 </head>
 
-<body class="nav-sidebar docked slimcontent">
+<body class="nav-sidebar docked">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -85,7 +113,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Dear student<br> and aspiring data engineer</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./dirichlet-mixture.html"><span class="red"><strong>A prototype Optimal Predictor Machine</strong></span></a></li><li class="breadcrumb-item"><a href="./example_opm1.html"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">[Prototype code and workflow]{.red}</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -122,7 +150,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Dear student<br> and aspiring data engineer</span></a>
   </div>
 </li>
@@ -424,7 +452,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./example_opm1.html" class="sidebar-item-text sidebar-link">
+  <a href="./example_opm1.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title"><span class="red">Prototype code and workflow</span></span></span></a>
   </div>
 </li>
@@ -453,37 +481,20 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#dear-student-and-aspiring-data-engineer" id="toc-dear-student-and-aspiring-data-engineer" class="nav-link active" data-scroll-target="#dear-student-and-aspiring-data-engineer">Dear student<br> and aspiring data engineer</a>
-  <ul class="collapse">
-  <li><a href="#your-role-in-the-course-bugs-features" id="toc-your-role-in-the-course-bugs-features" class="nav-link" data-scroll-target="#your-role-in-the-course-bugs-features">Your role in the course <br>Bugs &amp; features</a></li>
-  <li><a href="#course-structure" id="toc-course-structure" class="nav-link" data-scroll-target="#course-structure">Course structure</a></li>
-  </ul></li>
-  </ul>
-</nav>
+        
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">ADA511 <span class="small grey">0.1</span> <br>Data science and data-driven engineering</h1>
+<h1 class="title"><span id="sec-code-workflow" class="quarto-section-identifier"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title"><span class="red">Example application: adult-income task</span></span></span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Authors</div>
-    <div class="quarto-title-meta-contents">
-             <p>Steffen Mæland </p>
-             <p>PierGianLuca Porta Mana </p>
-          </div>
-  </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
@@ -498,200 +509,28 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p><img src="ada511logo8b.png" title="ADA511 [0.1]{.small .grey} <br>Data science and data-driven engineering" class="quarto-cover-image img-fluid"></p>
 <div class="hidden">
 <p><span class="math display">\[
 \DeclarePairedDelimiters{\set}{\{}{\}}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \]</span></p>
 </div>
-<p><em>If you can’t join ’em,<br>
-beat ’em.</em><br>
-<span style="text-align:right;font-size:75%">(<a href="https://www.nobelprize.org/prizes/physics/1965/schwinger/biographical/">J. Schwinger</a>)</span></p>
-<section id="dear-student-and-aspiring-data-engineer" class="level1 unnumbered page-columns page-full">
-<h1 class="unnumbered">Dear student<br> and aspiring data engineer</h1>
-<p>The goal of this course is not to help you learn how to tune the parameters of the latest kind of deep network, or how to efficiently handle large amounts of data, or how to do cross-validation in the fastest way, or what is the latest improvement in random-forest algorithms.</p>
-<p>The goal of this course is to help you learn the principles to build the machine-learning algorithms and AI devices <em>of the future</em>. And, as a side effect, you’ll also learn how to concretely improve present-day algorithms, and also how to determine if any of them has already reached its maximal theoretical performance.</p>
-<p>How can such a goal be achieved?</p>
-<p>There is a small set of rules and one method that are <em>mathematically guaranteed</em> to output the optimal solution of any inference, prediction, classification, regression, and decision problem. You can think of this as the “unbeatable universal machine”. Or, from an AI point of view, you can think of these rules and method as the “laws of robotics” that should govern any ideal AI designed to draw inferences and make decisions.</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p><span style="font-size:60%;"><span class="math display">\[
-\begin{aligned}
-&amp;\color[RGB]{68,119,170}\mathrm{P}(\lnot\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X}) = 1 - \mathrm{P}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X})
-\\[0.5ex]
-&amp;\color[RGB]{68,119,170}\mathrm{P}(\mathsfit{Z}\land\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X}) =
-\mathrm{P}(\mathsfit{Z} \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{Y}\land\mathsfit{X})\cdot \mathrm{P}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{X})
-\\[0.5ex]
-&amp;\color[RGB]{68,119,170}\mathrm{P}(\mathsfit{Z}\lor\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X}) =
-\mathrm{P}(\mathsfit{Z} \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X}) + \mathrm{P}(\mathsfit{Y} \nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X}) - \mathrm{P}(\mathsfit{Z}\land\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X})
-\\[0.5ex]
-&amp;\color[RGB]{68,119,170}\mathrm{P}(\mathsfit{X}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X} \land \mathsfit{Z}) = 1
-\\[1ex]
-&amp;\color[RGB]{34,136,51}\texttt{\small choose }\ \argmax_{\mathsfit{D}}\ \sum_{\mathsfit{Y}}\mathrm{U}(\mathsfit{Y} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D}\land \mathsfit{X})\cdot \mathrm{P}(\mathsfit{Y} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D} \land\mathsfit{X})
-\end{aligned}
-\]</span></span></p>
-</div></div><div class="page-columns page-full"><p>These rules and method are quite easy to grasp and understand, but are computationally extremely expensive; the more so, the more data points and data dimensions we need to deal with. Current machine-learning algorithms, from deep networks to large language models (chatGPT), are <em>approximations</em> to this ideal universal method; each one uses a different kind of approximation. The upside of these approximations is that they allow for much faster computations; their downside is that they generally give <em>sub-optimal</em> results.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;Is a suboptimality of, say, just 0.1% important? In a life-or-death situation for 1 000 000 people, 0.1% means 1000 more deaths.</p></li></div></div>
-<p>Approximations evolve toward the maximally optimal ideal method. The approximations used at any given time in history exploit the computational technologies then available. Deep networks, for instance, would have been a useless approximation 50 years ago, before the introduction of Graphical Processing Units.</p>
-<p>Every new technological advance (think of possibly forthcoming quantum computers) opens up possibilities for new approximations that get us closer to the ideal optimum. To <em>see</em> and <em>realize</em> these possibilities, or to judge whether they have already been realized, a data scientist needs at the very least:</p>
-<p><span class="blue">- <i class="fa-solid fa-user-astronaut" aria-label="user-astronaut"></i>&nbsp;&nbsp;to know the foundation of the maximally optimal method</span></p>
-<p><span class="green">- <i class="fa-solid fa-box-open" aria-label="box-open"></i>&nbsp;&nbsp;to think outside the box</span></p>
-<p>Without the <span class="blue">first requirement</span>, how do you know what is <em>the target</em> to approximate towards, and how far you are from it? You risk:<br>
-<span class="red"><i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i></span> making an approximation that leads to worse results than before;<br>
-<span class="red"><i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i></span> evaluating the approximation in the wrong way, so you don’t even realize it’s worse than before;<br>
-<span class="red"><i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i></span> trying to improve an approximation that has already attained the theoretical optimum. Think about an engine that has already the maximal efficiency dictated by thermodynamics; and an engineer, ignorant of thermodynamics, who wastes effort in trying to improve it further.</p>
-<p>Without the <span class="green">second requirement</span>, you risk missing to take full advantage of the new technological possibilities. Consider the evolution of transportation: if you keep thinking in terms of how to improve a horse-carriage wooden wheels, you’ll never conceive a combustion engine; if you keep thinking in terms of how to improve combustion fuel, you’ll never conceive an electric motor. Existing approximations may of course be good starting points; but you need to clearly understand how they approximate the ideal optimum – so we’re back to the first requirement.</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p><img src="ibm_quantum.jpg" class="img-fluid" style="width:100.0%"> What new ways of doing data science will quantum computers lead to?</p>
-</div></div><p>If you want to make advances in machine learning and AI, you must know how the ideal universal algorithm looks like, and you must not limit yourself to thinking of “training sets”, “cross-validation”, “supervised learning”, “overfitting”, “models”, and similar notions. In this course you’ll see for yourself that such notions are anchored to the present-day box of approximations.</p>
-<p>And we want to think outside that box.</p>
-<p>But don’t worry: this course does not only want to prepare you for the future. With the knowledge and insights acquired, you will be able to <em>propose and implement concrete improvements</em> to present-day methods as well, or calculate whether they can’t be improved further.</p>
-<section id="your-role-in-the-course-bugs-features" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="your-role-in-the-course-bugs-features">Your role in the course <br>Bugs &amp; features</h2>
-<p>This course is still in an experimental, “alpha” version. So you will not only learn something from it (hopefully), but also test it together with us, and help improving it for future students. Thank you for this in advance!</p>
-<p>For this reason it’s good to clarify some goals and guidelines of this course: </p>
-<dl class="page-columns page-full">
-<dt><span class="green"><i class="fa-solid fa-square-root-alt" aria-label="square-root-alt"></i>&nbsp;&nbsp;Light maths requirements</span></dt>
-<dd>
-We believe that the fundamental rules and methods can be understood and also used (at least in not too complex applications) without complex mathematics. Indeed the basic laws of inference and decision-making involve only the four basic operations <span class="green"><span class="math inline">\(+ - \times /\)</span></span>. So this course only requires maths at a beginning first-year undergraduate level.<br>
-<br>
-
-</dd>
-<dt><span class="green"><i class="fa-solid fa-coffee" aria-label="coffee"></i>&nbsp;&nbsp;Informal style</span></dt>
-<dd>
-The course notes are written in an informal style; for example they are not developed along “definitions”, “lemmata”, “theorems”. This does not mean that they are inexact. We will warn you about parts that are oversimplified or that only cover special contexts.<br>
-<br>
-
-</dd>
-<dt><span class="green"><i class="fa-solid fa-language" aria-label="language"></i>&nbsp;&nbsp;Names don’t constitute knowledge</span></dt>
-<dd class="page-columns page-full">
-
-<div class="no-row-height column-margin column-container"><div class="">
-<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/lFIYKmos3-s" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
-</div></div><div class="page-columns page-full"><p>In these course notes you’ll often stumble upon <span class="blue"><strong>terms in blue bold</strong></span> and <span class="blue"><em>definitions in blue Italics</em></span>. This typographic emphasis does <span class="red"><strong><em>not</em></strong></span> mean that those terms and definitions should be <span class="red"><strong><em>memorized</em></strong></span>: rather, it means that there are important <span class="green"><strong><em>ideas</em></strong></span> around there which you must try to <span class="green"><strong><em>understand</em></strong></span> and <span class="green"><strong><em>use</em></strong></span>. In fact we don’t care which terminology you adopt. Instead of the term <span class="blue"><strong>statistical population</strong></span>, feel free to use the term <span class="blue"><strong>pink apple</strong></span> if you like, as long you explain the terms you use by means of a discussion and examples.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> What’s important is that you know, can recognize, and can correctly use the ideas behind technical terms.<br>
-<span class="small midgrey">Memorizing terms, definitions, and where to use them, is how large language models (like chatGPT) operate. If your study is just memorization of terms, you’ll have difficulties finding jobs in the future, because there will be algorithms that can do that better and at a cheaper cost than you.</span><br>
-</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;Some standard technical terms are no better. The common term <em>random variable</em>, for instance, often denotes something that is actually <em>not “random”</em> and <em>not variable</em>. Go figure. Using the term <em>green banana</em> would be less misleading!</p></li></div></div>
-</dd>
-<dt><span class="green"><i class="fa-solid fa-book" aria-label="book"></i>&nbsp;&nbsp;Diverse textbooks</span></dt>
-<dd>
-This course does not have only one textbook: it refers to and merges together parts from several books and articles. As you read these works, you will notice that they adopt quite different terminologies, employ different symbolic notations, give different definitions for similar ideas, and sometimes even contradict each other.<br>
-<span class="yellow"><strong><em>These differences and contradictions are a feature, not a bug!</em></strong></span><br>
-You might think that this makes studying more difficult; but it actually helps you to really understand an idea and acquire real knowledge, because it forces you to go <em>beyond</em> words, symbols, and specific points of view and examples. This point connects with the previous point, “names don’t constitute knowledge”. The present course notes will help you build comprehension bridges across those books.<br>
-<br>
-
-</dd>
-<dt><span class="green"><i class="fa-solid fa-robot" aria-label="robot"></i>&nbsp;&nbsp;Artificial intelligence</span></dt>
-<dd class="page-columns page-full">
-<p>In order to grasp and use the fundamental laws of inference and decision-making, we shall use notions that are also at the foundations of Artificial Intelligence (and less common in present-day machine learning). So you’ll also get a light introduction to AI for free. Indeed, a textbook that we’ll draw frequently from is Russell &amp; Norvig’s <em>Artificial Intelligence: A Modern Approach</em> (we’ll avoid part&nbsp;V on machine learning, however, because it’s poorly explained and written).</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p><img src="AI_a_modern_approach.jpg" class="img-fluid" style="width:60.0%"></p>
-</div></div></dd>
-<dt><span class="green"><i class="fa-solid fa-wrench" aria-label="wrench"></i>&nbsp;&nbsp;Concrete examples</span></dt>
-<dd>
-Some students find it easier to grasp an idea by starting from an abstract description and then examining concrete examples; some find it easier the other way around. We try to make both happy by alternating between the two approaches. Ideas and notions are always accompanied by examples that we try to keep simple yet realistic, drawing from scenarios ranging from glass forensics to hotel booking.<br>
-<br>
-
-</dd>
-<dt><span class="green"><i class="fa-solid fa-code" aria-label="code"></i>&nbsp;&nbsp;Code</span></dt>
-<dd>
-We shall perform inferences on concrete datasets, also comparing different methodologies. Most of these can be performed with any specific programming language, so you can use your favourite one – remember that we want to try to think outside the box of present-day technologies, and that includes present-day programming languages. Most examples in class and in exercises will be given in <a href="https://www.r-project.org/"><code>R</code></a> and <a href="https://www.python.org/"><code>Python</code></a>, but are easily translated into other languages.<br>
-<br>
-
-</dd>
-<dt><span class="green"><i class="fa-solid fa-rocket" aria-label="rocket"></i>&nbsp;&nbsp;Extra material</span></dt>
-<dd class="page-columns page-full">
-<p>The course has strong connections with many other disciplines, such as <span class="yellow">formal logic</span>, <span class="yellow">proof theory</span>, <span class="yellow">psychology</span>, <span class="yellow">philosophy</span>, <span class="yellow">physics</span>, and <span class="yellow">environmental sciences</span>. We have tried to provide a lot of extra reading material in “For the extra curious” side boxes, for those who want to deepen their understanding of topics covered or just connected to the present course. Maybe you’ll stumble into a new passion or even into your life call?</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<i class="fa-solid fa-rocket" aria-label="rocket"></i> For the extra curious
-</div>
-</div>
-<div class="callout-body-container callout-body">
+<div class="hidden">
 
 </div>
+<div class="hidden">
+
 </div>
-</div></div></dd>
-</dl>
-</section>
-<section id="course-structure" class="level2">
-<h2 class="anchored" data-anchor-id="course-structure">Course structure</h2>
-<p>The course structure reflects the way in which the ideal universal decision-making machine works. It can be roughly divided into three or four parts, illustrated as follows (this is just a caricature, don’t take this diagram too literally):</p>
 <div class="cell">
-<div class="cell-output-display">
-<div>
-<div>
-<pre class="mermaid mermaid-js">flowchart TB
-  P{{probability}} --o Z[/max expected utility\]
-  subgraph probability [ ]
-  S([sentences]) --&gt; P
-  end
-  subgraph data [ ]
-  A[quantity] --o S
-%%  D[value] --o S
-  E[population] --o S
-  F[...] -.-o S
-  end
-  G[(problem)] --x A &amp; E %% &amp; D
-  G -.-x F
-  U{{utility}} --o Z
-  subgraph utility [ ]
-  C[decisions] --o S
-  S --&gt; U
-  T([gains]) --&gt; U
-  Q([costs]) --&gt; U
-  end
-  G --x C &amp; T &amp; Q
-  subgraph exp [ ]
-  Z --&gt; W(optimal solution)
-  end
-  %%
-  style G fill:#e67
-  style A fill:#cb4,stroke-width:0pt
-%%  style D fill:#cb4,stroke-width:0pt
-  style E fill:#cb4,stroke-width:0pt
-  style F fill:#cb4,stroke-width:0pt
-  style S fill:#283,color:#fff
-  style P fill:#283,stroke-width:3pt,color:#fff
-  style C fill:#6ce,stroke-width:0pt
-  style T fill:#6ce,stroke-width:0pt
-  style Q fill:#6ce,stroke-width:0pt
-  style U fill:#6ce,stroke-width:3pt
-  style Z fill:#47a,color:#fff,stroke-width:0pt,color:#fff
-  style W fill:#47a,color:#fff,stroke-width:0pt,color:#fff
-  style probability fill:#fff,stroke:#283,stroke-width:1px
-  style data fill:#fff,stroke:#cb4,stroke-width:1px
-  style utility fill:#fff,stroke:#6ce,stroke-width:1px
-  style exp fill:#fff,stroke:#47a,stroke-width:1px
-</pre>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/tplotfunctions.R'</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/OPM-nominal/guessmetadata.R'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/OPM-nominal/buildagent.R'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/OPM-nominal/infer.R'</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/OPM-nominal/decide.R'</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/OPM-nominal/plotFsamples1D.R'</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/OPM-nominal/rF.R'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-</div>
-</div>
-<ul>
-<li><p><span class="yellow"><strong>Data</strong></span> parts develop the language in which a <span class="red"><strong>problem</strong></span> can be fed into the decision-making machine. Here you will also learn about important pitfalls in handling data.</p></li>
-<li><p><span class="green"><strong>Inference</strong></span> parts develop the “inference engine” of the machine. Here you will learn ideas at the foundation of AI; and you will also meet probability, but from a point of view that may be quite novel to you – and much more fun.</p></li>
-</ul>
-<p>These two parts will alternate so that their development proceeds almost in parallel.</p>
-<ul>
-<li><p>The <span class="lightblue"><strong>utility</strong></span> part develops the “decision engine” of the machine. Here you will meet several ideas that will probably be quite new to you – but also very simple and intuitive.</p></li>
-<li><p>The final <span class="blue"><strong>solution</strong></span> part simply shows how the inference and utility engines combine together to yield the optimal solution to the problem. This part is simple, short, intuitive; it will be a breeze.</p></li>
-</ul>
-<p><br>
-</p>
-<p>As soon as the <span class="green">inference</span> and <span class="yellow">data</span> parts are complete, you will be able to apply the machine to real inference problems, and also learn how the solution is approximated in some popular machine-learning algorithms.</p>
-<p>These applications will immediately extend to decision problems as the short <span class="lightblue">utility</span> and <span class="blue">solution</span> part are covered. Again you will also see how this solution is approximated in other machine-learning algorithms, classification and regression ones.</p>
 
-
-</section>
-</section>
 
 
 </main> <!-- /main -->
@@ -944,10 +783,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./prototype_code.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title"><span class="red">Prototype code and workflow</span></span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./preface.html" class="pagination-link">
-        <span class="nav-page-text">Preface</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./making_decisions.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title"><span class="blue">The omnipresence of decision-making in machine learning</span></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
