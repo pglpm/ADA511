@@ -1,4 +1,4 @@
-forecast <- function(agent, predictand=NULL, predictor=NULL){
+infer <- function(agent, predictand=NULL, predictor=NULL){
 #### Calculate conditional or unconditional probability
     variates <- names(dimnames(agent[['counts']]))
     ##

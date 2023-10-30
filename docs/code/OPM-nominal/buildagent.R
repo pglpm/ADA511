@@ -1,4 +1,4 @@
-buildP <- function(metadata, data=NULL, kmi=-17, kma=17, alphas=NULL, base=2){
+buildagent <- function(metadata, data=NULL, kmi=-17, kma=17, alphas=NULL, base=2){
 #### Build object encoding background knowledge and learned knowledge
 #### Requires 'data.table'
     ##
@@ -69,16 +69,16 @@ buildP <- function(metadata, data=NULL, kmi=-17, kma=17, alphas=NULL, base=2){
     freqscounts <- tabulate(c(counts)+1)
     counts1 <- which(freqscounts > 0) # discard non-appearing ones
     freqscounts <- freqscounts[counts1]
-    valphas <- sapply(alphas, function(alpha){
+    auxalphas <- sapply(alphas, function(alpha){
         sum(freqscounts * lgamma(counts1-1 + alpha/M))
     })  - M*lgamma(alphas/M) + lgamma(alphas) + logpalphas0
     ##
     ## Updated probabilities of alpha parameters, for frequency forecasts
-    palphas <- valphas - lgamma(alphas + NN)
+    palphas <- auxalphas - lgamma(alphas + NN)
     palphas <- exp(palphas-max(palphas))
     palphas <- palphas/sum(palphas)
     ##
-    valphas <- valphas - lgamma(alphas + NN + 1)
+    auxalphas <- auxalphas - lgamma(alphas + NN + 1)
     ##
-    list(counts=counts, alphas=alphas, valphas=valphas, palphas=palphas)
+    list(counts=counts, alphas=alphas, auxalphas=auxalphas, palphas=palphas)
 }

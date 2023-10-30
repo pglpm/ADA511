@@ -1,7 +1,6 @@
-forecastP <- function(P, predictand=NULL, predictor=NULL, Pout=FALSE){
+infer <- function(agent, predictand=NULL, predictor=NULL){
 #### Calculate conditional or unconditional probability
-    variates <- names(dimnames(P[['counts']]))
-    M <- length(P[['counts']])
+    variates <- names(dimnames(agent[['counts']]))
     ##
     ## Selection of predictor values, if given
     ##
@@ -25,28 +24,19 @@ forecastP <- function(P, predictand=NULL, predictor=NULL, Pout=FALSE){
         ## select subarray of counts corresponding to the predictor values
         totake <- as.list(rep(TRUE, length(variates)))
         totake[ipredictor] <- predictor
-        counts <- do.call(`[`, c(list(P[['counts']]), totake))
+        counts <- do.call(`[`, c(list(agent[['counts']]), totake))
         if(is.null(dim(counts))){
             dim(counts) <- length(counts)
-            dimnames(counts) <- dimnames(P[['counts']])[-ipredictor]
+            dimnames(counts) <- dimnames(agent[['counts']])[-ipredictor]
         }
     }else{
         ## no predictors specified
-        counts <- P[['counts']]
+        counts <- agent[['counts']]
     }
     ##
-    ## create an array of forecast variates and alphas
-    counts <- outer(P[['alphas']]/M,
-                    counts,
-                    `+`)
-    ##
-    ## ## (note-to-self: aperm+sapply is half as fast)
-    ## counts <- log(aperm(
-    ##     sapply(P[['alphas']], function(alpha){
-    ##         alpha + counts
-    ##     }, simplify='array'),
-    ##     c(length(dim(counts))+1, 1:length(dim(counts)))
-    ## ))
+    ## Select n alpha parameters according to their probabilities given data
+    ## length(agent[['counts']]) =: M
+    alphas <- agent[['alphas']]/length(agent[['counts']])
     ##
     ## Selection of predictand variates
     if(!is.null(predictand)){
@@ -59,17 +49,30 @@ forecastP <- function(P, predictand=NULL, predictor=NULL, Pout=FALSE){
         if(length(intersect(predictand, names(predictor))) > 0){
             stop('Some variates appear in predictand and predictor')
         }
+        ##
         ipredictand <- match(predictand, variates) # predictand-index
+        ## Multiplicative factor for alpha samples, owing to marginalization
+        alphas <- prod(dim(counts)[-ipredictand]) * alphas
         ##
         ## Marginalize frequencies
-        counts <- apply(counts, c(1L, ipredictand+1L), sum)
-        ## if(is.null(dim(counts))){
-        ##     dim(counts) <- length(counts)
-        ##     dimnames(counts) <- dimnames(P[['counts']])[predictand]
-        ## }
+        counts <- apply(counts, ipredictand, sum)
+        if(is.null(dim(counts))){
+            dim(counts) <- length(counts)
+            dimnames(counts) <- dimnames(agent[['counts']])[ipredictand]
+        }
     }
     ##
-    counts <- log(counts) + P[['valphas']]
+    ## create an array of alphas and counts
+    counts <- outer(alphas, counts, `+`)
+    ##
+    ## ## (note-to-self: aperm+sapply is half as fast)
+    ## counts <- log(aperm(
+    ##     sapply(agent[['alphas']], function(alpha){
+    ##         alpha + counts
+    ##     }, simplify='array'),
+    ##     c(length(dim(counts))+1, 1:length(dim(counts)))
+    ## ))
+    counts <- log(counts) + agent[['auxalphas']]
     ##
     temp <- dimnames(counts)[-1]
     counts <- colSums(exp(counts-max(counts)))
