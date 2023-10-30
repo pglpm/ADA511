@@ -1,10 +1,15 @@
-rF <- function(n=1, P, predictand=NULL, predictor=NULL){
+rF <- function(n=1, agent, predictand=NULL, predictor=NULL){
 #### Return a sample of full-population frequency
 #### Requires 'extraDistr'
-    variates <- names(dimnames(P[['freqs']]))
+    variates <- names(dimnames(agent[['counts']]))
     ##
     ## Selection of predictor values
-    ## select subarray of freqs corresponding to the predictor values
+    ##
+    ## Check if at least one predictor variate is valid
+    if(!is.null(predictor) && length(intersect(variates, names(predictor))) == 0){
+        message('Warning: discarding all predictors, none valid')
+        predictor <- NULL
+    }
     if(!is.null(predictor)){
         predictor <- as.list(predictor)
         ## Check consistency of variates in metadata and predictor
@@ -16,17 +21,26 @@ rF <- function(n=1, P, predictand=NULL, predictor=NULL){
         }
         predictor <- predictor[na.omit(match(variates, names(predictor)))]
         ##
-        ipredictor <- match(names(predictor), variates)
+        ipredictor <- match(names(predictor), variates) # predictor-indices
+        ## select subarray of counts corresponding to the predictor values
         totake <- as.list(rep(TRUE, length(variates)))
         totake[ipredictor] <- predictor
-        freqs <- do.call(`[`, c(list(P[['freqs']]), totake))
-        if(is.null(dim(freqs))){
-            dim(freqs) <- length(freqs)
-            dimnames(freqs) <- dimnames(P[['freqs']])[-ipredictor]
+        counts <- do.call(`[`, c(list(agent[['counts']]), totake))
+        if(is.null(dim(counts))){
+            dim(counts) <- length(counts)
+            dimnames(counts) <- dimnames(agent[['counts']])[-ipredictor]
         }
     }else{
-        freqs <- P[['freqs']]
+        ## no predictors specified
+        counts <- agent[['counts']]
     }
+    ##
+    ## Select n alpha parameters according to their probabilities given data
+    ## length(agent[['counts']]) =: M
+    alphas <- agent[['alphas']]/length(agent[['counts']])
+    ## recycling 'alphas'
+    alphas <- alphas[sample.int(n=length(alphas), size=n, replace=T,
+                                      prob=agent[['palphas']])]
     ##
     ## Selection of predictand variates
     if(!is.null(predictand)){
@@ -40,25 +54,23 @@ rF <- function(n=1, P, predictand=NULL, predictor=NULL){
             stop('Some variates appear in predictand and predictor')
         }
         ##
-        ## Multiplicative factor for alphas
-        ipredictand <- match(predictand, variates)
-        multalpha <- prod(dim(freqs)[-ipredictand])
+        ipredictand <- match(predictand, variates) # predictand-index
+        ## Multiplicative factor for alpha samples, owing to marginalization
+        alphas <- prod(dim(counts)[-ipredictand]) * alphas
+        ##
         ## Marginalize frequencies
-        freqs <- apply(freqs, predictand, sum)
-        if(is.null(dim(freqs))){
-            dim(freqs) <- length(freqs)
-            dimnames(freqs) <- dimnames(P[['freqs']])[predictand]
+        counts <- apply(counts, ipredictand, sum)
+        if(is.null(dim(counts))){
+            dim(counts) <- length(counts)
+            dimnames(counts) <- dimnames(agent[['counts']])[ipredictand]
         }
-    }else{
-        multalpha <- 1
     }
     ##
-    alphasample <- multalpha * sample(rep(P[['alphas']],2), size=n, replace=T,
-                                      prob=rep(P[['palphas']],2))
+    ## Create n joint-frequency distributions
     ##
-    ff <- extraDistr::rdirichlet(n, alpha=outer(alphasample, c(freqs), `+`))
-    ## ff <- nimble::rdirch(n, alpha=outer(alphasample, c(freqs), `+`))
-    dim(ff) <- c(n,dim(freqs))
-    dimnames(ff) <- c(list(sample=NULL), dimnames(freqs))
+    ff <- extraDistr::rdirichlet(n, alpha=outer(alphas, c(counts), `+`))
+    ## ff <- nimble::rdirch(n, alpha=outer(alphas, c(counts), `+`))
+    dim(ff) <- c(n,dim(counts))
+    dimnames(ff) <- c(list(sample=NULL), dimnames(counts))
     ff
 }

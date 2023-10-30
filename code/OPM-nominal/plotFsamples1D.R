@@ -1,10 +1,10 @@
-plotFsamples1D <- function(P, n=100, predict=TRUE, file=NULL){
+plotFsamples1D <- function(agent, n=100, predict=TRUE, file=NULL){
 #### Plot samples of full-population freq. distributions for one variate
 #### Requires 'png' to plot png
-    if(length(dim(P[['freqs']])) > 1){
+    if(length(dim(agent[['counts']])) > 1){
         stop('State of knowledge comprises more than one variate.')
     }
-    samples <- rF(n=n, P=P)
+    samples <- rF(n=n, agent=agent)
     if(!is.null(file)){
         filext <- sub(".*\\.|.*", "", file, perl=TRUE)
         if(filext == 'pdf'){
