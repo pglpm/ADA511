@@ -3,11 +3,20 @@
 {{< include macros_exchangeability.qmd >}}
 {{< include macros_opm.qmd >}}
 
+```{r}
+#| echo: false
+options(repr.plot.width=6*sqrt(2), repr.plot.height=6)
+knitr::opts_knit$set(root.dir = "code/OPM-nominal/")
+```
+
 Let's illustrate the example workflow described in [§ @sec-opm-workflow] with a toy, but not too simplistic, example, based on the [adult-income dataset](https://archive.ics.uci.edu/dataset/2/adult).
 
-We start loading the R functions needed at several stages. Make sure you are in a directory homologous to `code/OPM-nominal/`:
+We start loading the R libraries and functions needed at several stages. Make sure you are in a directory homologous to `code/OPM-nominal/`:
 
 ```{r}
+library('data.table')
+library('foreach')
+library('png')
 source('../tplotfunctions.R')
 source('guessmetadata.R')
 source('buildagent.R')
@@ -17,10 +26,6 @@ source('rF.R')
 source('plotFsamples1D.R')
 ```
 
-```{r}
-#| echo: false
-options(repr.plot.width=6*sqrt(2), repr.plot.height=6)
-```
 
 ## Define the task
 
@@ -46,18 +51,11 @@ guessmetadata(data='train-income_data_example.csv', file='preliminary.csv')
 
 Inspect the resulting file `preliminary.csv` and check whether you can alter it to add additional background information.
 
-As an example, note that domain of the $\mathit{native\_country}$ variate does not include $\cat{Norway}$ or $\cat{Netherlands}$. Yet it's extremely likely that there were some native Norwegian or Dutch USA citizens in 1994; maybe too few to have been sampled into the training data. Let's add these two values to the list of domain values, and increase the domain size of $\mathit{native\_country}$ from 40 to 42. The resulting, updated metadata file has already been saved as [`meta_income_data_example.csv`]()
-
-
-
-Now inspect the result
-
-
- to be considered is listen on the first column of [this `csv` table](
-https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/meta_income_data_nominal_nomissing.csv).
-
+As an example, note that domain of the $\mathit{native\_country}$ variate does not include $\cat{Norway}$ or $\cat{Netherlands}$. Yet it's extremely likely that there were some native Norwegian or Dutch USA citizens in 1994; maybe too few to have been sampled into the training data. Let's add these two values to the list of domain values, and increase the domain size of $\mathit{native\_country}$ from 40 to 42. The resulting, updated metadata file has already been saved as [`meta_income_data_example.csv`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/meta_income_data_example.csv).
 
 ## Collect & prepare training data
+
+The training data have been prepared by including only nominal variates, and discarding datapoints with partially missing data (although the function `buildagent()` discards such incomplete datapoints automatically). The resulting file is [`test-income_data_example.csv`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/test-income_data_example.csv).
 
 ## Prepare OPM agent
 

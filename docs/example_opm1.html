@@ -532,15 +532,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </div>
 <p>Let’s illustrate the example workflow described in <a href="prototype_code.html#sec-opm-workflow">§ &nbsp;<span>34.2</span></a> with a toy, but not too simplistic, example, based on the <a href="https://archive.ics.uci.edu/dataset/2/adult">adult-income dataset</a>.</p>
-<p>We start loading the R functions needed at several stages:</p>
+<p>We start loading the R libraries and functions needed at several stages. Make sure you are in a directory homologous to <code>code/OPM-nominal/</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/tplotfunctions.R'</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/OPM-nominal/guessmetadata.R'</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/OPM-nominal/buildagent.R'</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/OPM-nominal/infer.R'</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/OPM-nominal/decide.R'</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/OPM-nominal/rF.R'</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/OPM-nominal/plotFsamples1D.R'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'data.table'</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'foreach'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'png'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'../tplotfunctions.R'</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'guessmetadata.R'</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'buildagent.R'</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'infer.R'</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'decide.R'</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'rF.R'</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'plotFsamples1D.R'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="define-the-task" class="level2" data-number="35.1">
 <h2 data-number="35.1" class="anchored" data-anchor-id="define-the-task"><span class="header-section-number">35.1</span> Define the task</h2>
@@ -554,10 +557,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="collect-prepare-background-info" class="level2" data-number="35.2">
 <h2 data-number="35.2" class="anchored" data-anchor-id="collect-prepare-background-info"><span class="header-section-number">35.2</span> Collect &amp; prepare background info</h2>
-<p>The set of variates to be considered is listen on the first column of <a href="https://github.com/pglpm/ADA511/blob/master/datasets/meta_income_data_nominal_nomissing.csv">this <code>csv</code> table</a></p>
+<p>The variates to be used must be of nominal type, because our agent’s background beliefs (represented by the Dirichlet-mixture distribution) are only appropriate for nominal variates. In this toy example we simply discard all original non-nominal variates. These included some, such as age, that would surely be relevant for this task. As a different approach, we could have coarsened each non-nominal variate into three or four range values, so that treating it as nominal would have been an acceptable approximation.</p>
+<p>First, create a preliminary metadata file by running the function <code>guessmetadata()</code> on the training data <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/train-income_data_example.csv"><code>train-income_data_example.csv</code></a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">guessmetadata</span>(<span class="at">data=</span><span class="st">'train-income_data_example.csv'</span>, <span class="at">file=</span><span class="st">'preliminary.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Inspect the resulting file <code>preliminary.csv</code> and check whether you can alter it to add additional background information.</p>
+<p>As an example, note that domain of the <span style="display:inline-block;"><span class="math inline">\(\mathit{native\_country}\)</span></span> variate does not include <span style="display:inline-block;"><span class="math inline">\({\small\verb;Norway;}\)</span></span> or <span style="display:inline-block;"><span class="math inline">\({\small\verb;Netherlands;}\)</span>.</span> Yet it’s extremely likely that there were some native Norwegian or Dutch USA citizens in 1994; maybe too few to have been sampled into the training data. Let’s add these two values to the list of domain values, and increase the domain size of <span style="display:inline-block;"><span class="math inline">\(\mathit{native\_country}\)</span></span> from 40 to 42. The resulting, updated metadata file has already been saved as <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/meta_income_data_example.csv"><code>meta_income_data_example.csv</code></a>.</p>
 </section>
 <section id="collect-prepare-training-data" class="level2" data-number="35.3">
 <h2 data-number="35.3" class="anchored" data-anchor-id="collect-prepare-training-data"><span class="header-section-number">35.3</span> Collect &amp; prepare training data</h2>
+<p>The training data have been prepared by including only nominal variates, and discarding datapoints with partially missing data (although the function <code>buildagent()</code> discards such incomplete datapoints automatically). The resulting file is <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/test-income_data_example.csv"><code>test-income_data_example.csv</code></a>.</p>
 </section>
 <section id="prepare-opm-agent" class="level2" data-number="35.4">
 <h2 data-number="35.4" class="anchored" data-anchor-id="prepare-opm-agent"><span class="header-section-number">35.4</span> Prepare OPM agent</h2>
