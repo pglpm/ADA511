@@ -41,6 +41,8 @@ The main task is to infer whether a USA citizen earns less (≤) or more (>) tha
 
 ## Collect & prepare background info
 
+### Variates and domains
+
 The variates to be used must be of nominal type, because our agent's background beliefs (represented by the Dirichlet-mixture distribution) are only appropriate for nominal variates. In this toy example we simply discard all original non-nominal variates. These included some, such as age, that would surely be relevant for this task. As a different approach, we could have coarsened each non-nominal variate into three or four range values, so that treating it as nominal would have been an acceptable approximation.
 
 First, create a preliminary metadata file by running the function `guessmetadata()` on the training data [`train-income_data_example.csv`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/train-income_data_example.csv):
@@ -53,10 +55,131 @@ Inspect the resulting file `preliminary.csv` and check whether you can alter it 
 
 As an example, note that domain of the $\mathit{native\_country}$ variate does not include $\cat{Norway}$ or $\cat{Netherlands}$. Yet it's extremely likely that there were some native Norwegian or Dutch USA citizens in 1994; maybe too few to have been sampled into the training data. Let's add these two values to the list of domain values, and increase the domain size of $\mathit{native\_country}$ from 40 to 42. The resulting, updated metadata file has already been saved as [`meta_income_data_example.csv`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/meta_income_data_example.csv).
 
+### Agent's parameters $\amin, \amax$
+
+What could be the representative-sample size for the variates above, in the USA 1994 population? Let's put an upper bound at around 1 000 000 (that's roughly 0.5% of the whole population) with $\kmax=20$, and a lower bound at 1 with $\kmin=0$; these are the default values. We shall see later what the agent suggests might be a reasonable representative-sample size.
+
 ## Collect & prepare training data
 
-The training data have been prepared by including only nominal variates, and discarding datapoints with partially missing data (although the function `buildagent()` discards such incomplete datapoints automatically). The resulting file is [`test-income_data_example.csv`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/test-income_data_example.csv).
+The 11 306 training data have been prepared by including only nominal variates, and discarding datapoints with partially missing data (although the function `buildagent()` discards such incomplete datapoints automatically). The resulting file is [`test-income_data_example.csv`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/test-income_data_example.csv).
 
 ## Prepare OPM agent
 
+For the sake of this example we shall prepare two agents with the same background information:
+
+- `opm10`, trained with 10 training datapoints
+- `opmall`, trained with all 11 306 training datapoints
+
+Prepare and train each with the `buildagent()` function:
+
+```{r}
+opm10 <- buildagent(metadata='meta_income_data_example.csv', data=fread('train-income_data_example.csv', header=TRUE)[1:10])
+
+opmall <- buildagent(metadata='meta_income_data_example.csv', data='train-income_data_example.csv')
+```
+
+We can peek into the internal structure of these "agent objects" with `str()`
+
+```{r}
+str(opmall)
+```
+
+\
+
+The agent has internally guessed the representative-sample size. We can peek at its guess by plotting its `alphas` parameters against the `palphas` ones:
+
+```{r}
+tplot(x=opmall$alphas, y=opmall$palphas, type='b',
+      xlim=c(0, 10000), ylim=c(0, NA),
+      xlab='representative-sample size', ylab='probability')
+```
+
+The most probable representative-sample size seems to be of the order of magnitude of 2000 units.
+
 ## Application
+
+### Preliminary tests
+
+Our two agents are ready to be applied to new instances.
+
+Before applying them, let's check some of their inferences, and see if we find anything unconvincing about them. If we find something unconvincing, it means that the background information we provided to the agent doesn't match the one in our intuition. Then there are two or three possibilities: our intuition is misleading us and need correcting; or we need to go back to stage [*Collect & prepare background info*]{.blue} and correct the background information given to the agent; or a combination of these two possibilities.
+
+We ask the `opm10` agent to forecast the $\mathit{income}$ of the next unit, using the `infer()` function:
+
+```{r}
+infer(agent=opm10, predictand='income')
+```
+
+The agent gives a very slightly larger probability to the $\cat{<=50K}$ case. Using the function `plotFsamples1D()` we can also inspect `opm10`-agent's belief about the frequency distribution of $\mathit{income}$ for the full population. This belief is represented by a generalized scatter plot of 200 representative frequency distributions:
+
+```{r}
+plotFsamples1D(agent=opm10, n=200, predictand='income',
+               ylim=c(0,1), main='opm10')
+```
+
+where the [blue line]{.blue} is the distribution previously calculated with the `infer()` function.
+
+This plot expresses the `opm10`-agent's belief that future training data might lead to even higher probabilities for $\cat{<=50K}$. This is corroborated by the `opmall`-agent, trained with the full training dataset:
+
+```{r}
+plotFsamples1D(agent=opmall, n=200, predictand='income',
+               ylim=c(0,1), main='opmall')
+```
+
+The probability that the next unit has $\mathit{income}\mo\cat{<=50}$ is now above 70%. Also note that the `opmall`-agent doesn't believe that this probability would change appreciably if more training data were provided.
+
+\
+
+We can perform a similar exploration for any other variate. Let's take the $\mathit{race}$ variate:
+
+
+```{r}
+plotFsamples1D(agent=opm10, n=200, predictand='race',
+               ylim=c(0,1), main='opm10', cex.axis=0.75)
+```
+
+Note again how the little-trained `opm10`-agent has practically uniform beliefs. But it's also expressing the fact that future training data will probably increase the probability of $\mathit{race}\mo\cat{White}$. This is again corroborated by the fully-trained agent:
+
+
+```{r}
+plotFsamples1D(agent=opmall, n=200, predictand='race',
+               ylim=c(0,1), main='opmall', cex.axis=0.75)
+```
+
+\
+
+These checks are partially satisfying, but not completely. Examine for instance the last two plots. The `opm10`-agent is not giving not high probability (less than 1/200) to the possibility that future training data will lead to probabilities for $\mathit{race}\mo\cat{White}$ above 70%, which is what we are observing with the `opmall`-agent instead. So maybe we would like our agent to be more "open-minded" about future training data. To achieve this we would have to go back to the [*Collect & prepare background info*]{.blue} stage, and for example modify the parameters $\amin, \amax$, then re-check. It's even possible that we can find our present agent (more precisely, its encoded background information) not appropriate at all.
+
+:::{.callout-warning}
+## {{< fa exclamation-triangle >}} No "test" or "validation" datasets used or needed
+
+The tests and explorations above were done without any "validation" or "test" datasets. This is because our agent is capable of calculating and showing its beliefs about the *full population* -- and therefore about future data.
+
+The need for validation or test datasets with common machine-learning algorithms arise from the fact that full-population beliefs are hidden or, more commonly, not computed at all, in order to gain speed. The application of the trained machine-learning algorithm to a validation dataset is an approximate way of extracting such beliefs.
+
+:::
+
+\
+
+Let's continue with one more check, specifying some predictor.
+
+
+We ask the `opm10` agent to forecast the $\mathit{income}$ of the next unit, using the `infer()` function:
+
+
+
+```{r}
+plotFsamples1D(agent=opm10, n=200,
+               predictand='income',
+               predictor=list(workclass='Self-emp-inc', race='White'),
+               ylim=c(0,1), main='opm10')
+```
+
+
+
+```{r}
+plotFsamples1D(agent=opmall, n=200,
+               predictand='income',
+               predictor=list(workclass='Self-emp-inc', race='White'),
+               ylim=c(0,1), main='opmall')
+```

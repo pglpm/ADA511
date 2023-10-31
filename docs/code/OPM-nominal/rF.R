@@ -54,15 +54,15 @@ rF <- function(n=1, agent, predictand=NULL, predictor=NULL){
             stop('Some variates appear in predictand and predictor')
         }
         ##
-        ipredictand <- match(predictand, variates) # predictand-index
+        ipredictand <- match(predictand, names(dimnames(counts))) # predictand-index
         ## Multiplicative factor for alpha samples, owing to marginalization
         alphas <- prod(dim(counts)[-ipredictand]) * alphas
         ##
         ## Marginalize frequencies
-        counts <- apply(counts, ipredictand, sum)
+        counts <- apply(counts, predictand, sum)
         if(is.null(dim(counts))){
             dim(counts) <- length(counts)
-            dimnames(counts) <- dimnames(agent[['counts']])[ipredictand]
+            dimnames(counts) <- dimnames(agent[['counts']])[predictand]
         }
     }
     ##
