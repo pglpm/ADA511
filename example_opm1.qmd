@@ -11,6 +11,9 @@ knitr::opts_knit$set(root.dir = "code/OPM-nominal/")
 
 Let's illustrate the example workflow described in [§ @sec-opm-workflow] with a toy, but not too simplistic, example, based on the [adult-income dataset](https://archive.ics.uci.edu/dataset/2/adult).
 
+All code functions and data files are in the directory/
+[https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal](https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal)
+
 We start loading the R libraries and functions needed at several stages. Make sure you are in a directory homologous to `code/OPM-nominal/`:
 
 ```{r}
@@ -27,6 +30,8 @@ source('plotFsamples1D.R')
 ```
 
 
+\
+
 ## Define the task
 
 The main task is to infer whether a USA citizen earns less (≤) or more (>) than USD 50 000/year, given a set of characteristics of that citizen. In view of later workflow stages, let's note a couple of known and unknown facts to delimit this task in a more precise manner:
@@ -38,6 +43,8 @@ The main task is to infer whether a USA citizen earns less (≤) or more (>) tha
 - The training data come from a 1994 census, and our agent will use an exchangeable belief distribution about the population. The value of the USD and the economic situation of the country changes from year to year, as  well as the informational relationships between economic and demographic factors. For this reason the agent should be used to draw inferences about at most one or two years around 1994. Beyond such time range the exchangeability assumption is too dubious and risky.
 
 - The [USA population in 1994 was around 260 000 000](https://www.macrotrends.net/countries/USA/united-states/population), and we shall use around 11 000 training data. The population size can therefore be considered approximately infinite.
+
+\
 
 ## Collect & prepare background info
 
@@ -59,9 +66,13 @@ As an example, note that domain of the $\mathit{native\_country}$ variate does n
 
 What could be the representative-sample size for the variates above, in the USA 1994 population? Let's put an upper bound at around 1 000 000 (that's roughly 0.5% of the whole population) with $\amax=20$, and a lower bound at 1 with $\amin=0$; these are the default values. We shall see later what the agent suggests might be a reasonable representative-sample size.
 
+\
+
 ## Collect & prepare training data
 
 The 11 306 training data have been prepared by including only nominal variates, and discarding datapoints with partially missing data (although the function `buildagent()` discards such incomplete datapoints automatically). The resulting file is [`test-income_data_example.csv`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/test-income_data_example.csv).
+
+\
 
 ## Prepare OPM agent
 
@@ -96,7 +107,15 @@ tplot(x=opmall$alphas, y=opmall$palphas, type='b',
 
 The most probable representative-sample size seems to be of the order of magnitude of 2000 units.
 
-## First applications and tests
+Note that you can see the complete list of variates and their domains by simply calling `dimnames(opmall$counts)` (or any relevant agent-object name instead of `opmall`). Here is a snippet:
+
+```{r}
+head(dimnames(opmall$counts))
+```
+
+\
+
+## Application and exploration
 
 ### Preliminary application: only predictands
 
@@ -160,6 +179,8 @@ Remember (§§ [-@sec-optimality] and [-@sec-probability-def]) that a probabil
 From this point of view we should be wary of comparing the probability of something with our a-posteriori knowledge about it.
 :::
 
+\
+
 ### Preliminary application: specifying predictors
 
 Let's continue with one more check, specifying some predictors.
@@ -204,10 +225,10 @@ Also in this case we could ask the agent how much these probabilities could chan
 
 ```{r}
 variability <- apply(
-    rF(n=1000, agent=opmall,
-       predictand=c('occupation', 'sex'), predictor=list(income='>50K')),
+    rF(n=1000, agent=opmall, predictand=c('occupation', 'sex'),
+       predictor=list(income='>50K')),
     c('occupation','sex'), sd)
-print('Possible variation (sd) with new training data:')
+## Possible variation (sd) with new training data:
 round(variability * 100, 1) # round to one decimal
 ```
 
@@ -228,6 +249,8 @@ The need for validation or test datasets with common machine-learning algorithms
 
 :::
 
+\
+
 ## Example application to new data
 
 Let's apply the `opmall`-agent to a test dataset with 33 914 new units. For each new unit, the agent:
@@ -243,18 +266,22 @@ testdata <- fread('test-income_data_example.csv', header=TRUE) # read test data
 ntest <- nrow(testdata) # number of test data
 testprobs <- numeric(ntest) # prepare vector of probabilities
 testhits <- numeric(ntest) # prepare vector of hits
-## index of 'income' variate
-npredictand <- which(names(dimnames(opmall$counts)) == 'income')
 ##
 stopwatch <- Sys.time() # record time
-for(i in 1:ntest){
-    probs <- infer(agent=opmall, predictor=testdata[i,-npredictand, with=F])
-    testprobs[i] <- probs['<=50K']
-    testhits[i] <- (decide(probs=probs) == testdata[i][['income']])
-}
-print(Sys.time() - stopwatch)
 ##
-thist(testprobs, n=seq(0,1,length.out=10), plot=T,
-      xlab='P(income = "<=50K")', ylab='frequency density in test set',
+for(i in 1:ntest){
+    ## calculate probabilities
+    probs <- infer(agent=opmall, predictor=testdata[i, !'income'])
+    ## store probability P(<=50K)
+    testprobs[i] <- probs['<=50K']
+    ## decide on one value, check if decision == true_value, and store result
+    testhits[i] <- (decide(probs=probs) == testdata[i, 'income'])
+}
+##
+print(Sys.time() - stopwatch) # print computation time
+##
+thist(testprobs, n=seq(0,1,length.out=10), plot=TRUE,
+      xlab='P(income = "<=50K")',
+      ylab='frequency density in test set',
       main=paste0('accuracy: ', round(100*mean(testhits), 1), '%'))
 ```
