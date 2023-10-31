@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-10-30">
+<meta name="dcterms.date" content="2023-10-31">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 35&nbsp; Example application: adult-income task</title>
 <style>
@@ -131,7 +131,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-30</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-31</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -509,7 +509,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-10-30</p>
+      <p class="date">2023-10-31</p>
     </div>
   </div>
   
@@ -531,6 +531,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="hidden">
 
 </div>
+<p>Let’s illustrate the example workflow described in <a href="prototype_code.html#sec-opm-workflow">§ &nbsp;<span>34.2</span></a> with a toy, but not too simplistic, example, based on the <a href="https://archive.ics.uci.edu/dataset/2/adult">adult-income dataset</a>.</p>
+<p>We start loading the R functions needed at several stages:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/tplotfunctions.R'</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/OPM-nominal/guessmetadata.R'</span>)</span>
@@ -542,9 +544,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="define-the-task" class="level2" data-number="35.1">
 <h2 data-number="35.1" class="anchored" data-anchor-id="define-the-task"><span class="header-section-number">35.1</span> Define the task</h2>
+<p>The main task is to infer whether a USA citizen earns less (≤) or more (&gt;) than USD 50 000/year, given a set of characteristics of that citizen. In view of later workflow stages, let’s note a couple of known and unknown facts to delimit this task in a more precise manner:</p>
+<ul>
+<li><p>Given the flexibility of the agent we shall use, we can generalize the task: to infer any subset of the set of characteristics, given any other subset. In other words, we can choose the predictand and predictor variates for any new citizen. Later on we shall also extend the task to making a concrete decision, based on utilities relevant to that citizen.</p>
+<p>This flexibility is also convenient because no explanation is given as to <em>what purpose</em> the income should be guessed.</p></li>
+<li><p>The training data come from a 1994&nbsp;census, and our agent will use an exchangeable belief distribution about the population. The value of the USD and the economic situation of the country changes from year to year, as well as the informational relationships between economic and demographic factors. For this reason the agent should be used to draw inferences about at most one or two years around 1994. Beyond such time range the exchangeability assumption is too dubious and risky.</p></li>
+<li><p>The <a href="https://www.macrotrends.net/countries/USA/united-states/population">USA population in 1994 was around 260 000 000</a>, and we shall use around 11 000 training data. The population size can therefore be considered approximately infinite.</p></li>
+</ul>
 </section>
 <section id="collect-prepare-background-info" class="level2" data-number="35.2">
 <h2 data-number="35.2" class="anchored" data-anchor-id="collect-prepare-background-info"><span class="header-section-number">35.2</span> Collect &amp; prepare background info</h2>
+<p>The set of variates to be considered is listen on the first column of <a href="https://github.com/pglpm/ADA511/blob/master/datasets/meta_income_data_nominal_nomissing.csv">this <code>csv</code> table</a></p>
 </section>
 <section id="collect-prepare-training-data" class="level2" data-number="35.3">
 <h2 data-number="35.3" class="anchored" data-anchor-id="collect-prepare-training-data"><span class="header-section-number">35.3</span> Collect &amp; prepare training data</h2>
