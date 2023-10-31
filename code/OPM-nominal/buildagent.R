@@ -1,7 +1,8 @@
 buildagent <- function(metadata, data=NULL, kmi=-17, kma=17, alphas=NULL, base=2){
-#### Build object encoding background knowledge and learned knowledge
+#### Build "agent" object encoding background & learned knowledge
 #### Requires 'data.table'
     ##
+    ## Read metadata from file, if given as file
     if(is.character(metadata)){
         metadata <- fread(metadata, na.strings='', header=TRUE)
     }
@@ -24,12 +25,12 @@ buildagent <- function(metadata, data=NULL, kmi=-17, kma=17, alphas=NULL, base=2
     }else if(is.logical(alphas) && alphas){
         alphas <- sqrt(M) # other alternative with just one k
     }
-    ## logpalphas0 <- -abs(alphas) # Good's hyperprior
+    ## Possibility of adding a p(k) weight in the Dirichlet-mixture distribution
     logpalphas0 <- 0 # do not use
-    ## print(alphas)
+    ## logpalphas0 <- -abs(alphas) # Good's hyperprior
     ##
-    ## counts := #z
-    ## are the joint absolute frequencies of all possible variate values
+    ## counts := #z  are the joint absolute frequencies
+    ## of all possible variate values
     counts <- numeric(M) # zero vector
     dim(counts) <- domainsizes # transform to array
     ## give names to the array elements, from metadata
@@ -39,7 +40,7 @@ buildagent <- function(metadata, data=NULL, kmi=-17, kma=17, alphas=NULL, base=2
                              }, simplify=list)
     names(dimnames(counts)) <- variates
     ##
-    ## increase counts from data, if given
+    ## Calculate #z from data, if data are given
     if(!is.null(data)){
         ## Check consistency of variates in metadata and data
         if(length(setdiff(variates, colnames(data))) > 0){
@@ -64,21 +65,24 @@ buildagent <- function(metadata, data=NULL, kmi=-17, kma=17, alphas=NULL, base=2
     ##
     NN <- sum(counts) # total number of training datapoints
     ##
-    ## Calculate probability distribution for the alpha parameters
-    ## Use frequencies of counts for faster iteration
+    ## Calculate frequencies of counts for faster iteration
     freqscounts <- tabulate(c(counts)+1)
-    counts1 <- which(freqscounts > 0) # discard non-appearing ones
+    counts1 <- which(freqscounts > 0) # discard non-appearing ones count values
     freqscounts <- freqscounts[counts1]
+    ##
+    ## final auxalphas := log-probability for new unit
     auxalphas <- sapply(alphas, function(alpha){
         sum(freqscounts * lgamma(counts1-1 + alpha/M))
     })  - M*lgamma(alphas/M) + lgamma(alphas) + logpalphas0
     ##
-    ## Updated probabilities of alpha parameters, for frequency forecasts
+    ## Final palphas := probability distribution for the alpha parameters
+    ### used for population-frequency forecasts
     palphas <- auxalphas - lgamma(alphas + NN)
-    palphas <- exp(palphas-max(palphas))
+    palphas <- exp(palphas-max(palphas)) # renormalize against overflow
     palphas <- palphas/sum(palphas)
     ##
     auxalphas <- auxalphas - lgamma(alphas + NN + 1)
     ##
+    ## Output "agent" object
     list(counts=counts, alphas=alphas, auxalphas=auxalphas, palphas=palphas)
 }
