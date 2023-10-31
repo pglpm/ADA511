@@ -825,7 +825,7 @@ occupation          Female Male
   Machine-op-inspct    0.2  0.3
   Other-service        0.2  0.2
   Priv-house-serv      0.2  0.2
-  Prof-specialty       0.3  0.6
+  Prof-specialty       0.4  0.6
   Protective-serv      0.2  0.3
   Sales                0.2  0.5
   Tech-support         0.2  0.3
@@ -858,7 +858,7 @@ occupation          Female Male
 <h2 data-number="35.6" class="anchored" data-anchor-id="example-application-to-new-data"><span class="header-section-number">35.6</span> Example application to new data</h2>
 <p>Let’s apply the <code>opmall</code>-agent to a test dataset with 33 914 new units. For each new unit, the agent:</p>
 <ul>
-<li>calculates the probability of <span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&lt;=50;}\)</span>, via the function <code>infer()</code></li>
+<li>calculates the probability of <span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&lt;=50;}\)</span>, via the function <code>infer()</code>, using as predictors all variates except <span class="math inline">\(\mathit{income}\)</span></li>
 <li>chooses one of the two values <span class="math inline">\(\set{{\small\verb;&lt;=50K;}, {\small\verb;&gt;50K;}}\)</span>, via the function <code>decide()</code>, trying to maximizing utilities corresponding to the accuracy metric</li>
 </ul>
 <p>At the end we plot a histogram of the probabilities calculated for the new units, to check for instance for how many of the agent was sure (beliefs around 0% or 100%) or unsure (beliefs around 50%). We also report the final utility/accuracy per unit, and the time needed for the computation:</p>
@@ -871,7 +871,7 @@ occupation          Female Male
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>stopwatch <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>() <span class="co"># record time</span></span>
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
 <span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>ntest){</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="do">## calculate probabilities</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="do">## calculate probabilities given all variates except 'income'</span></span>
 <span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall, <span class="at">predictor=</span>testdata[i, <span class="sc">!</span><span class="st">'income'</span>])</span>
 <span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="do">## store probability P(&lt;=50K)</span></span>
 <span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    testprobs[i] <span class="ot">&lt;-</span> probs[<span class="st">'&lt;=50K'</span>]</span>
@@ -881,7 +881,7 @@ occupation          Female Male
 <span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
 <span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">Sys.time</span>() <span class="sc">-</span> stopwatch) <span class="co"># print computation time</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time difference of 8.52742 secs</code></pre>
+<pre><code>Time difference of 8.65093 secs</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">thist</span>(testprobs, <span class="at">n=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="at">length.out=</span><span class="dv">10</span>), <span class="at">plot=</span><span class="cn">TRUE</span>,</span>

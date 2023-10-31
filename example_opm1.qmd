@@ -255,7 +255,7 @@ The need for validation or test datasets with common machine-learning algorithms
 
 Let's apply the `opmall`-agent to a test dataset with 33 914 new units. For each new unit, the agent:
 
-- calculates the probability of $\mathit{income}\mo\cat{<=50}$, via the function `infer()`
+- calculates the probability of $\mathit{income}\mo\cat{<=50}$, via the function `infer()`, using as predictors all variates except $\mathit{income}$
 - chooses one of the two values $\set{\cat{<=50K}, \cat{>50K}}$, via the function `decide()`, trying to maximizing utilities corresponding to the accuracy metric
 
 At the end we plot a histogram of the probabilities calculated for the new units, to check for instance for how many of the agent was sure (beliefs around 0% or 100%) or unsure (beliefs around 50%). We also report the final utility/accuracy per unit, and the time needed for the computation:
@@ -270,7 +270,7 @@ testhits <- numeric(ntest) # prepare vector of hits
 stopwatch <- Sys.time() # record time
 ##
 for(i in 1:ntest){
-    ## calculate probabilities
+    ## calculate probabilities given all variates except 'income'
     probs <- infer(agent=opmall, predictor=testdata[i, !'income'])
     ## store probability P(<=50K)
     testprobs[i] <- probs['<=50K']
