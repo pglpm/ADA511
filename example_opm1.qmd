@@ -96,9 +96,9 @@ tplot(x=opmall$alphas, y=opmall$palphas, type='b',
 
 The most probable representative-sample size seems to be of the order of magnitude of 2000 units.
 
-## Application
+## First applications and tests
 
-### Preliminary test: predictands
+### Preliminary application: only predictands
 
 Our two agents are ready to be applied to new instances.
 
@@ -160,7 +160,7 @@ Remember (§§ [-@sec-optimality] and [-@sec-probability-def]) that a probabil
 From this point of view we should be wary of comparing the probability of something with our a-posteriori knowledge about it.
 :::
 
-### Preliminary test: specifying predictors
+### Preliminary application: specifying predictors
 
 Let's continue with one more check, specifying some predictors.
 
@@ -228,3 +228,33 @@ The need for validation or test datasets with common machine-learning algorithms
 
 :::
 
+## Example application to new data
+
+Let's apply the `opmall`-agent to a test dataset with 33 914 new units. For each new unit, the agent:
+
+- calculates the probability of $\mathit{income}\mo\cat{<=50}$, via the function `infer()`
+- chooses one of the two values $\set{\cat{<=50K}, \cat{>50K}}$, via the function `decide()`, trying to maximizing utilities corresponding to the accuracy metric
+
+At the end we plot a histogram of the probabilities calculated for the new units, to check for instance for how many of the agent was sure (beliefs around 0% or 100%) or unsure (beliefs around 50%). We also report the final utility/accuracy per unit, and the time needed for the computation:
+
+
+```{r}
+testdata <- fread('test-income_data_example.csv', header=TRUE) # read test data
+ntest <- nrow(testdata) # number of test data
+testprobs <- numeric(ntest) # prepare vector of probabilities
+testhits <- numeric(ntest) # prepare vector of hits
+## index of 'income' variate
+npredictand <- which(names(dimnames(opmall$counts)) == 'income')
+##
+stopwatch <- Sys.time() # record time
+for(i in 1:ntest){
+    probs <- infer(agent=opmall, predictor=testdata[i,-npredictand, with=F])
+    testprobs[i] <- probs['<=50K']
+    testhits[i] <- (decide(probs=probs) == testdata[i][['income']])
+}
+print(Sys.time() - stopwatch)
+##
+thist(testprobs, n=seq(0,1,length.out=10), plot=T,
+      xlab='P(income = "<=50K")', ylab='frequency density in test set',
+      main=paste0('accuracy: ', round(100*mean(testhits), 1), '%'))
+```
