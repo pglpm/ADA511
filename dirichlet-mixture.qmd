@@ -40,21 +40,29 @@ $$
 Besides some multiplicative constants, the probability is simply proportional to the product of all frequencies, raised to some powers. The product "$\prod_{\bz}$" is over all $M$ possible values of $\bZ$. The sum "$\sum_{\ya}$" is over an *integer* (positive or negative) index $\ya$ that runs between the minimum value $\amin$ and the maximum value $\amax$. In the applications of the next chapters these minimum and maximum are chosen as follows:
 
 $$
-\amin=-17
+\amin=0
 \qquad
-\amax=17
+\amax=20
 $$
 
-so the sum $\sum_k$ runs over $2\cdot 17 +1= 35$ terms.
+so the sum $\sum_k$ runs over 21 terms.
 
 In most applications it does not matter if we take a lower $\amin$ or a higher $\amax$.
+
+### Meaning of the $\amin, \amax$ parameters
+
+The parameters $\amin, \amax$ encode, approximately speaking, the agent's prior belief about the size of a "representative sample" of the full population ([§ @sec-samples]). More precisely, $2^\amin$ and $2^\amax$ represent a lower and an upper bound of what the representative sample could be. Values\ \ $\amin=0$,\ \ $\amax=20$\ \ therefore represent a belief that the representative-sample size could be anywhere between 1 unit and approximately 1 million units. The belief is spread out uniformly across the orders of magnitude in between.
+
+If $2^\amin$ is larger than the amount of training data, the agent will consider these data insufficient, and tend to give uniform probabilities to its inferences; for instance a 50%/50% probability to a binary variate.
+
+If the order of magnitude of a representative sample is known, for example from previous studies on similar populations, the parameters $\amin,\amax$ can be set to that order of magnitude (in base 2), minus or plus some magnitude range.
+
+If such an order of magnitude is not known, then it does *not* make sense to "estimate" it from training data with other methods, because an agent with a Dirichlet-mixture distribution will already do that internally (and in an optimal way), provided an ample range is given with $\amin, \amax$.
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
 In the calculations and exercises that follow, you're welcome to do them also with other $\amin$ and $\amax$ values, and see what happens.
 :::
-
-
 
 \
 
@@ -319,7 +327,7 @@ $$
 <!-- ## [1] 0.5 -->
 <!-- ## [1] 0.254167 -->
 
-- Try doing the calculation above on a computer, with $\amin=-17, \amax=17$. What happens?
+- Try doing the calculation above on a computer, with $\amin=0, \amax=20$. What happens?
 
 :::
 
@@ -532,9 +540,9 @@ $$
 
     - In which different coin-tossing circumstances would you consider this probability reasonable (given the same previous observation data)?
 
-- Try doing the calculation above on a computer, using the values\ \ $\amin=-17, \amax=17$.
+- Try doing the calculation above on a computer, using the values\ \ $\amin=0, \amax=20$.
 
-    If you use the formulae above as they're given, you'll probably get just `NaN`s. The formulae above must be rewritten in a different way in order not to generate overflow. The result would be $\boldsymbol{52.26\%}$.
+    If you use the formulae above as they're given, you'll probably get just `NaN`s. The formulae above must be rewritten in a different way in order not to generate overflow. The result would be $\boldsymbol{51.42\%}$.
 
 :::
 
@@ -865,7 +873,7 @@ $$
 
 :::
 
-The agent has learned an association between $\ambu$ and $\urge$ from the first patient. Note that if we had used the parameters $\amin=-17, \amax=17$, the result would have been more conservative: $\boldsymbol{58.11\%}$.
+The agent has learned an association between $\ambu$ and $\urge$ from the first patient. Note that if we had used the parameters $\amin=0, \amax=20$, the result would have been more conservative: $\boldsymbol{54.90\%}$.
 
 
 ::::{.column-page-inset-right}
@@ -899,7 +907,7 @@ The two examples above reveal some characteristics of an agent based on the Diri
 
 - In absence of previous data, it assigns uniform probability distributions to any variate.
 
-- It can be "eager" to learn from previous examples, that is, its probabilities may vary appreciably even with only few observations. The "eagerness" is determined by the parameters $\amin, \amax$. For a general-purpose agent, the values $\amin=-17, \amax=17$ are more reasonable.
+- It can be "eager" to learn from previous examples, that is, its probabilities may vary appreciably even with only few observations. The "eagerness" is determined by the parameters $\amin, \amax$. For a general-purpose agent, the values $\amin=0, \amax=20$ are more reasonable.
 
 There are also other subtle characteristics connected to the two above, which we won't discuss here.
 
@@ -907,18 +915,30 @@ These characteristics can be appropriate to some inference tasks, but not to oth
 
 The background information implicit in the Dirichlet-mixture belief distribution can be reasonable in situations where:
 
-- There is very little information about the physics or science behind the variates and population, so one is willing to give a lot of weight to observed data. Contrast this with the coin-tossing scenario, where our physics knowledge about coin tosses make us appreciably change our probabilities only after a large number of observations.
+- There is very little information about the physics or science behind the (nominal) variates and population, so one is willing to give a lot of weight to observed data. Contrast this with the coin-tossing scenario, where our physics knowledge about coin tosses make us appreciably change our probabilities only after a large number of observations.
 
-- A large number of previous observations is available, "large" relative to the domain size $M$ of the total variate $Z$.
-
+::::{.column-margin}
 ::: {.callout-caution}
 ## {{< fa book >}} Study reading (again)
-[*Dynamical Bias in the Coin Toss*](https://hvl.instructure.com/courses/25074/modules/items/661553).
+[*Dynamical Bias in the Coin Toss*](https://hvl.instructure.com/courses/25074/modules/items/661553)
 <!-- We conclude that coin tossing is "physics" not "random." -->
 :::
+::::
+
+- A large number of previous observations is available, "large" relative to the domain size $M$ of the joint variate $Z$.
+
+- The joint variate $Z$ only consists of few simple variates.
 
 
 It is possible to modify the Dirichlet-mixture belief distribution in order to alter the characteristics above. Some modifications can assign more a-priori plausibility to some variate values than others, or make the initial belief less affected by observed data.
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+- [*The Dirichlet-tree distribution*](https://tminka.github.io/papers/dirichlet/minka-dirtree.pdf): discusses a more flexible generalization of the Dirichlet distribution
+- [*Monkeys, kangaroos, and $N$*](https://hvl.instructure.com/courses/25074/modules/items/724821): is an insightful discussion of how to investigate and represent prior beliefs.
+:::
+::::
 
 These possibilities should remind us about the importance of assessing and specifying appropriate background information. No matter the amount of data, what the data eventually "tell" us acquires meaning only against the background information from which they are observed.
 

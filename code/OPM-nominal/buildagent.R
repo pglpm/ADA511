@@ -1,4 +1,4 @@
-buildagent <- function(metadata, data=NULL, kmi=-17, kma=17, alphas=NULL, base=2){
+buildagent <- function(metadata, data=NULL, kmi=0, kma=20, alphas=NULL, base=2){
 #### Build "agent" object encoding background & learned knowledge
 #### Requires 'data.table'
     ##

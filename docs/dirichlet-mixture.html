@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-10-28">
+<meta name="dcterms.date" content="2023-10-31">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 32&nbsp; The Dirichlet-mixture belief distribution</title>
 <style>
@@ -99,7 +99,7 @@ ul.task-list li input[type="checkbox"] {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-28</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-10-31</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -421,7 +421,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./example_opm1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title"><span class="red">Prototype code and workflow</span></span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title"><span class="red">Example application: adult-income task</span></span></span></a>
   </div>
 </li>
       </ul>
@@ -453,7 +453,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-intro-dirichlet-mix" id="toc-sec-intro-dirichlet-mix" class="nav-link active" data-scroll-target="#sec-intro-dirichlet-mix"><span class="header-section-number">32.1</span> A belief distribution for frequency distributions over nominal variates</a></li>
+  <li><a href="#sec-intro-dirichlet-mix" id="toc-sec-intro-dirichlet-mix" class="nav-link active" data-scroll-target="#sec-intro-dirichlet-mix"><span class="header-section-number">32.1</span> A belief distribution for frequency distributions over nominal variates</a>
+  <ul class="collapse">
+  <li><a href="#meaning-of-the-k_textmi-k_textma-parameters" id="toc-meaning-of-the-k_textmi-k_textma-parameters" class="nav-link" data-scroll-target="#meaning-of-the-k_textmi-k_textma-parameters">Meaning of the <span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span> parameters</a></li>
+  </ul></li>
   <li><a href="#sec-joint-prob-dirichlet" id="toc-sec-joint-prob-dirichlet" class="nav-link" data-scroll-target="#sec-joint-prob-dirichlet"><span class="header-section-number">32.2</span> Formula for joint probabilities about units with the Dirichlet-mixture distribution</a></li>
   <li><a href="#sec-formulae-with-Dirmix" id="toc-sec-formulae-with-Dirmix" class="nav-link" data-scroll-target="#sec-formulae-with-Dirmix"><span class="header-section-number">32.3</span> Examples of inference tasks with the Dirichlet-mixture belief distribution</a></li>
   <li><a href="#sec-dirmix-example1" id="toc-sec-dirmix-example1" class="nav-link" data-scroll-target="#sec-dirmix-example1"><span class="header-section-number">32.4</span> Example&nbsp;1: Forecast about one variate, given previous observations</a></li>
@@ -478,7 +481,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-10-28</p>
+      <p class="date">2023-10-31</p>
     </div>
   </div>
   
@@ -540,12 +543,18 @@ ul.task-list li input[type="checkbox"] {
 \]</span></p>
 <p>Besides some multiplicative constants, the probability is simply proportional to the product of all frequencies, raised to some powers. The product <span style="display:inline-block;">“<span class="math inline">\(\prod_{{\color[RGB]{68,119,170}z}}\)</span>”</span> is over all <span style="display:inline-block;"><span class="math inline">\(M\)</span></span> possible values of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span>.</span> The sum <span style="display:inline-block;">“<span class="math inline">\(\sum_{k}\)</span>”</span> is over an <em>integer</em> (positive or negative) index <span style="display:inline-block;"><span class="math inline">\(k\)</span></span> that runs between the minimum value <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}\)</span></span> and the maximum value <span style="display:inline-block;"><span class="math inline">\(k_{\text{ma}}\)</span>.</span> In the applications of the next chapters these minimum and maximum are chosen as follows:</p>
 <p><span class="math display">\[
-k_{\text{mi}}=-17
+k_{\text{mi}}=0
 \qquad
-k_{\text{ma}}=17
+k_{\text{ma}}=20
 \]</span></p>
-<p>so the sum <span style="display:inline-block;"><span class="math inline">\(\sum_k\)</span></span> runs over <span style="display:inline-block;"><span class="math inline">\(2\cdot 17 +1= 35\)</span></span> terms.</p>
+<p>so the sum <span style="display:inline-block;"><span class="math inline">\(\sum_k\)</span></span> runs over 21 terms.</p>
 <p>In most applications it does not matter if we take a lower <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}\)</span></span> or a higher <span style="display:inline-block;"><span class="math inline">\(k_{\text{ma}}\)</span>.</span></p>
+<section id="meaning-of-the-k_textmi-k_textma-parameters" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="meaning-of-the-k_textmi-k_textma-parameters">Meaning of the <span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span> parameters</h3>
+<p>The parameters <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span></span> encode, approximately speaking, the agent’s prior belief about the size of a “representative sample” of the full population (<a href="samples.html#sec-samples">§ &nbsp;<span>23.3</span></a>). More precisely, <span style="display:inline-block;"><span class="math inline">\(2^k_{\text{mi}}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(2^k_{\text{ma}}\)</span></span> represent a lower and an upper bound of what the representative sample could be. Values&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=0\)</span>,&nbsp;&nbsp;</span><span style="display:inline-block;"><span class="math inline">\(k_{\text{ma}}=20\)</span>&nbsp;&nbsp;therefore</span> represent a belief that the representative-sample size could be anywhere between 1 unit and approximately 1 million units. The belief is spread out uniformly across the orders of magnitude in between.</p>
+<p>If <span style="display:inline-block;"><span class="math inline">\(2^k_{\text{mi}}\)</span></span> is larger than the amount of training data, the agent will consider these data insufficient, and tend to give uniform probabilities to its inferences; for instance a 50%/50% probability to a binary variate.</p>
+<p>If the order of magnitude of a representative sample is known, for example from previous studies on similar populations, the parameters <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}},k_{\text{ma}}\)</span></span> can be set to that order of magnitude (in base 2), minus or plus some magnitude range.</p>
+<p>If such an order of magnitude is not known, then it does <em>not</em> make sense to “estimate” it from training data with other methods, because an agent with a Dirichlet-mixture distribution will already do that internally (and in an optimal way), provided an ample range is given with <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span>.</span></p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -670,6 +679,7 @@ f({\color[RGB]{102,204,238}{\small\verb;Y;}})^{\frac{2^{2}}{2}-1}\cdot f({\color
 </ul>
 </div>
 </div>
+</section>
 </section>
 <section id="sec-joint-prob-dirichlet" class="level2 page-columns page-full" data-number="32.2">
 <h2 data-number="32.2" class="anchored" data-anchor-id="sec-joint-prob-dirichlet"><span class="header-section-number">32.2</span> Formula for joint probabilities about units with the Dirichlet-mixture distribution</h2>
@@ -802,7 +812,7 @@ R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 </ul></li>
 </ul>
 <ul>
-<li>Try doing the calculation above on a computer, with <span class="math inline">\(k_{\text{mi}}=-17, k_{\text{ma}}=17\)</span>. What happens?</li>
+<li>Try doing the calculation above on a computer, with <span class="math inline">\(k_{\text{mi}}=0, k_{\text{ma}}=20\)</span>. What happens?</li>
 </ul>
 </div>
 </div>
@@ -992,8 +1002,8 @@ Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0
 <li><p>Do you consider this probability reasonable? Why?</p></li>
 <li><p>In which different coin-tossing circumstances would you consider this probability reasonable (given the same previous observation data)?</p></li>
 </ul></li>
-<li><p>Try doing the calculation above on a computer, using the values&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=-17, k_{\text{ma}}=17\)</span>.</span></p>
-<p>If you use the formulae above as they’re given, you’ll probably get just <code>NaN</code>s. The formulae above must be rewritten in a different way in order not to generate overflow. The result would be <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{52.26\%}\)</span>.</span></p></li>
+<li><p>Try doing the calculation above on a computer, using the values&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=0, k_{\text{ma}}=20\)</span>.</span></p>
+<p>If you use the formulae above as they’re given, you’ll probably get just <code>NaN</code>s. The formulae above must be rewritten in a different way in order not to generate overflow. The result would be <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{51.42\%}\)</span>.</span></p></li>
 </ul>
 </div>
 </div>
@@ -1287,7 +1297,7 @@ U_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 \end{aligned}
 \]</span></p>
 </div>
-<p>The agent has learned an association between <span style="display:inline-block;"><span class="math inline">\({\small\verb;ambulance;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\({\small\verb;urgent;}\)</span></span> from the first patient. Note that if we had used the parameters <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=-17, k_{\text{ma}}=17\)</span>,</span> the result would have been more conservative: <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{58.11\%}\)</span>.</span></p>
+<p>The agent has learned an association between <span style="display:inline-block;"><span class="math inline">\({\small\verb;ambulance;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\({\small\verb;urgent;}\)</span></span> from the first patient. Note that if we had used the parameters <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=0, k_{\text{ma}}=20\)</span>,</span> the result would have been more conservative: <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{54.90\%}\)</span>.</span></p>
 <div class="column-page-inset-right">
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1318,20 +1328,21 @@ T_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 </div>
 </section>
 </section>
-<section id="sec-critique-dirmix" class="level2" data-number="32.6">
+<section id="sec-critique-dirmix" class="level2 page-columns page-full" data-number="32.6">
 <h2 data-number="32.6" class="anchored" data-anchor-id="sec-critique-dirmix"><span class="header-section-number">32.6</span> When is the Dirichlet-mixture belief distribution appropriate?</h2>
 <p>The two examples above reveal some characteristics of an agent based on the Dirichlet-mixture belief distribution:</p>
 <ul>
 <li><p>In absence of previous data, it assigns uniform probability distributions to any variate.</p></li>
-<li><p>It can be “eager” to learn from previous examples, that is, its probabilities may vary appreciably even with only few observations. The “eagerness” is determined by the parameters <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span>.</span> For a general-purpose agent, the values <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=-17, k_{\text{ma}}=17\)</span></span> are more reasonable.</p></li>
+<li><p>It can be “eager” to learn from previous examples, that is, its probabilities may vary appreciably even with only few observations. The “eagerness” is determined by the parameters <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span>.</span> For a general-purpose agent, the values <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=0, k_{\text{ma}}=20\)</span></span> are more reasonable.</p></li>
 </ul>
 <p>There are also other subtle characteristics connected to the two above, which we won’t discuss here.</p>
 <p>These characteristics can be appropriate to some inference tasks, but not to others. It is again a matter of <em>background information</em> about the task one wants to solve.</p>
 <p>The background information implicit in the Dirichlet-mixture belief distribution can be reasonable in situations where:</p>
 <ul>
-<li><p>There is very little information about the physics or science behind the variates and population, so one is willing to give a lot of weight to observed data. Contrast this with the coin-tossing scenario, where our physics knowledge about coin tosses make us appreciably change our probabilities only after a large number of observations.</p></li>
-<li><p>A large number of previous observations is available, “large” relative to the domain size <span style="display:inline-block;"><span class="math inline">\(M\)</span></span> of the total variate <span style="display:inline-block;"><span class="math inline">\(Z\)</span>.</span></p></li>
+<li>There is very little information about the physics or science behind the (nominal) variates and population, so one is willing to give a lot of weight to observed data. Contrast this with the coin-tossing scenario, where our physics knowledge about coin tosses make us appreciably change our probabilities only after a large number of observations.</li>
 </ul>
+
+<div class="no-row-height column-margin column-container"><div class="">
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1342,11 +1353,33 @@ T_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><a href="https://hvl.instructure.com/courses/25074/modules/items/661553"><em>Dynamical Bias in the Coin Toss</em></a>. </p>
+<p><a href="https://hvl.instructure.com/courses/25074/modules/items/661553"><em>Dynamical Bias in the Coin Toss</em></a> </p>
 </div>
 </div>
+</div></div><ul>
+<li><p>A large number of previous observations is available, “large” relative to the domain size <span style="display:inline-block;"><span class="math inline">\(M\)</span></span> of the joint variate <span style="display:inline-block;"><span class="math inline">\(Z\)</span>.</span></p></li>
+<li><p>The joint variate <span style="display:inline-block;"><span class="math inline">\(Z\)</span></span> only consists of few simple variates.</p></li>
+</ul>
 <p>It is possible to modify the Dirichlet-mixture belief distribution in order to alter the characteristics above. Some modifications can assign more a-priori plausibility to some variate values than others, or make the initial belief less affected by observed data.</p>
-<p>These possibilities should remind us about the importance of assessing and specifying appropriate background information. No matter the amount of data, what the data eventually “tell” us acquires meaning only against the background information from which they are observed.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-rocket" aria-label="rocket"></i> For the extra curious
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="https://tminka.github.io/papers/dirichlet/minka-dirtree.pdf"><em>The Dirichlet-tree distribution</em></a>: discusses a more flexible generalization of the Dirichlet distribution</li>
+<li><a href="https://hvl.instructure.com/courses/25074/modules/items/724821"><em>Monkeys, kangaroos, and <span class="math inline">\(N\)</span></em></a>: is an insightful discussion of how to investigate and represent prior beliefs.</li>
+</ul>
+</div>
+</div>
+</div></div><p>These possibilities should remind us about the importance of assessing and specifying appropriate background information. No matter the amount of data, what the data eventually “tell” us acquires meaning only against the background information from which they are observed.</p>
 <hr>
 <p>In the next chapter we discuss the code implementation of the formulae for the Dirichlet-mixture agent.</p>
 
