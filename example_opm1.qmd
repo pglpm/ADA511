@@ -57,7 +57,7 @@ As an example, note that domain of the $\mathit{native\_country}$ variate does n
 
 ### Agent's parameters $\amin, \amax$
 
-What could be the representative-sample size for the variates above, in the USA 1994 population? Let's put an upper bound at around 1 000 000 (that's roughly 0.5% of the whole population) with $\kmax=20$, and a lower bound at 1 with $\kmin=0$; these are the default values. We shall see later what the agent suggests might be a reasonable representative-sample size.
+What could be the representative-sample size for the variates above, in the USA 1994 population? Let's put an upper bound at around 1 000 000 (that's roughly 0.5% of the whole population) with $\amax=20$, and a lower bound at 1 with $\amin=0$; these are the default values. We shall see later what the agent suggests might be a reasonable representative-sample size.
 
 ## Collect & prepare training data
 
@@ -98,7 +98,7 @@ The most probable representative-sample size seems to be of the order of magnitu
 
 ## Application
 
-### Preliminary tests
+### Preliminary test: predictands
 
 Our two agents are ready to be applied to new instances.
 
@@ -148,7 +148,76 @@ plotFsamples1D(agent=opmall, n=200, predictand='race',
 
 \
 
-These checks are partially satisfying, but not completely. Examine for instance the last two plots. The `opm10`-agent is not giving not high probability (less than 1/200) to the possibility that future training data will lead to probabilities for $\mathit{race}\mo\cat{White}$ above 70%, which is what we are observing with the `opmall`-agent instead. So maybe we would like our agent to be more "open-minded" about future training data. To achieve this we would have to go back to the [*Collect & prepare background info*]{.blue} stage, and for example modify the parameters $\amin, \amax$, then re-check. It's even possible that we can find our present agent (more precisely, its encoded background information) not appropriate at all.
+These checks are satisfying, but it's good to check their agreement or disagreement with our intuition. Examine for instance the last two plots. The `opm10`-agent is not giving a high probability (less than 1/200) to the possibility that future training data will lead to probabilities for $\mathit{race}\mo\cat{White}$ above 70%, which is what we are observing with the `opmall`-agent instead. Would you like our agent to be more "open-minded" about future training data? In that case you should go back to the [*Collect & prepare background info*]{.blue} stage, and for example modify the parameters $\amin, \amax$, then re-check. Or you could even try an agent with a different initial belief distribution.
+
+In making this kind of considerations it's important to keep in mind what we learned and observed in previous chapters:
+
+:::{.callout-note}
+## Our goal: optimality, not "success"
+
+Remember (§§ [-@sec-optimality] and [-@sec-probability-def]) that a probability represents the *rational* degree of belief that an agent should have *given the particular information available*. We can't judge a probability from the value it assigns to something we later learn to be true -- because according to the information available it could be more rational (and optimal) to consider that something implausible (recall the example in [§ @sec-probability-def] of an object falling from the sky as we cross the street).
+
+From this point of view we should be wary of comparing the probability of something with our a-posteriori knowledge about it.
+:::
+
+### Preliminary test: specifying predictors
+
+Let's continue with one more check, specifying some predictors.
+
+We ask the `opm10` agent to forecast the $\mathit{income}$ of a new unit, given that the unit is known to have $\mathit{occupation}\mo\cat{Exec-managerial}$ and $\mathit{sex}\mo\cat{Male}$ (two predictor variates). What would you expect?
+
+The `opm10`-agent's belief about the unit -- as well as about the *full subpopulation* ([§ @sec-subpopulations]) of units having those predictors -- is shown in the following plot:
+
+```{r}
+plotFsamples1D(agent=opm10, n=200,
+               predictand='income',
+               predictor=list(occupation='Exec-managerial', sex='Male'),
+               ylim=c(0,1), main='opm10')
+```
+
+Note how the `opm10`-agent still slightly higher probability to $\mathit{income}\mo\cat{<=50}$, but at the same time it is quite uncertain about the subpopulation frequencies; more than if the predictor had not been specified. That is, according to this little-trained agent there could be large variety of possibilities *within this specific subpopulation*.
+
+The `opmall`-agent's beliefs are shown below:
+
+```{r}
+plotFsamples1D(agent=opmall, n=200,
+               predictand='income',
+               predictor=list(occupation='Exec-managerial', sex='Male'),
+               ylim=c(0,1), main='opmall')
+```
+
+it believes with around 55% probability that such a unit would have higher, $\cat{>50K}$ income. The representative subpopulation-frequency distributions in grey indicate that this belief is unlikely to be changed by new training data.
+
+\
+
+Let's now see an example of our agent's versatility by switching predictands and predictors. We tell the `opmall`-agent that the new unit has $\mathit{income}\mo\cat{>50}$, and ask it to infer the joint variate $(\mathit{occupation} \and \mathit{sex})$; let's present the results in rounded percentages:
+
+```{r}
+result <- infer(agent=opmall, predictand=c('occupation', 'sex'),
+                predictor=list(income='>50K'))
+round(result * 100)
+```
+
+It returns a 14 × 2 table of joint probabilities. The most probable combinations are $(\cat{Exec-managerial}, \cat{Male})$ and $(\cat{Prof-specialty}, \cat{Male})$.
+
+Also in this case we could ask the agent how much these probabilities could change if new training data were provided. We can get an idea by drawing 1000 samples of subpopulation frequencies with the function `rF()`, and then calculating their standard deviation with `sd()`:
+
+```{r}
+variability <- apply(
+    rF(n=1000, agent=opmall,
+       predictand=c('occupation', 'sex'), predictor=list(income='>50K')),
+    c('occupation','sex'), sd)
+print('Possible variation (sd) with new training data:')
+round(variability * 100, 1) # round to one decimal
+```
+
+the agent believes (at around 68%) that the current probability wouldn't change more than around ±0.5%.
+
+
+\
+
+The inferences above were meant as checks, but we see that we can actually ask our agent a wide variety of questions about the full population, and do all sorts of association studies.
+
 
 :::{.callout-warning}
 ## {{< fa exclamation-triangle >}} No "test" or "validation" datasets used or needed
@@ -159,27 +228,3 @@ The need for validation or test datasets with common machine-learning algorithms
 
 :::
 
-\
-
-Let's continue with one more check, specifying some predictor.
-
-
-We ask the `opm10` agent to forecast the $\mathit{income}$ of the next unit, using the `infer()` function:
-
-
-
-```{r}
-plotFsamples1D(agent=opm10, n=200,
-               predictand='income',
-               predictor=list(workclass='Self-emp-inc', race='White'),
-               ylim=c(0,1), main='opm10')
-```
-
-
-
-```{r}
-plotFsamples1D(agent=opmall, n=200,
-               predictand='income',
-               predictor=list(workclass='Self-emp-inc', race='White'),
-               ylim=c(0,1), main='opmall')
-```

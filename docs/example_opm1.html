@@ -497,7 +497,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#prepare-opm-agent" id="toc-prepare-opm-agent" class="nav-link" data-scroll-target="#prepare-opm-agent"><span class="header-section-number">35.4</span> Prepare OPM agent</a></li>
   <li><a href="#application" id="toc-application" class="nav-link" data-scroll-target="#application"><span class="header-section-number">35.5</span> Application</a>
   <ul class="collapse">
-  <li><a href="#preliminary-tests" id="toc-preliminary-tests" class="nav-link" data-scroll-target="#preliminary-tests">Preliminary tests</a></li>
+  <li><a href="#preliminary-test-predictands" id="toc-preliminary-test-predictands" class="nav-link" data-scroll-target="#preliminary-test-predictands">Preliminary test: predictands</a></li>
+  <li><a href="#preliminary-test-specifying-predictors" id="toc-preliminary-test-specifying-predictors" class="nav-link" data-scroll-target="#preliminary-test-specifying-predictors">Preliminary test: specifying predictors</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -578,7 +579,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="agents-parameters-k_textmi-k_textma" class="level3">
 <h3 class="anchored" data-anchor-id="agents-parameters-k_textmi-k_textma">Agent’s parameters <span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span></h3>
-<p>What could be the representative-sample size for the variates above, in the USA 1994 population? Let’s put an upper bound at around 1 000 000 (that’s roughly 0.5% of the whole population) with <span style="display:inline-block;"><span class="math inline">\(\kmax=20\)</span>,</span> and a lower bound at 1 with <span style="display:inline-block;"><span class="math inline">\(\kmin=0\)</span>;</span> these are the default values. We shall see later what the agent suggests might be a reasonable representative-sample size.</p>
+<p>What could be the representative-sample size for the variates above, in the USA 1994 population? Let’s put an upper bound at around 1 000 000 (that’s roughly 0.5% of the whole population) with <span style="display:inline-block;"><span class="math inline">\(k_{\text{ma}}=20\)</span>,</span> and a lower bound at 1 with <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=0\)</span>;</span> these are the default values. We shall see later what the agent suggests might be a reasonable representative-sample size.</p>
 </section>
 </section>
 <section id="collect-prepare-training-data" class="level2" data-number="35.3">
@@ -634,8 +635,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="application" class="level2" data-number="35.5">
 <h2 data-number="35.5" class="anchored" data-anchor-id="application"><span class="header-section-number">35.5</span> Application</h2>
-<section id="preliminary-tests" class="level3">
-<h3 class="anchored" data-anchor-id="preliminary-tests">Preliminary tests</h3>
+<section id="preliminary-test-predictands" class="level3">
+<h3 class="anchored" data-anchor-id="preliminary-test-predictands">Preliminary test: predictands</h3>
 <p>Our two agents are ready to be applied to new instances.</p>
 <p>Before applying them, let’s check some of their inferences, and see if we find anything unconvincing about them. If we find something unconvincing, it means that the background information we provided to the agent doesn’t match the one in our intuition. Then there are two or three possibilities: our intuition is misleading us and need correcting; or we need to go back to stage <span class="blue"><em>Collect &amp; prepare background info</em></span> and correct the background information given to the agent; or a combination of these two possibilities.</p>
 <p>We ask the <code>opm10</code> agent to forecast the <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span></span> of the next unit, using the <code>infer()</code> function:</p>
@@ -685,7 +686,110 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p><br>
 </p>
-<p>These checks are partially satisfying, but not completely. Examine for instance the last two plots. The <code>opm10</code>-agent is not giving not high probability (less than 1/200) to the possibility that future training data will lead to probabilities for <span style="display:inline-block;"><span class="math inline">\(\mathit{race}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;White;}\)</span></span> above 70%, which is what we are observing with the <code>opmall</code>-agent instead. So maybe we would like our agent to be more “open-minded” about future training data. To achieve this we would have to go back to the <span class="blue"><em>Collect &amp; prepare background info</em></span> stage, and for example modify the parameters <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span>,</span> then re-check. It’s even possible that we can find our present agent (more precisely, its encoded background information) not appropriate at all.</p>
+<p>These checks are satisfying, but it’s good to check their agreement or disagreement with our intuition. Examine for instance the last two plots. The <code>opm10</code>-agent is not giving a high probability (less than 1/200) to the possibility that future training data will lead to probabilities for <span style="display:inline-block;"><span class="math inline">\(\mathit{race}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;White;}\)</span></span> above 70%, which is what we are observing with the <code>opmall</code>-agent instead. Would you like our agent to be more “open-minded” about future training data? In that case you should go back to the <span class="blue"><em>Collect &amp; prepare background info</em></span> stage, and for example modify the parameters <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span>,</span> then re-check. Or you could even try an agent with a different initial belief distribution.</p>
+<p>In making this kind of considerations it’s important to keep in mind what we learned and observed in previous chapters:</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Our goal: optimality, not “success”
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Remember (§§&nbsp;<a href="framework.html#sec-optimality"><span>2.3</span></a> and&nbsp;<a href="probability_inference.html#sec-probability-def"><span>8.1</span></a>) that a probability represents the <em>rational</em> degree of belief that an agent should have <em>given the particular information available</em>. We can’t judge a probability from the value it assigns to something we later learn to be true – because according to the information available it could be more rational (and optimal) to consider that something implausible (recall the example in <a href="probability_inference.html#sec-probability-def">§ &nbsp;<span>8.1</span></a> of an object falling from the sky as we cross the street).</p>
+<p>From this point of view we should be wary of comparing the probability of something with our a-posteriori knowledge about it.</p>
+</div>
+</div>
+</section>
+<section id="preliminary-test-specifying-predictors" class="level3">
+<h3 class="anchored" data-anchor-id="preliminary-test-specifying-predictors">Preliminary test: specifying predictors</h3>
+<p>Let’s continue with one more check, specifying some predictors.</p>
+<p>We ask the <code>opm10</code> agent to forecast the <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span></span> of a new unit, given that the unit is known to have <span style="display:inline-block;"><span class="math inline">\(\mathit{occupation}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Exec-managerial;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathit{sex}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Male;}\)</span></span> (two predictor variates). What would you expect?</p>
+<p>The <code>opm10</code>-agent’s belief about the unit – as well as about the <em>full subpopulation</em> (<a href="subpopulations.html#sec-subpopulations">§ &nbsp;<span>22.1</span></a>) of units having those predictors – is shown in the following plot:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opm10, <span class="at">n=</span><span class="dv">200</span>,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictand=</span><span class="st">'income'</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">occupation=</span><span class="st">'Exec-managerial'</span>, <span class="at">sex=</span><span class="st">'Male'</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opm10'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Note how the <code>opm10</code>-agent still slightly higher probability to <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&lt;=50;}\)</span>,</span> but at the same time it is quite uncertain about the subpopulation frequencies; more than if the predictor had not been specified. That is, according to this little-trained agent there could be large variety of possibilities <em>within this specific subpopulation</em>.</p>
+<p>The <code>opmall</code>-agent’s beliefs are shown below:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opmall, <span class="at">n=</span><span class="dv">200</span>,</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictand=</span><span class="st">'income'</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">occupation=</span><span class="st">'Exec-managerial'</span>, <span class="at">sex=</span><span class="st">'Male'</span>),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opmall'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>it believes with around 55% probability that such a unit would have higher, <span style="display:inline-block;"><span class="math inline">\({\small\verb;&gt;50K;}\)</span></span> income. The representative subpopulation-frequency distributions in grey indicate that this belief is unlikely to be changed by new training data.</p>
+<p><br>
+</p>
+<p>Let’s now see an example of our agent’s versatility by switching predictands and predictors. We tell the <code>opmall</code>-agent that the new unit has <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&gt;50;}\)</span>,</span> and ask it to infer the joint variate <span style="display:inline-block;"><span class="math inline">\((\mathit{occupation} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathit{sex})\)</span>;</span> let’s present the results in rounded percentages:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall, <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'occupation'</span>, <span class="st">'sex'</span>),</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">income=</span><span class="st">'&gt;50K'</span>))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(result <span class="sc">*</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   sex
+occupation          Female Male
+  Adm-clerical           3    4
+  Armed-Forces           1    1
+  Craft-repair           1    9
+  Exec-managerial        4   16
+  Farming-fishing        1    2
+  Handlers-cleaners      1    2
+  Machine-op-inspct      1    3
+  Other-service          2    2
+  Priv-house-serv        1    1
+  Prof-specialty         5   15
+  Protective-serv        1    3
+  Sales                  2   10
+  Tech-support           2    3
+  Transport-moving       1    4</code></pre>
+</div>
+</div>
+<p>It returns a 14 × 2 table of joint probabilities. The most probable combinations are <span style="display:inline-block;"><span class="math inline">\(({\small\verb;Exec-managerial;}, {\small\verb;Male;})\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(({\small\verb;Prof-specialty;}, {\small\verb;Male;})\)</span>.</span></p>
+<p>Also in this case we could ask the agent how much these probabilities could change if new training data were provided. We can get an idea by drawing 1000 samples of subpopulation frequencies with the function <code>rF()</code>, and then calculating their standard deviation with <code>sd()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>variability <span class="ot">&lt;-</span> <span class="fu">apply</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rF</span>(<span class="at">n=</span><span class="dv">1000</span>, <span class="at">agent=</span>opmall,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'occupation'</span>, <span class="st">'sex'</span>), <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">income=</span><span class="st">'&gt;50K'</span>)),</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">'occupation'</span>,<span class="st">'sex'</span>), sd)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">'Possible variation (sd) with new training data:'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Possible variation (sd) with new training data:"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(variability <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>) <span class="co"># round to one decimal</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   sex
+occupation          Female Male
+  Adm-clerical         0.3  0.3
+  Armed-Forces         0.2  0.2
+  Craft-repair         0.2  0.5
+  Exec-managerial      0.3  0.6
+  Farming-fishing      0.2  0.2
+  Handlers-cleaners    0.2  0.2
+  Machine-op-inspct    0.2  0.3
+  Other-service        0.2  0.2
+  Priv-house-serv      0.2  0.2
+  Prof-specialty       0.3  0.6
+  Protective-serv      0.2  0.3
+  Sales                0.2  0.5
+  Tech-support         0.2  0.3
+  Transport-moving     0.2  0.3</code></pre>
+</div>
+</div>
+<p>the agent believes (at around 68%) that the current probability wouldn’t change more than around ±0.5%.</p>
+<p><br>
+</p>
+<p>The inferences above were meant as checks, but we see that we can actually ask our agent a wide variety of questions about the full population, and do all sorts of association studies.</p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -698,28 +802,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="callout-body-container callout-body">
 <p>The tests and explorations above were done without any “validation” or “test” datasets. This is because our agent is capable of calculating and showing its beliefs about the <em>full population</em> – and therefore about future data.</p>
 <p>The need for validation or test datasets with common machine-learning algorithms arise from the fact that full-population beliefs are hidden or, more commonly, not computed at all, in order to gain speed. The application of the trained machine-learning algorithm to a validation dataset is an approximate way of extracting such beliefs.</p>
-</div>
-</div>
-<p><br>
-</p>
-<p>Let’s continue with one more check, specifying some predictor.</p>
-<p>We ask the <code>opm10</code> agent to forecast the <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span></span> of the next unit, using the <code>infer()</code> function:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opm10, <span class="at">n=</span><span class="dv">200</span>,</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictand=</span><span class="st">'income'</span>,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">workclass=</span><span class="st">'Self-emp-inc'</span>, <span class="at">race=</span><span class="st">'White'</span>),</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opm10'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="example_opm1_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opmall, <span class="at">n=</span><span class="dv">200</span>,</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictand=</span><span class="st">'income'</span>,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">workclass=</span><span class="st">'Self-emp-inc'</span>, <span class="at">race=</span><span class="st">'White'</span>),</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opmall'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="example_opm1_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
