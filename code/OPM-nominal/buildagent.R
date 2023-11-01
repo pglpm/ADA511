@@ -84,5 +84,7 @@ buildagent <- function(metadata, data=NULL, kmi=0, kma=20, alphas=NULL, base=2){
     auxalphas <- auxalphas - lgamma(alphas + NN + 1)
     ##
     ## Output "agent" object
-    list(counts=counts, alphas=alphas, auxalphas=auxalphas, palphas=palphas)
+    out <- list(counts=counts, alphas=alphas, auxalphas=auxalphas, palphas=palphas)
+    class(out) <- c('agent', class(out))
+    out
 }

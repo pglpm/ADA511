@@ -3,38 +3,6 @@ rF <- function(n=1, agent, predictand=NULL, predictor=NULL){
 #### Requires 'extraDistr'
     variates <- names(dimnames(agent[['counts']]))
     ##
-    ## Selection of predictor values
-    ##
-    ## Check if at least one predictor variate is valid
-    if(!is.null(predictor) && length(intersect(variates, names(predictor))) == 0){
-        message('Warning: discarding all predictors, none valid')
-        predictor <- NULL
-    }
-    if(!is.null(predictor)){
-        predictor <- as.list(predictor)
-        ## Check consistency of variates in metadata and predictor
-        if(length(setdiff(variates, names(predictor))) == 0){
-            stop('All variates are in the predictor')
-        }
-        if(length(setdiff(names(predictor), variates)) > 0){
-            message('Discarding predictor variates not present in metadata')
-        }
-        predictor <- predictor[na.omit(match(variates, names(predictor)))]
-        ##
-        ipredictor <- match(names(predictor), variates) # predictor-indices
-        ## select subarray of counts corresponding to the predictor values
-        totake <- as.list(rep(TRUE, length(variates)))
-        totake[ipredictor] <- predictor
-        counts <- do.call(`[`, c(list(agent[['counts']]), totake))
-        if(is.null(dim(counts))){
-            dim(counts) <- length(counts)
-            dimnames(counts) <- dimnames(agent[['counts']])[-ipredictor]
-        }
-    }else{
-        ## no predictors specified
-        counts <- agent[['counts']]
-    }
-    ##
     ## Select n alpha parameters according to their probabilities given data
     ## length(agent[['counts']]) =: M
     alphas <- agent[['alphas']]/length(agent[['counts']])
@@ -42,20 +10,49 @@ rF <- function(n=1, agent, predictand=NULL, predictor=NULL){
     alphas <- alphas[sample.int(n=length(alphas), size=n, replace=T,
                                       prob=agent[['palphas']])]
     ##
-    ## Selection of predictand variates
-    if(!is.null(predictand)){
+    ##
+    ## Selection of predictor values
+    ##
+    ## Check if at least one predictor variate is valid
+    if(!is.null(predictor) && !any(variates %in% names(predictor))){
+        message('Warning: discarding all predictors, none valid')
+        predictor <- NULL
+    }
+    if(!is.null(predictor)){ # predictor is given
+        predictor <- as.list(predictor)
+        ## Check consistency of variates in metadata and predictor
+        if(all(variates %in% names(predictor))){
+            stop('All variates are in the predictor')
+        }
+        if(!all(names(predictor) %in% variates)){
+            message('Discarding predictor variates not present in metadata')
+        }
+        predictor <- predictor[variates]
+        predictor[lengths(predictor) == 0] <- TRUE
+        ## select subarray of counts corresponding to the predictor values
+        counts <- do.call(`[`, c(list(agent[['counts']]), predictor))
+        if(is.null(dim(counts))){
+            dim(counts) <- length(counts)
+            dimnames(counts) <- dimnames(agent[['counts']])[-which(names(predictor) %in% variates)]
+        }
+    }else{ # no predictor specified
+        counts <- agent[['counts']]
+    }
+    ##
+    ## Selection of predictand variates, if given
+    if(!is.null(predictand) && !any(predictand %in% names(dimnames(counts)))){
+        message('Discarding all predictands: none matches allowed ones')
+        predictand <- NULL
+    }
+    if(!is.null(predictand)){ # predictand given
         ## Check consistency of variates in metadata and predictand
-        if(length(setdiff(predictand, variates)) > 0){
-            message('Discarding predictand variates not present in metadata')
+        if(!all(predictand %in% names(dimnames(counts)))){
+            message('Discarding predictands not present in metadata')
         }
-        predictand <- predictand[na.omit(match(variates, predictand))]
-        ## Check consistency of variates in predictor and predictand
-        if(length(intersect(predictand, names(predictor))) > 0){
-            stop('Some variates appear in predictand and predictor')
-        }
+        predictand <- predictand[predictand %in% names(dimnames(counts))]
         ##
-        ipredictand <- match(predictand, names(dimnames(counts))) # predictand-index
-        ## Multiplicative factor for alpha samples, owing to marginalization
+        ipredictand <- which(names(dimnames(counts)) %in% predictand) # predictand-index
+        ## Multiplicative factor for alpha parameters, owing to marginalization
         alphas <- prod(dim(counts)[-ipredictand]) * alphas
         ##
         ## Marginalize frequencies
