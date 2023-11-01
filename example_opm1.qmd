@@ -55,7 +55,8 @@ The variates to be used must be of nominal type, because our agent's background 
 First, create a preliminary metadata file by running the function `guessmetadata()` on the training data [`train-income_data_example.csv`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/train-income_data_example.csv):
 
 ```{r}
-guessmetadata(data='train-income_data_example.csv', file='preliminary.csv')
+guessmetadata(data='train-income_data_example.csv',
+              file='preliminary.csv')
 ```
 
 Inspect the resulting file `preliminary.csv` and check whether you can alter it to add additional background information.
@@ -84,9 +85,11 @@ For the sake of this example we shall prepare two agents with the same backgroun
 Prepare and train each with the `buildagent()` function:
 
 ```{r}
-opm10 <- buildagent(metadata='meta_income_data_example.csv', data=fread('train-income_data_example.csv', header=TRUE)[1:10])
+opm10 <- buildagent(metadata='meta_income_data_example.csv',
+                    data=fread('train-income_data_example.csv', header=TRUE)[1:10])
 
-opmall <- buildagent(metadata='meta_income_data_example.csv', data='train-income_data_example.csv')
+opmall <- buildagent(metadata='meta_income_data_example.csv',
+                     data='train-income_data_example.csv')
 ```
 
 We can peek into the internal structure of these "agent objects" with `str()`
@@ -133,7 +136,7 @@ The agent gives a very slightly larger probability to the $\cat{<=50K}$ case. Us
 
 ```{r}
 plotFsamples1D(agent=opm10, n=200, predictand='income',
-               ylim=c(0,1), main='opm10')
+               ylim=c(0,1), main='opm10') # last options are for plotting
 ```
 
 where the [blue line]{.blue} is the distribution previously calculated with the `infer()` function.
@@ -154,7 +157,7 @@ We can perform a similar exploration for any other variate. Let's take the $\mat
 
 ```{r}
 plotFsamples1D(agent=opm10, n=200, predictand='race',
-               ylim=c(0,1), main='opm10', cex.axis=0.75)
+               ylim=c(0,1), main='opm10', cex.axis=0.75)  # last options are for plotting
 ```
 
 Note again how the little-trained `opm10`-agent has practically uniform beliefs. But it's also expressing the fact that future training data will probably increase the probability of $\mathit{race}\mo\cat{White}$. This is again corroborated by the fully-trained agent:
@@ -224,10 +227,12 @@ It returns a 14 × 2 table of joint probabilities. The most probable combina
 Also in this case we could ask the agent how much these probabilities could change if new training data were provided. We can get an idea by drawing 1000 samples of subpopulation frequencies with the function `rF()`, and then calculating their standard deviation with `sd()`:
 
 ```{r}
-variability <- apply(
-    rF(n=1000, agent=opmall, predictand=c('occupation', 'sex'),
-       predictor=list(income='>50K')),
-    c('occupation','sex'), sd)
+freqsamples <- rF(n=1000, agent=opmall, predictand=c('occupation', 'sex'),
+                  predictor=list(income='>50K'))
+variability <- apply(freqsamples,
+                     c('occupation','sex'), # which dimensions to apply
+                     sd) # function to apply to those dimensions
+##
 ## Possible variation (sd) with new training data:
 round(variability * 100, 1) # round to one decimal
 ```
@@ -264,6 +269,7 @@ At the end we plot a histogram of the probabilities calculated for the new units
 ```{r}
 testdata <- fread('test-income_data_example.csv', header=TRUE) # read test data
 ntest <- nrow(testdata) # number of test data
+##
 testprobs <- numeric(ntest) # prepare vector of probabilities
 testhits <- numeric(ntest) # prepare vector of hits
 ##
@@ -272,10 +278,11 @@ stopwatch <- Sys.time() # record time
 for(i in 1:ntest){
     ## calculate probabilities given all variates except 'income'
     probs <- infer(agent=opmall, predictor=testdata[i, !'income'])
-    ## store probability P(<=50K)
+    ## store the probability for <=50K
     testprobs[i] <- probs['<=50K']
     ## decide on one value, check if decision == true_value, and store result
-    testhits[i] <- (decide(probs=probs) == testdata[i, 'income'])
+    chosenvalue <- decide(probs=probs)
+    testhits[i] <- (chosenvalue == testdata[i, 'income'])
 }
 ##
 print(Sys.time() - stopwatch) # print computation time
