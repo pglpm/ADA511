@@ -89,6 +89,7 @@ We allow for full versatility in every new instance. This means that we can acco
 
 To enjoy the versatility discussed above, the code needs to compute
 
+::::{.column-page-right}
 :::{.callout-note}
 ##
 
@@ -98,28 +99,45 @@ $$
 \and
 \green\data
 \black \| \yD)
+=
+\frac{1}{\amax-\amin+1}
+\sum_{\ya=\amin}^{\amax}
+\Biggl(\frac{2^{\ya}}{M} + {\green\#}\bz\Biggr)
+\cdot
+\frac{
+\prod_{\bz} \bigl(\frac{2^{\ya}}{M} + {\green\# z} - 1\bigr)!
+}{
+\bigl(2^{\ya} + L -1 \bigr)!
+}
+\cdot
+\frac{
+\bigl(2^{\ya} -1 \bigr)!
+}{
+{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
+}
 $$ {#eq-objectP}
 
-for all possible values $\bz$.
+for all possible values $\bz$, where ${\green\#}\bz$ is the number of times value $\bz$ appears **in the [data]{.green}**.
 :::
+::::
 
-But these computations must be done *only once* for a given task. For a new application we only need to combine these already-computed probabilities via sums and fractions. For example, in the three-variate case above, if in a new application we need to forecast $\red A\mo a$ given $\green C\mo c$, then we calculate
+But these computations must be done *only once* for a given task. For a new application we only need to combine these already-computed probabilities via sums and fractions. For example, in the three-variate case above, if in a new application we need to forecast $\red A\mo a$ given $\yellow C\mo c$, then we calculate
 
 ::::{.column-page-inset-right}
 :::{.callout-note}
 ##
 
-(example)
+(example with $Z \defd ({\red A}, {\blue B}, {\yellow C})$)
 
 $$
-P(\red A\mo a \black \|\green C\mo c \black \and \data \and \yD)
+P(\red A\mo a \black \|\yellow C\mo c \black \and \data \and \yD)
 =
 \frac{
 \sum_{\blue b}
-P(\red A\mo a \black \and \blue B\mo b \black \and \green C\mo c \black \and \data \| \yD)
+P(\red A\mo a \black \and \blue B\mo b \black \and \yellow C\mo c \black \and \data \| \yD)
 }{
 \sum_{\purple \alpha}\sum_{\blue b}
-P(\red A\mo {\purple \alpha} \black \and \blue B\mo b \black \and \green C\mo c \black \and \data \| \yD)
+P(\red A\mo {\purple \alpha} \black \and \blue B\mo b \black \and \yellow C\mo c \black \and \data \| \yD)
 }
 \quad
 $$ {#eq-forecast}
@@ -127,7 +145,7 @@ $$ {#eq-forecast}
 :::
 ::::
 
-where all $P(\red A\mo\dotso \black \and \blue B\mo\dotso \black \and \green C\mo\dotso \black \and \data \| \yD)$ are already computed.
+where all $P(\red A\mo\dotso \black \and \blue B\mo\dotso \black \and \yellow C\mo\dotso \black \and \data \| \yD)$ are already computed.
 
 ::::{.column-body-outset-right}
 :::{.callout-caution}
@@ -138,18 +156,18 @@ Using the `and`-rule, prove (pay attention to the conditional "$\|$" bar):
 $$
 \frac{
 \sum_{\blue b}
-P(\red A\mo a \black \and \blue B\mo b \black \and \green C\mo c \black \and \data \| \yD)
+P(\red A\mo a \black \and \blue B\mo b \black \and \yellow C\mo c \black \and \data \| \yD)
 }{
 \sum_{\purple \alpha}\sum_{\blue b}
-P(\red A\mo {\purple \alpha} \black \and \blue B\mo b \black \and \green C\mo c \black \and \data \| \yD)
+P(\red A\mo {\purple \alpha} \black \and \blue B\mo b \black \and \yellow C\mo c \black \and \data \| \yD)
 }
 =
 \frac{
 \sum_{\blue b}
-P(\red A\mo a \black \and \blue B\mo b \black \and \green C\mo c \black \| \data \and \yD)
+P(\red A\mo a \black \and \blue B\mo b \black \and \yellow C\mo c \black \| \data \and \yD)
 }{
 \sum_{\purple \alpha}\sum_{\blue b}
-P(\red A\mo {\purple \alpha} \black \and \blue B\mo b \black \and \green C\mo c \black \| \data \and \yD)
+P(\red A\mo {\purple \alpha} \black \and \blue B\mo b \black \and \yellow C\mo c \black \| \data \and \yD)
 }
 $$
 
@@ -177,7 +195,7 @@ once for all possible values $\bz$, and use that. Mathematically and logically t
 Our prototype software must therefore include two main functions, which we can call as follows:
 
 `buildagent()`
-: computes (@eq-objectP) once and for all in a given task, using the training $\data$ and the metadata $\yD$ provided. The result can be stored in an array or similar object, let's call it an `agent`-class object.
+: computes $\green\#\bz$ and the various multiplicative factors in (@eq-objectP) once and for all in a given task, using the training $\data$ and the metadata $\yD$ provided. The result can be stored in an array or similar object, let's call it an `agent`-class object.
 
 `infer()`
 : computes probabilities such as (@eq-forecast) at each new instance, using the stored `agent`-class object as well as the predictor variates and values provided with that instance, and the predictand variates requested at that instance.
