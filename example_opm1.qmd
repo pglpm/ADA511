@@ -233,7 +233,22 @@ round(result * 100)
 
 It returns a 14 × 2 table of joint probabilities. The most probable combinations are $(\cat{Exec-managerial}, \cat{Male})$ and $(\cat{Prof-specialty}, \cat{Male})$.
 
-Also in this case we could ask the agent how much these probabilities could change if new training data were provided. We can get an idea by drawing 1000 samples of subpopulation frequencies with the function `rF()`, and then calculating their standard deviation with `sd()`:
+### The `rF()` function
+
+This function generates **full-population** frequency distributions (even for subpopulations) that are probable according to the data.
+
+For instance, let's see three samples of how the full-population frequency distribution for $\mathit{sex}$ $\mathit{income}$ (jointly) could be:
+
+```{r}
+result <- rF(agent=opmall, n=3, predictand=c('sex', 'income'))
+
+print(aperm(result) * 100) # permutation so that the samples are the last array dimension
+```
+
+
+These possible full-population frequency distributions can be used to assess how much the probabilities we find could change, if we collected a much, much larger amount of training data.
+
+In the example below, we generate 1000 frequency distributions for $(\mathit{occupation}, \mathit{sex})$ given $\mathit{income}\mo\cat{>50K}$, and then take the standard deviations of the samples as a rough measure of how much the probabilities we calculated a couple of cells above could change:
 
 ```{r}
 freqsamples <- rF(n=1000, agent=opmall, predictand=c('occupation', 'sex'),
@@ -243,7 +258,7 @@ variability <- apply(freqsamples,
                      sd) # function to apply to those dimensions
 ##
 ## Possible variation (sd) with new training data:
-round(variability * 100, 1) # round to one decimal
+round(variability * 100, 2) # round to two decimals
 ```
 
 the agent believes (at around 68%) that the current probability wouldn't change more than around ±0.5%.
