@@ -1,5 +1,5 @@
 buildagent <- function(metadata, data=NULL, kmi=0, kma=20, alphas=NULL, base=2){
-#### Build "agent" object encoding background & learned knowledge
+#### Builds "agent" object encoding background & learned knowledge
 #### Requires 'data.table'
     ##
     ## Read metadata from file, if given as file

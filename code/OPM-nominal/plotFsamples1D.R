@@ -1,5 +1,5 @@
 plotFsamples1D <- function(agent, n=100, predictand=NULL, predictor=NULL, probability=TRUE, file=NULL, ...){
-#### Plot samples of full-population freq. distributions for one variate
+#### Plots samples of full-population freq. distributions for one variate
 #### Requires 'png' to plot png
     if(
     (!is.null(predictand) && length(predictand) > 1) ||

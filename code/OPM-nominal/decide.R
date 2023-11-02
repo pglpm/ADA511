@@ -1,5 +1,5 @@
 decide <- function(probs=NULL, utils=NULL, all=FALSE){
-#### Make a decision depending on probabilities and utilities
+#### Makes a decision depending on probabilities and utilities
 #### Decisions correspond to ROWS of the utilities array
     ##
     ## Sanity checks for input arguments

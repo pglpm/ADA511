@@ -1,5 +1,5 @@
 infer <- function(agent, predictand=NULL, predictor=NULL){
-#### Calculate conditional or unconditional probability for new unit
+#### Calculates conditional or unconditional probability for new unit
     variates <- names(dimnames(agent[['counts']]))
     ##
     ## Load alpha parameters from "agent" object

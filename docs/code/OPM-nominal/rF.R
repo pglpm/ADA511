@@ -1,5 +1,5 @@
 rF <- function(n=1, agent, predictand=NULL, predictor=NULL){
-#### Return a sample of full-population frequency
+#### Returns a sample of full-population frequency
 #### Requires 'extraDistr'
     variates <- names(dimnames(agent[['counts']]))
     ##
