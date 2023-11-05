@@ -68,7 +68,7 @@ infer <- function(agent, predictand=NULL, predictor=NULL){
     ## "-max(counts)": renormalize against overflow
     ## "exp()": go from log-probabilities to probabilities
     ## "colSums()": sum over alpha (that is, k)
-    counts <- colSums(exp(counts-max(counts))) # 
+    counts <- colSums(exp(counts-max(counts)))
     ## Reshape array of results
     if(is.null(dim(counts))){
         dim(counts) <- length(counts)

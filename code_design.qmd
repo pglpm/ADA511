@@ -6,7 +6,7 @@
 Before starting, let's agree on some terminology in order not to get confused in the discussion below.
 
 - We shall call [*task*]{.blue} a repetitive inference problem with a specified set of units and variates. For instance, a task could be the consecutive prediction of the urgency of incoming patients, given their mean of transportation. We assume that the details of the variates, such as their domain, are well specified. Possibly also a set of data from other patients is available, which we call "training data".
-- We shall call [*application*]{.blue} or [*instance*]{.blue} of the task a single inference about a specific new unit, for instance a new incoming patient, known to be arriving by helicopter.
+- We shall call [*application*]{.blue} or [*instance*]{.blue} of the task a single inference about a specific new unit, for example a new incoming patient.
 
 
 ## Range of use of the code {#sec-code-range}
@@ -60,12 +60,13 @@ Recall that $\bZ$ denotes all (nominal) variates of the population
 $$
 \data \defd
 (\green
-Z_{1}\mo z_1 \land 
-Z_{2}\mo z_2 \land \dotsb 
+Z_{N}\mo z_{N} \land \dotsb \land
+Z_{2}\mo z_2 \land
+Z_{1}\mo z_{1}
 \black)
 $$
 
-where $\blue z_1, z_2, \dotsc$ are specific values, stored in some training dataset. No values are missing.
+where $\blue z_N, \dotsc, z_2, z_1$ are specific values, stored in some training dataset. No values are missing.
 
 Since the training $\data$ are given and fixed in a task, we omit the suffix "${}_{N+1}$" that we have often used to indicate a "new" unit. So "$\blue Z\mo z$" simply refers to the variate $\bZ$ in a new application of the task.
 
@@ -107,7 +108,7 @@ $$
 \frac{
 \prod_{\bz} \bigl(\frac{2^{\ya}}{M} + {\green\# z} - 1\bigr)!
 }{
-\bigl(2^{\ya} + L -1 \bigr)!
+\bigl(2^{\ya} + N \bigr)!
 }
 \cdot
 \frac{
@@ -117,11 +118,17 @@ $$
 }
 $$ {#eq-objectP}
 
-for all possible values $\bz$, where ${\green\#}\bz$ is the number of times value $\bz$ appears **in the [data]{.green}**.
+for all possible values $\bz$, where ${\green\#}\bz$ is the number of times value $\bz$ appears **in the training [data]{.green}**, and $N = \sum_{\green z}{\green\# z}$ is the number of training data
 :::
 ::::
 
-But these computations must be done *only once* for a given task. For a new application we only need to combine these already-computed probabilities via sums and fractions. For example, in the three-variate case above, if in a new application we need to forecast $\red A\mo a$ given $\yellow C\mo c$, then we calculate
+This formula is just a rewriting of formula (@eq-main-joint) for $L=N+1$, simplified by using the property of the factorial
+
+$$(a+1)! = (a+1) \cdot a!$$
+
+
+
+But the computation of formula (@eq-objectP) (for all values of $\bz$) must be done *only once* for a given task. For a new application we only need to combine these already-computed probabilities via sums and fractions. For example, in the three-variate case above, if in a new application we need to forecast $\red A\mo a$ given $\yellow C\mo c$, then we calculate
 
 ::::{.column-page-inset-right}
 :::{.callout-note}
@@ -147,6 +154,47 @@ $$ {#eq-forecast}
 
 where all $P(\red A\mo\dotso \black \and \blue B\mo\dotso \black \and \yellow C\mo\dotso \black \and \data \| \yD)$ are already computed.
 
+\
+
+Our prototype software must therefore include two main functions, which we can call as follows:
+
+- `buildagent()` ([see code](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildagent.R))
+: computes $\green\#\bz$ for all values $\bz$, as well as the multiplicative factor
+    
+	$$
+	\frac{
+	\bigl(2^{\ya} -1 \bigr)!
+}{
+\bigl(2^{\ya} + N \bigr)!
+\cdot
+{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
+}
+$$
+    
+    for all $k$, in (@eq-objectP). This computation is done once and for all in a given task, using the training $\data$ and the metadata $\yD$ provided. The result can be stored in an array or similar object, which we shall call an `agent`-class object.
+
+- `infer()` ([see code](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/infer.R))
+: computes probabilities such as (@eq-forecast) at each new instance, using the stored `agent`-class object as well as the predictor variates and values provided with that instance, and the predictand variates requested at that instance.
+
+\
+
+We shall also include four additional functions for convenience:
+
+- `guessmetadata()`
+: builds a preliminary metadata file, encoding the background information $\yD$, from some dataset.
+
+- `decide()`
+: makes a decision according to expected-utility maximization ([chapter @sec-basic-decisions]), using probabilities calculated with `infer()` and utilities.
+
+- `rF()`
+: draws one or more possible full-population frequency distribution $\vf$, according to the updated degree of belief $\p(F\mo\vf \| \data \and \yD)$
+
+- `plotFsamples1D()`
+: plots, as a generalized scatter plot, the possible full-population marginal frequency distributions for a single (not joint) predictand variate. If required it also also the final probability obtained with `infer()`.
+
+- `mutualinfo()`
+: calculates the mutual information ([§ @sec-entropy-mutualinfo]) between any two sets of variates.
+
 ::::{.column-body-outset-right}
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
@@ -171,10 +219,9 @@ P(\red A\mo {\purple \alpha} \black \and \blue B\mo b \black \and \yellow C\mo c
 }
 $$
 
-:::
-::::
+\
 
-The exercise above shows that instead of
+This exercise shows that instead of
 
 $$\P(\blue Z \mo z \black \and \green\data \black \| \yD)$$
 
@@ -190,41 +237,19 @@ $$
 
 once for all possible values $\bz$, and use that. Mathematically and logically the two ways are completely equivalent. Numerically they can be different as regards precision or possible overflow errors. Using $\P( \blue Z \mo z \black \| \green\data \black \and \yD)$ would be convenient if our basic formula (@eq-main-joint) didn't contain the sum $\sum_k$ over the $k$ index. Our code shall instead use $\P(\blue Z \mo z \black \and \green\data \black \| \yD)$ because it leads to slightly more precision and speed in some tasks.
 
-\
-
-Our prototype software must therefore include two main functions, which we can call as follows:
-
-`buildagent()`
-: computes $\green\#\bz$ and the various multiplicative factors in (@eq-objectP) once and for all in a given task, using the training $\data$ and the metadata $\yD$ provided. The result can be stored in an array or similar object, let's call it an `agent`-class object.
-
-`infer()`
-: computes probabilities such as (@eq-forecast) at each new instance, using the stored `agent`-class object as well as the predictor variates and values provided with that instance, and the predictand variates requested at that instance.
-
-\
-
-We shall also include four additional functions for convenience:
-
-`guessmetadata()`
-: builds a preliminary metadata file, encoding the background information $\yD$, from some dataset.
-
-`decide()`
-: makes a decision according to expected-utility maximization ([chapter @sec-basic-decisions]), using probabilities calculated with `infer()` and utilities.
-
-`rF()`
-: draws one or more possible full-population frequency distribution $\vf$, according to the updated degree of belief $\p(F\mo\vf \| \data \and \yD)$
-
-`plotFsamples1D()`
-: plots, as a generalized scatter plot, the possible full-population marginal frequency distributions for a single (not joint) predictand variate. If required it also also the final probability obtained with `infer()`.
-
-`mutualinfo()`
-: calculates the mutual information ([§ @sec-entropy-mutualinfo]) between any two sets of variates.
+:::
+::::
 
 
-## Code optimization
 
-The formulae of [chapter @sec-dirichlet-mix], if used as-written, easily lead to two kinds of computation problems. First, they easily generate overflows and `NaN`, owing to factorials and their divisions. Second, the products over variates may involve so many terms as to require a long computation time. In the end we would have to wait a long time just to receive a string of `NaN`s.
 
-The first problem is dealt with by rewriting the formulae in terms of logarithms, and renormalizing numerators and denominators of fractions. The second problem is dealt with by reorganizing the sums as multiples of identical summands. These optimization details are not discussed here, although they are implemented in the code.
+## Code optimization {#sec-code-optim}
+
+The formulae of [chapter @sec-dirichlet-mix], if used as-written, easily lead to two kinds of computation problems. First, they generate overflows and `NaN`, owing to factorials and their divisions. Second, the products over variates may involve so many terms as to require a long computation time. In the end we would have to wait a long time just to receive a string of `NaN`s.
+
+The first problem is dealt with by rewriting the formulae in terms of logarithms, and renormalizing numerators and denominators of fractions. See for example the lines defining `auxalphas` in the [`buildagent()` function](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildagent.R), and the line that redefines `counts` one last time in the [`infer()` function](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/infer.R).
+
+The second problem is dealt with by reorganizing the sums as multiples of identical summands; see the lines working with `freqscounts` in the [`buildagent()` function](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildagent.R).
 
 ::::{.column-margin}
 ::: {.callout-tip}

@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-02">
+<meta name="dcterms.date" content="2023-11-05">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 33&nbsp; Code design</title>
 <style>
@@ -99,7 +99,7 @@ ul.task-list li input[type="checkbox"] {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-02</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-05</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -455,7 +455,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#sec-code-range" id="toc-sec-code-range" class="nav-link active" data-scroll-target="#sec-code-range"><span class="header-section-number">33.1</span> Range of use of the code</a></li>
   <li><a href="#sec-code-computations" id="toc-sec-code-computations" class="nav-link" data-scroll-target="#sec-code-computations"><span class="header-section-number">33.2</span> Code design and computations needed</a></li>
-  <li><a href="#code-optimization" id="toc-code-optimization" class="nav-link" data-scroll-target="#code-optimization"><span class="header-section-number">33.3</span> Code optimization</a></li>
+  <li><a href="#sec-code-optim" id="toc-sec-code-optim" class="nav-link" data-scroll-target="#sec-code-optim"><span class="header-section-number">33.3</span> Code optimization</a></li>
   </ul>
 </nav>
     </div>
@@ -475,7 +475,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-02</p>
+      <p class="date">2023-11-05</p>
     </div>
   </div>
   
@@ -500,7 +500,7 @@ ul.task-list li input[type="checkbox"] {
 <p>Before starting, let’s agree on some terminology in order not to get confused in the discussion below.</p>
 <ul>
 <li>We shall call <span class="blue"><em>task</em></span> a repetitive inference problem with a specified set of units and variates. For instance, a task could be the consecutive prediction of the urgency of incoming patients, given their mean of transportation. We assume that the details of the variates, such as their domain, are well specified. Possibly also a set of data from other patients is available, which we call “training data”.</li>
-<li>We shall call <span class="blue"><em>application</em></span> or <span class="blue"><em>instance</em></span> of the task a single inference about a specific new unit, for instance a new incoming patient, known to be arriving by helicopter.</li>
+<li>We shall call <span class="blue"><em>application</em></span> or <span class="blue"><em>instance</em></span> of the task a single inference about a specific new unit, for example a new incoming patient.</li>
 </ul>
 <section id="sec-code-range" class="level2 page-columns page-full" data-number="33.1">
 <h2 data-number="33.1" class="anchored" data-anchor-id="sec-code-range"><span class="header-section-number">33.1</span> Range of use of the code</h2>
@@ -554,11 +554,12 @@ Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0
 </div></div><p><span class="math display">\[
 \mathsfit{\color[RGB]{34,136,51}data}\coloneqq
 (\color[RGB]{34,136,51}
-Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_1 \land
-Z_{2}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_2 \land \dotsb
+Z_{N}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{N} \land \dotsb \land
+Z_{2}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_2 \land
+Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{1}
 \color[RGB]{0,0,0})
 \]</span></p>
-<p>where <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}z_1, z_2, \dotsc\)</span></span> are specific values, stored in some training dataset. No values are missing.</p>
+<p>where <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}z_N, \dotsc, z_2, z_1\)</span></span> are specific values, stored in some training dataset. No values are missing.</p>
 <p>Since the training <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{34,136,51}data}\)</span></span> are given and fixed in a task, we omit the suffix <span style="display:inline-block;">“<span class="math inline">\({}_{N+1}\)</span>”</span> that we have often used to indicate a “new” unit. So <span style="display:inline-block;">“<span class="math inline">\(\color[RGB]{68,119,170}Z\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z\)</span>”</span> simply refers to the variate <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> in a new application of the task.</p>
 <p>We allow for full versatility in every new instance. This means that we can accommodate, <em>on the spot at each new instance</em>, what the predictand variates are, and what the predictor variates (if any) are. For example, if the population has three variates <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}=({\color[RGB]{68,119,170}A}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}B}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C})\)</span>,</span> our prototype can calculate, at each new application, inferences such as</p>
 <ul>
@@ -598,7 +599,7 @@ Z_{2}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0
 \frac{
 \prod_{{\color[RGB]{68,119,170}z}} \bigl(\frac{2^{k}}{M} + {\color[RGB]{34,136,51}\# z} - 1\bigr)!
 }{
-\bigl(2^{k} + L -1 \bigr)!
+\bigl(2^{k} + N \bigr)!
 }
 \cdot
 \frac{
@@ -607,11 +608,13 @@ Z_{2}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0
 {\bigl(\frac{2^{k}}{M} - 1\bigr)!}^M
 }
 \tag{33.2}\]</span></span></p>
-<p>for all possible values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>,</span> where <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}\#}{\color[RGB]{68,119,170}z}\)</span></span> is the number of times value <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span></span> appears <strong>in the <span class="green">data</span></strong>.</p>
+<p>for all possible values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>,</span> where <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}\#}{\color[RGB]{68,119,170}z}\)</span></span> is the number of times value <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span></span> appears <strong>in the training <span class="green">data</span></strong>, and <span style="display:inline-block;"><span class="math inline">\(N = \sum_{\color[RGB]{34,136,51}z}{\color[RGB]{34,136,51}\# z}\)</span></span> is the number of training data</p>
 </div>
 </div>
 </div>
-<p>But these computations must be done <em>only once</em> for a given task. For a new application we only need to combine these already-computed probabilities via sums and fractions. For example, in the three-variate case above, if in a new application we need to forecast <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a\)</span></span> given <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c\)</span>,</span> then we calculate</p>
+<p>This formula is just a rewriting of formula (<a href="#eq-main-joint"><span>33.1</span></a>) for <span style="display:inline-block;"><span class="math inline">\(L=N+1\)</span>,</span> simplified by using the property of the factorial</p>
+<p><span class="math display">\[(a+1)! = (a+1) \cdot a!\]</span></p>
+<p>But the computation of formula (<a href="#eq-objectP"><span>33.2</span></a>) (for all values of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>)</span> must be done <em>only once</em> for a given task. For a new application we only need to combine these already-computed probabilities via sums and fractions. For example, in the three-variate case above, if in a new application we need to forecast <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a\)</span></span> given <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c\)</span>,</span> then we calculate</p>
 <div class="column-page-inset-right">
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -640,6 +643,68 @@ P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sma
 </div>
 </div>
 <p>where all <span style="display:inline-block;"><span class="math inline">\(P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})\)</span></span> are already computed.</p>
+<p><br>
+</p>
+<p>Our prototype software must therefore include two main functions, which we can call as follows:</p>
+<ul>
+<li><dl>
+<dt><code>buildagent()</code> (<a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildagent.R">see code</a>)</dt>
+<dd>
+computes <span class="math inline">\(\color[RGB]{34,136,51}\#{\color[RGB]{68,119,170}z}\)</span> for all values <span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>, as well as the multiplicative factor
+</dd>
+</dl>
+<p><span class="math display">\[
+  \frac{
+  \bigl(2^{k} -1 \bigr)!
+}{
+\bigl(2^{k} + N \bigr)!
+\cdot
+{\bigl(\frac{2^{k}}{M} - 1\bigr)!}^M
+}
+\]</span></p>
+<p>for all <span style="display:inline-block;"><span class="math inline">\(k\)</span>,</span> in (<a href="#eq-objectP"><span>33.2</span></a>). This computation is done once and for all in a given task, using the training <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{34,136,51}data}\)</span></span> and the metadata <span style="display:inline-block;"><span class="math inline">\(\mathsfit{D}\)</span></span> provided. The result can be stored in an array or similar object, which we shall call an <code>agent</code>-class object.</p></li>
+<li><dl>
+<dt><code>infer()</code> (<a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/infer.R">see code</a>)</dt>
+<dd>
+computes probabilities such as (<a href="#eq-forecast"><span>33.3</span></a>) at each new instance, using the stored <code>agent</code>-class object as well as the predictor variates and values provided with that instance, and the predictand variates requested at that instance.
+</dd>
+</dl></li>
+</ul>
+<p><br>
+</p>
+<p>We shall also include four additional functions for convenience:</p>
+<ul>
+<li><dl>
+<dt><code>guessmetadata()</code></dt>
+<dd>
+builds a preliminary metadata file, encoding the background information <span class="math inline">\(\mathsfit{D}\)</span>, from some dataset.
+</dd>
+</dl></li>
+<li><dl>
+<dt><code>decide()</code></dt>
+<dd>
+makes a decision according to expected-utility maximization (<a href="basic_decisions.html">chapter&nbsp;&nbsp;<span>3</span></a>), using probabilities calculated with <code>infer()</code> and utilities.
+</dd>
+</dl></li>
+<li><dl>
+<dt><code>rF()</code></dt>
+<dd>
+draws one or more possible full-population frequency distribution <span class="math inline">\(\boldsymbol{f}\)</span>, according to the updated degree of belief <span class="math inline">\(\mathrm{p}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span>
+</dd>
+</dl></li>
+<li><dl>
+<dt><code>plotFsamples1D()</code></dt>
+<dd>
+plots, as a generalized scatter plot, the possible full-population marginal frequency distributions for a single (not joint) predictand variate. If required it also also the final probability obtained with <code>infer()</code>.
+</dd>
+</dl></li>
+<li><dl>
+<dt><code>mutualinfo()</code></dt>
+<dd>
+calculates the mutual information (<a href="information.html#sec-entropy-mutualinfo">§ &nbsp;<span>18.5</span></a>) between any two sets of variates.
+</dd>
+</dl></li>
+</ul>
 <div class="column-body-outset-right">
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -669,10 +734,9 @@ P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sma
 P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{170,51,119}\alpha} \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})
 }
 \]</span></p>
-</div>
-</div>
-</div>
-<p>The exercise above shows that instead of</p>
+<p><br>
+</p>
+<p>This exercise shows that instead of</p>
 <p><span class="math display">\[\mathrm{P}(\color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})\]</span></p>
 <p>we could calculate</p>
 <p><span class="math display">\[
@@ -683,49 +747,15 @@ P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sma
 \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})
 \]</span></p>
 <p>once for all possible values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>,</span> and use that. Mathematically and logically the two ways are completely equivalent. Numerically they can be different as regards precision or possible overflow errors. Using <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}( \color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z \color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}\color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span></span> would be convenient if our basic formula&nbsp;(<a href="#eq-main-joint"><span>33.1</span></a>) didn’t contain the sum <span style="display:inline-block;"><span class="math inline">\(\sum_k\)</span></span> over the <span style="display:inline-block;"><span class="math inline">\(k\)</span></span> index. Our code shall instead use <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(\color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{D})\)</span></span> because it leads to slightly more precision and speed in some tasks.</p>
-<p><br>
-</p>
-<p>Our prototype software must therefore include two main functions, which we can call as follows:</p>
-<dl>
-<dt><code>buildagent()</code></dt>
-<dd>
-computes <span class="math inline">\(\color[RGB]{34,136,51}\#{\color[RGB]{68,119,170}z}\)</span> and the various multiplicative factors in (<a href="#eq-objectP"><span>33.2</span></a>) once and for all in a given task, using the training <span class="math inline">\(\mathsfit{\color[RGB]{34,136,51}data}\)</span> and the metadata <span class="math inline">\(\mathsfit{D}\)</span> provided. The result can be stored in an array or similar object, let’s call it an <code>agent</code>-class object.
-</dd>
-<dt><code>infer()</code></dt>
-<dd>
-computes probabilities such as (<a href="#eq-forecast"><span>33.3</span></a>) at each new instance, using the stored <code>agent</code>-class object as well as the predictor variates and values provided with that instance, and the predictand variates requested at that instance.
-</dd>
-</dl>
-<p><br>
-</p>
-<p>We shall also include four additional functions for convenience:</p>
-<dl>
-<dt><code>guessmetadata()</code></dt>
-<dd>
-builds a preliminary metadata file, encoding the background information <span class="math inline">\(\mathsfit{D}\)</span>, from some dataset.
-</dd>
-<dt><code>decide()</code></dt>
-<dd>
-makes a decision according to expected-utility maximization (<a href="basic_decisions.html">chapter&nbsp;&nbsp;<span>3</span></a>), using probabilities calculated with <code>infer()</code> and utilities.
-</dd>
-<dt><code>rF()</code></dt>
-<dd>
-draws one or more possible full-population frequency distribution <span class="math inline">\(\boldsymbol{f}\)</span>, according to the updated degree of belief <span class="math inline">\(\mathrm{p}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span>
-</dd>
-<dt><code>plotFsamples1D()</code></dt>
-<dd>
-plots, as a generalized scatter plot, the possible full-population marginal frequency distributions for a single (not joint) predictand variate. If required it also also the final probability obtained with <code>infer()</code>.
-</dd>
-<dt><code>mutualinfo()</code></dt>
-<dd>
-calculates the mutual information (<a href="information.html#sec-entropy-mutualinfo">§ &nbsp;<span>18.5</span></a>) between any two sets of variates.
-</dd>
-</dl>
+</div>
+</div>
+</div>
 </section>
-<section id="code-optimization" class="level2 page-columns page-full" data-number="33.3">
-<h2 data-number="33.3" class="anchored" data-anchor-id="code-optimization"><span class="header-section-number">33.3</span> Code optimization</h2>
-<p>The formulae of <a href="dirichlet-mixture.html">chapter&nbsp;&nbsp;<span>32</span></a>, if used as-written, easily lead to two kinds of computation problems. First, they easily generate overflows and <code>NaN</code>, owing to factorials and their divisions. Second, the products over variates may involve so many terms as to require a long computation time. In the end we would have to wait a long time just to receive a string of <code>NaN</code>s.</p>
-<p>The first problem is dealt with by rewriting the formulae in terms of logarithms, and renormalizing numerators and denominators of fractions. The second problem is dealt with by reorganizing the sums as multiples of identical summands. These optimization details are not discussed here, although they are implemented in the code.</p>
+<section id="sec-code-optim" class="level2 page-columns page-full" data-number="33.3">
+<h2 data-number="33.3" class="anchored" data-anchor-id="sec-code-optim"><span class="header-section-number">33.3</span> Code optimization</h2>
+<p>The formulae of <a href="dirichlet-mixture.html">chapter&nbsp;&nbsp;<span>32</span></a>, if used as-written, easily lead to two kinds of computation problems. First, they generate overflows and <code>NaN</code>, owing to factorials and their divisions. Second, the products over variates may involve so many terms as to require a long computation time. In the end we would have to wait a long time just to receive a string of <code>NaN</code>s.</p>
+<p>The first problem is dealt with by rewriting the formulae in terms of logarithms, and renormalizing numerators and denominators of fractions. See for example the lines defining <code>auxalphas</code> in the <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildagent.R"><code>buildagent()</code> function</a>, and the line that redefines <code>counts</code> one last time in the <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/infer.R"><code>infer()</code> function</a>.</p>
+<p>The second problem is dealt with by reorganizing the sums as multiples of identical summands; see the lines working with <code>freqscounts</code> in the <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildagent.R"><code>buildagent()</code> function</a>.</p>
 
 
 
