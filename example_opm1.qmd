@@ -274,16 +274,20 @@ It returns a 14 × 2 table of joint probabilities. The most probable combina
 
 ### The `rF()` function
 
-This function generates **full-population** frequency distributions (even for subpopulations) that are probable according to the data.
+This function generates **full-population** frequency distributions (even for subpopulations) that are probable according to the data. It is used internally by `plotFsamples1D()`, which plots the generated frequency distributions as [grey lines]{.grey}.
 
-For instance, let's see three samples of how the full-population frequency distribution for $\mathit{sex} \and \mathit{income}$ (jointly) could be:
+Let's see, as an example, three samples of how the full-population frequency distribution for $\mathit{sex} \and \mathit{income}$ (jointly) could be:
 
 ```{r}
 result <- rF(n=3, # number of samples
              agent=opmall, 
              predictand=c('sex', 'income'))
 
-print(aperm(result) * 100) # permute so that samples are the last array dimension
+## name the samples
+dimnames(result)[1] <- list(samples=paste0('#',1:3))
+
+## permute & print so that samples are the last array dimension
+print(aperm(result) * 100)
 ```
 
 
@@ -301,11 +305,10 @@ variability <- apply(freqsamples,
                      c('occupation','sex'), # which dimensions to apply
                      sd) # function to apply to those dimensions
 
-## Possible variation (sd) with new training data:
 round(variability * 100, 2) # round to two decimals
 ```
 
-the agent believes (at around 68%) that the current probability wouldn't change more than around ±0.5%.
+the agent believes (at around 68%) that the current probability wouldn't change more than about ±0.5%.
 
 
 \

@@ -472,7 +472,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./making_decisions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title"><span class="blue">The omnipresence of decision-making in machine learning</span></span></span></a>
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title"><span class="blue">From inferences to decisions</span></span></span></a>
   </div>
 </li>
       </ul>
@@ -852,35 +852,39 @@ occupation          Female Male
 </section>
 <section id="the-rf-function" class="level3">
 <h3 class="anchored" data-anchor-id="the-rf-function">The <code>rF()</code> function</h3>
-<p>This function generates <strong>full-population</strong> frequency distributions (even for subpopulations) that are probable according to the data.</p>
-<p>For instance, let’s see three samples of how the full-population frequency distribution for <span style="display:inline-block;"><span class="math inline">\(\mathit{sex} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathit{income}\)</span></span> (jointly) could be:</p>
+<p>This function generates <strong>full-population</strong> frequency distributions (even for subpopulations) that are probable according to the data. It is used internally by <code>plotFsamples1D()</code>, which plots the generated frequency distributions as <span class="grey">grey lines</span>.</p>
+<p>Let’s see, as an example, three samples of how the full-population frequency distribution for <span style="display:inline-block;"><span class="math inline">\(\mathit{sex} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathit{income}\)</span></span> (jointly) could be:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">rF</span>(<span class="at">n=</span><span class="dv">3</span>, <span class="co"># number of samples</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">agent=</span>opmall, </span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'sex'</span>, <span class="st">'income'</span>))</span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">aperm</span>(result) <span class="sc">*</span> <span class="dv">100</span>) <span class="co"># permute so that samples are the last array dimension</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="do">## name the samples</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">dimnames</span>(result)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">samples=</span><span class="fu">paste0</span>(<span class="st">'#'</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>))</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="do">## permute &amp; print so that samples are the last array dimension</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">aperm</span>(result) <span class="sc">*</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>, , 1
+<pre><code>, , sample = #1
 
        sex
 income    Female    Male
-  &lt;=50K 28.51470 43.0974
-  &gt;50K   6.89132 21.4966
+  &lt;=50K 28.12273 43.5095
+  &gt;50K   6.90639 21.4613
 
-, , 2
+, , sample = #2
+
+       sex
+income   Female    Male
+  &lt;=50K 28.1696 43.8179
+  &gt;50K   6.7331 21.2794
+
+, , sample = #3
 
        sex
 income    Female    Male
-  &lt;=50K 28.52988 43.2914
-  &gt;50K   7.24731 20.9314
-
-, , 3
-
-       sex
-income    Female    Male
-  &lt;=50K 28.41950 43.0308
-  &gt;50K   7.20243 21.3473</code></pre>
+  &lt;=50K 28.15878 43.4509
+  &gt;50K   7.06491 21.3254</code></pre>
 </div>
 </div>
 <p>These possible full-population frequency distributions can be used to assess how much the probabilities we find could change, if we collected a much, much larger amount of training data. Here is an example:</p>
@@ -895,28 +899,27 @@ income    Female    Male
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">c</span>(<span class="st">'occupation'</span>,<span class="st">'sex'</span>), <span class="co"># which dimensions to apply</span></span>
 <span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                     sd) <span class="co"># function to apply to those dimensions</span></span>
 <span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Possible variation (sd) with new training data:</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(variability <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>) <span class="co"># round to two decimals</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(variability <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>) <span class="co"># round to two decimals</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                   sex
 occupation          Female Male
   Adm-clerical        0.28 0.32
-  Armed-Forces        0.16 0.16
-  Craft-repair        0.18 0.46
-  Exec-managerial     0.30 0.59
-  Farming-fishing     0.15 0.23
-  Handlers-cleaners   0.16 0.20
+  Armed-Forces        0.15 0.16
+  Craft-repair        0.17 0.47
+  Exec-managerial     0.30 0.57
+  Farming-fishing     0.16 0.23
+  Handlers-cleaners   0.17 0.19
   Machine-op-inspct   0.17 0.28
-  Other-service       0.21 0.22
+  Other-service       0.20 0.21
   Priv-house-serv     0.16 0.16
-  Prof-specialty      0.35 0.57
+  Prof-specialty      0.35 0.58
   Protective-serv     0.16 0.29
   Sales               0.22 0.48
   Tech-support        0.20 0.30
-  Transport-moving    0.17 0.29</code></pre>
+  Transport-moving    0.16 0.32</code></pre>
 </div>
 </div>
-<p>the agent believes (at around 68%) that the current probability wouldn’t change more than around ±0.5%.</p>
+<p>the agent believes (at around 68%) that the current probability wouldn’t change more than about ±0.5%.</p>
 <p><br>
 </p>
 <p>The inferences above were partially meant as checks, but we see that we can actually ask our agent a wide variety of questions about the full population, and do all sorts of association studies.</p>
@@ -1037,7 +1040,7 @@ native_country            sex           race
 <span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
 <span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">Sys.time</span>() <span class="sc">-</span> stopwatch) <span class="co"># print computation time</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time difference of 8.00738 secs</code></pre>
+<pre><code>Time difference of 8.26248 secs</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">thist</span>(testprobs, <span class="at">n=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="at">length.out=</span><span class="dv">10</span>), <span class="at">plot=</span><span class="cn">TRUE</span>,</span>
@@ -1309,7 +1312,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./making_decisions.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title"><span class="blue">The omnipresence of decision-making in machine learning</span></span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title"><span class="blue">From inferences to decisions</span></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

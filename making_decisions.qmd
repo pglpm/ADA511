@@ -1,25 +1,33 @@
+# [From inferences to decisions]{.blue} {#sec-from-inf-to-dec}
+{{< include macros.qmd >}}
+{{< include macros_exchangeability.qmd >}}
+{{< include macros_opm.qmd >}}
 
-## [The omnipresence of decision-making in machine learning]{.blue} {#sec-decision-everywhere}
+## The omnipresence of decision-making in machine learning {#sec-decision-everywhere}
 
 Many machine-learning textbooks say that
 
 > in supervised learning the algorithm learns a functional relationship between some kind of input and some kind of output
 
-Such statement is misleading, because it seems to imply that a functional relationship actually exists from input to output, or from predictor to predictand -- it's only waiting to be discovered and "learned". As we discussed in [chapter @sec-ml-introduction], in many important problems and applications this is actually not true: **there isn't any functional relationship between input and output at all**. Even if any possible "noise" were removed, there would still *not* be any functional relationship between the denoised, actual predictor and predictand ([here is an example](steven-seagal-emotion-chart.jpg){.external}).^[This is one more reason why we use the more general terms "predictor" & "predictand", rather that "input" & "output"]
+Such statement is misleading, because it suggests there is a functional relationship from input to output, or from predictor to predictand -- such function is only waiting to be discovered and "learned". But as we discussed in [chapter @sec-ml-introduction], in many important tasks and applications this is actually not true: **there isn't any functional relationship between input and output at all**. Even if any possible "noise" were removed, there would still *not* be any functional relationship between the denoised predictor and predictand ([here is an example](steven-seagal-emotion-chart.jpg){.external}).^[This is one more reason why we use the more general terms "predictor" & "predictand", rather that "input" & "output"]
 
-In many important problems there's only a *statistical* relationship between predictands and predictors. In other words, whenever the agent saw a predictor value $\green X\mo x$, the predictand value turned out to be $\green Y\mo y'$ in a given number of units, but also $\green Y\mo y''$ in a given number of other units, and so on.
+In many important tasks there's only a *statistical* relationship between predictands and predictors. In other words, whenever the agent saw a predictor value $\green X\mo x$, the predictand value turned out to be $\green Y\mo y'$ in a given number of units, but also $\green Y\mo y''$ in a given number of other units, and so on.
 
-The lack of an actual predictor-predictand function has a very important consequence. If a machine-learning algorithm outputs just *one* predictand value, among the possible ones that are consistent with the predictor, then it means that **the algorithm must choose one of the possibilities**. How is this choice made? This is obviously a **decision-making problem**. As we know from chapters [-@sec-framework] and [-@sec-basic-decisions], the optimal choice is determined by Decision Theory. Its determination requires:
+But even in tasks where there actually is a functional relation from predictors to predictands, the agent typically doesn't know what the function's output should be for particular predictor values, because no such values have been observed in the training data. It must interpolate or extrapolate what it has learned. Also in this case there are therefore several possibilities.
+
+The remarks above have a very important consequence. If a machine-learning algorithm outputs just *one* predictand value, among the possible ones that are consistent with the predictor, then it means that **the algorithm is internally choosing one of the possibilities**. How is this choice made?
+
+Such a choice is obviously a **decision-making problem**. As we know from chapters [-@sec-framework] and [-@sec-basic-decisions], the optimal choice is determined by Decision Theory, and its determination requires:
 
 - [{{< fa scale-unbalanced-flip >}}\ \ the probabilities of the possible predictand values]{.green}
 
-- [{{< fa sack-dollar >}}\ \ the utilities of the possible choices of values]{.blue}
+- [{{< fa arrows-split-up-and-left >}}\ \ a list of possible decisions]{.lightblue}
 
-This point of view is also valid when there's only one possible value: in this case the decision-making problem becomes trivial (one choice only), but it's still correctly handled by decision theory.
+- [{{< fa sack-dollar >}}\ \ the utilities of the decisions, depending on the predictand's true value]{.blue}
 
 \
 
-A decision-making step may also appear in tasks where the agent must generate a new unit. In some cases it may happen that a candidate alternative for generation should be discouraged, penalized, or even forbidden, because of particular circumstances; even if it would have been a probable candidate, given previous examples. Therefore also in this type of task there is an interplay between probabilities and utilities.
+A decision-making step  also appears in tasks where the agent must *generate* a new unit. Obviously there are many candidates for generation, that agree with what was observed in the training data. If the agent generates *one* unit, then it must internally have chosen among the possible candidates. Thus also this type of "generative" task involves probabilities, decisions, and utilities.
 
 
 [*Rest to be written*]{.grey}
