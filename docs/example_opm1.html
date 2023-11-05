@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-04">
+<meta name="dcterms.date" content="2023-11-05">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 35&nbsp; Example application: adult-income task</title>
 <style>
@@ -133,7 +133,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-04</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-05</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -497,8 +497,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#prepare-opm-agent" id="toc-prepare-opm-agent" class="nav-link" data-scroll-target="#prepare-opm-agent"><span class="header-section-number">35.4</span> Prepare OPM agent</a></li>
   <li><a href="#application-and-exploration" id="toc-application-and-exploration" class="nav-link" data-scroll-target="#application-and-exploration"><span class="header-section-number">35.5</span> Application and exploration</a>
   <ul class="collapse">
-  <li><a href="#preliminary-application-only-predictands" id="toc-preliminary-application-only-predictands" class="nav-link" data-scroll-target="#preliminary-application-only-predictands">Preliminary application: only predictands</a></li>
-  <li><a href="#preliminary-application-specifying-predictors" id="toc-preliminary-application-specifying-predictors" class="nav-link" data-scroll-target="#preliminary-application-specifying-predictors">Preliminary application: specifying predictors</a></li>
+  <li><a href="#application-only-predictands" id="toc-application-only-predictands" class="nav-link" data-scroll-target="#application-only-predictands">Application: only predictands</a></li>
+  <li><a href="#application-specifying-predictors" id="toc-application-specifying-predictors" class="nav-link" data-scroll-target="#application-specifying-predictors">Application: specifying predictors</a></li>
   <li><a href="#the-rf-function" id="toc-the-rf-function" class="nav-link" data-scroll-target="#the-rf-function">The <code>rF()</code> function</a></li>
   <li><a href="#exploring-the-population-properties-mutual-information" id="toc-exploring-the-population-properties-mutual-information" class="nav-link" data-scroll-target="#exploring-the-population-properties-mutual-information">Exploring the population properties: mutual information</a></li>
   </ul></li>
@@ -522,7 +522,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-04</p>
+      <p class="date">2023-11-05</p>
     </div>
   </div>
   
@@ -548,12 +548,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>You can find a (less annotated) notebook associated with the present chapter: <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/opm_adultincome_example.ipynb"><code>opm_adultincome_example.ipynb</code></a>.</p>
 <p>All code functions and data files are in the directory<br>
 <a href="https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal">https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal</a></p>
-<p>We start loading the R libraries and functions needed at several stages. Make sure you are in a directory homologous to <code>code/OPM-nominal/</code>:</p>
+<div class="page-columns page-full"><p>We start loading the R libraries and functions needed at several stages. You need to have installed<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> the packages <a href="https://cran.r-project.org/package=data.table"><em>data.table</em></a>, <a href="https://cran.r-project.org/package=extraDistr"><em>extraDistr</em></a>, <a href="https://cran.r-project.org/package=foreach"><em>foreach</em></a>. Make sure you have saved all source files and data files in the same directory.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;This is done with the <a href="https://rdrr.io/r/utils/install.packages.html"><code>install.packages()</code> function</a>.</p></li></div></div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'data.table'</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'extraDistr'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'foreach'</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'png'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'tplotfunctions.R'</span>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'guessmetadata.R'</span>)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'buildagent.R'</span>)</span>
@@ -562,7 +562,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'mutualinfo.R'</span>)</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'rF.R'</span>)</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'plotFsamples1D.R'</span>)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repr.plot.width=</span><span class="dv">6</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">repr.plot.height=</span><span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repr.plot.width=</span><span class="dv">6</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">repr.plot.height=</span><span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br>
 </p>
@@ -593,7 +594,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="agents-parameters-k_textmi-k_textma" class="level3">
 <h3 class="anchored" data-anchor-id="agents-parameters-k_textmi-k_textma">Agent’s parameters <span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span></h3>
-<p>What could be the representative-sample size for the variates above, in the USA 1994 population? Let’s put an upper bound at around 1 000 000 (that’s roughly 0.5% of the whole population) with <span style="display:inline-block;"><span class="math inline">\(k_{\text{ma}}=20\)</span>,</span> and a lower bound at 1 with <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=0\)</span>;</span> these are the default values. We shall see later what the agent suggests might be a reasonable representative-sample size.</p>
+<p>How many data should the agent learn in order to appreciably change its initial beliefs about the variates above, for the USA 1994 population? Let’s put an upper bound at around 1 000 000 (that’s roughly 0.5% of the whole population) with <span style="display:inline-block;"><span class="math inline">\(k_{\text{ma}}=20\)</span>,</span> and a lower bound at 1 with <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=0\)</span>;</span> these are the default values. We shall see later what the agent suggests might be a reasonable amount of training data.</p>
 <p><br>
 </p>
 </section>
@@ -608,17 +609,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="35.4" class="anchored" data-anchor-id="prepare-opm-agent"><span class="header-section-number">35.4</span> Prepare OPM agent</h2>
 <p>For the sake of this example we shall prepare two agents with the same background information:</p>
 <ul>
-<li><code>opm10</code>, trained with 10 training datapoints</li>
-<li><code>opmall</code>, trained with all 11 306 training datapoints</li>
+<li><p><code>opm10</code>, trained with 10 training datapoints</p></li>
+<li><p><code>opmall</code>, trained with all 11 306 training datapoints</p></li>
 </ul>
 <p>Prepare and train each with the <code>buildagent()</code> function:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>opm10 <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(<span class="at">metadata=</span><span class="st">'meta_income_data_example.csv'</span>,</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data=</span><span class="fu">fread</span>(<span class="st">'train-income_data_example.csv'</span>, <span class="at">header=</span><span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## temporarily load all training data</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>traindata <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">'train-income_data_example.csv'</span>, <span class="at">header=</span><span class="cn">TRUE</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>opmall <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(<span class="at">metadata=</span><span class="st">'meta_income_data_example.csv'</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data=</span><span class="st">'train-income_data_example.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="do">## feed first 10 datapoints to an agent</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>opm10 <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(<span class="at">metadata=</span><span class="st">'meta_income_data_example.csv'</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data=</span>traindata[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="do">## delete training data for memory efficiency</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(traindata)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>opmall <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(<span class="at">metadata=</span><span class="st">'meta_income_data_example.csv'</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data=</span><span class="st">'train-income_data_example.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p><br>
+</p>
 <p>We can peek into the internal structure of these “agent objects” with <code>str()</code></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(opmall)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -641,19 +652,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  - attr(*, "class")= chr [1:2] "agent" "list"</code></pre>
 </div>
 </div>
-<p><br>
-</p>
-<p>The agent has internally guessed the representative-sample size. We can peek at its guess by plotting its <code>alphas</code> parameters against the <code>palphas</code> ones:</p>
+<p>this shows that each agent is encoded as a list of four objects:</p>
+<ul>
+<li>the array <code>counts</code>, containing the counts <span class="math inline">\(\color[RGB]{34,136,51}\# z\)</span></li>
+<li>the vector <code>alphas</code>, containing the values of <span class="math inline">\(2^k\)</span></li>
+<li>the vector <code>auxalphas</code>, containing the (logarithm of) the multiplicative factors (<a href="code_design.html#sec-code-computations">§ &nbsp;<span>33.2</span></a>)</li>
+<li>the vector <code>palphas</code>, containing the updated probabilities about the required amount of training data</li>
+</ul>
+<p>The agent has internally guessed how many training data should be necessary to affect its prior beliefs. We can peek at its guess by plotting the <code>alphas</code> parameters against the <code>palphas</code> probabilities:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tplot</span>(<span class="at">x=</span>opmall<span class="sc">$</span>alphas, <span class="at">y=</span>opmall<span class="sc">$</span>palphas, <span class="at">type=</span><span class="st">'b'</span>,</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10000</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>),</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab=</span><span class="st">'representative-sample size'</span>, <span class="at">ylab=</span><span class="st">'probability'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab=</span><span class="st">'required number of training data'</span>, <span class="at">ylab=</span><span class="st">'probability'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="example_opm1_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The most probable representative-sample size seems to be of the order of magnitude of 2000 units.</p>
-<p>Note that you can see the complete list of variates and their domains by simply calling <code>dimnames(opmall$counts)</code> (or any relevant agent-object name instead of <code>opmall</code>). Here is a snippet:</p>
+<p>The most probable amount seems to be of the order of magnitude of 2000 units.</p>
+<p>Note that you can see the complete list of variates and their domains by simply calling <code>dimnames(opmall$counts)</code> (or any relevant agent-object name instead of <code>opmall</code>). Here is the beginning of the list:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">dimnames</span>(opmall<span class="sc">$</span>counts))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -692,8 +708,8 @@ $race
 </section>
 <section id="application-and-exploration" class="level2 page-columns page-full" data-number="35.5">
 <h2 data-number="35.5" class="anchored" data-anchor-id="application-and-exploration"><span class="header-section-number">35.5</span> Application and exploration</h2>
-<section id="preliminary-application-only-predictands" class="level3 page-columns page-full">
-<h3 class="anchored" data-anchor-id="preliminary-application-only-predictands">Preliminary application: only predictands</h3>
+<section id="application-only-predictands" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="application-only-predictands">Application: only predictands</h3>
 <p>Our two agents are ready to be applied to new instances.</p>
 <p>Before applying them, let’s check some of their inferences, and see if we find anything unconvincing about them. If we find something unconvincing, it means that the background information we provided to the agent doesn’t match the one in our intuition. Then there are two or three possibilities: our intuition is misleading us and need correcting; or we need to go back to stage <span class="blue"><em>Collect &amp; prepare background info</em></span> and correct the background information given to the agent; or a combination of these two possibilities.</p>
 <p>We ask the <code>opm10</code> agent to forecast the <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span></span> of the next unit, using the <code>infer()</code> function:</p>
@@ -705,16 +721,20 @@ $race
 0.506288 0.493712 </code></pre>
 </div>
 </div>
-<p>The agent gives a very slightly larger probability to the <span style="display:inline-block;"><span class="math inline">\({\small\verb;&lt;=50K;}\)</span></span> case. Using the function <code>plotFsamples1D()</code> we can also inspect <code>opm10</code>-agent’s belief about the frequency distribution of <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span></span> for the full population. This belief is represented by a generalized scatter plot of 200 representative frequency distributions:</p>
+<p>This agent gives a slightly larger probability to the <span style="display:inline-block;"><span class="math inline">\({\small\verb;&lt;=50K;}\)</span></span> case. Using the function <code>plotFsamples1D()</code> we can also inspect the <code>opm10</code>-agent’s belief about the frequency distribution of <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span></span> for the full population. This belief is represented by a generalized scatter plot of 200 representative frequency distributions, represented as the <span class="grey">grey lines</span>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opm10, <span class="at">n=</span><span class="dv">200</span>, <span class="at">predictand=</span><span class="st">'income'</span>,</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opm10'</span>) <span class="co"># last options are for plotting</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opm10,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">n=</span><span class="dv">200</span>, <span class="co"># number of example frequency distributions</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictand=</span><span class="st">'income'</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="co"># y-axis range</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">main=</span><span class="st">'opm10'</span>) <span class="co"># plot title</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="example_opm1_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>where the <span class="blue">blue line</span> is the distribution previously calculated with the <code>infer()</code> function.</p>
-<p>This plot expresses the <code>opm10</code>-agent’s belief that future training data might lead to even higher probabilities for <span style="display:inline-block;"><span class="math inline">\({\small\verb;&lt;=50K;}\)</span>.</span> This is corroborated by the <code>opmall</code>-agent, trained with the full training dataset:</p>
+<p>where the <span class="blue">blue line</span> is the probability distribution previously calculated with the <code>infer()</code> function.</p>
+<p>This plot expresses the <code>opm10</code>-agent’s belief that future training data might lead to even higher probabilities for <span style="display:inline-block;"><span class="math inline">\({\small\verb;&lt;=50K;}\)</span>.</span> But note that the agent is not excluding the possibility of lower probabilities.</p>
+<p>Let’s visualize the beliefs of the <code>opmall</code>-agent, trained with the full training dataset:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opmall, <span class="at">n=</span><span class="dv">200</span>, <span class="at">predictand=</span><span class="st">'income'</span>,</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opmall'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -725,15 +745,17 @@ $race
 <p>The probability that the next unit has <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&lt;=50;}\)</span></span> is now above 70%. Also note that the <code>opmall</code>-agent doesn’t believe that this probability would change appreciably if more training data were provided.</p>
 <p><br>
 </p>
-<p>We can perform a similar exploration for any other variate. Let’s take the <span style="display:inline-block;"><span class="math inline">\(\mathit{race}\)</span></span> variate:</p>
+<p>We can perform a similar exploration for any other variate. Let’s take the <span style="display:inline-block;"><span class="math inline">\(\mathit{race}\)</span></span> variate for example:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opm10, <span class="at">n=</span><span class="dv">200</span>, <span class="at">predictand=</span><span class="st">'race'</span>,</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opm10'</span>, <span class="at">cex.axis=</span><span class="fl">0.75</span>)  <span class="co"># last options are for plotting</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opm10'</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">cex.axis=</span><span class="fl">0.75</span>) <span class="co"># smaller axis-font size</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="example_opm1_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Note again how the little-trained <code>opm10</code>-agent has practically uniform beliefs. But it’s also expressing the fact that future training data will probably increase the probability of <span style="display:inline-block;"><span class="math inline">\(\mathit{race}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;White;}\)</span>.</span> This is again corroborated by the fully-trained agent:</p>
+<p>Note again how the little-trained <code>opm10</code>-agent has practically uniform beliefs. But it’s also expressing the fact that future training data will probably increase the probability of <span style="display:inline-block;"><span class="math inline">\(\mathit{race}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;White;}\)</span>.</span></p>
+<p>This is corroborated by the fully-trained agent:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opmall, <span class="at">n=</span><span class="dv">200</span>, <span class="at">predictand=</span><span class="st">'race'</span>,</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opmall'</span>, <span class="at">cex.axis=</span><span class="fl">0.75</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -743,7 +765,7 @@ $race
 </div>
 <p><br>
 </p>
-<p>These checks are satisfying, but it’s good to check their agreement or disagreement with our intuition. Examine for instance the last two plots. The <code>opm10</code>-agent is not giving a high probability (less than 1/200) to the possibility that future training data will lead to probabilities for <span style="display:inline-block;"><span class="math inline">\(\mathit{race}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;White;}\)</span></span> above 70%, which is what we are observing with the <code>opmall</code>-agent instead. Would you like our agent to be more “open-minded” about future training data? In that case you should go back to the <span class="blue"><em>Collect &amp; prepare background info</em></span> stage, and for example modify the parameters <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span>,</span> then re-check. Or you could even try an agent with a different initial belief distribution.</p>
+<p>These checks are satisfying, but it’s good to examine their agreement or disagreement with our intuition. Examine the last plot for example. The <code>opmall</code> agent has very firm beliefs (no spread in the <span class="grey">grey lines</span>) about the full-population distribution of <span style="display:inline-block;"><span class="math inline">\(\mathit{race}\)</span>.</span> Do you think its beliefs are too firm, after 11 000 datapoints? would you like the agent to be more “open-minded”? In that case you should go back to the <span class="blue"><em>Collect &amp; prepare background info</em></span> stage, and for example modify the parameters <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span>,</span> then re-check. Or you could even try an agent with a different initial belief distribution.</p>
 <p>In making this kind of considerations it’s important to keep in mind what we learned and observed in previous chapters:</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -751,12 +773,17 @@ $race
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Our goal: optimality, not “success”
+
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Remember (§§&nbsp;<a href="framework.html#sec-optimality"><span>2.3</span></a> and&nbsp;<a href="probability_inference.html#sec-probability-def"><span>8.1</span></a>) that a probability represents the <em>rational</em> degree of belief that an agent should have <em>given the particular information available</em>. We can’t judge a probability from the value it assigns to something we later learn to be true – because according to the information available it could be more rational (and optimal) to consider that something implausible (recall the example in <a href="probability_inference.html#sec-probability-def">§ &nbsp;<span>8.1</span></a> of an object falling from the sky as we cross the street).</p>
+<p><span class="blue"><strong>Our goal: optimality, not “success”</strong></span></p>
+<p>Remember (<a href="framework.html#sec-optimality">§ &nbsp;<span>2.3</span></a> and <a href="probability_inference.html#sec-probability-def">§ &nbsp;<span>8.1</span></a>) that a probability represents the <em>rational</em> degree of belief that an agent should have <em>given the particular information available</em>. We can’t judge a probability from the value it assigns to something we later learn to be true – because according to the information available it could be more rational (and optimal) to consider that something implausible (recall the example in <a href="probability_inference.html#sec-probability-def">§ &nbsp;<span>8.1</span></a> of an object falling from the sky as we cross the street).</p>
 <p>From this point of view we should be wary of comparing the probability of something with our a-posteriori knowledge about it.</p>
+<p><br>
+</p>
+<p><span class="blue"><strong>The data cannot speak for themselves</strong></span></p>
+<p>We could build an agent that remains more “open-minded” (more spread in the <span class="grey">grey lines</span>), having received <em>exactly the same</em> training data. This “open-mindedness” therefore cannot be determined by the training data. Once more this shows that data <em>cannot</em> “speak for themselves” (<a href="beyond-ML.html#sec-underlying-distribution">§ &nbsp;<span>27.4</span></a>).</p>
 </div>
 </div>
 
@@ -765,16 +792,17 @@ Our goal: optimality, not “success”
 </div></div><p><br>
 </p>
 </section>
-<section id="preliminary-application-specifying-predictors" class="level3">
-<h3 class="anchored" data-anchor-id="preliminary-application-specifying-predictors">Preliminary application: specifying predictors</h3>
-<p>Let’s continue with one more check, specifying some predictors.</p>
+<section id="application-specifying-predictors" class="level3">
+<h3 class="anchored" data-anchor-id="application-specifying-predictors">Application: specifying predictors</h3>
+<p>Let’s now draw inferences by specifying some predictors.</p>
 <p>We ask the <code>opm10</code> agent to forecast the <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span></span> of a new unit, given that the unit is known to have <span style="display:inline-block;"><span class="math inline">\(\mathit{occupation}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Exec-managerial;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathit{sex}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Male;}\)</span></span> (two predictor variates). What would you expect?</p>
 <p>The <code>opm10</code>-agent’s belief about the unit – as well as about the <em>full subpopulation</em> (<a href="subpopulations.html#sec-subpopulations">§ &nbsp;<span>22.1</span></a>) of units having those predictors – is shown in the following plot:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opm10, <span class="at">n=</span><span class="dv">200</span>,</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictand=</span><span class="st">'income'</span>,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">occupation=</span><span class="st">'Exec-managerial'</span>, <span class="at">sex=</span><span class="st">'Male'</span>),</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opm10'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">occupation=</span><span class="st">'Exec-managerial'</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">sex=</span><span class="st">'Male'</span>),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opm10'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="example_opm1_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -784,8 +812,9 @@ Our goal: optimality, not “success”
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opmall, <span class="at">n=</span><span class="dv">200</span>,</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictand=</span><span class="st">'income'</span>,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">occupation=</span><span class="st">'Exec-managerial'</span>, <span class="at">sex=</span><span class="st">'Male'</span>),</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opmall'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">occupation=</span><span class="st">'Exec-managerial'</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">sex=</span><span class="st">'Male'</span>),</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opmall'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="example_opm1_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -795,26 +824,28 @@ Our goal: optimality, not “success”
 </p>
 <p>Let’s now see an example of our agent’s versatility by switching predictands and predictors. We tell the <code>opmall</code>-agent that the new unit has <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&gt;50;}\)</span>,</span> and ask it to infer the joint variate <span style="display:inline-block;"><span class="math inline">\((\mathit{occupation} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathit{sex})\)</span>;</span> let’s present the results in rounded percentages:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall, <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'occupation'</span>, <span class="st">'sex'</span>),</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">income=</span><span class="st">'&gt;50K'</span>))</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(result <span class="sc">*</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'occupation'</span>, <span class="st">'sex'</span>),</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">income=</span><span class="st">'&gt;50K'</span>))</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(result <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>) <span class="co"># round to one decimal</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                   sex
 occupation          Female Male
-  Adm-clerical           3    4
-  Armed-Forces           1    1
-  Craft-repair           1    9
-  Exec-managerial        4   16
-  Farming-fishing        1    2
-  Handlers-cleaners      1    2
-  Machine-op-inspct      1    3
-  Other-service          2    2
-  Priv-house-serv        1    1
-  Prof-specialty         5   15
-  Protective-serv        1    3
-  Sales                  2   10
-  Tech-support           2    3
-  Transport-moving       1    4</code></pre>
+  Adm-clerical         3.1  4.1
+  Armed-Forces         1.0  1.0
+  Craft-repair         1.1  9.4
+  Exec-managerial      3.6 16.0
+  Farming-fishing      1.0  2.1
+  Handlers-cleaners    1.0  1.6
+  Machine-op-inspct    1.1  3.1
+  Other-service        1.6  1.8
+  Priv-house-serv      1.0  1.0
+  Prof-specialty       4.8 14.7
+  Protective-serv      1.0  3.2
+  Sales                1.8 10.1
+  Tech-support         1.5  3.4
+  Transport-moving     1.1  3.7</code></pre>
 </div>
 </div>
 <p>It returns a 14 × 2 table of joint probabilities. The most probable combinations are <span style="display:inline-block;"><span class="math inline">\(({\small\verb;Exec-managerial;}, {\small\verb;Male;})\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(({\small\verb;Prof-specialty;}, {\small\verb;Male;})\)</span>.</span></p>
@@ -822,68 +853,73 @@ occupation          Female Male
 <section id="the-rf-function" class="level3">
 <h3 class="anchored" data-anchor-id="the-rf-function">The <code>rF()</code> function</h3>
 <p>This function generates <strong>full-population</strong> frequency distributions (even for subpopulations) that are probable according to the data.</p>
-<p>For instance, let’s see three samples of how the full-population frequency distribution for <span style="display:inline-block;"><span class="math inline">\(\mathit{sex}\)</span></span> <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span></span> (jointly) could be:</p>
+<p>For instance, let’s see three samples of how the full-population frequency distribution for <span style="display:inline-block;"><span class="math inline">\(\mathit{sex} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathit{income}\)</span></span> (jointly) could be:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">rF</span>(<span class="at">agent=</span>opmall, <span class="at">n=</span><span class="dv">3</span>, <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'sex'</span>, <span class="st">'income'</span>))</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">aperm</span>(result) <span class="sc">*</span> <span class="dv">100</span>) <span class="co"># permutation so that the samples are the last array dimension</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">rF</span>(<span class="at">n=</span><span class="dv">3</span>, <span class="co"># number of samples</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">agent=</span>opmall, </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'sex'</span>, <span class="st">'income'</span>))</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">aperm</span>(result) <span class="sc">*</span> <span class="dv">100</span>) <span class="co"># permute so that samples are the last array dimension</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>, , 1
 
        sex
 income    Female    Male
-  &lt;=50K 27.66898 43.9423
-  &gt;50K   7.24675 21.1420
+  &lt;=50K 28.51470 43.0974
+  &gt;50K   6.89132 21.4966
 
 , , 2
 
        sex
 income    Female    Male
-  &lt;=50K 28.19640 42.4639
-  &gt;50K   7.15947 22.1803
+  &lt;=50K 28.52988 43.2914
+  &gt;50K   7.24731 20.9314
 
 , , 3
 
        sex
 income    Female    Male
-  &lt;=50K 28.21730 43.5010
-  &gt;50K   7.08038 21.2013</code></pre>
+  &lt;=50K 28.41950 43.0308
+  &gt;50K   7.20243 21.3473</code></pre>
 </div>
 </div>
-<p>These possible full-population frequency distributions can be used to assess how much the probabilities we find could change, if we collected a much, much larger amount of training data.</p>
-<p>In the example below, we generate 1000 frequency distributions for <span style="display:inline-block;"><span class="math inline">\((\mathit{occupation}, \mathit{sex})\)</span></span> given <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&gt;50K;}\)</span>,</span> and then take the standard deviations of the samples as a rough measure of how much the probabilities we calculated a couple of cells above could change:</p>
+<p>These possible full-population frequency distributions can be used to assess how much the probabilities we find could change, if we collected a much, much larger amount of training data. Here is an example:</p>
+<p>We generate 1000 frequency distributions for <span style="display:inline-block;"><span class="math inline">\((\mathit{occupation} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathit{sex})\)</span></span> given <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&gt;50K;}\)</span>,</span> and then take the standard deviations of the samples as a rough measure of how much the probabilities we calculated a couple of cells above could change:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>freqsamples <span class="ot">&lt;-</span> <span class="fu">rF</span>(<span class="at">n=</span><span class="dv">1000</span>, <span class="at">agent=</span>opmall, <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'occupation'</span>, <span class="st">'sex'</span>),</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">income=</span><span class="st">'&gt;50K'</span>))</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>variability <span class="ot">&lt;-</span> <span class="fu">apply</span>(freqsamples,</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">c</span>(<span class="st">'occupation'</span>,<span class="st">'sex'</span>), <span class="co"># which dimensions to apply</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                     sd) <span class="co"># function to apply to those dimensions</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Possible variation (sd) with new training data:</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(variability <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>) <span class="co"># round to two decimals</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>freqsamples <span class="ot">&lt;-</span> <span class="fu">rF</span>(<span class="at">n=</span><span class="dv">1000</span>,</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">agent=</span>opmall,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'occupation'</span>, <span class="st">'sex'</span>),</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">income=</span><span class="st">'&gt;50K'</span>))</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>variability <span class="ot">&lt;-</span> <span class="fu">apply</span>(freqsamples,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">c</span>(<span class="st">'occupation'</span>,<span class="st">'sex'</span>), <span class="co"># which dimensions to apply</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                     sd) <span class="co"># function to apply to those dimensions</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Possible variation (sd) with new training data:</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(variability <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>) <span class="co"># round to two decimals</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                   sex
 occupation          Female Male
-  Adm-clerical        0.29 0.33
-  Armed-Forces        0.15 0.16
-  Craft-repair        0.17 0.49
-  Exec-managerial     0.31 0.61
-  Farming-fishing     0.16 0.23
+  Adm-clerical        0.28 0.32
+  Armed-Forces        0.16 0.16
+  Craft-repair        0.18 0.46
+  Exec-managerial     0.30 0.59
+  Farming-fishing     0.15 0.23
   Handlers-cleaners   0.16 0.20
   Machine-op-inspct   0.17 0.28
-  Other-service       0.20 0.22
+  Other-service       0.21 0.22
   Priv-house-serv     0.16 0.16
-  Prof-specialty      0.34 0.58
-  Protective-serv     0.17 0.30
-  Sales               0.22 0.50
+  Prof-specialty      0.35 0.57
+  Protective-serv     0.16 0.29
+  Sales               0.22 0.48
   Tech-support        0.20 0.30
-  Transport-moving    0.17 0.30</code></pre>
+  Transport-moving    0.17 0.29</code></pre>
 </div>
 </div>
 <p>the agent believes (at around 68%) that the current probability wouldn’t change more than around ±0.5%.</p>
 <p><br>
 </p>
-<p>The inferences above were meant as checks, but we see that we can actually ask our agent a wide variety of questions about the full population, and do all sorts of association studies.</p>
+<p>The inferences above were partially meant as checks, but we see that we can actually ask our agent a wide variety of questions about the full population, and do all sorts of association studies.</p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -904,12 +940,16 @@ occupation          Female Male
 <section id="exploring-the-population-properties-mutual-information" class="level3">
 <h3 class="anchored" data-anchor-id="exploring-the-population-properties-mutual-information">Exploring the population properties: mutual information</h3>
 <p>In <a href="information.html#sec-entropy-mutualinfo">§ &nbsp;<span>18.5</span></a> we introduced <span class="blue"><em>mutual information</em></span> as the information-theoretic measure of mutual relevance and association of two quantities or variates. For the present task, the <code>opmall</code>-agent can tell us the mutual information between any two sets of variates of our choice, with the function <code>mutualinfo()</code>.</p>
-<p>For instance, let’s calculate the mutual information between <span style="display:inline-block;"><span class="math inline">\(\mathit{occupation}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathit{marital\_status}\)</span>:</span></p>
+<p>For instance, let’s calculate the mutual information between <span style="display:inline-block;"><span class="math inline">\(\mathit{occupation}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathit{marital\_status}\)</span>.</span></p>
+<p>First we need the joint probability distribution for both variates, which the agent can calculate with <code>infer()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Calculate the joint probability for occupation and marital_status</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall, <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'occupation'</span>, <span class="st">'marital_status'</span>))</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Mutual information (in shannons) between same two variates</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mutualinfo</span>(<span class="at">probs=</span>probs, <span class="at">A=</span><span class="st">'occupation'</span>, <span class="at">B=</span><span class="st">'marital_status'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall,</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'occupation'</span>, <span class="st">'marital_status'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This distribution is then used in the formula for the mutual information, implemented in <code>mutualinfo()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mutualinfo</span>(<span class="at">probs=</span>probs,</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">A=</span><span class="st">'occupation'</span>, <span class="at">B=</span><span class="st">'marital_status'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.0827823</code></pre>
 </div>
@@ -917,21 +957,27 @@ occupation          Female Male
 <p>It is a very low association: knowing either variate decreases the effective number of possible values of the other only <span style="display:inline-block;"><span class="math inline">\(2^{0.0827823/mathit{Sh}} \approx 1.06\)</span></span> times.</p>
 <p>Now let’s consider a scenario where, in order to save resources, we can use <em>only one</em> variate to infer the income. Which of the other variates should we prefer? We can calculate the mutual information between each of them, in turn, and <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span>:</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="do">## list of all variates</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>variates <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">dimnames</span>(opmall<span class="sc">$</span>counts))</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="do">## list of all variates except 'income'</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>predictors <span class="ot">&lt;-</span> variates[variates <span class="sc">!=</span> <span class="st">'income'</span>]</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="do">## prepare vector to contain the mutual information</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>relevances <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">length</span>(predictors))</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(relevances) <span class="ot">&lt;-</span> predictors</span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="do">## calculate joint probability and then mutual information (shannons)</span></span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="do">## of 'income' and another variate</span></span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(var <span class="cf">in</span> predictors){</span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall, <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'income'</span>,var))</span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    relevances[var] <span class="ot">&lt;-</span> <span class="fu">mutualinfo</span>(<span class="at">probs=</span>probs, <span class="at">A=</span><span class="st">'income'</span>, <span class="at">B=</span>var)</span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="do">## output the mutual informations in decreasing order</span></span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(relevances, <span class="at">decreasing=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="do">## list of all variates</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>variates <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">dimnames</span>(opmall<span class="sc">$</span>counts))</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="do">## list of all variates except 'income'</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>predictors <span class="ot">&lt;-</span> variates[variates <span class="sc">!=</span> <span class="st">'income'</span>]</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="do">## prepare vector to contain the mutual information</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>relevances <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">length</span>(predictors))</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(relevances) <span class="ot">&lt;-</span> predictors</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="do">## calculate, for each variate,</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="do">## the joint probability distribution 'probs'</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="do">## and then mutual information 'relevance' (in shannons)</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="do">## between 'income' and that variate</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(var <span class="cf">in</span> predictors){</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall, <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'income'</span>,var))</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    relevances[var] <span class="ot">&lt;-</span> <span class="fu">mutualinfo</span>(<span class="at">probs=</span>probs, <span class="at">A=</span><span class="st">'income'</span>, <span class="at">B=</span>var)</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="do">## output the mutual informations in decreasing order</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(relevances, <span class="at">decreasing=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>marital_status   relationship      education     occupation      workclass 
     0.10074130     0.09046621     0.06332052     0.05506897     0.03002995 
@@ -971,40 +1017,41 @@ native_country            sex           race
 </ul>
 <p>At the end we plot a histogram of the probabilities calculated for the new units, to check for instance for how many of the agent was sure (beliefs around 0% or 100%) or unsure (beliefs around 50%). We also report the final utility/accuracy per unit, and the time needed for the computation:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>testdata <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">'test-income_data_example.csv'</span>, <span class="at">header=</span><span class="cn">TRUE</span>) <span class="co"># read test data</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>ntest <span class="ot">&lt;-</span> <span class="fu">nrow</span>(testdata) <span class="co"># number of test data</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>testprobs <span class="ot">&lt;-</span> <span class="fu">numeric</span>(ntest) <span class="co"># prepare vector of probabilities</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>testhits <span class="ot">&lt;-</span> <span class="fu">numeric</span>(ntest) <span class="co"># prepare vector of hits</span></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>stopwatch <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>() <span class="co"># record time</span></span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>ntest){</span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    <span class="do">## calculate probabilities given all variates except 'income'</span></span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall, <span class="at">predictor=</span>testdata[i, <span class="sc">!</span><span class="st">'income'</span>])</span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    <span class="do">## store the probability for &lt;=50K</span></span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    testprobs[i] <span class="ot">&lt;-</span> probs[<span class="st">'&lt;=50K'</span>]</span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    <span class="do">## decide on one value, check if decision == true_value, and store result</span></span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>    chosenvalue <span class="ot">&lt;-</span> <span class="fu">decide</span>(<span class="at">probs=</span>probs)</span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>    testhits[i] <span class="ot">&lt;-</span> (chosenvalue <span class="sc">==</span> testdata[i, <span class="st">'income'</span>])</span>
-<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
-<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">Sys.time</span>() <span class="sc">-</span> stopwatch) <span class="co"># print computation time</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>testdata <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">'test-income_data_example.csv'</span>, <span class="at">header=</span><span class="cn">TRUE</span>) <span class="co"># read test data</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>ntest <span class="ot">&lt;-</span> <span class="fu">nrow</span>(testdata) <span class="co"># number of test data</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>testprobs <span class="ot">&lt;-</span> <span class="fu">numeric</span>(ntest) <span class="co"># prepare vector of probabilities</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>testhits <span class="ot">&lt;-</span> <span class="fu">numeric</span>(ntest) <span class="co"># prepare vector of hits</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>stopwatch <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>() <span class="co"># record time</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>ntest){</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>    <span class="do">## calculate probabilities given all variates except 'income'</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>    probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall, <span class="at">predictor=</span>testdata[i, <span class="sc">!</span><span class="st">'income'</span>])</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>    <span class="do">## store the probability for &lt;=50K</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>    testprobs[i] <span class="ot">&lt;-</span> probs[<span class="st">'&lt;=50K'</span>]</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>    <span class="do">## decide on one value, check if decision == true_value, and store result</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>    chosenvalue <span class="ot">&lt;-</span> <span class="fu">decide</span>(<span class="at">probs=</span>probs)</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>    testhits[i] <span class="ot">&lt;-</span> (chosenvalue <span class="sc">==</span> testdata[i, <span class="st">'income'</span>])</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">Sys.time</span>() <span class="sc">-</span> stopwatch) <span class="co"># print computation time</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time difference of 8.02276 secs</code></pre>
+<pre><code>Time difference of 8.00738 secs</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">thist</span>(testprobs, <span class="at">n=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="at">length.out=</span><span class="dv">10</span>), <span class="at">plot=</span><span class="cn">TRUE</span>,</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab=</span><span class="st">'P(income = "&lt;=50K")'</span>,</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylab=</span><span class="st">'frequency density in test set'</span>,</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">main=</span><span class="fu">paste0</span>(<span class="st">'accuracy: '</span>, <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span><span class="fu">mean</span>(testhits), <span class="dv">1</span>), <span class="st">'%'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">thist</span>(testprobs, <span class="at">n=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="at">length.out=</span><span class="dv">10</span>), <span class="at">plot=</span><span class="cn">TRUE</span>,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab=</span><span class="st">'P(income = "&lt;=50K")'</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylab=</span><span class="st">'frequency density in test set'</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">main=</span><span class="fu">paste0</span>(<span class="st">'accuracy: '</span>, <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span><span class="fu">mean</span>(testhits), <span class="dv">1</span>), <span class="st">'%'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="example_opm1_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
 
 </section>
+
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
