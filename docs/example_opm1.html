@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-05">
+<meta name="dcterms.date" content="2023-11-06">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 35&nbsp; Example application: adult-income task</title>
 <style>
@@ -133,7 +133,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-05</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-06</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -384,12 +384,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./beyond-ML.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="red">Beyond machine learning</span></span></span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
@@ -399,6 +393,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           </a> 
       </div>
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./beyond-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="red">Beyond machine learning</span></span></span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./exchangeable_probabilities.html" class="sidebar-item-text sidebar-link">
@@ -503,6 +503,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#exploring-the-population-properties-mutual-information" id="toc-exploring-the-population-properties-mutual-information" class="nav-link" data-scroll-target="#exploring-the-population-properties-mutual-information">Exploring the population properties: mutual information</a></li>
   </ul></li>
   <li><a href="#example-application-to-new-data" id="toc-example-application-to-new-data" class="nav-link" data-scroll-target="#example-application-to-new-data"><span class="header-section-number">35.6</span> Example application to new data</a></li>
+  <li><a href="#sec-compare-opm" id="toc-sec-compare-opm" class="nav-link" data-scroll-target="#sec-compare-opm"><span class="header-section-number">35.7</span> Comparison</a></li>
   </ul>
 </nav>
     </div>
@@ -522,7 +523,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-05</p>
+      <p class="date">2023-11-06</p>
     </div>
   </div>
   
@@ -544,8 +545,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="hidden">
 
 </div>
+<p><span class="grey">You can find a Jupyther notebook associated with the present chapter: <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/opm_adultincome_example.ipynb"><code>opm_adultincome_example.ipynb</code></a>, but note that it’s less annotated and partly unmaintained (<a href="https://www.youtube.com/watch?v=7jiPeIFXb6U">not a fan of Jupyther</a>, sorry).</span></p>
 <p>Let’s illustrate the example workflow described in <a href="prototype_code.html#sec-opm-workflow">§ &nbsp;<span>34.2</span></a> with a toy, but not too simplistic, example, based on the <a href="https://archive.ics.uci.edu/dataset/2/adult">adult-income dataset</a>.</p>
-<p>You can find a (less annotated) notebook associated with the present chapter: <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/opm_adultincome_example.ipynb"><code>opm_adultincome_example.ipynb</code></a>.</p>
 <p>All code functions and data files are in the directory<br>
 <a href="https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal">https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal</a></p>
 <div class="page-columns page-full"><p>We start loading the R libraries and functions needed at several stages. You need to have installed<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> the packages <a href="https://cran.r-project.org/package=data.table"><em>data.table</em></a>, <a href="https://cran.r-project.org/package=extraDistr"><em>extraDistr</em></a>, <a href="https://cran.r-project.org/package=foreach"><em>foreach</em></a>. Make sure you have saved all source files and data files in the same directory.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;This is done with the <a href="https://rdrr.io/r/utils/install.packages.html"><code>install.packages()</code> function</a>.</p></li></div></div>
@@ -868,23 +869,23 @@ occupation          Female Male
 <pre><code>, , sample = #1
 
        sex
-income    Female    Male
-  &lt;=50K 28.12273 43.5095
-  &gt;50K   6.90639 21.4613
+income   Female    Male
+  &lt;=50K 28.7614 43.1020
+  &gt;50K   6.7902 21.3464
 
 , , sample = #2
 
        sex
-income   Female    Male
-  &lt;=50K 28.1696 43.8179
-  &gt;50K   6.7331 21.2794
+income    Female    Male
+  &lt;=50K 28.01425 43.4650
+  &gt;50K   7.08298 21.4378
 
 , , sample = #3
 
        sex
 income    Female    Male
-  &lt;=50K 28.15878 43.4509
-  &gt;50K   7.06491 21.3254</code></pre>
+  &lt;=50K 28.09561 43.8294
+  &gt;50K   6.84873 21.2263</code></pre>
 </div>
 </div>
 <p>These possible full-population frequency distributions can be used to assess how much the probabilities we find could change, if we collected a much, much larger amount of training data. Here is an example:</p>
@@ -903,20 +904,20 @@ income    Female    Male
 <div class="cell-output cell-output-stdout">
 <pre><code>                   sex
 occupation          Female Male
-  Adm-clerical        0.28 0.32
+  Adm-clerical        0.27 0.34
   Armed-Forces        0.15 0.16
-  Craft-repair        0.17 0.47
-  Exec-managerial     0.30 0.57
+  Craft-repair        0.17 0.49
+  Exec-managerial     0.29 0.58
   Farming-fishing     0.16 0.23
-  Handlers-cleaners   0.17 0.19
-  Machine-op-inspct   0.17 0.28
+  Handlers-cleaners   0.16 0.20
+  Machine-op-inspct   0.17 0.29
   Other-service       0.20 0.21
   Priv-house-serv     0.16 0.16
-  Prof-specialty      0.35 0.58
-  Protective-serv     0.16 0.29
-  Sales               0.22 0.48
-  Tech-support        0.20 0.30
-  Transport-moving    0.16 0.32</code></pre>
+  Prof-specialty      0.34 0.57
+  Protective-serv     0.16 0.28
+  Sales               0.21 0.49
+  Tech-support        0.19 0.29
+  Transport-moving    0.17 0.31</code></pre>
 </div>
 </div>
 <p>the agent believes (at around 68%) that the current probability wouldn’t change more than about ±0.5%.</p>
@@ -1007,8 +1008,6 @@ native_country            sex           race
 </ul>
 </div>
 </div>
-<p><br>
-</p>
 </section>
 </section>
 <section id="example-application-to-new-data" class="level2" data-number="35.6">
@@ -1040,7 +1039,7 @@ native_country            sex           race
 <span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
 <span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">Sys.time</span>() <span class="sc">-</span> stopwatch) <span class="co"># print computation time</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time difference of 8.26248 secs</code></pre>
+<pre><code>Time difference of 7.99856 secs</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="do">##</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">thist</span>(testprobs, <span class="at">n=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="at">length.out=</span><span class="dv">10</span>), <span class="at">plot=</span><span class="cn">TRUE</span>,</span>
@@ -1049,6 +1048,28 @@ native_country            sex           race
 <span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">main=</span><span class="fu">paste0</span>(<span class="st">'accuracy: '</span>, <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span><span class="fu">mean</span>(testhits), <span class="dv">1</span>), <span class="st">'%'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="example_opm1_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="sec-compare-opm" class="level2" data-number="35.7">
+<h2 data-number="35.7" class="anchored" data-anchor-id="sec-compare-opm"><span class="header-section-number">35.7</span> Comparison</h2>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Now try to use a popular machine-learning algorithm for the same task, using the same training data, and compare it with the prototype optimal predictor machine. Examine the differences. For example:</p>
+<ul>
+<li><p>Can you inform the algorithm that <span style="display:inline-block;"><span class="math inline">\(\mathit{native\_country}\)</span></span> has two additional values <span style="display:inline-block;"><span class="math inline">\({\small\verb;Norway;}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\small\verb;Netherlands;}\)</span></span> not present in the training data? How?</p></li>
+<li><p>Can you flexibly use the algorithm to specify any predictors and any predictands on the fly?</p></li>
+<li><p>Does the algorithm inform you of how the inferences could change if more training data were available?</p></li>
+<li><p>Which accuracy does the algorithm achieve on the test set?</p></li>
+</ul>
 </div>
 </div>
 
