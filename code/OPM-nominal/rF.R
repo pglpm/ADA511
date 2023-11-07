@@ -8,7 +8,7 @@ rF <- function(n=1, agent, predictand=NULL, predictor=NULL){
     alphas <- agent[['alphas']]/length(agent[['counts']])
     ## recycling 'alphas'
     alphas <- alphas[sample.int(n=length(alphas), size=n, replace=T,
-                                      prob=agent[['palphas']])]
+                                prob=agent[['palphas']])]
     ##
     ##
     ## Selection of predictor values
