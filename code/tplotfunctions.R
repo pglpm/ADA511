@@ -1,7 +1,5 @@
-suppressPackageStartupMessages(require(grDevices))
-options(bitmapType='cairo')
+## Requires library 'khroma'
 ## Colour-blind friendly palettes, from https://personal.sron.nl/~pault/
-library('khroma')
 ## palette(colour('bright')())
 cc <- colour('bright')()
 cc[8] <- '#000000'

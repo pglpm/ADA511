@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-07">
+<meta name="dcterms.date" content="2023-11-10">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 35&nbsp; Example application: adult-income task</title>
 <style>
@@ -133,7 +133,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-07</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-10</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -523,7 +523,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-07</p>
+      <p class="date">2023-11-10</p>
     </div>
   </div>
   
@@ -549,22 +549,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Let’s illustrate the example workflow described in <a href="prototype_code.html#sec-opm-workflow">§ &nbsp;<span>34.2</span></a> with a toy, but not too simplistic, example, based on the <a href="https://archive.ics.uci.edu/dataset/2/adult">adult-income dataset</a>.</p>
 <p>All code functions and data files are in the directory<br>
 <a href="https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal">https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal</a></p>
-<div class="page-columns page-full"><p>We start loading the R libraries and functions needed at several stages. You need to have installed<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> the packages <a href="https://cran.r-project.org/package=data.table"><em>data.table</em></a>, <a href="https://cran.r-project.org/package=extraDistr"><em>extraDistr</em></a>, <a href="https://cran.r-project.org/package=foreach"><em>foreach</em></a>. Make sure you have saved all source files and data files in the same directory.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;This is done with the <a href="https://rdrr.io/r/utils/install.packages.html"><code>install.packages()</code> function</a>.</p></li></div></div>
+<div class="page-columns page-full"><p>We start loading the R libraries and functions needed at several stages. You need to have installed<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> the packages <a href="https://cran.r-project.org/package=data.table"><em>data.table</em></a>, <a href="https://cran.r-project.org/package=extraDistr"><em>extraDistr</em></a>, <a href="https://cran.r-project.org/package=foreach"><em>foreach</em></a>, <a href="https://cran.r-project.org/package=khroma"><em>khroma</em></a>. Make sure you have saved all source files and data files in the same directory.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;This is done with the <a href="https://rdrr.io/r/utils/install.packages.html"><code>install.packages()</code> function</a>.</p></li></div></div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'data.table'</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'extraDistr'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'foreach'</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'tplotfunctions.R'</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'guessmetadata.R'</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'buildagent.R'</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'infer.R'</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'decide.R'</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'mutualinfo.R'</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'rF.R'</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'plotFsamples1D.R'</span>)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repr.plot.width=</span><span class="dv">6</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">repr.plot.height=</span><span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'khroma'</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'tplotfunctions.R'</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'guessmetadata.R'</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'buildagent.R'</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'infer.R'</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'decide.R'</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'mutualinfo.R'</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'rF.R'</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'plotFsamples1D.R'</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repr.plot.width=</span><span class="dv">6</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">repr.plot.height=</span><span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br>
 </p>
@@ -869,23 +870,23 @@ occupation          Female Male
 <pre><code>, , sample = #1
 
        sex
-income    Female    Male
-  &lt;=50K 27.91810 43.9030
-  &gt;50K   6.94976 21.2292
+income   Female    Male
+  &lt;=50K 28.3526 42.7389
+  &gt;50K   7.0019 21.9066
 
 , , sample = #2
 
        sex
 income    Female    Male
-  &lt;=50K 27.62194 44.1794
-  &gt;50K   7.00828 21.1904
+  &lt;=50K 28.81208 42.9353
+  &gt;50K   6.74091 21.5117
 
 , , sample = #3
 
        sex
 income    Female    Male
-  &lt;=50K 27.80601 43.1327
-  &gt;50K   6.96639 22.0949</code></pre>
+  &lt;=50K 28.23002 43.4928
+  &gt;50K   7.18547 21.0918</code></pre>
 </div>
 </div>
 <p>These possible full-population frequency distributions can be used to assess how much the probabilities we find could change, if we collected a much, much larger amount of training data. Here is an example:</p>
@@ -904,19 +905,19 @@ income    Female    Male
 <div class="cell-output cell-output-stdout">
 <pre><code>                   sex
 occupation          Female Male
-  Adm-clerical        0.28 0.32
-  Armed-Forces        0.16 0.17
-  Craft-repair        0.17 0.48
-  Exec-managerial     0.30 0.58
-  Farming-fishing     0.16 0.23
-  Handlers-cleaners   0.16 0.20
-  Machine-op-inspct   0.17 0.28
-  Other-service       0.21 0.21
-  Priv-house-serv     0.16 0.15
+  Adm-clerical        0.29 0.32
+  Armed-Forces        0.16 0.16
+  Craft-repair        0.17 0.47
+  Exec-managerial     0.30 0.62
+  Farming-fishing     0.17 0.24
+  Handlers-cleaners   0.17 0.20
+  Machine-op-inspct   0.17 0.30
+  Other-service       0.20 0.22
+  Priv-house-serv     0.16 0.16
   Prof-specialty      0.35 0.57
   Protective-serv     0.16 0.29
-  Sales               0.22 0.48
-  Tech-support        0.19 0.29
+  Sales               0.22 0.49
+  Tech-support        0.20 0.29
   Transport-moving    0.16 0.30</code></pre>
 </div>
 </div>
@@ -1048,7 +1049,7 @@ native_country            sex           race
 <span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a><span class="do">## Print total time required</span></span>
 <span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">Sys.time</span>() <span class="sc">-</span> stopwatch)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time difference of 8.03541 secs</code></pre>
+<pre><code>Time difference of 8.13579 secs</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Histogram and average accuracy (rounded to one decimal)</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">thist</span>(testprobs, <span class="at">n=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="at">length.out=</span><span class="dv">10</span>), <span class="at">plot=</span><span class="cn">TRUE</span>,</span>
