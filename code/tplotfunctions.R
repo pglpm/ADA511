@@ -7,6 +7,7 @@ names(cc)[8] <- 'black'
 cc[9] <- '#777777'
 names(cc)[9] <- 'midgrey'
 palette(cc)
+rm(cc)
 bluepurple <- palette()[1]
 red <- palette()[2]
 green <- palette()[3]
@@ -472,7 +473,7 @@ tsummary <- function(x){
 }
 
 ## Function to build powerset
-powerset <<- function(set) { 
+powerset <<- function(set){
   n <- length(set)
   masks <- 2^(1:n-1)
   lapply( 1:2^n-1, function(u) set[ bitwAnd(u, masks) != 0 ] )

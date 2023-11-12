@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-07">
+<meta name="dcterms.date" content="2023-11-12">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 36&nbsp; From inferences to decisions</title>
 <style>
@@ -31,6 +31,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./connection-4-ML.html" rel="next">
 <link href="./example_opm1.html" rel="prev">
 <link href="./favicon.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
@@ -98,7 +99,7 @@ ul.task-list li input[type="checkbox"] {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-07</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-12</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -440,6 +441,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title"><span class="blue">From inferences to decisions</span></span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-4-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title"><span class="blue">Decisions: limitations of present-day machine-learning algorithms</span></span></span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -452,14 +459,18 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-decision-everywhere" id="toc-sec-decision-everywhere" class="nav-link active" data-scroll-target="#sec-decision-everywhere"><span class="header-section-number">36.1</span> The omnipresence of decision-making in machine learning</a></li>
-  <li><a href="#sec-decisions-utilities" id="toc-sec-decisions-utilities" class="nav-link" data-scroll-target="#sec-decisions-utilities"><span class="header-section-number">36.2</span> Decisions, unknowns, and utilities</a>
+  <li><a href="#accept-or-discard-again" id="toc-accept-or-discard-again" class="nav-link active" data-scroll-target="#accept-or-discard-again"><span class="header-section-number">36.1</span> Accept or discard? – again</a></li>
+  <li><a href="#sec-decisions-utilities" id="toc-sec-decisions-utilities" class="nav-link" data-scroll-target="#sec-decisions-utilities"><span class="header-section-number">36.2</span> Outcomes, decisions, utilities</a></li>
+  <li><a href="#sec-max-exp-utilities" id="toc-sec-max-exp-utilities" class="nav-link" data-scroll-target="#sec-max-exp-utilities"><span class="header-section-number">36.3</span> Maximization of expected utility</a>
   <ul class="collapse">
-  <li><a href="#decisions" id="toc-decisions" class="nav-link" data-scroll-target="#decisions">Decisions</a></li>
-  <li><a href="#utilities" id="toc-utilities" class="nav-link" data-scroll-target="#utilities">Utilities</a></li>
-  <li><a href="#optimal-decision" id="toc-optimal-decision" class="nav-link" data-scroll-target="#optimal-decision">Optimal decision</a></li>
+  <li><a href="#numerical-implementation-in-simple-cases" id="toc-numerical-implementation-in-simple-cases" class="nav-link" data-scroll-target="#numerical-implementation-in-simple-cases">Numerical implementation in simple cases</a></li>
   </ul></li>
-  <li><a href="#decisions-limitations-of-present-day-machine-learning-algorithms" id="toc-decisions-limitations-of-present-day-machine-learning-algorithms" class="nav-link" data-scroll-target="#decisions-limitations-of-present-day-machine-learning-algorithms"><span class="header-section-number">36.3</span> Decisions: limitations of present-day machine-learning algorithms</a></li>
+  <li><a href="#sec-max-exp-util-example" id="toc-sec-max-exp-util-example" class="nav-link" data-scroll-target="#sec-max-exp-util-example"><span class="header-section-number">36.4</span> Concrete example: targeted advertisement</a>
+  <ul class="collapse">
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example">Example</a></li>
+  <li><a href="#powerful-flexibility-of-the-agent" id="toc-powerful-flexibility-of-the-agent" class="nav-link" data-scroll-target="#powerful-flexibility-of-the-agent">Powerful flexibility of the agent</a></li>
+  </ul></li>
+  <li><a href="#sec-DT-generalization" id="toc-sec-DT-generalization" class="nav-link" data-scroll-target="#sec-DT-generalization"><span class="header-section-number">36.5</span> Generalization of basic decision theory</a></li>
   </ul>
 </nav>
     </div>
@@ -479,7 +490,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-07</p>
+      <p class="date">2023-11-12</p>
     </div>
   </div>
   
@@ -492,49 +503,142 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 <p><span class="math display">\[
 \DeclarePairedDelimiters{\set}{\{}{\}}
-\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmax}{argmax}
 \]</span></p>
 </div>
 <div class="hidden">
 
 </div>
-<section id="sec-decision-everywhere" class="level2 page-columns page-full" data-number="36.1">
-<h2 data-number="36.1" class="anchored" data-anchor-id="sec-decision-everywhere"><span class="header-section-number">36.1</span> The omnipresence of decision-making in machine learning</h2>
-<p>Many machine-learning textbooks say that</p>
-<blockquote class="blockquote">
-<p>in supervised learning the algorithm learns a functional relationship between some kind of input and some kind of output</p>
-</blockquote>
-<div class="page-columns page-full"><p>Such statement is misleading, because it suggests that there is a functional relationship from input to output, or from predictor to predictand – as if such functional relationship were only waiting to be discovered and “learned”. But as we discussed in <a href="machine_learning_overview.html">chapter&nbsp;&nbsp;<span>24</span></a>, in many important tasks and applications this is actually not true: <strong>there isn’t any functional relationship between input and output at all</strong>. Even if any possible “noise” were removed, there would still <em>not</em> be any functional relationship between the denoised predictor and predictand (<a href="steven-seagal-emotion-chart.jpg" class="external">here is an example</a>).<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;This is one more reason why we use the more general terms “predictor” &amp; “predictand”, rather that “input” &amp; “output”.</p></li></div></div>
-<p>In many important tasks there’s only a <em>statistical</em> relationship between predictands and predictors. In other words, whenever a predictor has value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x\)</span>,</span> the predictand value may out to be <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y'\)</span></span> in a given number of units, but also <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y''\)</span></span> in a given number of other units, and so on. As a simple example, consider the <a href="https://www.ssb.no/befolkning/folketall/statistikk/befolkning/artikler/slik-ser-befolkningen-i-norge-ut">Norwegian population in 2022</a>. If our predictand is <em>sex</em> and we take as predictor that a person’s <em>age</em> is between <code>85--89 years</code>, then a proportion <span style="display:inline-block;"><span class="math inline">\(43 542/(43 542 + 28 220) \approx 61\%\)</span></span> of those persons have <em>sex</em>=<code>female</code>, and the remaining <span style="display:inline-block;"><span class="math inline">\(39\%\)</span></span> proportion has <em>sex</em>=<code>male</code>. This doesn’t mean that, say, <code>female</code> is the “true” output, and <code>male</code> is just the effect of noise; that would be nonsense.</p>
-<p>Even in tasks where there actually is a functional relation from predictors to predictands, the agent typically doesn’t know what the function’s output should be for particular predictor values, because no such values have been observed in the training data. It must interpolate or extrapolate what it has learned. Also in this case there are therefore several possibilities.</p>
-<p>The remarks above have a very important consequence. If a machine-learning algorithm outputs just <em>one</em> predictand value, among the possible ones that are consistent with the predictor, then it means that <strong>the algorithm is internally choosing one of the possibilities</strong>. How is this choice made?</p>
-<p>Such a choice is obviously a <strong>decision-making problem</strong>. As we know from chapters&nbsp;<a href="framework.html"><span>2</span></a> and&nbsp;<a href="basic_decisions.html"><span>3</span></a>, the optimal choice is determined by Decision Theory, and its determination requires:</p>
+<section id="accept-or-discard-again" class="level2 page-columns page-full" data-number="36.1">
+<h2 data-number="36.1" class="anchored" data-anchor-id="accept-or-discard-again"><span class="header-section-number">36.1</span> Accept or discard? – again</h2>
+<p>Our very first example of engineering problem (<a href="intro.html">chapter&nbsp;&nbsp;<span>1</span></a>) in these lecture notes was the decision whether to accept or discard an electronic component just produced in an assembly line. In <a href="basic_decisions.html">chapter&nbsp;&nbsp;<span>3</span></a> we met the theory to deal with this kind of decision-making problem: Decision Theory.</p>
+<p>We saw that Decision Theory requires the agent, who’s making the decision, to calculate the probabilities of the unknown outcomes. All our discussion and chapters thereafter focused on the calculation of those probabilities, which often is the most difficult part of the decision making task.</p>
+<p>At long last we have the knowledge to calculate such probabilities, both for general problems, and more in detail problems enjoying special properties, for instance when the agent’s beliefs are exchangeable (<a href="exchangeable_probabilities.html">chapter&nbsp;&nbsp;<span>28</span></a>). Most important, we saw how previous data and background information can be used to determine these probabilities, and how they influence and modify these probabilities. We have even built a real, prototype agent that can flexibly calculate probabilities in problems involving nominal variates.</p>
+<div class="page-columns page-full"><p>Let’s face the decision-making problem again, and complete the construction of our prototype agent by implementing the final decision-making step.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;Please go back to <a href="basic_decisions.html">chapter&nbsp;&nbsp;<span>3</span></a> and review the notions and terminology introduced there.</p></li></div></div>
+</section>
+<section id="sec-decisions-utilities" class="level2" data-number="36.2">
+<h2 data-number="36.2" class="anchored" data-anchor-id="sec-decisions-utilities"><span class="header-section-number">36.2</span> Outcomes, decisions, utilities</h2>
+<p>Recall the structure of a basic decision:</p>
+<p><img src="basic_decision_tree.png" class="img-fluid" style="width:100.0%"></p>
+<p>In order to make a decision, the agent needs:</p>
 <ul>
-<li><p><span class="green"><i class="fa-solid fa-scale-unbalanced-flip" aria-label="scale-unbalanced-flip"></i>&nbsp;&nbsp;the probabilities of the possible predictand values</span></p></li>
-<li><p><span class="lightblue"><i class="fa-solid fa-arrows-split-up-and-left" aria-label="arrows-split-up-and-left"></i>&nbsp;&nbsp;a list of possible decisions</span></p></li>
-<li><p><span class="blue"><i class="fa-solid fa-sack-dollar" aria-label="sack-dollar"></i>&nbsp;&nbsp;the utilities of the decisions, depending on the predictand’s true value</span></p></li>
+<li><p><i class="fa-solid fa-cube" aria-label="cube"></i> The set of possible <span class="yellow"><em>decisions</em></span>, which we represent as sentences like <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{204,187,68}D}\)</span>.</span></p></li>
+<li><p><i class="fa-solid fa-cube" aria-label="cube"></i> The set of possible <span class="red"><em>outcomes</em></span>, whose truth is unknown to the agent. In the kind of decision problems that we are examining, the outcomes correspond to the possible values <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y\)</span></span> of what we have called the <span class="red">predictand</span> variate from <a href="beyond-ML.html#sec-cat-problems">§ &nbsp;<span>27.2</span></a> onwards.</p></li>
+<li><p><i class="fa-solid fa-cube" aria-label="cube"></i> The <span class="green"><em>probabilities</em></span> of the outcomes&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{204,187,68}D}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})\)</span></span> which are determined by the agent’s background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> by any other available information, such as <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{34,136,51}data}\)</span></span> about previously observed units and the values of some predictor variates <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x\)</span></span> for the current unit; and possibly also by the agent’s decision <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{204,187,68}D}\)</span></span> (see below).</p></li>
+<li><p><i class="fa-solid fa-cube" aria-label="cube"></i> The <span class="blue"><em>utilities</em></span> of the decisions and the outcomes, which we denote</p>
+<p><span class="math display">\[
+\mathrm{U}({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{204,187,68}D}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+\]</span></p>
+<p>This notation reminds us that the utilities assigned by the agent also depend on its background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span></span></p></li>
+</ul>
+<p>Let’s not forget some important points about the notions above:</p>
+<div class="callout callout-style-default callout-important no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>We are not assuming any temporal or “causal” relationship between <span class="yellow">decisions</span> and <span class="red">outcomes</span>: <strong>our framework works independently of these relationships</strong>. In some decision-making problems the outcomes happen <em>after</em> a decision is made, and may be “influenced” by it or not. In other decision-making problems the outcomes have already happened <em>before</em> a decision is made.</p>
+<p>In a transportation-choice problem, for instance, the outcome “<span class="red">wet from rain</span>” may happen after we make the decision “<span class="yellow">go on foot</span>” rather than “<span class="yellow">go by bus</span>”. In an image-classification problem, on the other hand, the outcome “<span class="red">true label is <span class="math inline">\({\small\verb;cat;}\)</span></span>” was already determined before we made the decision “<span class="yellow">classify as <span class="math inline">\({\small\verb;dog;}\)</span></span>”.</p></li>
 </ul>
 <p><br>
 </p>
-<p>A decision-making step also appears in tasks where the agent must <em>generate</em> a new unit. Obviously there are many candidates for generation, that agree with what was observed in the training data. If the agent generates <em>one</em> unit, then it must internally have chosen among the possible candidates. Thus also this type of “generative” task involves probabilities, decisions, and utilities.</p>
+<ul>
+<li><p>In connection with the warning above, in some problems the probabilities of the outcomes may depend on the decision; that is, knowledge about the decision is <em>relevant</em> to the knowledge about the outcome (see again <a href="information.html">§ &nbsp;<span>18</span></a>):</p>
+<p><span class="math display">\[\mathrm{P}({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{204,187,68}D}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})\]</span></p>
+<p>For instance, in the transportation-choice problem the probability of the outcome “<span class="red">wet from rain</span>” is higher conditional on the decision “<span class="yellow">go on foot</span>” than on the decision “<span class="yellow">go by bus</span>”.</p>
+<p>In many decision-making problems typical of machine learning, such as classification, information about the decision is <em>irrelevant</em> to the information about the outcome (which usually has already happened), and we have</p>
+<p><span class="math display">\[
+  \mathrm{P}({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{204,187,68}D}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
+  = \mathrm{P}({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
+  \]</span></p></li>
+</ul>
+</div>
+</div>
+<p>In what follows we shall consider problems, such as classification, where knowledge of the agent’s decision is irrelevant to the outcome’s probability. We shall nevertheless keep the more general notation&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{204,187,68}D}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})\)</span>.</span></p>
 </section>
-<section id="sec-decisions-utilities" class="level2" data-number="36.2">
-<h2 data-number="36.2" class="anchored" data-anchor-id="sec-decisions-utilities"><span class="header-section-number">36.2</span> Decisions, unknowns, and utilities</h2>
-<section id="decisions" class="level3">
-<h3 class="anchored" data-anchor-id="decisions">Decisions</h3>
-<p>In many decision-making problems in engineering and other fields, for instance medicine, the set of possible decisions does <strong>not</strong> have a correspondence with the set of unknown values.</p>
-<p>For example, a clinician may be uncertain about the presence or absence of some medical condition – let’s say a disease – and this uncertainty cannot be fully removed. The clinician’s task is not simply to guess about the disease, but <em>to choose among different available treatments</em>. The crucial point about this choice is that its optimality depends on the <em>probability</em> that the disease is present, not on a simple “yes/no guess”. Let’s develop this example further in order to clearly see this point.</p>
+<section id="sec-max-exp-utilities" class="level2 page-columns page-full" data-number="36.3">
+<h2 data-number="36.3" class="anchored" data-anchor-id="sec-max-exp-utilities"><span class="header-section-number">36.3</span> Maximization of expected utility</h2>
+<p>The expected utility of each possible decision <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{204,187,68}D}\)</span></span> is calculated as a weighted average:</p>
+<p><span class="math display">\[\mathrm{U}(\mathsfit{\color[RGB]{204,187,68}D}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I})
+= \sum_{\color[RGB]{238,102,119}y} \mathrm{U}(\mathsfit{\color[RGB]{204,187,68}D}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \cdot
+\mathrm{P}({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{204,187,68}D}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
+\]</span></p>
+<p>The agent’s final decision satisfies the</p>
+<div class="column-page-right">
+<div class="callout callout-style-default callout-note no-icon callout-titled" style="font-size:120%">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span style="font-size:110%"><strong>Principle of maximal expected utility</strong></span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size:120%">
+<p>The optimal decision, which should be made by the agent, is the one with maximal expected utility:</p>
+<p><span class="math display">\[
+\mathsfit{\color[RGB]{204,187,68}D}_{\text{optimal}} =
+\argmax_{\mathsfit{\color[RGB]{204,187,68}D}} \sum_{\color[RGB]{238,102,119}y} \mathrm{U}(\mathsfit{\color[RGB]{204,187,68}D}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \cdot
+\mathrm{P}({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{204,187,68}D}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
+\]</span></p>
+<p>(where, in some tasks, the probabilities may not depend on <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{204,187,68}D}\)</span>)</span></p>
+</div>
+</div>
+</div>
+</div>
+<p>In the formula above, <span style="display:inline-block;">“<span class="math inline">\(\argmax\limits_z G(z)\)</span>”</span> is the value <span style="display:inline-block;"><span class="math inline">\(z\)</span></span> which maximizes <span style="display:inline-block;"><span class="math inline">\(G(z)\)</span>.</span> <span class="small grey">Note the difference: <span class="math inline">\(\max\limits_z G(z)\)</span> is the value of the maximum itself, whereas <span class="math inline">\(\argmax\limits_z G(z)\)</span> is the value of the <em>argument</em> that gives the maximum. For instance&nbsp;&nbsp;<span class="math inline">\(\max\limits_z (1-z)^2 = 0\)</span>,&nbsp;&nbsp;but&nbsp;&nbsp;<span class="math inline">\(\argmax\limits_z (1-z)^2 = 1\)</span>.</span></p>
+<p>It may happen that there are several decisions which have equal, maximal expected utilities. In this case any one of them can be chosen. A useful strategy, in this case, is to choose among them with equal probabilities (such strategy helps minimizing the loss from possible small errors in the specification of the utilities, or from the presence of an antagonist agent which tries to predict what our agent is doing).</p>
+<section id="numerical-implementation-in-simple-cases" class="level3">
+<h3 class="anchored" data-anchor-id="numerical-implementation-in-simple-cases">Numerical implementation in simple cases</h3>
+<p>The principle of maximal expected utility is straightforward to calculate in many important problems. First, the collection of expected utilities can be obtained with a simple matrix multiplication. We represent the utilities for all decisions and all outcomes with a matrix <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{\color[RGB]{68,119,170}U}\)</span>,</span> having one row per decision and one column per outcome:</p>
+<p><span class="math display">\[
+\boldsymbol{\color[RGB]{68,119,170}U}\coloneqq
+\begin{bmatrix}
+\mathrm{U}(\mathsfit{\color[RGB]{204,187,68}D}' \mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y}' \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+&amp;
+\mathrm{U}(\mathsfit{\color[RGB]{204,187,68}D}' \mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y}'' \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+&amp; \dotso
+\\
+\mathrm{U}(\mathsfit{\color[RGB]{204,187,68}D}'' \mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y}' \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+&amp;
+\mathrm{U}(\mathsfit{\color[RGB]{204,187,68}D}'' \mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y}'' \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+&amp; \dotso
+\\
+\dotso&amp;\dotso&amp;\dotso
+\end{bmatrix}
+\]</span></p>
+<p>If the probabilities of the outcomes do <strong>not</strong> depend on the decisions, we represent them as a column matrix <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{\color[RGB]{34,136,51}P}\)</span>,</span> having one entry per outcome:</p>
+<p><span class="math display">\[
+\boldsymbol{\color[RGB]{34,136,51}P}\coloneqq
+\begin{bmatrix}
+\mathrm{P}({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y}' \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{204,187,68}D}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
+\\
+\mathrm{P}({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y}'' \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{204,187,68}D}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
+\\
+\dotso
+\end{bmatrix}
+\]</span></p>
+<p>Then the collection of expected utilities is a column matrix, having one entry per decision, given by the matrix product <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{\color[RGB]{68,119,170}U}\boldsymbol{\color[RGB]{34,136,51}P}\)</span>.</span> All that’s left is to check which of the entries in this final matrix is maximal.</p>
 </section>
-<section id="utilities" class="level3">
-<h3 class="anchored" data-anchor-id="utilities">Utilities</h3>
-<p>The clinician has three treatments available: <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}A}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}B}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}C}\)</span>.</span> They have different intensities, which make them more or less effective against the disease, if present, but also less or more damaging to the patient if the disease is not present. Suppose that their efficacy and damage can be measured as the decrease in life expectancy for the patient. The effects are as follows:</p>
+</section>
+<section id="sec-max-exp-util-example" class="level2 page-columns page-full" data-number="36.4">
+<h2 data-number="36.4" class="anchored" data-anchor-id="sec-max-exp-util-example"><span class="header-section-number">36.4</span> Concrete example: targeted advertisement</h2>
+<p>As a concrete example, let’s keep on using the adult-income task from <a href="example_opm1.html">chapter&nbsp;&nbsp;<span>35</span></a>, in a typical present-day scenario.</p>
+<p>Some corporation, which offers a particular phone app, wants to <a href="https://pluralistic.net/2023/07/24/rent-to-pwn/">bombard its users with advertisements</a>, because advertisement generates much more revenue than making the users pay for the app. For each user the corporation can choose one among three ad-types, let’s call them <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}A}, {\color[RGB]{204,187,68}B}, {\color[RGB]{204,187,68}C}\)</span>.</span> The revenue obtained from these ad-types varies depending on whether the target user’s income is <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;&lt;=50K;}}\)</span></span> or <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;&gt;50K;}}\)</span>.</span> A separate study run by the corporation has shown that the average revenues (per user per minute) depending on the three ad-types and the income levels are as follows:</p>
 <div class="columns">
 <div class="column" style="width:25%;">
 
 </div><div class="column" style="width:50%;">
-<div id="tbl-treatments" class="anchored">
+<div id="tbl-income" class="anchored">
 <table class="table-sm small table">
-<caption>Table&nbsp;36.1: Change in life expectancy depending on treatment and medical condition</caption>
+<caption>Table&nbsp;36.1: Revenue depending on ad-type and income level</caption>
 <colgroup>
 <col style="width: 24%">
 <col style="width: 24%">
@@ -543,31 +647,28 @@ ul.task-list li input[type="checkbox"] {
 </colgroup>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td colspan="2" style="text-align: right;"><span class="math inline">\(\mathit{\color[RGB]{238,102,119}disease}\)</span></td>
+<td colspan="2" rowspan="2" style="text-align: center;"></td>
+<td colspan="2" style="text-align: right;"><span class="math inline">\(\mathit{\color[RGB]{238,102,119}income}\)</span></td>
 </tr>
 <tr class="even">
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: right;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;yes;}}\)</span></td>
-<td style="text-align: right;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;no;}}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;&lt;=50K;}}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;&gt;50K;}}\)</span></td>
 </tr>
 <tr class="odd">
-<td rowspan="3" style="text-align: center;"><span class="blue">treatment</span></td>
-<td style="text-align: center;"><span class="math inline">\({\color[RGB]{68,119,170}A}\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(\color[RGB]{204,187,68}-4\,\mathrm{yr}\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(\color[RGB]{204,187,68}0\,\mathrm{yr}\)</span></td>
+<td rowspan="3" style="text-align: center;"><span class="yellow">ad-type</span></td>
+<td style="text-align: center;"><span class="math inline">\({\color[RGB]{204,187,68}A}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{68,119,170}-1\,\$\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{68,119,170}3\,\$\)</span></td>
 </tr>
 <tr class="even">
-<td style="text-align: center;"><span class="math inline">\({\color[RGB]{68,119,170}B}\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(\color[RGB]{204,187,68}-1\,\mathrm{yr}\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(\color[RGB]{204,187,68}-1\,\mathrm{yr}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\({\color[RGB]{204,187,68}B}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{68,119,170}2\,\$\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{68,119,170}2\,\$\)</span></td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;"><span class="math inline">\({\color[RGB]{68,119,170}C}\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(\color[RGB]{204,187,68}0\,\mathrm{yr}\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(\color[RGB]{204,187,68}-4\,\mathrm{yr}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{68,119,170}3\,\$\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{68,119,170}-1\,\$\)</span></td>
 </tr>
 </tbody>
 </table>
@@ -576,172 +677,125 @@ ul.task-list li input[type="checkbox"] {
 
 </div>
 </div>
-<ul>
-<li><p>treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}A}\)</span></span> is mild (this could be the no-treatment option): under it, the patient is expected to live four years shorter if the disease is present, but the life expectancy is unaltered if the disease is not present</p></li>
-<li><p>treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}B}\)</span></span> is intermediate: under it, the patient is expected to live only one year shorter if the disease is present, but also if the disease is not present, owing to the damage caused by this treatment</p></li>
-<li><p>treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}C}\)</span></span> is intensive: under it, the patient is expected not to lose extra years if the disease is present, but will lose four years if the disease is not present, owing to the heavy damage caused by this treatment.</p></li>
-</ul>
-<p>Which of the treatments above should the clinician choose?</p>
-</section>
-<section id="optimal-decision" class="level3">
-<h3 class="anchored" data-anchor-id="optimal-decision">Optimal decision</h3>
-<p>Let’s consider three scenarios. In each scenario, the clinician has prescribed several clinical tests (the predictors) for the patient, and obtained their results.</p>
-<section id="scenario-1-1090" class="level4">
-<h4 class="anchored" data-anchor-id="scenario-1-1090">Scenario 1: 10%/90%</h4>
-<p>Given the results of the clinical tests, the clinician knows that the patient is typical of a subpopulation of patients where <span class="green">10%</span> have the disease, and <span class="green">90%</span> don’t. The present patient could be one among the 10%, or one of among the 90%.</p>
-<ul>
-<li><p>If the clinician always chooses treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}A}\)</span></span> for this subpopulation, including the present patient, then these patients’ lives will be shortened in total by</p>
-<p><span class="math display">\[
-{\color[RGB]{204,187,68}-4\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}10} +
-{\color[RGB]{204,187,68}0\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}90}
-= \boldsymbol{-40\,\mathrm{yr}}
-\]</span></p></li>
-<li><p>If the clinician always chooses treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}B}\)</span></span> for this subpopulation, including the present patient, then these patients’ lives will be shortened in total by</p>
-<p><span class="math display">\[
-{\color[RGB]{204,187,68}-1\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}10} +
-{\color[RGB]{204,187,68}-1\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}90}
-= \boldsymbol{-100\,\mathrm{yr}}
-\]</span></p></li>
-<li><p>If the clinician always chooses treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}C}\)</span>,</span> then the lives will be shortened in total by</p>
-<p><span class="math display">\[
-{\color[RGB]{204,187,68}0\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}10} +
-{\color[RGB]{204,187,68}-4\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}90}
-= \boldsymbol{-360\,\mathrm{yr}}
-\]</span></p></li>
-</ul>
-<p>Clearly the best decision is treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}A}\)</span>.</span> It is possible that, unfortunately, the present patient’s life will be shortened; but this treatment was the patient’s and clinician’s best bet.</p>
-</section>
-<section id="scenario-2-5050" class="level4">
-<h4 class="anchored" data-anchor-id="scenario-2-5050">Scenario 2: 50%/50%</h4>
-<p>Given the results of the clinical tests, the clinician knows that the patient is typical of a subpopulation of patients where <span class="green">50%</span> have the disease, and <span class="green">50%</span> don’t. In this case the present patient could be one of the first 50%, or one of the other 50%.</p>
-<p>Calculations similar to those of scenario&nbsp;1 leads to these results:</p>
-<ul>
-<li><p>Treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}A}\)</span></span></p>
-<p><span class="math display">\[
-{\color[RGB]{204,187,68}-4\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}50} +
-{\color[RGB]{204,187,68}0\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}50}
-= \boldsymbol{-200\,\mathrm{yr}}
-\]</span></p></li>
-<li><p>Treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}B}\)</span>:</span></p>
-<p><span class="math display">\[
-{\color[RGB]{204,187,68}-1\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}50} +
-{\color[RGB]{204,187,68}-1\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}50}
-= \boldsymbol{-100\,\mathrm{yr}}
-\]</span></p></li>
-<li><p>Treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}C}\)</span>:</span></p>
-<p><span class="math display">\[
-{\color[RGB]{204,187,68}0\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}50} +
-{\color[RGB]{204,187,68}-4\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}50}
-= \boldsymbol{-200\,\mathrm{yr}}
-\]</span></p></li>
-</ul>
-<p>The best decision is treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}B}\)</span>.</span> A clinician who chose treatments <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}A}\)</span></span> or <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}C}\)</span></span> for patients having the same predictors as the present patient would on average <em>reduce</em> the life expectancy of each patient by one extra year.</p>
-</section>
-<section id="scenario-3-9010" class="level4">
-<h4 class="anchored" data-anchor-id="scenario-3-9010">Scenario 3: 90%/10%</h4>
-<p>In this scenario <span class="green">90%</span> of patients in the subpopulation with the observed predictors have the disease, and <span class="green">10%</span> don’t. The present patient could belong to either group.</p>
-<ul>
-<li><p>Treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}A}\)</span></span></p>
-<p><span class="math display">\[
-{\color[RGB]{204,187,68}-4\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}90} +
-{\color[RGB]{204,187,68}0\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}10}
-= \boldsymbol{-360\,\mathrm{yr}}
-\]</span></p></li>
-<li><p>Treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}B}\)</span>:</span></p>
-<p><span class="math display">\[
-{\color[RGB]{204,187,68}-1\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}90} +
-{\color[RGB]{204,187,68}-1\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}10}
-= \boldsymbol{-100\,\mathrm{yr}}
-\]</span></p></li>
-<li><p>Treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}C}\)</span>:</span></p>
-<p><span class="math display">\[
-{\color[RGB]{204,187,68}0\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}90} +
-{\color[RGB]{204,187,68}-4\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}10}
-= \boldsymbol{-40\,\mathrm{yr}}
-\]</span></p></li>
-</ul>
-<p>Treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}C}\)</span></span> is the best decision in this scenario, for reasons complementary to those of scenario&nbsp;1.</p>
+<p>Ad-type <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}B}\)</span></span> is a kind of neutral advertisement that leads to revenue independently of the target user’s income. Ad-type <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}A}\)</span></span> targets high-income users, leading to higher revenue from them; but it leads to a loss if shown to the wrong target (more money spent on making and deploying the ad than what is gained from users’ purchases). Vice versa, ad-type <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}B}\)</span></span> targets low-income users, with a reverse effect.</p>
+<p>The corporation doesn’t have access to its users’ income levels, but it covertly collects, through some other app, all or some of the eight predictor variates <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}\mathit{workclass}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}\mathit{education}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}\dotsc\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}\mathit{sex}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}\mathit{native\_country}\)</span></span> from each of its users. The corporation has also access to the adult-income dataset (or let’s say a more recent version of it).</p>
+<p>In this scenario, the corporation would like to use an AI agent that can choose and show the optimal ad-type to each user.</p>
 <p><br>
 </p>
-<p>The reasoning behind each scenario and its corresponding optimal decision is quite intuitive.</p>
-<p>In each scenario, note that <em>any</em> decision strategy different from “sticking to the optimal decision” would lead to suboptimal results – reduced lives. In scenario&nbsp;1, for instance, a decision strategy such as “<span class="lightblue">choose treatment <span class="math inline">\({\color[RGB]{68,119,170}A}\)</span> most of the time, and treatment <span class="math inline">\({\color[RGB]{68,119,170}B}\)</span> from time to time</span>” would lead to reduced lives. This is clear from the following graph, which shows the average reduction in life expectancy for each treatment, depending on the percentage of patients with the disease:</p>
-<p><img src="utilities_treatments.png" class="img-fluid" style="width:100.0%"></p>
-<p>Consider the vertical line with probability 0.1. Any strategy mixing treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}A}\)</span></span> with any of the other two can only increase the reduction in expected-life.</p>
-<p>From the plot we can see that treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}A}\)</span></span> is optimal if the probability that the disease is present is below <span style="display:inline-block;"><span class="math inline">\(25\%\)</span>,</span> treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}C}\)</span></span> is optimal if the probability is above <span style="display:inline-block;"><span class="math inline">\(75\%\)</span>,</span> and treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}B}\)</span></span> for intermediate probabilities.</p>
+<p>Our prototype agent from chapters&nbsp;<a href="code_design.html"><span>33</span></a>, <a href="prototype_code.html"><span>34</span></a>, <a href="example_opm1.html"><span>35</span></a> can be used for such a task. It has already been trained with the dataset, and can use any subset (possibly even empty) of the eight predictors to calculate the probability for the two income levels.</p>
+<p>All that’s left is to equip our prototype agent with a function that outputs the optimal decision, given the calculated probabilities and the set of utilities. In our code this is done by the function <code>decide()</code> described in <a href="prototype_code.html">chapter&nbsp;&nbsp;<span>34</span></a>:</p>
+<div class="small">
+<blockquote class="blockquote">
+<p><i class="fa-solid fa-code" aria-label="code"></i> <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/decide.R"><code>decide(probs, utils=NULL, all=FALSE)</code></a></p>
+<dl>
+<dt>Arguments:</dt>
+<dd>
+<ul>
+<li><em><code>probs</code></em>: a probability distribution for one or more variates.</li>
+<li><em><code>utils</code></em>: a named matrix or array of utilities. The <strong>rows</strong> of the matrix correspond to the available decisions, the <strong>columns</strong> or remaining array dimensions correspond to the possible values of the predictand variates.</li>
+<li><em><code>all</code></em>: a boolean, <code>TRUE</code> if the output should have all decisions having maximal expected utilities (if more than one); <code>FALSE</code> (default) if the output should only have one of them, selected with equal probabilities.</li>
+</ul>
+</dd>
+<dt>Output:</dt>
+<dd>
+<ul>
+<li>a vector of strings with the decisions having maximal expected utility, if <em><code>all</code></em> is <code>TRUE</code>, or just one of them, selected with equal probability, if <em><code>all</code></em> is <code>FALSE</code> (the default).</li>
+</ul>
+</dd>
+<dt>Notes:</dt>
+<dd>
+<ul>
+<li>If <em><code>utils</code></em> is missing or <code>NULL</code>, a matrix of the form <span class="math inline">\(\begin{bsmallmatrix}1&amp;0&amp;\dotso\\0&amp;1&amp;\dotso\\\dotso&amp;\dotso&amp;\dotso\end{bsmallmatrix}\)</span> is assumed (which corresponds to using <em>accuracy</em> as evaluation metric).</li>
+</ul>
+</dd>
+</dl>
+</blockquote>
+</div>
+<section id="example" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="example">Example</h3>
+<p>A new user logs in; all eight predictors are available for this user:</p>
+<div class="small">
+<p><span class="math display">\[\color[RGB]{34,136,51}
+\begin{aligned}
+&amp;\mathit{workclass} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Private;}
+&amp;&amp; \mathit{education} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Bachelors;}
+\\ &amp; \mathit{marital\_status} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Never-married;}
+&amp;&amp; \mathit{occupation} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Prof-specialty;}
+\\ &amp; \mathit{relationship} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Not-in-family;}
+&amp;&amp; \mathit{race} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;White;}
+\\ &amp; \mathit{sex} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Female;}
+&amp;&amp; \mathit{native\_country} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;United-States;}
+\end{aligned}
+\]</span></p>
+</div>
+<p>The agent calculates (using the <code>infer()</code> function) the probabilities for the two income levels, which turn out to be</p>
+<div class="small">
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathrm{P}({\color[RGB]{238,102,119}\mathit{\color[RGB]{238,102,119}income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;&lt;=50K;}}} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{34,136,51}predictor}, \mathsfit{\color[RGB]{34,136,51}data}, \mathsfit{I}) = 83.3\%
+\\&amp;\mathrm{P}({\color[RGB]{238,102,119}\mathit{\color[RGB]{238,102,119}income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;&gt;50K;}}} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{34,136,51}predictor}, \mathsfit{\color[RGB]{34,136,51}data}, \mathsfit{I}) = 16.7\%
+\end{aligned}
+\]</span></p>
+</div>
+<p>and can be represented by the column matrix</p>
+<p><span class="math display">\[\boldsymbol{\color[RGB]{34,136,51}P}\coloneqq
+\begin{bmatrix}
+0.833\\0.167
+\end{bmatrix}
+\]</span></p>
+<p>The utilities previously given can be represented by the matrix</p>
+<p><span class="math display">\[\boldsymbol{\color[RGB]{68,119,170}U}\coloneqq
+\begin{bmatrix}
+-1&amp;3\\2&amp;2\\3&amp;-1
+\end{bmatrix}
+\]</span></p>
+<p>Multiplying the two matrices above we obtain the expected utilities of the three ad-types for the present user:</p>
+<div class="column-body-outset-right">
+<p><span class="math display">\[
+\boldsymbol{\color[RGB]{68,119,170}U}\boldsymbol{\color[RGB]{34,136,51}P}=
+\color[RGB]{68,119,170}\begin{bmatrix}
+-1&amp;3\\2&amp;2\\3&amp;-1
+\end{bmatrix}
+\,
+\color[RGB]{34,136,51}\begin{bmatrix}
+0.833\\0.167
+\end{bmatrix}\color[RGB]{0,0,0}
+=
+\begin{bmatrix}
+{\color[RGB]{68,119,170}-1}\cdot{\color[RGB]{34,136,51}0.833}
++ {\color[RGB]{68,119,170}3}\cdot{\color[RGB]{34,136,51}0.167}
+\\
+{\color[RGB]{68,119,170}2}\cdot{\color[RGB]{34,136,51}0.833}
++ {\color[RGB]{68,119,170}2}\cdot{\color[RGB]{34,136,51}0.167}
+\\
+{\color[RGB]{68,119,170}3}\cdot{\color[RGB]{34,136,51}0.833}
++ ({\color[RGB]{68,119,170}-1})\cdot{\color[RGB]{34,136,51}0.167}
+\end{bmatrix}
+=
+\begin{bmatrix}
+-0.332\\
+2.000\\
+\boldsymbol{2.332}
+\end{bmatrix}
+\]</span></p>
+</div>
+<p>The highest expected utility is that of ad-type <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span>,</span> which is therefore shown to the user.</p>
+</section>
+<section id="powerful-flexibility-of-the-agent" class="level3">
+<h3 class="anchored" data-anchor-id="powerful-flexibility-of-the-agent">Powerful flexibility of the agent</h3>
+<p>In the previous chapters we already emphasized and witnessed the flexibility of the optimal predictor machine with regard to the availability of the predictors: it can draw an inference even if some or all predictors are missing.</p>
+<p>Now we can see another powerful kind of flexibility: the optimal predictor machine can in principle <em>use different sets of decisions and different utilities for each new application</em>. The decision criterion is not “hard-coded”; it can be customized on the fly.</p>
+<p>The possible number of ad-types and the utilities could even be a function of the predictor values. For instance, there could be a set of three ad-types targeting users with <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}\mathit{education}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Bachelors;}\)</span>,</span> a different set of four ad-types targeting users with <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}\mathit{education}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Preschool;}\)</span>,</span> and so on.</p>
 <p><br>
 </p>
-<p><span class="red">Although the intuitive reasoning above has somewhat been phrased in terms of frequency, it’s the <em>probability</em> – the clinician’s degree of belief – that counts.</span> Try to reason about this point through the following exercise:</p>
-<div class="callout callout-style-default callout-caution no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Consider a clinician uncertain with 50% probability that the present patient belongs to a 10%/90% frequency subpopulation, and with 50% that the patient belongs to a 90%/10% frequency subpopulation. And unfortunately this uncertainty cannot be removed by further clinical tests. Which treatment should this clinician choose? why?</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<i class="fa-solid fa-book" aria-label="book"></i> Study reading
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul>
-<li><p>Chapter&nbsp;1 of <a href="https://hvl.instructure.com/courses/25074/modules/items/671397"><em>Medical Decision Making</em></a></p></li>
-<li><p>Skim through chapter&nbsp;6 of <a href="https://hvl.instructure.com/courses/25074/modules/items/671397"><em>Medical Decision Making</em></a></p></li>
-<li><p>§§&nbsp;1.5–1.6 of <a href="https://hvl.instructure.com/courses/25074/modules/items/660091"><em>Making Decisions</em></a></p></li>
-</ul>
-</div>
-</div>
 </section>
 </section>
-</section>
-<section id="decisions-limitations-of-present-day-machine-learning-algorithms" class="level2" data-number="36.3">
-<h2 data-number="36.3" class="anchored" data-anchor-id="decisions-limitations-of-present-day-machine-learning-algorithms"><span class="header-section-number">36.3</span> Decisions: limitations of present-day machine-learning algorithms</h2>
-<p>The clinical example above shows that decisions are often different from the unknown values, and there isn’t any one-to-one connection among decisions and unknowns. We cannot say, for instance, that treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}C}\)</span></span> “corresponds” to the presence of the disease, because the best treatment is actually <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}B}\)</span>,</span> not <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}C}\)</span>,</span> if the probability for <span style="display:inline-block;"><span class="math inline">\(\mathit{\color[RGB]{238,102,119}disease}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;yes;}}\)</span></span> is above 50% but below 75%.</p>
-<p>Many or most present-day machine-learning algorithms focus on the “unknown”, and often don’t yield any probabilities. This limitation makes it impossible to determine the optimal decision, and makes such algorithms sub-optimal.</p>
-<p>Imagine, for instance, that the clinician inputs the patient’s predictors into a neural network, trained to output a guess about the presence or absence of the disease. The neural network outputs <code>yes</code>. Which treatment should the clinician choose? It’s known that the neural network can err.</p>
+<section id="sec-DT-generalization" class="level2" data-number="36.5">
+<h2 data-number="36.5" class="anchored" data-anchor-id="sec-DT-generalization"><span class="header-section-number">36.5</span> Generalization of basic decision theory</h2>
+<p>The simple decision-making problems and framework that we have discussed in these notes are only the basic blocks of Decision Theory. This theory covers more complicated decision problems. We only mention some examples:</p>
 <ul>
-<li>Does the output <code>yes</code> means that the probability for <span class="math inline">\(\mathit{\color[RGB]{238,102,119}disease}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;yes;}}\)</span> was above 50%? But then the clinician doesn’t know whether it’s above or below 75%, and can’t make the optimal choice between <span class="math inline">\({\color[RGB]{68,119,170}C}\)</span> and <span class="math inline">\({\color[RGB]{68,119,170}B}\)</span>.</li>
-<li>Is the output <code>yes</code> produced with a particular probability? but what is this probability? The output could be <span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;yes;}}\)</span> even if the probability were less than 50% or 25%. Again the clinician can’t make the optimal choice between the three treatments.</li>
+<li><em>Sequential decisions</em></li>
 </ul>
-<div class="callout callout-style-default callout-caution no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Could the clinician deduce an approximate probability by looking at the statistics (confusion matrix) of the neural network on some test set?</p>
-<p>Explore and maybe even implement this possibility.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<i class="fa-solid fa-book" aria-label="book"></i> Study reading
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul>
-<li>§ 0 of <a href="https://doi.org/10.31219/osf.io/7rz8t"><em>Does the evaluation stand up to evaluation?</em></a></li>
-</ul>
-</div>
-</div>
 <p><span class="yellow"><i class="fa-solid fa-person-digging" aria-label="person-digging"></i> <em>To be finished</em> <i class="fa-solid fa-person-digging" aria-label="person-digging"></i></span></p>
 
 
@@ -1003,6 +1057,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./connection-4-ML.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title"><span class="blue">Decisions: limitations of present-day machine-learning algorithms</span></span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

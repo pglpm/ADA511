@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-10">
+<meta name="dcterms.date" content="2023-11-11">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 35&nbsp; Example application: adult-income task</title>
 <style>
@@ -133,7 +133,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-10</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-11</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -475,6 +475,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title"><span class="blue">From inferences to decisions</span></span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-4-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title"><span class="blue">Decisions: limitations of present-day machine-learning algorithms</span></span></span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -512,7 +518,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-code-workflow" class="quarto-section-identifier"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title"><span class="red">Example application: adult-income task</span></span></span></h1>
+<h1 class="title"><span id="sec-example-opm1" class="quarto-section-identifier"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title"><span class="red">Example application: adult-income task</span></span></span></h1>
 </div>
 
 
@@ -523,7 +529,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-10</p>
+      <p class="date">2023-11-11</p>
     </div>
   </div>
   
@@ -536,7 +542,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="hidden">
 <p><span class="math display">\[
 \DeclarePairedDelimiters{\set}{\{}{\}}
-\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmax}{argmax}
 \]</span></p>
 </div>
 <div class="hidden">
@@ -870,23 +876,23 @@ occupation          Female Male
 <pre><code>, , sample = #1
 
        sex
-income   Female    Male
-  &lt;=50K 28.3526 42.7389
-  &gt;50K   7.0019 21.9066
+income    Female    Male
+  &lt;=50K 27.87056 43.4224
+  &gt;50K   7.18663 21.5204
 
 , , sample = #2
 
        sex
 income    Female    Male
-  &lt;=50K 28.81208 42.9353
-  &gt;50K   6.74091 21.5117
+  &lt;=50K 28.59702 42.7685
+  &gt;50K   7.54222 21.0922
 
 , , sample = #3
 
        sex
-income    Female    Male
-  &lt;=50K 28.23002 43.4928
-  &gt;50K   7.18547 21.0918</code></pre>
+income   Female    Male
+  &lt;=50K 28.3670 42.7011
+  &gt;50K   7.2771 21.6549</code></pre>
 </div>
 </div>
 <p>These possible full-population frequency distributions can be used to assess how much the probabilities we find could change, if we collected a much, much larger amount of training data. Here is an example:</p>
@@ -905,20 +911,20 @@ income    Female    Male
 <div class="cell-output cell-output-stdout">
 <pre><code>                   sex
 occupation          Female Male
-  Adm-clerical        0.29 0.32
+  Adm-clerical        0.28 0.32
   Armed-Forces        0.16 0.16
   Craft-repair        0.17 0.47
-  Exec-managerial     0.30 0.62
-  Farming-fishing     0.17 0.24
-  Handlers-cleaners   0.17 0.20
-  Machine-op-inspct   0.17 0.30
-  Other-service       0.20 0.22
-  Priv-house-serv     0.16 0.16
+  Exec-managerial     0.31 0.57
+  Farming-fishing     0.16 0.23
+  Handlers-cleaners   0.16 0.21
+  Machine-op-inspct   0.16 0.28
+  Other-service       0.19 0.22
+  Priv-house-serv     0.16 0.15
   Prof-specialty      0.35 0.57
-  Protective-serv     0.16 0.29
-  Sales               0.22 0.49
-  Tech-support        0.20 0.29
-  Transport-moving    0.16 0.30</code></pre>
+  Protective-serv     0.17 0.29
+  Sales               0.21 0.49
+  Tech-support        0.19 0.29
+  Transport-moving    0.17 0.33</code></pre>
 </div>
 </div>
 <p>the agent believes (at around 68%) that the current probability wouldn’t change more than about ±0.5%.</p>
@@ -1049,7 +1055,7 @@ native_country            sex           race
 <span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a><span class="do">## Print total time required</span></span>
 <span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">Sys.time</span>() <span class="sc">-</span> stopwatch)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time difference of 8.13579 secs</code></pre>
+<pre><code>Time difference of 8.08101 secs</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Histogram and average accuracy (rounded to one decimal)</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">thist</span>(testprobs, <span class="at">n=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="at">length.out=</span><span class="dv">10</span>), <span class="at">plot=</span><span class="cn">TRUE</span>,</span>

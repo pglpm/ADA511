@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-07">
+<meta name="dcterms.date" content="2023-11-12">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 34&nbsp; Prototype code and workflow</title>
 <style>
@@ -99,7 +99,7 @@ ul.task-list li input[type="checkbox"] {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-07</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-12</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -441,6 +441,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title"><span class="blue">From inferences to decisions</span></span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-4-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title"><span class="blue">Decisions: limitations of present-day machine-learning algorithms</span></span></span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -474,7 +480,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-07</p>
+      <p class="date">2023-11-12</p>
     </div>
   </div>
   
@@ -487,7 +493,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 <p><span class="math display">\[
 \DeclarePairedDelimiters{\set}{\{}{\}}
-\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmax}{argmax}
 \]</span></p>
 </div>
 <div class="hidden">
@@ -563,7 +569,7 @@ ul.task-list li input[type="checkbox"] {
 <dt>Output:</dt>
 <dd>
 <ul>
-<li>the joint probability distribution <span class="math inline">\(\mathrm{P}(\mathit{predictand} \nonscript\:\vert\nonscript\:\mathopen{} \mathit{predictor}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;values;} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{D})\)</span> for all possible values of the predictands.</li>
+<li>the joint probability distribution <span class="math inline">\(\mathrm{P}(\mathit{predictand} \nonscript\:\vert\nonscript\:\mathopen{} \mathit{predictor}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;values;} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span> for all possible values of the predictands.</li>
 </ul>
 </dd>
 <dt>Notes:</dt>
@@ -600,7 +606,7 @@ ul.task-list li input[type="checkbox"] {
 <dt>Notes:</dt>
 <dd>
 <ul>
-<li>If <em><code>utils</code></em> is missing, a matrix of the form <span class="math inline">\(\begin{bsmallmatrix}1&amp;0\\0&amp;1\end{bsmallmatrix}\)</span> is assumed, corresponding to using <em>accuracy</em> as the decision metric.</li>
+<li>If <em><code>utils</code></em> is missing or <code>NULL</code>, a matrix of the form <span class="math inline">\(\begin{bsmallmatrix}1&amp;0&amp;\dotso\\0&amp;1&amp;\dotso\\\dotso&amp;\dotso&amp;\dotso\end{bsmallmatrix}\)</span> is assumed (which corresponds to using <em>accuracy</em> as evaluation metric).</li>
 </ul>
 </dd>
 </dl>
@@ -686,7 +692,7 @@ Units similar to the units of our future inferences, but of which we have more c
 <p>The question <em>“how many training data should we use?”</em> does not make sense for an optimal agent which works according to probability theory and decision theory. The answer is simply “as many as you have available”.</p>
 <p>If no or few training data are available, then the optimal agent will automatically absorb as much information as possible from them, and combine it with its background information to draw optimal inferences and make optimal decisions.</p>
 <p>Giving artificial training data to the agent, just to increase the number of training data, is pointless and dangerous.</p>
-<p>Pointless, because the agent is, in fact, automatically “simulating” artificial data internally as needed, from its background information and the real training data available. This is exactly what the belief distribution <span style="display:inline-block;"><span class="math inline">\(\mathrm{p}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{34,136,51}data},\mathsfit{D})\)</span></span> is doing: remember that the agent is internally considering <em>all possible populations of data</em> (<a href="inference_about_freqs.html">chapter&nbsp;&nbsp;<span>30</span></a>).</p>
+<p>Pointless, because the agent is, in fact, automatically “simulating” artificial data internally as needed, from its background information and the real training data available. This is exactly what the belief distribution <span style="display:inline-block;"><span class="math inline">\(\mathrm{p}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{34,136,51}data},\mathsfit{I}_{\textrm{d}})\)</span></span> is doing: remember that the agent is internally considering <em>all possible populations of data</em> (<a href="inference_about_freqs.html">chapter&nbsp;&nbsp;<span>30</span></a>).</p>
 <p>Dangerous, because artificial data may contain incorrect information, leading the agent to arrive at sub-optimal and potentially disastrously deceiving results.</p>
 </div>
 </div>

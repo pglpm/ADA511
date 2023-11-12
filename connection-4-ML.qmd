@@ -1,0 +1,256 @@
+# [Decisions: limitations of present-day machine-learning algorithms]{.blue} {#sec-from-inf-to-dec}
+{{< include macros.qmd >}}
+{{< include macros_decisions.qmd >}}
+
+
+## The omnipresence of decision-making in data science and machine learning {#sec-decision-everywhere}
+
+Many machine-learning textbooks say that
+
+> in supervised learning the algorithm learns a functional relationship between some kind of input and some kind of output
+
+Such statement is misleading, because it suggests that there is a functional relationship from input to output, or from predictor to predictand -- as if such functional relationship were only waiting to be discovered and "learned". But as we discussed in [chapter @sec-ml-introduction], in many important tasks and applications this is actually not true: **there isn't any functional relationship between input and output at all**. Even if any possible "noise" were removed, there would still *not* be any functional relationship between the denoised predictor and predictand ([here is an example](steven-seagal-emotion-chart.jpg){.external}).^[This is one more reason why we use the more general terms "predictor" & "predictand", rather that "input" & "output".]
+
+In many important tasks there's only a *statistical* relationship between predictands and predictors. In other words, whenever a predictor has value $\green X\mo x$, the predictand value may out to be $\green Y\mo y'$ in a given number of units, but also $\green Y\mo y''$ in a given number of other units, and so on. As a simple example, consider the [Norwegian population in 2022](https://www.ssb.no/befolkning/folketall/statistikk/befolkning/artikler/slik-ser-befolkningen-i-norge-ut). If our predictand is *sex* and we take as predictor that a person's *age* is between `85--89 years`, then a proportion $43 542/(43 542 + 28 220) \approx 61\%$ of those persons have *sex*=`female`, and the remaining $39\%$ proportion has *sex*=`male`. This doesn't mean that, say, `female` is the "true" output, and `male` is just the effect of noise; that would be nonsense.
+
+Even in tasks where there actually is a functional relation from predictors to predictands, the agent typically doesn't know what the function's output should be for particular predictor values, because no such values have been observed in the training data. It must interpolate or extrapolate what it has learned. Also in this case there are therefore several possibilities.
+
+The remarks above have a very important consequence. If a machine-learning algorithm outputs just *one* predictand value, among the possible ones that are consistent with the predictor, then it means that **the algorithm is internally choosing one of the possibilities**. How is this choice made?
+
+Such a choice is obviously a **decision-making problem**. As we know from chapters [-@sec-framework] and [-@sec-basic-decisions], the optimal choice is determined by Decision Theory, and its determination requires:
+
+- [{{< fa scale-unbalanced-flip >}}\ \ the probabilities of the possible predictand values]{.green}
+
+- [{{< fa arrows-split-up-and-left >}}\ \ a list of possible decisions]{.lightblue}
+
+- [{{< fa sack-dollar >}}\ \ the utilities of the decisions, depending on the predictand's true value]{.blue}
+
+\
+
+A decision-making step  also appears in tasks where the agent must *generate* a new unit. Obviously there are many candidates for generation, that agree with what was observed in the training data. If the agent generates *one* unit, then it must internally have chosen among the possible candidates. Thus also this type of "generative" task involves probabilities, decisions, and utilities.
+
+
+
+## Decisions, unknowns, and utilities {#sec-decisions-utilities}
+
+### Decisions
+
+
+In many decision-making problems in engineering and other fields, for instance medicine, the set of possible decisions does **not** have a correspondence with the set of unknown values.
+
+For example, a clinician may be uncertain about the presence or absence of some medical condition -- let's say a disease -- and this uncertainty cannot be fully removed. The clinician's task is not simply to guess about the disease, but *to choose among different available treatments*. The crucial point about this choice is that its optimality depends on the *probability* that the disease is present, not on a simple "yes/no guess". Let's develop this example further in order to clearly see this point.
+
+### Utilities
+
+The clinician has three treatments available: $\yA$, $\yB$, $\yC$. They have different intensities, which make them more or less effective against the disease, if present, but also less or more damaging to the patient if the disease is not present. Suppose that their efficacy and damage can be measured as the decrease in life expectancy for the patient. The effects are as follows:
+
+:::{.columns}
+
+::::{.column width="25%"}
+
+::::
+
+::::{.column width="50%"}
+
++:-------------------:+:-------------------:+--------------------:+--------------------:+
+|                     |                     | $\dise$                                   |
++---------------------+---------------------+---------------------+---------------------+
+|                     |                     | $\yy$               |  $\yn$              |
++---------------------+---------------------+---------------------+---------------------+
+|[treatment]{.blue}   |   $\yA$             | $\yellow-4\yr$      |  $\yellow0\yr$      |
++                     +---------------------+---------------------+---------------------+
+|                     |   $\yB$             | $\yellow-1\yr$      |  $\yellow-1\yr$     |
++                     +---------------------+---------------------+---------------------+
+|                     |   $\yC$             | $\yellow0\yr$       | $\yellow-4\yr$      |
++---------------------+---------------------+---------------------+---------------------+
+: Change in life expectancy depending on treatment and medical condition {#tbl-treatments .sm}
+
+::::
+
+::::{.column width="25%"}
+
+::::
+:::
+
+- treatment $\yA$ is mild (this could be the no-treatment option): under it, the patient is expected to live four years shorter if the disease is present, but the life expectancy is unaltered if the disease is not present
+
+- treatment $\yB$ is intermediate: under it, the patient is expected to live only one year shorter if the disease is present, but also if the disease is not present, owing to the damage caused by this treatment
+
+- treatment $\yC$ is intensive: under it, the patient is expected not to lose extra years if the disease is present, but will lose four years if the disease is not present, owing to the heavy damage caused by this treatment.
+
+Which of the treatments above should the clinician choose?
+
+### Optimal decision
+
+Let's consider three scenarios. In each scenario, the clinician has prescribed several clinical tests (the predictors) for the patient, and obtained their results.
+
+#### Scenario 1: 10%/90%
+
+Given the results of the clinical tests, the clinician knows that the patient is typical of a subpopulation of patients where [10%]{.green} have the disease, and [90%]{.green} don't. The present patient could be one among the 10%, or one of among the 90%.
+
+- If the clinician always chooses treatment $\yA$ for this subpopulation, including the present patient, then these patients' lives will be shortened in total by
+    
+    $$
+{\yellow -4\yr}\cdot{\green 10} +
+{\yellow 0\yr}\cdot{\green 90}
+= \boldsymbol{-40\yr}
+$$
+
+
+- If the clinician always chooses treatment $\yB$ for this subpopulation, including the present patient, then these patients' lives will be shortened in total by
+    
+    $$
+{\yellow -1\yr}\cdot{\green 10} +
+{\yellow -1\yr}\cdot{\green 90}
+= \boldsymbol{-100\yr}
+$$
+
+- If the clinician always chooses treatment $\yC$, then the lives will be shortened in total by
+    
+    $$
+{\yellow 0\yr}\cdot{\green 10} +
+{\yellow -4\yr}\cdot{\green 90}
+= \boldsymbol{-360\yr}
+$$
+
+Clearly the best decision is treatment $\yA$. It is possible that, unfortunately, the present patient's life will be shortened; but this treatment was the patient's and clinician's best bet.
+
+
+#### Scenario 2: 50%/50%
+
+Given the results of the clinical tests, the clinician knows that the patient is typical of a subpopulation of patients where [50%]{.green} have the disease, and [50%]{.green} don't. In this case the present patient could be one of the first 50%, or one of the other 50%.
+
+Calculations similar to those of scenario 1 leads to these results:
+
+- Treatment $\yA$
+    
+    $$
+{\yellow -4\yr}\cdot{\green 50} +
+{\yellow 0\yr}\cdot{\green 50}
+= \boldsymbol{-200\yr}
+$$
+
+- Treatment $\yB$:
+    
+    $$
+{\yellow -1\yr}\cdot{\green 50} +
+{\yellow -1\yr}\cdot{\green 50}
+= \boldsymbol{-100\yr}
+$$
+
+- Treatment $\yC$:
+    
+    $$
+{\yellow 0\yr}\cdot{\green 50} +
+{\yellow -4\yr}\cdot{\green 50}
+= \boldsymbol{-200\yr}
+$$
+
+The best decision is treatment $\yB$. A clinician who chose treatments $\yA$ or $\yC$ for patients having the same predictors as the present patient would on average *reduce* the life expectancy of each patient by one extra year.
+
+#### Scenario 3: 90%/10%
+
+In this scenario [90%]{.green} of patients in the subpopulation with the observed predictors have the disease, and [10%]{.green} don't. The present patient could belong to either group.
+
+- Treatment $\yA$
+    
+    $$
+{\yellow -4\yr}\cdot{\green 90} +
+{\yellow 0\yr}\cdot{\green 10}
+= \boldsymbol{-360\yr}
+$$
+
+- Treatment $\yB$:
+    
+    $$
+{\yellow -1\yr}\cdot{\green 90} +
+{\yellow -1\yr}\cdot{\green 10}
+= \boldsymbol{-100\yr}
+$$
+
+- Treatment $\yC$:
+    
+    $$
+{\yellow 0\yr}\cdot{\green 90} +
+{\yellow -4\yr}\cdot{\green 10}
+= \boldsymbol{-40\yr}
+$$
+
+Treatment $\yC$ is the best decision in this scenario, for reasons complementary to those of scenario 1.
+
+\
+
+The reasoning behind each scenario and its corresponding optimal decision is quite intuitive.
+
+In each scenario, note that *any* decision strategy different from "sticking to the optimal decision" would lead to suboptimal results -- reduced lives. In scenario 1, for instance, a decision strategy such as "[choose treatment $\yA$ most of the time, and treatment $\yB$ from time to time]{.lightblue}" would lead to reduced lives. This is clear from the following graph, which shows the average reduction in life expectancy for each treatment, depending on the percentage of patients with the disease:
+
+![](utilities_treatments.png){width=100%}
+
+Consider the vertical line with probability 0.1. Any strategy mixing treatment $\yA$ with any of the other two can only increase the reduction in expected-life.
+
+From the plot we can see that treatment $\yA$ is optimal if the probability that the disease is present is below $25\%$, treatment $\yC$ is optimal if the probability is above $75\%$, and treatment $\yB$ for intermediate probabilities.
+
+\
+
+[Although the intuitive reasoning above has somewhat been phrased in terms of frequency, it's the *probability* -- the clinician's degree of belief -- that counts.]{.red} Try to reason about this point through the following exercise:
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+
+
+Consider a clinician uncertain with 50% probability that the present patient belongs to a 10%/90% frequency subpopulation, and with 50% that the patient belongs to a 90%/10% frequency subpopulation. And unfortunately this uncertainty cannot be removed by further clinical tests. Which treatment should this clinician choose? why?
+
+:::
+
+::: {.callout-warning}
+## {{< fa book >}} Study reading
+- Chapter 1 of [*Medical Decision Making*](https://hvl.instructure.com/courses/25074/modules/items/671397)
+
+- Skim through chapter 6 of [*Medical Decision Making*](https://hvl.instructure.com/courses/25074/modules/items/671397)
+
+- §§ 1.5--1.6 of [*Making Decisions*](https://hvl.instructure.com/courses/25074/modules/items/660091)
+:::
+
+
+## Decisions: limitations of present-day machine-learning algorithms
+
+The clinical example above shows that decisions are often different from the unknown values, and there isn't any one-to-one connection among decisions and unknowns. We cannot say, for instance, that treatment $\yC$ "corresponds" to the presence of the disease, because the best treatment is actually $\yB$, not $\yC$, if the probability for $\dise\mo\yy$ is above 50% but below 75%.
+
+Many or most present-day machine-learning algorithms focus on the unknown variate-value and don't yield any probabilities. This limitation makes it impossible to determine the optimal decision; such algorithms sub-optimal by construction.
+
+Imagine, for instance, that the clinician inputs the patient's predictors into a neural network, trained to output a guess about the presence or absence of the disease. The neural network outputs `yes`. Which treatment should the clinician choose? It's known that the neural network can err.
+
+- Does the output `yes` means that the probability for $\dise\mo\yy$ was above 50%? Then the clinician doesn't know whether it's above or below 75%, and can't make the optimal choice between $\yC$ and $\yB$.
+- Is the output `yes` produced with a particular probability? But what is this probability? The output could be $\yy$ even if the probability were less than 50% or 25%. Then neither in this case can the clinician make the optimal choice between the three treatments.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercise
+
+Could the clinician deduce an approximate probability by looking at the statistics (confusion matrix) of the neural network on some test set?
+
+Explore and maybe even implement this possibility.
+
+:::
+
+::: {.callout-warning}
+## {{< fa book >}} Study reading
+
+- § 0 of [*Does the evaluation stand up to evaluation?*](https://doi.org/10.31219/osf.io/7rz8t)
+
+:::
+
+[{{< fa person-digging >}} *To be finished* {{< fa person-digging >}}]{.yellow}
+
+<!-- ### Factors that enter utility quantification -->
+
+
+
+
+<!-- ## Making decisions under uncertainty: maximization of expected utility -->
+
+
+
+
+
+
+

@@ -2,46 +2,146 @@
 {{< include macros.qmd >}}
 {{< include macros_decisions.qmd >}}
 
-## The omnipresence of decision-making in machine learning {#sec-decision-everywhere}
+## Accept or discard? -- again
 
-Many machine-learning textbooks say that
+Our very first example of engineering problem ([chapter @sec-intro]) in these lecture notes was the decision whether to accept or discard an electronic component just produced in an assembly line. In [chapter @sec-basic-decisions] we met the theory to deal with this kind of decision-making problem: Decision Theory.
 
-> in supervised learning the algorithm learns a functional relationship between some kind of input and some kind of output
+We saw that Decision Theory requires the agent, who's making the decision, to calculate the probabilities of the unknown outcomes. All our discussion and chapters thereafter focused on the calculation of those probabilities, which often is the most difficult part of the decision making task.
 
-Such statement is misleading, because it suggests that there is a functional relationship from input to output, or from predictor to predictand -- as if such functional relationship were only waiting to be discovered and "learned". But as we discussed in [chapter @sec-ml-introduction], in many important tasks and applications this is actually not true: **there isn't any functional relationship between input and output at all**. Even if any possible "noise" were removed, there would still *not* be any functional relationship between the denoised predictor and predictand ([here is an example](steven-seagal-emotion-chart.jpg){.external}).^[This is one more reason why we use the more general terms "predictor" & "predictand", rather that "input" & "output".]
+At long last we have the knowledge to calculate such probabilities, both for general problems, and more in detail problems enjoying special properties, for instance when the agent's beliefs are exchangeable ([chapter @sec-exchangeable-beliefs]). Most important, we saw how previous data and background information can be used to determine these probabilities, and how they influence and modify these probabilities. We have even built a real, prototype agent that can flexibly calculate probabilities in problems involving nominal variates.
 
-In many important tasks there's only a *statistical* relationship between predictands and predictors. In other words, whenever a predictor has value $\green X\mo x$, the predictand value may out to be $\green Y\mo y'$ in a given number of units, but also $\green Y\mo y''$ in a given number of other units, and so on. As a simple example, consider the [Norwegian population in 2022](https://www.ssb.no/befolkning/folketall/statistikk/befolkning/artikler/slik-ser-befolkningen-i-norge-ut). If our predictand is *sex* and we take as predictor that a person's *age* is between `85--89 years`, then a proportion $43 542/(43 542 + 28 220) \approx 61\%$ of those persons have *sex*=`female`, and the remaining $39\%$ proportion has *sex*=`male`. This doesn't mean that, say, `female` is the "true" output, and `male` is just the effect of noise; that would be nonsense.
+Let's face the decision-making problem again, and complete the construction of our prototype agent by implementing the final decision-making step.^[Please go back to [chapter @sec-basic-decisions] and review the notions and terminology introduced there.]
 
-Even in tasks where there actually is a functional relation from predictors to predictands, the agent typically doesn't know what the function's output should be for particular predictor values, because no such values have been observed in the training data. It must interpolate or extrapolate what it has learned. Also in this case there are therefore several possibilities.
 
-The remarks above have a very important consequence. If a machine-learning algorithm outputs just *one* predictand value, among the possible ones that are consistent with the predictor, then it means that **the algorithm is internally choosing one of the possibilities**. How is this choice made?
+## Outcomes, decisions, utilities {#sec-decisions-utilities}
 
-Such a choice is obviously a **decision-making problem**. As we know from chapters [-@sec-framework] and [-@sec-basic-decisions], the optimal choice is determined by Decision Theory, and its determination requires:
+Recall the structure of a basic decision:
 
-- [{{< fa scale-unbalanced-flip >}}\ \ the probabilities of the possible predictand values]{.green}
+![](basic_decision_tree.png){width=100%}
 
-- [{{< fa arrows-split-up-and-left >}}\ \ a list of possible decisions]{.lightblue}
+In order to make a decision, the agent needs:
 
-- [{{< fa sack-dollar >}}\ \ the utilities of the decisions, depending on the predictand's true value]{.blue}
+- {{< fa cube >}} The set of possible [*decisions*]{.yellow}, which we represent as sentences like $\yD$.
+
+- {{< fa cube >}} The set of possible [*outcomes*]{.red}, whose truth is unknown to the agent. In the kind of decision problems that we are examining, the outcomes correspond to the possible values $\red Y\mo y$ of what we have called the [predictand]{.red} variate from [§ @sec-cat-problems] onwards.
+
+
+- {{< fa cube >}} The [*probabilities*]{.green} of the outcomes\ \ $\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)$ which are determined by the agent's background information $\yI$, by any other available information, such as $\data$ about previously observed units and the values of some predictor variates $\green X\mo x$ for the current unit; and possibly also by the agent's decision $\yD$ (see below).
+
+- {{< fa cube >}} The [*utilities*]{.blue} of the decisions and the outcomes, which we denote
+    
+    $$
+\uu({\red Y\mo y} \and \yD \| \yI)
+$$
+    
+	This notation reminds us that the utilities assigned by the agent also depend on its background information $\yI$
+
+Let's not forget some important points about the notions above:
+
+:::{.callout-important}
+## {{< fa exclamation-triangle >}}
+
+- We are not assuming any temporal or "causal" relationship between [decisions]{.yellow} and [outcomes]{.red}: **our framework works independently of these relationships**. In some decision-making problems the outcomes happen *after* a decision is made, and may be "influenced" by it or not. In other decision-making problems the outcomes have already happened *before* a decision is made.
+    
+	In a transportation-choice problem, for instance, the outcome "[wet from rain]{.red}" may happen after we make the decision "[go on foot]{.yellow}" rather than "[go by bus]{.yellow}". In an image-classification problem, on the other hand, the outcome "[true label is $\cat{cat}$]{.red}" was already determined before we made the decision "[classify as $\cat{dog}$]{.yellow}".
 
 \
 
-A decision-making step  also appears in tasks where the agent must *generate* a new unit. Obviously there are many candidates for generation, that agree with what was observed in the training data. If the agent generates *one* unit, then it must internally have chosen among the possible candidates. Thus also this type of "generative" task involves probabilities, decisions, and utilities.
+- In connection with the warning above, in some problems the probabilities of the outcomes may depend on the decision; that is, knowledge about the decision is *relevant* to the knowledge about the outcome (see again [§ @sec-info-chapter]):
+    
+	$$\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)$$
+	
+	For instance, in the transportation-choice problem the probability of the outcome "[wet from rain]{.red}" is higher conditional on the decision "[go on foot]{.yellow}" than on the decision "[go by bus]{.yellow}".
+	
+	In many decision-making problems typical of machine learning, such as classification, information about the decision is *irrelevant* to the information about the outcome (which usually has already happened), and we have
+	
+	$$
+	\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)
+	= \P({\red Y\mo y} \| {\green X\mo x} \and \data \and \yI)
+	$$
+
+:::
+
+In what follows we shall consider problems, such as classification, where knowledge of the agent's decision is irrelevant to the outcome's probability. We shall nevertheless keep the more general notation\ \ $\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)$.
 
 
+## Maximization of expected utility {#sec-max-exp-utilities}
 
-## Decisions, unknowns, and utilities {#sec-decisions-utilities}
+The expected utility of each possible decision $\yD$ is calculated as a weighted average:
 
-### Decisions
+$$\uu(\yD \|\yI) 
+= \sum_{\red y} \uu(\yD \and {\red Y\mo y} \| \yI) \cdot
+\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)
+$$
+
+The agent's final decision satisfies the
+
+:::::{.column-page-right}
+:::{.callout-note style="font-size:120%"}
+## [**Principle of maximal expected utility**]{style="font-size:110%"}
+::::{style="font-size:120%"}
+
+The optimal decision, which should be made by the agent, is the one with maximal expected utility:
+
+$$
+\yD_{\text{optimal}} =
+\argmax_{\yD} \sum_{\red y} \uu(\yD \and {\red Y\mo y} \| \yI) \cdot
+\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)
+$$
+
+(where, in some tasks, the probabilities may not depend on $\yD$)
+
+::::
+:::
+:::::
+
+In the formula above, "$\argmax\limits_z G(z)$" is the value $z$ which maximizes $G(z)$. [Note the difference: $\max\limits_z G(z)$ is the value of the maximum itself, whereas $\argmax\limits_z G(z)$ is the value of the *argument* that gives the maximum. For instance\ \ $\max\limits_z (1-z)^2 = 0$,\ \ but\ \ $\argmax\limits_z (1-z)^2 = 1$.]{.small .grey}
+
+It may happen that there are several decisions which have equal, maximal expected utilities. In this case any one of them can be chosen. A useful strategy, in this case, is to choose among them with equal probabilities (such strategy helps minimizing the loss from possible small errors in the specification of the utilities, or from the presence of an antagonist agent which tries to predict what our agent is doing).
 
 
-In many decision-making problems in engineering and other fields, for instance medicine, the set of possible decisions does **not** have a correspondence with the set of unknown values.
+### Numerical implementation in simple cases
 
-For example, a clinician may be uncertain about the presence or absence of some medical condition -- let's say a disease -- and this uncertainty cannot be fully removed. The clinician's task is not simply to guess about the disease, but *to choose among different available treatments*. The crucial point about this choice is that its optimality depends on the *probability* that the disease is present, not on a simple "yes/no guess". Let's develop this example further in order to clearly see this point.
+The principle of maximal expected utility is straightforward to calculate in many important problems. First, the collection of expected utilities can be obtained with a simple matrix multiplication. We represent the utilities for all decisions and all outcomes with a matrix $\um$, having one row per decision and one column per outcome:
 
-### Utilities
+$$
+\um \defd
+\begin{bmatrix}
+\uu(\yD' \and {\red Y\mo y}' \| \yI)
+&
+\uu(\yD' \and {\red Y\mo y}'' \| \yI)
+& \dotso
+\\
+\uu(\yD'' \and {\red Y\mo y}' \| \yI)
+&
+\uu(\yD'' \and {\red Y\mo y}'' \| \yI)
+& \dotso
+\\
+\dotso&\dotso&\dotso
+\end{bmatrix}
+$$
 
-The clinician has three treatments available: $\bA$, $\bB$, $\bC$. They have different intensities, which make them more or less effective against the disease, if present, but also less or more damaging to the patient if the disease is not present. Suppose that their efficacy and damage can be measured as the decrease in life expectancy for the patient. The effects are as follows:
+If the probabilities of the outcomes do **not** depend on the decisions, we represent them as a column matrix $\Pm$, having one entry per outcome:
+
+$$
+\Pm \defd
+\begin{bmatrix}
+\P({\red Y\mo y}' \| \yD \and {\green X\mo x} \and \data \and \yI)
+\\
+\P({\red Y\mo y}'' \| \yD \and {\green X\mo x} \and \data \and \yI)
+\\
+\dotso
+\end{bmatrix}
+$$
+
+Then the collection of expected utilities is a column matrix, having one entry per decision, given by the matrix product $\um \Pm$. All that's left is to check which of the entries in this final matrix is maximal.
+
+
+## Concrete example: targeted advertisement {#sec-max-exp-util-example}
+
+As a concrete example, let's keep on using the adult-income task from [chapter @sec-example-opm1], in a typical present-day scenario.
+
+Some corporation, which offers a particular phone app, wants to [bombard its users with advertisements](https://pluralistic.net/2023/07/24/rent-to-pwn/), because advertisement generates much more revenue than making the users pay for the app. For each user the corporation can choose one among three ad-types, let's call them $\yA, \yB, \yC$. The revenue obtained from these ad-types varies depending on whether the target user's income is $\yl$ or $\yh$. A separate study run by the corporation has shown that the average revenues (per user per minute) depending on the three ad-types and the income levels are as follows:
 
 :::{.columns}
 
@@ -52,17 +152,17 @@ The clinician has three treatments available: $\bA$, $\bB$, $\bC$. They have dif
 ::::{.column width="50%"}
 
 +:-------------------:+:-------------------:+--------------------:+--------------------:+
-|                     |                     | $\dise$                                   |
+|                                           | $\income$                                 |
++                                           +---------------------+---------------------+
+|                                           | $\yl$               |  $\yh$              |
 +---------------------+---------------------+---------------------+---------------------+
-|                     |                     | $\yy$               |  $\yn$              |
-+---------------------+---------------------+---------------------+---------------------+
-|[treatment]{.blue}   |   $\bA$             | $\yellow-4\yr$      |  $\yellow0\yr$      |
+| [ad-type]{.yellow}  |   $\yA$             | $\blue -1\,\$$      |  $\blue 3\,\$$      |
 +                     +---------------------+---------------------+---------------------+
-|                     |   $\bB$             | $\yellow-1\yr$      |  $\yellow-1\yr$     |
+|                     |   $\yB$             | $\blue 2\,\$$       |  $\blue 2\,\$$      |
 +                     +---------------------+---------------------+---------------------+
-|                     |   $\bC$             | $\yellow0\yr$       | $\yellow-4\yr$      |
+|                     |   $\yC$             | $\blue 3\,\$$       | $\blue -1\,\$$      |
 +---------------------+---------------------+---------------------+---------------------+
-: Change in life expectancy depending on treatment and medical condition {#tbl-treatments .sm}
+: Revenue depending on ad-type and income level {#tbl-income .sm}
 
 ::::
 
@@ -71,174 +171,140 @@ The clinician has three treatments available: $\bA$, $\bB$, $\bC$. They have dif
 ::::
 :::
 
-- treatment $\bA$ is mild (this could be the no-treatment option): under it, the patient is expected to live four years shorter if the disease is present, but the life expectancy is unaltered if the disease is not present
+Ad-type $\yB$ is a kind of neutral advertisement that leads to revenue independently of the target user's income. Ad-type $\yA$ targets high-income users, leading to higher revenue from them; but it leads to a loss if shown to the wrong target (more money spent on making and deploying the ad than what is gained from users' purchases). Vice versa, ad-type $\yB$ targets low-income users, with a reverse effect.
 
-- treatment $\bB$ is intermediate: under it, the patient is expected to live only one year shorter if the disease is present, but also if the disease is not present, owing to the damage caused by this treatment
+The corporation doesn't have access to its users' income levels, but it covertly collects, through some other app, all or some of the eight predictor variates $\green\mathit{workclass}$, $\green\mathit{education}$, $\green\dotsc$, $\green\mathit{sex}$, $\green\mathit{native\_country}$ from each of its users. The corporation has also access to the adult-income dataset (or let's say a more recent version of it).
 
-- treatment $\bC$ is intensive: under it, the patient is expected not to lose extra years if the disease is present, but will lose four years if the disease is not present, owing to the heavy damage caused by this treatment.
-
-Which of the treatments above should the clinician choose?
-
-### Optimal decision
-
-Let's consider three scenarios. In each scenario, the clinician has prescribed several clinical tests (the predictors) for the patient, and obtained their results.
-
-#### Scenario 1: 10%/90%
-
-Given the results of the clinical tests, the clinician knows that the patient is typical of a subpopulation of patients where [10%]{.green} have the disease, and [90%]{.green} don't. The present patient could be one among the 10%, or one of among the 90%.
-
-- If the clinician always chooses treatment $\bA$ for this subpopulation, including the present patient, then these patients' lives will be shortened in total by
-    
-    $$
-{\yellow -4\yr}\cdot{\green 10} +
-{\yellow 0\yr}\cdot{\green 90}
-= \boldsymbol{-40\yr}
-$$
-
-
-- If the clinician always chooses treatment $\bB$ for this subpopulation, including the present patient, then these patients' lives will be shortened in total by
-    
-    $$
-{\yellow -1\yr}\cdot{\green 10} +
-{\yellow -1\yr}\cdot{\green 90}
-= \boldsymbol{-100\yr}
-$$
-
-- If the clinician always chooses treatment $\bC$, then the lives will be shortened in total by
-    
-    $$
-{\yellow 0\yr}\cdot{\green 10} +
-{\yellow -4\yr}\cdot{\green 90}
-= \boldsymbol{-360\yr}
-$$
-
-Clearly the best decision is treatment $\bA$. It is possible that, unfortunately, the present patient's life will be shortened; but this treatment was the patient's and clinician's best bet.
-
-
-#### Scenario 2: 50%/50%
-
-Given the results of the clinical tests, the clinician knows that the patient is typical of a subpopulation of patients where [50%]{.green} have the disease, and [50%]{.green} don't. In this case the present patient could be one of the first 50%, or one of the other 50%.
-
-Calculations similar to those of scenario 1 leads to these results:
-
-- Treatment $\bA$
-    
-    $$
-{\yellow -4\yr}\cdot{\green 50} +
-{\yellow 0\yr}\cdot{\green 50}
-= \boldsymbol{-200\yr}
-$$
-
-- Treatment $\bB$:
-    
-    $$
-{\yellow -1\yr}\cdot{\green 50} +
-{\yellow -1\yr}\cdot{\green 50}
-= \boldsymbol{-100\yr}
-$$
-
-- Treatment $\bC$:
-    
-    $$
-{\yellow 0\yr}\cdot{\green 50} +
-{\yellow -4\yr}\cdot{\green 50}
-= \boldsymbol{-200\yr}
-$$
-
-The best decision is treatment $\bB$. A clinician who chose treatments $\bA$ or $\bC$ for patients having the same predictors as the present patient would on average *reduce* the life expectancy of each patient by one extra year.
-
-#### Scenario 3: 90%/10%
-
-In this scenario [90%]{.green} of patients in the subpopulation with the observed predictors have the disease, and [10%]{.green} don't. The present patient could belong to either group.
-
-- Treatment $\bA$
-    
-    $$
-{\yellow -4\yr}\cdot{\green 90} +
-{\yellow 0\yr}\cdot{\green 10}
-= \boldsymbol{-360\yr}
-$$
-
-- Treatment $\bB$:
-    
-    $$
-{\yellow -1\yr}\cdot{\green 90} +
-{\yellow -1\yr}\cdot{\green 10}
-= \boldsymbol{-100\yr}
-$$
-
-- Treatment $\bC$:
-    
-    $$
-{\yellow 0\yr}\cdot{\green 90} +
-{\yellow -4\yr}\cdot{\green 10}
-= \boldsymbol{-40\yr}
-$$
-
-Treatment $\bC$ is the best decision in this scenario, for reasons complementary to those of scenario 1.
+In this scenario, the corporation would like to use an AI agent that can choose and show the optimal ad-type to each user.
 
 \
 
-The reasoning behind each scenario and its corresponding optimal decision is quite intuitive.
+Our prototype agent from chapters [-@sec-code-design], [-@sec-code-workflow], [-@sec-example-opm1] can be used for such a task. It has already been trained with the dataset, and can use any subset (possibly even empty) of the eight predictors to calculate the probability for the two income levels.
 
-In each scenario, note that *any* decision strategy different from "sticking to the optimal decision" would lead to suboptimal results -- reduced lives. In scenario 1, for instance, a decision strategy such as "[choose treatment $\bA$ most of the time, and treatment $\bB$ from time to time]{.lightblue}" would lead to reduced lives. This is clear from the following graph, which shows the average reduction in life expectancy for each treatment, depending on the percentage of patients with the disease:
+All that's left is to equip our prototype agent with a function that outputs the optimal decision, given the calculated probabilities and the set of utilities. In our code this is done by the function `decide()` described in [chapter @sec-code-workflow]:
 
-![](utilities_treatments.png){width=100%}
+:::{.small}
 
-Consider the vertical line with probability 0.1. Any strategy mixing treatment $\bA$ with any of the other two can only increase the reduction in expected-life.
+> {{< fa code >}} [`decide(probs, utils=NULL, all=FALSE)`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/decide.R)
+> 
+> Arguments:
+> : - *`probs`*: a probability distribution for one or more variates.
+>     - *`utils`*: a named matrix or array of utilities. The **rows** of the matrix correspond to the available decisions, the **columns** or remaining array dimensions correspond to the possible values of the predictand variates.
+>     - *`all`*: a boolean, `TRUE` if the output should have all decisions having maximal expected utilities (if more than one); `FALSE` (default) if the output should only have one of them, selected with equal probabilities.
+> 
+> Output:
+> : - a vector of strings with the decisions having maximal expected utility, if *`all`* is `TRUE`, or just one of them, selected with equal probability, if *`all`* is `FALSE` (the default).	
+> 
+> Notes:
+> : - If *`utils`* is missing or `NULL`, a matrix of the form $\begin{bsmallmatrix}1&0&\dotso\\0&1&\dotso\\\dotso&\dotso&\dotso\end{bsmallmatrix}$ is assumed (which corresponds to using *accuracy* as evaluation metric).
 
-From the plot we can see that treatment $\bA$ is optimal if the probability that the disease is present is below $25\%$, treatment $\bC$ is optimal if the probability is above $75\%$, and treatment $\bB$ for intermediate probabilities.
+:::
+
+### Example
+
+A new user logs in; all eight predictors are available for this user:
+
+:::{.small}
+
+$$\green
+\begin{aligned}
+&\mathit{workclass} \mo \cat{Private}
+&& \mathit{education} \mo \cat{Bachelors} 
+\\ & \mathit{marital\_status} \mo \cat{Never-married} 
+&& \mathit{occupation} \mo \cat{Prof-specialty} 
+\\ & \mathit{relationship} \mo \cat{Not-in-family} 
+&& \mathit{race} \mo \cat{White} 
+\\ & \mathit{sex} \mo \cat{Female} 
+&& \mathit{native\_country} \mo \cat{United-States}
+\end{aligned}
+$$
+
+:::
+
+The agent calculates (using the `infer()` function) the probabilities for the two income levels, which turn out to be
+
+:::{.small}
+
+$$
+\begin{aligned}
+&\P({\red\income\mo\yl} \| \predictor, \data, \yI) = 83.3\%
+\\&\P({\red\income\mo\yh} \| \predictor, \data, \yI) = 16.7\%
+\end{aligned}
+$$
+
+:::
+
+and can be represented by the column matrix
+
+$$\Pm \defd
+\begin{bmatrix}
+0.833\\0.167
+\end{bmatrix}
+$$
+
+The utilities previously given can be represented by the matrix
+
+$$\um \defd
+\begin{bmatrix}
+-1&3\\2&2\\3&-1
+\end{bmatrix}
+$$
+
+Multiplying the two matrices above we obtain the expected utilities of the three ad-types for the present user:
+
+:::{.column-body-outset-right}
+
+$$
+\um \Pm = 
+\blue\begin{bmatrix}
+-1&3\\2&2\\3&-1
+\end{bmatrix}
+\,
+\green\begin{bmatrix}
+0.833\\0.167
+\end{bmatrix}\black
+=
+\begin{bmatrix}
+{\blue -1}\cdot{\green 0.833}
++ {\blue 3}\cdot{\green 0.167}
+\\
+{\blue 2}\cdot{\green 0.833}
++ {\blue 2}\cdot{\green 0.167}
+\\
+{\blue 3}\cdot{\green 0.833}
++ ({\blue -1})\cdot{\green 0.167}
+\end{bmatrix}
+=
+\begin{bmatrix}
+-0.332\\
+2.000\\
+\boldsymbol{2.332}
+\end{bmatrix}
+$$
+
+:::
+
+The highest expected utility is that of ad-type $\yC$, which is therefore shown to the user.
+
+### Powerful flexibility of the agent
+
+In the previous chapters we already emphasized and witnessed the flexibility of the optimal predictor machine with regard to the availability of the predictors: it can draw an inference even if some or all predictors are missing.
+
+Now we can see another powerful kind of flexibility: the optimal predictor machine can in principle *use different sets of decisions and different utilities for each new application*. The decision criterion is not "hard-coded"; it can be customized on the fly.
+
+The possible number of ad-types and the utilities could even be a function of the predictor values. For instance, there could be a set of three ad-types targeting users with $\green\mathit{education}\mo\cat{Bachelors}$, a different set of four ad-types targeting users with $\green\mathit{education}\mo\cat{Preschool}$, and so on.
 
 \
 
-[Although the intuitive reasoning above has somewhat been phrased in terms of frequency, it's the *probability* -- the clinician's degree of belief -- that counts.]{.red} Try to reason about this point through the following exercise:
+## Generalization of basic decision theory {#sec-DT-generalization}
 
-:::{.callout-caution}
-## {{< fa user-edit >}} Exercise
+The simple decision-making problems and framework that we have discussed in these notes are only the basic blocks of Decision Theory. This theory covers more complicated decision problems. We only mention some examples:
 
+- *Sequential decisions*
 
-Consider a clinician uncertain with 50% probability that the present patient belongs to a 10%/90% frequency subpopulation, and with 50% that the patient belongs to a 90%/10% frequency subpopulation. And unfortunately this uncertainty cannot be removed by further clinical tests. Which treatment should this clinician choose? why?
-
-:::
-
-::: {.callout-warning}
-## {{< fa book >}} Study reading
-- Chapter 1 of [*Medical Decision Making*](https://hvl.instructure.com/courses/25074/modules/items/671397)
-
-- Skim through chapter 6 of [*Medical Decision Making*](https://hvl.instructure.com/courses/25074/modules/items/671397)
-
-- §§ 1.5--1.6 of [*Making Decisions*](https://hvl.instructure.com/courses/25074/modules/items/660091)
-:::
-
-
-## Decisions: limitations of present-day machine-learning algorithms
-
-The clinical example above shows that decisions are often different from the unknown values, and there isn't any one-to-one connection among decisions and unknowns. We cannot say, for instance, that treatment $\bC$ "corresponds" to the presence of the disease, because the best treatment is actually $\bB$, not $\bC$, if the probability for $\dise\mo\yy$ is above 50% but below 75%.
-
-Many or most present-day machine-learning algorithms focus on the "unknown", and often don't yield any probabilities. This limitation makes it impossible to determine the optimal decision, and makes such algorithms sub-optimal.
-
-Imagine, for instance, that the clinician inputs the patient's predictors into a neural network, trained to output a guess about the presence or absence of the disease. The neural network outputs `yes`. Which treatment should the clinician choose? It's known that the neural network can err.
-
-- Does the output `yes` means that the probability for $\dise\mo\yy$ was above 50%? But then the clinician doesn't know whether it's above or below 75%, and can't make the optimal choice between $\bC$ and $\bB$.
-- Is the output `yes` produced with a particular probability? but what is this probability? The output could be $\yy$ even if the probability were less than 50% or 25%. Again the clinician can't make the optimal choice between the three treatments.
-
-:::{.callout-caution}
-## {{< fa user-edit >}} Exercise
-
-Could the clinician deduce an approximate probability by looking at the statistics (confusion matrix) of the neural network on some test set?
-
-Explore and maybe even implement this possibility.
-
-:::
-
-::: {.callout-warning}
-## {{< fa book >}} Study reading
-
-- § 0 of [*Does the evaluation stand up to evaluation?*](https://doi.org/10.31219/osf.io/7rz8t)
-
-:::
 
 [{{< fa person-digging >}} *To be finished* {{< fa person-digging >}}]{.yellow}
+
 
 <!-- ### Factors that enter utility quantification -->
 
