@@ -34,7 +34,10 @@ In order to make a decision, the agent needs:
 \uu({\red Y\mo y} \and \yD \| \yI)
 $$
     
-	This notation reminds us that the utilities assigned by the agent also depend on its background information $\yI$
+	This notation reminds us that the utilities assigned by the agent also depend on its background information $\yI$.
+
+
+Some texts call the joint pair $({\red Y\mo y} \and \yD)$, of a decision and an outcome, a [**consequence**]{.blue}. We adopt this terminology from this chapter onward.
 
 Let's not forget some important points about the notions above:
 
@@ -67,7 +70,7 @@ In what follows we shall consider problems, such as classification, where knowle
 
 ## Maximization of expected utility {#sec-max-exp-utilities}
 
-The expected utility of each possible decision $\yD$ is calculated as a weighted average:
+The expected utility of each possible decision $\yD$ is calculated as a weighted average over all possible outcomes:
 
 $$\uu(\yD \|\yI) 
 = \sum_{\red y} \uu(\yD \and {\red Y\mo y} \| \yI) \cdot
@@ -95,14 +98,14 @@ $$
 :::
 :::::
 
-In the formula above, "$\argmax\limits_z G(z)$" is the value $z$ which maximizes $G(z)$. [Note the difference: $\max\limits_z G(z)$ is the value of the maximum itself, whereas $\argmax\limits_z G(z)$ is the value of the *argument* that gives the maximum. For instance\ \ $\max\limits_z (1-z)^2 = 0$,\ \ but\ \ $\argmax\limits_z (1-z)^2 = 1$.]{.small .grey}
+[In the formula above, "$\argmax\limits_z G(z)$" is the value $z$ which maximizes $G(z)$. Note the difference: $\max\limits_z G(z)$ is the value of the maximum itself, whereas $\argmax\limits_z G(z)$ is the value of the *argument* that gives the maximum. For instance\ \ $\max\limits_z (1-z)^2 = 0$,\ \ but\ \ $\argmax\limits_z (1-z)^2 = 1$.]{.small .midgrey}
 
-It may happen that there are several decisions which have equal, maximal expected utilities. In this case any one of them can be chosen. A useful strategy, in this case, is to choose among them with equal probabilities (such strategy helps minimizing the loss from possible small errors in the specification of the utilities, or from the presence of an antagonist agent which tries to predict what our agent is doing).
+It may happen that there are several decisions which have equal, maximal expected utilities. In this case any one of them can be chosen. A useful strategy is to choose one among them with equal probability (such strategy helps minimizing the loss from possible small errors in the specification of the utilities, or from the presence of an antagonist agent which tries to predict what our agent is doing).
 
 
 ### Numerical implementation in simple cases
 
-The principle of maximal expected utility is straightforward to calculate in many important problems. First, the collection of expected utilities can be obtained with a simple matrix multiplication. We represent the utilities for all decisions and all outcomes with a matrix $\um$, having one row per decision and one column per outcome:
+The principle of maximal expected utility is straightforward to calculate in many important problems. First, the collection of expected utilities can be obtained with a simple matrix multiplication. We represent the utilities for all consequences (that is, pairs of decisions and outcomes) with a matrix $\um$, having one row per decision and one column per outcome:
 
 $$
 \um \defd
@@ -126,9 +129,9 @@ If the probabilities of the outcomes do **not** depend on the decisions, we repr
 $$
 \Pm \defd
 \begin{bmatrix}
-\P({\red Y\mo y}' \| \yD \and {\green X\mo x} \and \data \and \yI)
+\P({\red Y\mo y}' \| {\green X\mo x} \and \data \and \yI)
 \\
-\P({\red Y\mo y}'' \| \yD \and {\green X\mo x} \and \data \and \yI)
+\P({\red Y\mo y}'' \| {\green X\mo x} \and \data \and \yI)
 \\
 \dotso
 \end{bmatrix}
@@ -141,7 +144,7 @@ Then the collection of expected utilities is a column matrix, having one entry p
 
 As a concrete example, let's keep on using the adult-income task from [chapter @sec-example-opm1], in a typical present-day scenario.
 
-Some corporation, which offers a particular phone app, wants to [bombard its users with advertisements](https://pluralistic.net/2023/07/24/rent-to-pwn/), because advertisement generates much more revenue than making the users pay for the app. For each user the corporation can choose one among three ad-types, let's call them $\yA, \yB, \yC$. The revenue obtained from these ad-types varies depending on whether the target user's income is $\yl$ or $\yh$. A separate study run by the corporation has shown that the average revenues (per user per minute) depending on the three ad-types and the income levels are as follows:
+Some corporation, which offers a particular phone app, wants to [bombard its users with advertisements](https://pluralistic.net/2023/07/24/rent-to-pwn/), because advertisement generates much more revenue than making the users pay for the app. For each user the corporation can choose one among three ad-types, let's call them $\yA, \yB, \yC$. The revenue obtained from these ad-types depends on whether the target user's income is $\yl$ or $\yh$. A separate study run by the corporation has shown that the average revenues (per user per minute) depending on the three ad-types and the income levels are as follows:
 
 :::{.columns}
 
@@ -171,11 +174,11 @@ Some corporation, which offers a particular phone app, wants to [bombard its use
 ::::
 :::
 
-Ad-type $\yB$ is a kind of neutral advertisement that leads to revenue independently of the target user's income. Ad-type $\yA$ targets high-income users, leading to higher revenue from them; but it leads to a loss if shown to the wrong target (more money spent on making and deploying the ad than what is gained from users' purchases). Vice versa, ad-type $\yB$ targets low-income users, with a reverse effect.
+Ad-type $\yB$ is a neutral advertisement type that leads to revenue independently of the target user's income. Ad-type $\yA$ targets high-income users, leading to higher revenue from them; but it leads to a loss if shown to the wrong target (more money spent on making and deploying the ad than what is gained from users' purchases). Vice versa, ad-type $\yB$ targets low-income users, with a reverse effect.
 
 The corporation doesn't have access to its users' income levels, but it covertly collects, through some other app, all or some of the eight predictor variates $\green\mathit{workclass}$, $\green\mathit{education}$, $\green\dotsc$, $\green\mathit{sex}$, $\green\mathit{native\_country}$ from each of its users. The corporation has also access to the adult-income dataset (or let's say a more recent version of it).
 
-In this scenario, the corporation would like to use an AI agent that can choose and show the optimal ad-type to each user.
+In this scenario the corporation would like to use an AI agent that can choose and show the optimal ad-type to each user.
 
 \
 
@@ -286,7 +289,7 @@ $$
 
 The highest expected utility is that of ad-type $\yC$, which is therefore shown to the user.
 
-### Powerful flexibility of the agent
+### Powerful flexibility of the optimal predictor machine
 
 In the previous chapters we already emphasized and witnessed the flexibility of the optimal predictor machine with regard to the availability of the predictors: it can draw an inference even if some or all predictors are missing.
 
@@ -296,7 +299,92 @@ The possible number of ad-types and the utilities could even be a function of th
 
 \
 
-## Generalization of basic decision theory {#sec-DT-generalization}
+## How to determine utilities? {#sec-whence-utilities}
+
+It can be quite difficult to assess the utilities of the decisions and outcomes in a decision-making problems, because of several reasons discussed below. Yet, Decision Theory says that any decision is either implicitly using such a number, or is sub-optimal or logically inconsistent. Moreover, the specification, at some level, of utilities not derived by further analysis is simply unavoidable -- just like the specification of some initial probabilities.
+
+### Heterogeneous factors
+
+Many heterogeneous factors can enter the determination of utilities. In medical decision-making problems, for example, a clinician must choose one among several possible treatments for a patient, and the utilities of the outcome must take into account factors such as
+
+- cost of the treatment
+- expected life length resulting from the treatment
+- quality of life resulting from the treatment
+- patient's preferences and attitudes towards life
+
+It can be very difficult to combine these factors into a single number.
+
+Several fields, such as medicine, have developed and refined several methodologies to arrive at utilities that account for all important factors. Unfortunately we shall not explore any of them in these notes.
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+- Chapter 8 of [*Medical Decision Making*](https://hvl.instructure.com/courses/25074/modules/items/671397)
+- [*Decisions with Multiple Objectives*](https://hvl.instructure.com/courses/25074/modules/items/729855)
+:::
+::::
+
+### Uncertainty
+
+The assessment of utilities can also be affected by uncertainties, and therefore become an inference problem in itself. The utility of an outcome may depend on further decisions and further outcomes, whose utilities in turn depend on further decisions and outcomes. Our basic decision framework can in this case be applied repeatedly, as briefly discussed below. In the simplest case, if the agent is uncertain between utility values $\blue \um'$ with probability $p'$, and utility values $\blue \um''$ with probability $p'' = 1-p'$, then the utilities to use are the averages
+
+$$p'\,{\blue\um'} + p''\,{\blue\um''}$$
+
+
+But the specification, at some level, of utilities not derived by further inferences is simply unavoidable -- just like the specification of some initial probabilities.
+
+
+### Approximate assignments
+
+An approximate procedure of assigning utilities goes as follows:
+
+:::{.callout-note}
+##
+
+1. Write down all possible consequences
+
+2. Sort all consequences from best to worst. Ties are possible, that is, there may be several consequences considered to be equally good or equally bad.
+
+3. Assign utility $\blue 1$ to the best consequence (or to each of the best, if there's a tie), and utility $\blue 0$ to the worst.
+
+4. Determine the utility $\bu$ of each intermediate consequence $(\ry, \yD)$ as follows:
+    
+	a. Consider a *lottery* where you can win the best consequence (that with utility $\blue 1$) with some probability $\pbest$, or the worst consequence with probability $1-\pbest$.
+	b. Choose one value of $\pbest \in [0,1]$ such that it would be OK if you were forced to exchange the lottery with the consequence $(\ry,\yD)$ under consideration, *and vice versa*, exchange the consequence under consideration with the lottery.
+    c. That probability value is the utility $\bu = \pbest$ of the consequence under consideration.
+
+5. Check whether the utilities determined through lotteries respect your initial sorting. If they don't, then you have reasoned inconsistently somewhere. Repeat the steps above thinking more thoroughly about your sorting and lotteries.
+
+6. As an additional check, take any three consequences with utilities $\bu_1 \ge \bu_2 \ge \bu_3$. Consider again a lottery where you can win the *first* consequence with probability $p$ or the *third* with probability $1-p$, and choose $p$ so that it would be OK to be forced to exchange this lottery with the *second* consequence, and vice versa. Then you should find, at least approximately, that
+    
+    $$\bu_2 = p\cdot \bu_1 + (1-p)\cdot \bu_3$$
+    
+	If you don't, then there are again inconsistencies or irrational biases in your judgements, and you should review them.
+
+:::
+
+In the procedure above, the values $\blue 1$ and $\blue 0$ for the best and worst consequences are arbitrary: they correspond to setting a zero and a measurement unit of your utility scale. You can choose any other pair of values ${\blue u_{\textrm{max}}} > {\blue u_{\textrm{min}}}$. The procedure applies in the same way, but the utility corresponding to $\pbest$ is then given by
+
+$$\bu = \pbest\cdot{\blue u_{\textrm{max}}} +
+(1-\pbest)\cdot {\blue u_{\textrm{min}}}
+$$
+
+
+
+::: {.callout-warning}
+## {{< fa book >}} Study reading
+- Final **Summary** (pp. 234--235) of chapter 8 in [*Medical Decision Making*](https://hvl.instructure.com/courses/25074/modules/items/671397)
+
+- §§ 9.14--9.17 of [*Making Decisions*](https://hvl.instructure.com/courses/25074/modules/items/660091)
+
+- § 4.2 of [*Decisions with Multiple Objectives*](https://hvl.instructure.com/courses/25074/modules/items/729855)
+
+- Skim through [*Attitude and opinion measurement*](https://hvl.instructure.com/courses/25074/modules/items/729862)
+:::
+
+
+
+## Generalizations of basic decision theory {#sec-DT-generalization}
 
 The simple decision-making problems and framework that we have discussed in these notes are only the basic blocks of Decision Theory. This theory covers more complicated decision problems. We only mention some examples:
 
