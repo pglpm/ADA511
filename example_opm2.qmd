@@ -1,0 +1,134 @@
+# [The prototype agent makes decisions]{.red} {#sec-example-opm2}
+{{< include macros.qmd >}}
+{{< include macros_exchangeability.qmd >}}
+{{< include macros_opm.qmd >}}
+
+```{r}
+#| echo: false
+knitr::opts_knit$set(root.dir = "code/OPM-nominal/")
+```
+
+
+[{{< fa person-digging >}} *Under construction* {{< fa person-digging >}}]{.yellow}
+
+```{r}
+library('data.table')
+library('extraDistr')
+library('foreach')
+library('khroma')
+
+source('tplotfunctions.R')
+source('guessmetadata.R')
+source('buildagent.R')
+source('infer.R')
+source('decide.R')
+source('mutualinfo.R')
+source('rF.R')
+source('plotFsamples1D.R')
+
+options(repr.plot.width=6*sqrt(2), repr.plot.height=6)
+```
+
+## Build OPM agent
+
+
+```{r}
+opmall <- buildagent(metadata='meta_income_data_example.csv',
+                     data='train-income_data_example.csv')
+```
+
+## Decision matrix
+
+We use the targeted-advertisement scenario of [§ @sec-max-exp-util-example].
+
+Utility matrix: assumed to be the same at each instance
+
+```{r}
+adutilities <- matrix(c(-1,3, 2,2, 3,-1), nrow=3, byrow=TRUE, dimnames=list(ad_type=c('A','B','C'), income=c('<=50K', '>50K')))
+
+print(adutilities)
+```
+
+## Example application
+
+Same example as in [§ @sec-max-exp-util-example]:
+
+```{r}
+userpredictors <- list(workclass='Private', education='Bachelors',
+                       marital_status='Never-married',
+                       occupation='Prof-specialty',
+                       relationship='Not-in-family', race='White',
+                       sex='Female', native_country='United-States')
+
+probs <- infer(agent=opmall, predictand='income',
+               predictor=userpredictors)
+
+print(probs)
+```
+
+Find expected utilities by matrix multiplication
+
+```{r}
+adutilities %*% probs
+```
+
+
+The function that executes maximization of expected utility is `decide()`:
+
+```{r}
+optimalad <- decide(utils=adutilities, probs=probs)
+
+print(optimalad)
+```
+
+## Performance on test set
+
+Load test data
+
+```{r}
+testdata <- fread('test-income_data_example.csv', header=TRUE)
+M <- nrow(testdata)
+```
+
+We build the analogous of a "confusion matrix", telling us how many times the agent chooses the three ad-types for both income levels. (Use a for-loop for clarity)
+
+```{r}
+confusionmatrix <- adutilities * 0L
+
+for(i in 1:M){
+    userpredictors <- testdata[i, !'income']
+    probs <- infer(agent=opmall, predictand='income',
+                   predictor=userpredictors)
+    decision <- decide(utils=adutilities, probs=probs)
+    trueincome <- testdata[i]$income
+
+    confusionmatrix[decision, trueincome] <- confusionmatrix[decision, trueincome] + 1L
+}
+
+print(confusionmatrix)
+```
+
+The total utility yield is the total sum of the element-wise product of the `confusionmatrix` and the `adutilities` matrix
+
+```{r}
+totalyield <- sum(adutilities * confusionmatrix)
+averageyield <- totalyield/M
+
+cat('\nTotal yield =', totalyield, 
+'\nAverage yield =', averageyield, '\n')
+```
+
+Note that the yield is higher than what would be obtained by just choosing the neutral ad-type `B` for all test units (the average yield would be exactly `2`).
+
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercises
+
+- Try to use some common machine-learning algorithm to perform the same task of choosing between the three ad-types. Is it difficult? why?
+    
+	If you manage to do this, then compare the performances of the machine-learning algorithm and the `opmall` agent.
+
+- Construct a scenario where the utility matrix is different depending on the `sex` predictor variate. Write a script to apply the `opmall` agent on the test set according to this new scenario.
+
+:::
+
