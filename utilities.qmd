@@ -1,0 +1,188 @@
+# [Utilities]{.blue} {#sec-utilities}
+{{< include macros.qmd >}}
+{{< include macros_decisions.qmd >}}
+
+## From inferences to decisions
+
+At long last we have seen how an agent can calculate the probabilities of any kind of sentence, given any facts and assumptions available to it. We studied this probability calculation for general problems, and then more in detail for problems enjoying special properties, for instance when the agent's beliefs are exchangeable ([chapter @sec-exchangeable-beliefs]). Most important, we saw how previous data and background information can be used to determine, and at the same time affect, these probabilities. We have even built a real, prototype agent that can flexibly calculate probabilities in problems involving nominal variates.
+
+Having rational degrees of belief about all possible hypotheses and unknowns is useful, and the first step in scientific research. But often it isn't enough. Often the agent needs to *act*, to do something, to make a choice, even if its uncertainty has not disappeared and therefore it can't be sure of what its choice will lead to. Our very first example of engineering problem ([chapter @sec-intro]) involved the decision on whether to accept or discard an electronic component just produced in an assembly line, not knowing whether it will fail within a year or not.
+
+In [chapter @sec-basic-decisions] we met the theory to deal with this kind of decision-making problem: *Decision Theory*.
+
+Decision Theory requires the decision-making agent to calculate the probabilities of the unknown outcomes. Now we know how to do that, at least in some kinds of problems! Most of our discussion so far focused on the calculation of those probabilities, which often is the most difficult part of the decision-making task.
+
+So let's face the decision-making problem again at last, and complete the construction of our prototype agent by implementing the final decision-making step.^[Please go back to [chapter @sec-basic-decisions] and review the notions and terminology introduced there.]
+
+
+## Review of a basic decision problem: outcomes, decisions, utilities {#sec-decisions-utilities}
+
+Recall the structure of a basic decision:
+
+![](basic_decision_tree.png){width=75%}
+
+In order to make a decision, the agent needs:
+
+- {{< fa cube >}} The set of possible [*decisions*]{.yellow}, which we represent as sentences like $\yD$.
+
+- {{< fa cube >}} The set of possible [*outcomes*]{.red}, whose truth is unknown to the agent. In the kind of decision problems that we are examining, the outcomes correspond to the possible values $\red Y\mo y$ of what we have called the [predictand]{.red} variate from [§ @sec-cat-problems] onwards.
+
+
+- {{< fa cube >}} The [*probabilities*]{.green} of the outcomes\ \ $\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)$ which are determined by the agent's background information $\yI$, by any other available information, such as $\data$ about previously observed units and the values of some predictor variates $\green X\mo x$ for the current unit; and possibly also by the agent's decision $\yD$ (see below).
+
+- {{< fa cube >}} The [*utilities*]{.blue} of the decisions and the outcomes, which we denote
+    
+    $$
+\uu({\red Y\mo y} \and \yD \| \yI)
+$$
+    
+	This notation reminds us that the utilities assigned by the agent also depend on its background information $\yI$.
+
+
+Some texts call the joint pair $({\red Y\mo y} \and \yD)$, or equivalently $(\yD \and {\red Y\mo y})$, of a decision and an outcome, a [**consequence**]{.blue}. We adopt this terminology from this chapter onward.
+
+Let's not forget some important points about the notions above:
+
+:::{.callout-important}
+## {{< fa exclamation-triangle >}}
+
+- We are not assuming any temporal or "causal" relationship between [decisions]{.yellow} and [outcomes]{.red}: **our framework works independently of these relationships**. In some decision-making problems the outcomes happen *after* a decision is made, and may be "influenced" by it or not. In other decision-making problems the outcomes have already happened *before* a decision is made.
+    
+	In a transportation-choice problem, for instance, the outcome "[wet from rain]{.red}" may happen after we make the decision "[go on foot]{.yellow}" rather than "[go by bus]{.yellow}". In an image-classification problem, on the other hand, the outcome "[true label is $\cat{cat}$]{.red}" was already determined before we made the decision "[classify as $\cat{dog}$]{.yellow}".
+
+\
+
+- In connection with the warning above, in some problems the probabilities of the outcomes may depend on the decision; that is, knowledge about the decision is *relevant* to the knowledge about the outcome (see again [§ @sec-info-chapter]):
+    
+	$$\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)$$
+	
+	For instance, in the transportation-choice problem the probability of the outcome "[wet from rain]{.red}" is higher conditional on the decision "[go on foot]{.yellow}" than on the decision "[go by bus]{.yellow}".
+	
+	In many decision-making problems typical of machine learning, such as classification, information about the decision is *irrelevant* to the information about the outcome (which usually has already happened), and we have
+	
+	$$
+	\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)
+	= \P({\red Y\mo y} \| {\green X\mo x} \and \data \and \yI)
+	$$
+
+:::
+
+In what follows we shall consider problems, such as classification, where knowledge of the agent's decision is irrelevant to the outcome's probability. We shall nevertheless keep the more general notation\ \ $\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)$.
+
+
+
+## What are utilities? {#sec-what-utilities}
+
+In most decision-making problems the "gain" or "loss" or "satisfaction" or "desiderability" of the consequences depends on many different aspects. A person purchasing some item may have to choose between something inexpensive but of low quality, or something of high quality but expensive. A clinical patient may have to choose between a treatment that increases life expectancy but worsens the quality of life, or a treatment that improves the quality of life but decreases life expectancy.
+
+Decision Theory says that whenever an agent makes a decision among alternatives having heterogeneous decision aspects, then it is *implicitly* using *only one real number* to summarize and bring together all those aspects. If this weren't true, the agent would be deciding in an irrational way, which could even be exploited against the agent itself.
+
+Such idea is not counter-intuitive in our culture. We are wont, for example, to exchange *money* for things of wildly different kinds: food, entertainment, health, work, transport, communication, life insurance, knowledge, political power. The monetary value of a human life ("value of statistical life") for some governments is [about $ 10 000 000](https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis).
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+- [*On making life and death decisions*](https://hvl.instructure.com/courses/25074/modules/items/729983)
+:::
+::::
+
+
+[**Utility**]{.blue} is the name we give to the real number that encodes together all heterogeneous desirabilities and gains of a consequence. The convention is that the higher the utility, the more preferable is the consequence.^[With the opposite convention we speak of *disutility* or *loss*.]
+
+
+
+
+## How to determine utilities? {#sec-whence-utilities}
+
+It can be quite difficult to assess the utilities of the decisions and outcomes in a decision-making problems, because of several reasons discussed below. Yet, Decision Theory says that any decision is either implicitly using such a number, or is sub-optimal or logically inconsistent. Moreover, the specification, at some level, of utilities not derived by further analysis is simply unavoidable -- just like the specification of some initial probabilities.
+
+### Heterogeneous factors
+
+Many heterogeneous factors can enter the determination of utilities. In medical decision-making problems, for example, a clinician must choose one among several possible treatments for a patient, and the utilities of the outcome must take into account factors such as
+
+- cost of the treatment
+- expected life length resulting from the treatment
+- quality of life resulting from the treatment
+- patient's preferences and attitudes towards life
+
+It can be very difficult to combine these factors into a single number.
+
+Several fields, such as medicine, have developed and refined several methodologies to arrive at utilities that account for all important factors. Unfortunately we shall not explore any of them in these notes.
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+- [*Decisions with Multiple Objectives*](https://hvl.instructure.com/courses/25074/modules/items/729855)
+- Chapter 8 of [*Medical Decision Making*](https://hvl.instructure.com/courses/25074/modules/items/671397)
+:::
+::::
+
+### Uncertainty
+
+The assessment of utilities can also be affected by uncertainties, and therefore become an inference problem in itself. The utility of an outcome may depend on further decisions and further outcomes, whose utilities in turn depend on further decisions and outcomes. Our basic decision framework can in this case be applied repeatedly, as briefly discussed below. In the simplest case, if the agent is uncertain between utility values $\blue \um'$ with probability $p'$, and utility values $\blue \um''$ with probability $p'' = 1-p'$, then the utilities to use are the averages
+
+$$p'\,{\blue\um'} + p''\,{\blue\um''}$$
+
+
+But the specification, at some level, of utilities not derived by further inferences is simply unavoidable -- just like the specification of some initial probabilities.
+
+
+### Approximate assignments
+
+An approximate procedure of assigning utilities goes as follows:
+
+:::{.callout-note}
+##
+
+1. Write down all possible consequences
+
+2. Sort all consequences from best to worst. Ties are possible, that is, there may be several consequences considered to be equally good or equally bad.
+
+3. Assign utility $\blue 1$ to the best consequence (or to each of the best, if there's a tie), and utility $\blue 0$ to the worst.
+
+4. Determine the utility $\bu$ of each intermediate consequence $(\ry, \yD)$ as follows:
+    
+	a. Consider a *lottery* where you can win the best consequence (that with utility $\blue 1$) with some probability $\pbest$, or the worst consequence with probability $1-\pbest$.
+	b. Choose one value of $\pbest \in [0,1]$ such that it would be OK if you were forced to exchange the lottery with the consequence $(\ry,\yD)$ under consideration, *and vice versa*, exchange the consequence under consideration with the lottery.
+    c. That probability value is the utility $\bu = \pbest$ of the consequence under consideration.
+
+5. Check whether the utilities determined through lotteries respect your initial sorting. If they don't, then you have reasoned inconsistently somewhere. Repeat the steps above thinking more thoroughly about your sorting and lotteries.
+
+6. As an additional check, take any three consequences with utilities $\bu_1 \ge \bu_2 \ge \bu_3$. Consider again a lottery where you can win the *first* consequence with probability $p$ or the *third* with probability $1-p$, and choose $p$ so that it would be OK to be forced to exchange this lottery with the *second* consequence, and vice versa. Then you should find, at least approximately, that
+    
+    $$\bu_2 = p\cdot \bu_1 + (1-p)\cdot \bu_3$$
+    
+	If you don't, then there are again inconsistencies or irrational biases in your judgements, and you should review them.
+
+:::
+
+In the procedure above, the values $\blue 1$ and $\blue 0$ for the best and worst consequences are arbitrary: they correspond to setting a zero and a measurement unit of your utility scale. You can choose any other pair of values ${\blue u_{\textrm{max}}} > {\blue u_{\textrm{min}}}$. The procedure applies in the same way, but the utility corresponding to $\pbest$ is then given by
+
+$$\bu = \pbest\cdot{\blue u_{\textrm{max}}} +
+(1-\pbest)\cdot {\blue u_{\textrm{min}}}
+$$
+
+\
+
+The assessment of initial utilities constitutes a field under active development (see references below), usually called [**utility elicitation**]{.blue}.
+
+::: {.callout-warning}
+## {{< fa book >}} Study reading
+- § 15.3.1 of [*Artificial Intelligence*](https://hvl.instructure.com/courses/25074/modules/items/660089)
+
+- Final **Summary** (pp. 234--235) of chapter 8 in [*Medical Decision Making*](https://hvl.instructure.com/courses/25074/modules/items/671397)
+
+- §§ 9.14--9.17 of [*Making Decisions*](https://hvl.instructure.com/courses/25074/modules/items/660091)
+
+- § 4.2 of [*Decisions with Multiple Objectives*](https://hvl.instructure.com/courses/25074/modules/items/729855)
+
+- Skim through [*Attitude and opinion measurement*](https://hvl.instructure.com/courses/25074/modules/items/729862)
+:::
+
+
+## Utilities and probabilities must be independent {#sec-indep-axiom}
+
+[{{< fa person-digging >}} *To be finished* {{< fa person-digging >}}]{.yellow}
+
+
+
