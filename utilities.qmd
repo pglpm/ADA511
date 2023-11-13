@@ -30,14 +30,7 @@ In order to make a decision, the agent needs:
 
 - {{< fa cube >}} The [*probabilities*]{.green} of the outcomes\ \ $\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)$ which are determined by the agent's background information $\yI$, by any other available information, such as $\data$ about previously observed units and the values of some predictor variates $\green X\mo x$ for the current unit; and possibly also by the agent's decision $\yD$ (see below).
 
-- {{< fa cube >}} The [*utilities*]{.blue} of the decisions and the outcomes, which we denote
-    
-    $$
-\uu({\red Y\mo y} \and \yD \| \yI)
-$$
-    
-	This notation reminds us that the utilities assigned by the agent also depend on its background information $\yI$.
-
+- {{< fa cube >}} The [*utilities*]{.blue} of each pair of decision and  outcome $(\yD \and {\red Y\mo y})$.
 
 Some texts call the joint pair $({\red Y\mo y} \and \yD)$, or equivalently $(\yD \and {\red Y\mo y})$, of a decision and an outcome, a [**consequence**]{.blue}. We adopt this terminology from this chapter onward.
 
@@ -77,7 +70,7 @@ In most decision-making problems the "gain" or "loss" or "satisfaction" or "desi
 
 Decision Theory says that whenever an agent makes a decision among alternatives having heterogeneous decision aspects, then it is *implicitly* using *only one real number* to summarize and bring together all those aspects. If this weren't true, the agent would be deciding in an irrational way, which could even be exploited against the agent itself.
 
-Such idea is not counter-intuitive in our culture. We are wont, for example, to exchange *money* for things of wildly different kinds: food, entertainment, health, work, transport, communication, life insurance, knowledge, political power. The monetary value of a human life ("value of statistical life") for some governments is [about $ 10 000 000](https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis).
+Such idea is not counter-intuitive in our culture. We are wont, for example, to exchange *money* for things of wildly different kinds: food, entertainment, health, work, transport, communication, life insurance, knowledge, political power. The monetary value of a human life ("value of statistical life") for some governments is [about USD 10 000 000](https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis).
 
 ::::{.column-margin}
 ::: {.callout-tip}
@@ -89,14 +82,77 @@ Such idea is not counter-intuitive in our culture. We are wont, for example, to 
 
 [**Utility**]{.blue} is the name we give to the real number that encodes together all heterogeneous desirabilities and gains of a consequence. The convention is that the higher the utility, the more preferable is the consequence.^[With the opposite convention we speak of *disutility* or *loss*.]
 
+### Notation
+
+We denote the utility of the consequence $(\yD \and {\red Y\mo y})$ as
+
+$$
+\uu(\yD \and {\red Y\mo y} \| \yI)
+$$
+
+This notation reminds us that the utilities assigned by an agent depend on the agent's background information $\yI$.
+
+The utilities for all consequences can be encoded in a [**utility matrix**]{.blue} $\um$, having one row per decision and one column per outcome:
+
+$$
+\um \defd
+\begin{bmatrix}
+\uu(\yD' \and {\red Y\mo y}' \| \yI)
+&
+\uu(\yD' \and {\red Y\mo y}'' \| \yI)
+& \dotso
+\\
+\uu(\yD'' \and {\red Y\mo y}' \| \yI)
+&
+\uu(\yD'' \and {\red Y\mo y}'' \| \yI)
+& \dotso
+\\
+\dotso&\dotso&\dotso
+\end{bmatrix}
+$$
 
 
+
+### Continuous case
+
+In some decision-making problems the set of possible decisions can be considered as continuous.
+
+A power-plant operator, for example, may have to decide to supply an amount of power between 100 MW and 200 MW to a geographical region in the next hour. The unknown "outcome" $\red Y$ in this scenario may be the power demand, which could be in the same range. In this case we can represent a decision by a statement $\yellow D\mo d$, such as
+
+$$\yellow D\mo 175\,\mathrm{MW}$$
+
+(where "$\mo$" obviously stands for "set to", not "is observed to be equal to"; recall [§ @sec-sentence-notation]?)
+
+In such continuous cases we speak of a [**utility function**]{.blue}
+
+$$\uf({\yellow d} \and {\red y} \| \yI)$$
+
+A typical, extremely abused utility function is the negative squared loss:
+
+$$
+\uf({\yellow d} \and \ry \| \yI_{\textrm{sl}})
+= -\abs{{\yellow d} - \ry}^2
+$$
+
+stating that the utility decreases as the squared difference between $\yellow d$ and $\ry$. In concrete problems it is worthwhile to think of more realistic and problem-specific utility functions. In the power-plant scenario, for example, the utility could be worse if the power output is *below* the power demand, than above. This could be expressed by a function like
+
+$$
+\uf({\yellow d} \and \ry \| \yI_{\textrm{plant}})
+=
+\begin{cases*}
+-2\,\abs{{\yellow d} - \ry}^2 & if ${\yellow d} < \ry$
+\\[1ex]
+-\abs{{\yellow d} - \ry}^2 &  if ${\yellow d} \ge \ry$
+\end{cases*}
+$$
+
+or some other asymmetric function.
 
 ## How to determine utilities? {#sec-whence-utilities}
 
-It can be quite difficult to assess the utilities of the decisions and outcomes in a decision-making problems, because of several reasons discussed below. Yet, Decision Theory says that any decision is either implicitly using such a number, or is sub-optimal or logically inconsistent. Moreover, the specification, at some level, of utilities not derived by further analysis is simply unavoidable -- just like the specification of some initial probabilities.
+It can be quite difficult to assess the utilities of the decisions and outcomes in a decision-making problems, because of reasons such as heterogeneity or uncertainty, discussed below. Yet, Decision Theory says that any decision is either implicitly using such a number, or is sub-optimal or logically inconsistent. Moreover, the specification, at some level, of utilities not derived by further analysis is simply unavoidable -- just like the specification of some initial probabilities.
 
-### Heterogeneous factors
+#### Heterogeneous factors
 
 Many heterogeneous factors can enter the determination of utilities. In medical decision-making problems, for example, a clinician must choose one among several possible treatments for a patient, and the utilities of the outcome must take into account factors such as
 
@@ -117,7 +173,7 @@ Several fields, such as medicine, have developed and refined several methodologi
 :::
 ::::
 
-### Uncertainty
+#### Uncertainty
 
 The assessment of utilities can also be affected by uncertainties, and therefore become an inference problem in itself. The utility of an outcome may depend on further decisions and further outcomes, whose utilities in turn depend on further decisions and outcomes. Our basic decision framework can in this case be applied repeatedly, as briefly discussed below. In the simplest case, if the agent is uncertain between utility values $\blue \um'$ with probability $p'$, and utility values $\blue \um''$ with probability $p'' = 1-p'$, then the utilities to use are the averages
 
@@ -186,3 +242,41 @@ The assessment of initial utilities constitutes a field under active development
 
 
 
+## Utilities as an evaluation metric {#sec-utilities-metric}
+
+The utilities of the consequences not only allow the agent to determine the optimal decision, as we shall see in the next chapter. They also allow us to quantify how much utility an agent yielded in a concrete application or sequence of applications of a specific decision-making task.
+
+Since the possible gains and losses of a specific problem are encoded in the problem-specific utilities $\um$, these utilities quantify *by definition* how much has been gained or lost in solving the problem.
+
+Suppose that in the first instance of a decision-making task the agent makes decision $\yD_1$, and in that instance the outcome ${\red Y}_1$ turns out to be $\ry_1$ (this may be discovered a long time after the decision was made). The utility (possibly a loss) gained at that instance is then, by definition,
+
+$$
+\uu(\yD_1 \and {\red Y_{\black 1}\mo y_{\black 1}} \| \yI)
+$$
+
+Assuming that the utilities are additive over instances^[if they weren't, the whole decision-making scheme of the next chapter should be changed, but a similar approach would still apply], then the total utility yield for instances $i=1,2,\dotsc,M$ is
+
+$$
+\sum_{i=1}^{M}
+\uu(\yD_i \and {\red Y_{\black i}\mo y_{\black i}} \| \yI)
+$$
+
+and the average utility yield per instance is
+
+$$
+\frac{1}{M}
+\sum_{i=1}^{M}
+\uu(\yD_i \and {\red Y_{\black i}\mo y_{\black i}} \| \yI)
+$$
+
+### Use in a test set
+
+The utility yield can be calculated in a test run of the agent, to check whether its operation meets its specifications and expectations, or even to compare the performance of different agents.
+
+For the test run we need a set of data $i=1,2,\dotsc,M$ (which should come from the same population underlying the real application, see [§ @sec-samples]) for which the actual outcomes ${\red Y_{\black i}\mo y_{\black i}}$ are known, and for which any predictors ${\green X_{\black i}\mo x_{\black i}}$ are also available, so that they can be used by the agents under evaluation.
+
+Each agent is then applied to these data: it is given the predictors ${\green X_{\black i}\mo x_{\black i}}$, and from these it will determine and possibly execute the optimal decision $\yD_i$, for all $i$. The total or average utility yield generated by the agent is then given by the formula above.
+
+The test utility yield of an agent can be examined to uncover possible design flaws (say, wrong background information, or programming bugs). The yields of different agents can be compared to decide which is most appropriate to the task.
+
+We will return to this use of the utility matrix in [chapter @sec-ML-utility-limitation], when we discuss some evaluation metrics typical of present-day machine-learning methodology.

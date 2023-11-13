@@ -5,21 +5,25 @@
 
 ## Maximization of expected utility {#sec-max-exp-utilities}
 
-The expected utility of each possible decision $\yD$ is calculated as a weighted average over all possible outcomes:
+In the previous chapter we associated utilities to consequences, that is, pairs $(\yD \and {\red Y\mo y})$ of decisions and outcomes. We can also associated utilities to the decisions alone -- and these are used to determine the *optimal* decision.
+
+The [**expected utility**]{.blue} of a decision $\yD$ is calculated as a weighted average over all possible outcomes, the weighs being the outcomes' probabilities:
 
 $$\uu(\yD \|\yI) 
 = \sum_{\red y} \uu(\yD \and {\red Y\mo y} \| \yI) \cdot
 \P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)
 $$
 
-The agent's final decision satisfies the
+\
+
+According to Decision Theory the agent's final decision is determined by the
 
 :::::{.column-page-right}
 :::{.callout-note style="font-size:120%"}
-## [**Principle of maximal expected utility**]{style="font-size:110%"}
+## [**Principle of maximal expected utility**]{style="font-size:120%"}
 ::::{style="font-size:120%"}
 
-The optimal decision, which should be made by the agent, is the one with maximal expected utility:
+The optimal decision, which should be made by the agent, is the one having maximal expected utility:
 
 $$
 \yD_{\text{optimal}} =
@@ -33,33 +37,22 @@ $$
 :::
 :::::
 
-[In the formula above, "$\argmax\limits_z G(z)$" is the value $z$ which maximizes $G(z)$. Note the difference: $\max\limits_z G(z)$ is the value of the maximum itself, whereas $\argmax\limits_z G(z)$ is the value of the *argument* that gives the maximum. For instance\ \ $\max\limits_z (1-z)^2 = 0$,\ \ but\ \ $\argmax\limits_z (1-z)^2 = 1$.]{.small .midgrey}
+:::{.small}
+In the formula above, "$\argmax\limits_z G(z)$" is the value $z^*$ which maximizes the function $G(z)$. Note the difference:\ \ $\max\limits_z G(z)$\ \ is the value of the maximum itself (its $y$-coordinate, so to speak), whereas\ \ $\argmax\limits_z G(z)$\ \ is the value of the *argument* that gives the maximum (its $x$-coordinate). For instance
 
-It may happen that there are several decisions which have equal, maximal expected utilities. In this case any one of them can be chosen. A useful strategy is to choose one among them with equal probability (such strategy helps minimizing the loss from possible small errors in the specification of the utilities, or from the presence of an antagonist agent which tries to predict what our agent is doing).
+$$\max\limits_z (1-z)^2 = 0 \qquad\text{\small but}\qquad \argmax\limits_z (1-z)^2 = 1$$
+:::
+
+\
+
+It may happen that there are several decisions which have equal, maximal expected utility. In this case any one of them can be chosen. A useful strategy is to choose one among them with equal probability. Such strategy helps minimizing the loss from possible small errors in the specification of the utilities, or from the presence of an antagonist agent which tries to predict what our agent is doing.
 
 
 ### Numerical implementation in simple cases
 
-The principle of maximal expected utility is straightforward to calculate in many important problems. First, the collection of expected utilities can be obtained with a simple matrix multiplication. We represent the utilities for all consequences (that is, pairs of decisions and outcomes) with a matrix $\um$, having one row per decision and one column per outcome:
+The principle of maximal expected utility is straightforward to calculate in many important problems.
 
-$$
-\um \defd
-\begin{bmatrix}
-\uu(\yD' \and {\red Y\mo y}' \| \yI)
-&
-\uu(\yD' \and {\red Y\mo y}'' \| \yI)
-& \dotso
-\\
-\uu(\yD'' \and {\red Y\mo y}' \| \yI)
-&
-\uu(\yD'' \and {\red Y\mo y}'' \| \yI)
-& \dotso
-\\
-\dotso&\dotso&\dotso
-\end{bmatrix}
-$$
-
-If the probabilities of the outcomes do **not** depend on the decisions, we represent them as a column matrix $\Pm$, having one entry per outcome:
+In [§ @sec-what-utilities] we represented the set of utilities by a utility matrix $\um$. If the probabilities of the outcomes do **not** depend on the decisions, we represent them as a column matrix $\Pm$, having one entry per outcome:
 
 $$
 \Pm \defd
@@ -72,12 +65,14 @@ $$
 \end{bmatrix}
 $$
 
-Then the collection of expected utilities is a column matrix, having one entry per decision, given by the matrix product $\um \Pm$. All that's left is to check which of the entries in this final matrix is maximal.
+Then the collection of expected utilities is a column matrix, having one entry per decision, given by the matrix product $\um \Pm$.
+
+All that's left is to check which of the entries in this final matrix is maximal.
 
 
 ## Concrete example: targeted advertisement {#sec-max-exp-util-example}
 
-As a concrete example, let's keep on using the adult-income task from [chapter @sec-example-opm1], in a typical present-day scenario.
+As a concrete example application of the principle of maximal expected utility, let's keep on using the adult-income task from [chapter @sec-example-opm1], in a typical present-day scenario.
 
 Some corporation, which offers a particular phone app, wants to [bombard its users with advertisements](https://pluralistic.net/2023/07/24/rent-to-pwn/), because advertisement generates much more revenue than making the users pay for the app. For each user the corporation can choose one among three ad-types, let's call them $\yA, \yB, \yC$. The revenue obtained from these ad-types depends on whether the target user's income is $\yl$ or $\yh$. A separate study run by the corporation has shown that the average revenues (per user per minute) depending on the three ad-types and the income levels are as follows:
 
@@ -175,7 +170,7 @@ $$
 and can be represented by the column matrix
 
 $$\Pm \defd
-\begin{bmatrix}
+\green\begin{bmatrix}
 0.833\\0.167
 \end{bmatrix}
 $$
@@ -183,7 +178,7 @@ $$
 The utilities previously given can be represented by the matrix
 
 $$\um \defd
-\begin{bmatrix}
+\blue\begin{bmatrix}
 -1&3\\2&2\\3&-1
 \end{bmatrix}
 $$
@@ -232,6 +227,7 @@ Now we can see another powerful kind of flexibility: the optimal predictor machi
 
 The possible number of ad-types and the utilities could even be a function of the predictor values. For instance, there could be a set of three ad-types targeting users with $\green\mathit{education}\mo\cat{Bachelors}$, a different set of four ad-types targeting users with $\green\mathit{education}\mo\cat{Preschool}$, and so on.
 
+\
 
 ## The full extent of Decision Theory {#sec-DT-generalization}
 
