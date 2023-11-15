@@ -313,7 +313,9 @@ Using this kind of mistaken terminology shows downright scientific incompetence,
 :::
 
 
-## Evaluation metrics: the good and the bad {#sec-eval-metrics}
+## Evaluation practices and decision theory {#sec-eval-decision}
+
+### Confusion matrices and confusing evaluation metrics
 
 Machine-learning methodology uses a disconcerting variety of evaluation metrics to try to quantify, compare, rank the performances of one or more algorithms.
 
@@ -322,11 +324,8 @@ For machine-learning classifiers many of these metrics are constructed from the 
 For instance, in a binary-classification with classes $\yca$ and $\ycb$, the application of two algorithms $\mA$ and $\mB$  to the same 100 test units could result in the following confusion matrices:
 
 :::{.columns}
-
 ::::{.column width="5%"}
-
 ::::
-
 ::::{.column width="40%"}
 
 +:-------------------:+:-------------------:+:-------------------:+
@@ -339,11 +338,8 @@ For instance, in a binary-classification with classes $\yca$ and $\ycb$, the app
 : Confusion matrix for $\mA$ {#tbl-confusion .sm}
 
 ::::
-
 ::::{.column width="10%"}
-
 ::::
-
 ::::{.column width="40%"}
 
 +:-------------------:+:-------------------:+:-------------------:+
@@ -356,69 +352,161 @@ For instance, in a binary-classification with classes $\yca$ and $\ycb$, the app
 : Confusion matrix for $\mB$ {#tbl-confusion .sm}
 
 ::::
-
 ::::{.column width="5%"}
-
 ::::
-
 :::
 
 These matrices can also be normalized, dividing every entry by the total number of test units. Various aspects can be read from the confusion matrices above. Algorithm $\mB$, for example, seems better than $\mA$ at inferring class $\yca$, but slightly worse at inferring class $\ycb$.
 
-Most evaluation metrics for classification combine the entries of a confusion matrix in a mathematical formula that yields a single number. Such metrics and formulae can be quite opaque. Their definitions, and the motivations for their introduction, are often arbitrary or very case-specific. It's common to find works where several metrics are used, because it's unclear which one should be used. And the only hope is that most or all of them will agree at least on the rankings they lead to.
+Most evaluation metrics for classification combine the entries of a confusion matrix in a mathematical formula that yields a single number.
 
-Here are the scores that some popular metrics assign to algorithms $\mA$ and $\mB$, based on the confusion matrices above. The better algorithm according to each metric is in [**blue bold**]{.blue}:
+Such metrics and formulae can be quite opaque. Their definitions, and the motivations for their introduction, are often arbitrary or very case-specific. It's common to find works where several metrics are used, because it's unclear which one should be used. And the only hope is that most or all of them will agree at least on the rankings they lead to.
+
+#### Majority votes are not a criterion for correctness
+
+Here are the scores that some popular metrics assign to algorithms $\mA$ and $\mB$, based on the confusion matrices above. The better algorithm according to each metric is in [**green bold**]{.blue}:
 
 :::{.columns}
-
 ::::{.column width="5%"}
-
 ::::
-
 ::::{.column width="90%"}
 
 +:-----------------------------------+:-------------------:+:-------------------:+
 | *metric*                           | $\mA$               |  $\mB$              |
 +------------------------------------+---------------------+---------------------+
-| Accuracy                           | 0.62                |  [**0.75**]{.blue}  |
+| Accuracy                           | 0.62                |  [**0.75**]{.green} |
 +------------------------------------+---------------------+---------------------+
-| Precision                          | 0.64                |  [**0.70**]{.blue}  |
+| Precision                          | 0.64                |  [**0.70**]{.green} |
 +------------------------------------+---------------------+---------------------+
-| Balanced Accuracy                  | 0.62                |  [**0.75**]{.blue}  |
+| Balanced Accuracy                  | 0.62                |  [**0.75**]{.green} |
 +------------------------------------+---------------------+---------------------+
-| $F_1$ measure                      | 0.59                |  [**0.77**]{.blue}  |
+| $F_1$ measure                      | 0.59                |  [**0.77**]{.green} |
 +------------------------------------+---------------------+---------------------+
-| Matthews Correlation Coefficient   | 0.24                |  [**0.51**]{.blue}  |
+| Matthews Correlation Coefficient   | 0.24                |  [**0.51**]{.green} |
 +------------------------------------+---------------------+---------------------+
-| Fowlkes-Mallows index              | 0.59                |  [**0.78**]{.blue}  |
+| Fowlkes-Mallows index              | 0.59                |  [**0.78**]{.green} |
 +------------------------------------+---------------------+---------------------+
-| True-positive rate (recall)        | 0.54                |  [**0.86**]{.blue}  |
+| True-positive rate (recall)        | 0.54                |  [**0.86**]{.green} |
 +------------------------------------+---------------------+---------------------+
-| True-negative rate (specificity)   | [**0.70**]{.blue}   |  0.64               |
+| True-negative rate (specificity)   | [**0.70**]{.green}  |  0.64               |
 +------------------------------------+---------------------+---------------------+
 : {.sm}
 
 ::::
-
 ::::{.column width="5%"}
-
 ::::
-
 :::
 
-Almost all these evaluation metrics seem to agree on $\mB$ being better. Yet, when put to actual use, $\mB$ actually leads to a monetary *loss* of 3.5 $ per unit, whereas $\mA$ leads to a monetary *gain* of 3.5 $ per unit!
+Almost all these evaluation metrics seem to agree on $\mB$ being better.
 
-Decision Theory tells us why, and indeed can predict it from the confusion matrices above.
+Yet, when put to actual use, it turned out that $\mB$ actually leads to a monetary *loss* of 3.5 $ per unit, whereas $\mA$ leads to a monetary *gain* of 3.5 $ per unit!
 
+### Decision theory as the basis for evaluation
+
+How is the surprising result above possible? Decision Theory tells us how, and can even correctly select the best algorithm from the confusion matrices above.
+
+As discussed in the preceding sections, each application to a new unit is a decision-making problem. Neither making nor evaluating a decision is possible unless we specify the utilities relevant to the problem. It turns out that the consequences in the present problem have the following monetary utilities:
+
+:::{.columns}
+::::{.column width="25%"}
+::::
+::::{.column width="50%"}
+
++:-------------------:+--------------------:+--------------------:+
+|                     | $\yca$ is true      |  $\ycb$ is true     |
++---------------------+---------------------+---------------------+
+| $\yca$ is chosen    | $\blue15 \$$        |  $\blue-335 \$$     |
++---------------------+---------------------+---------------------+
+| $\ycb$ is chosen    | $\blue-35 \$$       |  $\blue165 \$$      |
++---------------------+---------------------+---------------------+
+: {.sm}
+
+::::
+::::{.column width="25%"}
+::::
+:::
+
+This means that for every test unit of class $\yca$ that is classified as $\yca$, the algorithms yields $\blue15 \$$; for every test unit of class $\yca$ that is classified as $\ycb$, the algorithms yields $\blue-35 \$$; and so on. The total yield of each algorithm for the 100 test units can therefore be calculated by multiplying the four utilities above by the corresponding counts in the algorithm's confusion matrix, and then taking the total. The average yield per unit is obtained dividing the total by the number of units, or directly using the normalized confusion matrix:
+
+:::{.column-page-inset-right}
+$$
+\begin{aligned}
+\text{$\mA$'s average yield } &= 
+\bigl[27 \cdot {\blue15 \$} +
+23 \cdot ({\blue-35 \$}) +
+15 \cdot ({\blue-335 \$}) +
+35 \cdot {\blue165 \$}\bigr]/100
+\\[1ex]
+&= \boldsymbol{\blue+3.5 \$}
+\\[3ex]
+\text{$\mB$'s average yield } &= 
+\bigl[43 \cdot {\blue15 \$} +
+7 \cdot ({\blue-35 \$}) +
+18 \cdot ({\blue-335 \$}) +
+32 \cdot {\blue165 \$}\bigr]/100
+\\[1ex]
+&= \boldsymbol{\purple-3.5 \$}
+\end{aligned}
+$$
+:::
+
+This calculation tells us that $\mA$ is better, and also gives us an idea of the actual utility it would produce.
+
+### Utilities as evaluation metric
+
+The calculation above is exactly the one discussed in [§ @sec-utilities-metric], where we logically motivated the use of utilities as an evaluation metric. In the case of common machine-learning classifiers the logically correct evaluation metric and procedure are is thus straightforward:
+
+1. find the utilities relevant to the specific problem under consideration, collect them into a utility matrix $\um$
+2. apply the classifier to a test set and build the confusion matrix $\cm$
+3. multiply confusion and utility matrices element-wise and take the total
+
+What's remarkable in this procedure is that it is not only logically well-founded, but also mathematically simple. The formula for the correct evaluation metric is just a linear combination of the confusion-matrix entries.
+This linearity is actually a subtle consequence of the axiom of independence discussed in [§ @sec-indep-axiom].
+
+
+### Popular evaluation metrics: the good and the bad
+
+If an evaluation metric can be rewritten as a linear combination of the confusion-matrix entries, then it can be interpreted as arising from a set of utilities (although they might not be the ones appropriate to the problem).
+
+This is the case, for instance, of
+
+- [*accuracy*]{.green}, which turns out to correspond to the utility matrix $\begin{bsmallmatrix}
+1&0\\0&1
+\end{bsmallmatrix}$ or its non-binary analogues; 
+- [*true-positive rate*]{.green}, which corresponds to $\begin{bsmallmatrix}
+1&0\\0&0
+\end{bsmallmatrix}$
+- [*true-negative rate*]{.green}, which corresponds to $\begin{bsmallmatrix}
+0&0\\0&1
+\end{bsmallmatrix}$
+
+If an evaluation metric cannot be rewritten in such a linear form, then it is breaking the axioms of Decision Theory, and is therefore guaranteed to carry some form of cognitive bias. The axiom of independence is specifically broken, because non-linearities imply some functional dependence of utilities on probabilities or vice versa.
+
+Some quite popular evaluation metrics turn out to break Decision Theory in this way:
+
+- [*precision*]{.purple}
+- [*$F_1$-measure*]{.purple}
+- [*Matthews correlation coefficient*]{.purple}
+- [*Fowlkes-Mallows index*]{.purple}
+- [*balanced accuracy*]{.purple}
+
+The [*area under the curve of the receiving operating characteristic*]{.purple} (typically denoted "AUC") is also an evaluation metric that breaks the axioms of Decision Theory, although it is not based on the confusion matrix.
+
+[This fact is actually funny, because the first papers (in the 1960s--1970s, referenced below) that discussed an evaluation method based on the receiver operating characteristic actually derived it from Decision Theory. The papers gave the correct procedure to use the receiver operating characteristic, and pointed out the "area under the curve" only as a quick but possibly erroneous heuristic procedure.]{.small}
+
+It goes without saying that you should stay away from the cognitive-biased metrics above.
 
 ::: {.callout-warning}
 ## {{< fa book >}} Study reading
 
-- § 0 of [*Does the evaluation stand up to evaluation?*](https://doi.org/10.31219/osf.io/7rz8t)
+- [*Decision processes in perception*](https://hvl.instructure.com/courses/25074/modules/items/731180)
+
+- [*Basic principles of ROC analysis*](https://hvl.instructure.com/courses/25074/modules/items/731179)
+
+- Skim through [*Does the evaluation stand up to evaluation?*](https://doi.org/10.31219/osf.io/7rz8t)
 
 :::
 
-[{{< fa person-digging >}} *To be finished* {{< fa person-digging >}}]{.yellow}
 
 <!-- ### Factors that enter utility quantification -->
 

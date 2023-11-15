@@ -479,7 +479,13 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#sub-optimality-of-a-typical-machine-learning-algorithm" id="toc-sub-optimality-of-a-typical-machine-learning-algorithm" class="nav-link" data-scroll-target="#sub-optimality-of-a-typical-machine-learning-algorithm">Sub-optimality of a typical machine-learning algorithm</a></li>
   <li><a href="#output-scores-or-weights-are-not-probabilities" id="toc-output-scores-or-weights-are-not-probabilities" class="nav-link" data-scroll-target="#output-scores-or-weights-are-not-probabilities">Output scores or weights are <em>not</em> probabilities!</a></li>
   </ul></li>
-  <li><a href="#sec-eval-metrics" id="toc-sec-eval-metrics" class="nav-link" data-scroll-target="#sec-eval-metrics"><span class="header-section-number">39.4</span> Evaluation metrics: the good and the bad</a></li>
+  <li><a href="#sec-eval-decision" id="toc-sec-eval-decision" class="nav-link" data-scroll-target="#sec-eval-decision"><span class="header-section-number">39.4</span> Evaluation practices and decision theory</a>
+  <ul class="collapse">
+  <li><a href="#confusion-matrices-and-confusing-evaluation-metrics" id="toc-confusion-matrices-and-confusing-evaluation-metrics" class="nav-link" data-scroll-target="#confusion-matrices-and-confusing-evaluation-metrics">Confusion matrices and confusing evaluation metrics</a></li>
+  <li><a href="#decision-theory-as-the-basis-for-evaluation" id="toc-decision-theory-as-the-basis-for-evaluation" class="nav-link" data-scroll-target="#decision-theory-as-the-basis-for-evaluation">Decision theory as the basis for evaluation</a></li>
+  <li><a href="#utilities-as-evaluation-metric" id="toc-utilities-as-evaluation-metric" class="nav-link" data-scroll-target="#utilities-as-evaluation-metric">Utilities as evaluation metric</a></li>
+  <li><a href="#popular-evaluation-metrics-the-good-and-the-bad" id="toc-popular-evaluation-metrics-the-good-and-the-bad" class="nav-link" data-scroll-target="#popular-evaluation-metrics-the-good-and-the-bad">Popular evaluation metrics: the good and the bad</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -827,8 +833,10 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </section>
 </section>
-<section id="sec-eval-metrics" class="level2" data-number="39.4">
-<h2 data-number="39.4" class="anchored" data-anchor-id="sec-eval-metrics"><span class="header-section-number">39.4</span> Evaluation metrics: the good and the bad</h2>
+<section id="sec-eval-decision" class="level2 page-columns page-full" data-number="39.4">
+<h2 data-number="39.4" class="anchored" data-anchor-id="sec-eval-decision"><span class="header-section-number">39.4</span> Evaluation practices and decision theory</h2>
+<section id="confusion-matrices-and-confusing-evaluation-metrics" class="level3">
+<h3 class="anchored" data-anchor-id="confusion-matrices-and-confusing-evaluation-metrics">Confusion matrices and confusing evaluation metrics</h3>
 <p>Machine-learning methodology uses a disconcerting variety of evaluation metrics to try to quantify, compare, rank the performances of one or more algorithms.</p>
 <p>For machine-learning classifiers many of these metrics are constructed from the so-called “confusion matrix”. The basic idea behind it is to test the algorithms of interest on a test dataset (the same for all), and then count for how many units the algorithm outputs value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}y^{*}}\)</span></span> when the true value of the unknown is <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y\)</span>,</span> for all combinations of possible <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}y^{*}}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}y}\)</span>.</span></p>
 <p>For instance, in a binary-classification with classes <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\beta}\)</span>,</span> the application of two algorithms <span style="display:inline-block;"><span class="math inline">\(\mathcal{A}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathcal{B}\)</span></span> to the same 100 test units could result in the following confusion matrices:</p>
@@ -898,8 +906,11 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <p>These matrices can also be normalized, dividing every entry by the total number of test units. Various aspects can be read from the confusion matrices above. Algorithm <span style="display:inline-block;"><span class="math inline">\(\mathcal{B}\)</span>,</span> for example, seems better than <span style="display:inline-block;"><span class="math inline">\(\mathcal{A}\)</span></span> at inferring class <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span>,</span> but slightly worse at inferring class <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\beta}\)</span>.</span></p>
-<p>Most evaluation metrics for classification combine the entries of a confusion matrix in a mathematical formula that yields a single number. Such metrics and formulae can be quite opaque. Their definitions, and the motivations for their introduction, are often arbitrary or very case-specific. It’s common to find works where several metrics are used, because it’s unclear which one should be used. And the only hope is that most or all of them will agree at least on the rankings they lead to.</p>
-<p>Here are the scores that some popular metrics assign to algorithms <span style="display:inline-block;"><span class="math inline">\(\mathcal{A}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathcal{B}\)</span>,</span> based on the confusion matrices above. The better algorithm according to each metric is in <span class="blue"><strong>blue bold</strong></span>:</p>
+<p>Most evaluation metrics for classification combine the entries of a confusion matrix in a mathematical formula that yields a single number.</p>
+<p>Such metrics and formulae can be quite opaque. Their definitions, and the motivations for their introduction, are often arbitrary or very case-specific. It’s common to find works where several metrics are used, because it’s unclear which one should be used. And the only hope is that most or all of them will agree at least on the rankings they lead to.</p>
+<section id="majority-votes-are-not-a-criterion-for-correctness" class="level4">
+<h4 class="anchored" data-anchor-id="majority-votes-are-not-a-criterion-for-correctness">Majority votes are not a criterion for correctness</h4>
+<p>Here are the scores that some popular metrics assign to algorithms <span style="display:inline-block;"><span class="math inline">\(\mathcal{A}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathcal{B}\)</span>,</span> based on the confusion matrices above. The better algorithm according to each metric is in <span class="blue"><strong>green bold</strong></span>:</p>
 <div class="columns">
 <div class="column" style="width:5%;">
 
@@ -920,41 +931,41 @@ ul.task-list li input[type="checkbox"] {
 <tr class="even">
 <td style="text-align: left;">Accuracy</td>
 <td style="text-align: center;">0.62</td>
-<td style="text-align: center;"><span class="blue"><strong>0.75</strong></span></td>
+<td style="text-align: center;"><span class="green"><strong>0.75</strong></span></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Precision</td>
 <td style="text-align: center;">0.64</td>
-<td style="text-align: center;"><span class="blue"><strong>0.70</strong></span></td>
+<td style="text-align: center;"><span class="green"><strong>0.70</strong></span></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Balanced Accuracy</td>
 <td style="text-align: center;">0.62</td>
-<td style="text-align: center;"><span class="blue"><strong>0.75</strong></span></td>
+<td style="text-align: center;"><span class="green"><strong>0.75</strong></span></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><span class="math inline">\(F_1\)</span> measure</td>
 <td style="text-align: center;">0.59</td>
-<td style="text-align: center;"><span class="blue"><strong>0.77</strong></span></td>
+<td style="text-align: center;"><span class="green"><strong>0.77</strong></span></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Matthews Correlation Coefficient</td>
 <td style="text-align: center;">0.24</td>
-<td style="text-align: center;"><span class="blue"><strong>0.51</strong></span></td>
+<td style="text-align: center;"><span class="green"><strong>0.51</strong></span></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Fowlkes-Mallows index</td>
 <td style="text-align: center;">0.59</td>
-<td style="text-align: center;"><span class="blue"><strong>0.78</strong></span></td>
+<td style="text-align: center;"><span class="green"><strong>0.78</strong></span></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">True-positive rate (recall)</td>
 <td style="text-align: center;">0.54</td>
-<td style="text-align: center;"><span class="blue"><strong>0.86</strong></span></td>
+<td style="text-align: center;"><span class="green"><strong>0.86</strong></span></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">True-negative rate (specificity)</td>
-<td style="text-align: center;"><span class="blue"><strong>0.70</strong></span></td>
+<td style="text-align: center;"><span class="green"><strong>0.70</strong></span></td>
 <td style="text-align: center;">0.64</td>
 </tr>
 </tbody>
@@ -963,8 +974,102 @@ ul.task-list li input[type="checkbox"] {
 
 </div>
 </div>
-<p>Almost all these evaluation metrics seem to agree on <span style="display:inline-block;"><span class="math inline">\(\mathcal{B}\)</span></span> being better. Yet, when put to actual use, <span style="display:inline-block;"><span class="math inline">\(\mathcal{B}\)</span></span> actually leads to a monetary <em>loss</em> of 3.5 $ per unit, whereas <span style="display:inline-block;"><span class="math inline">\(\mathcal{A}\)</span></span> leads to a monetary <em>gain</em> of 3.5 $ per unit!</p>
-<p>Decision Theory tells us why, and indeed can predict it from the confusion matrices above.</p>
+<p>Almost all these evaluation metrics seem to agree on <span style="display:inline-block;"><span class="math inline">\(\mathcal{B}\)</span></span> being better.</p>
+<p>Yet, when put to actual use, it turned out that <span style="display:inline-block;"><span class="math inline">\(\mathcal{B}\)</span></span> actually leads to a monetary <em>loss</em> of 3.5 $ per unit, whereas <span style="display:inline-block;"><span class="math inline">\(\mathcal{A}\)</span></span> leads to a monetary <em>gain</em> of 3.5 $ per unit!</p>
+</section>
+</section>
+<section id="decision-theory-as-the-basis-for-evaluation" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="decision-theory-as-the-basis-for-evaluation">Decision theory as the basis for evaluation</h3>
+<p>How is the surprising result above possible? Decision Theory tells us how, and can even correctly select the best algorithm from the confusion matrices above.</p>
+<p>As discussed in the preceding sections, each application to a new unit is a decision-making problem. Neither making nor evaluating a decision is possible unless we specify the utilities relevant to the problem. It turns out that the consequences in the present problem have the following monetary utilities:</p>
+<div class="columns">
+<div class="column" style="width:25%;">
+
+</div><div class="column" style="width:50%;">
+<table class="table-sm small table">
+<caption></caption>
+<colgroup>
+<col style="width: 30%">
+<col style="width: 30%">
+<col style="width: 30%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"></td>
+<td style="text-align: right;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span> is true</td>
+<td style="text-align: right;"><span class="math inline">\({\color[RGB]{238,102,119}\beta}\)</span> is true</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span> is chosen</td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{68,119,170}15 \$\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{68,119,170}-335 \$\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\({\color[RGB]{238,102,119}\beta}\)</span> is chosen</td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{68,119,170}-35 \$\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{68,119,170}165 \$\)</span></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:25%;">
+
+</div>
+</div>
+<p>This means that for every test unit of class <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span></span> that is classified as <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span>,</span> the algorithms yields <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}15 \$\)</span>;</span> for every test unit of class <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span></span> that is classified as <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\beta}\)</span>,</span> the algorithms yields <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}-35 \$\)</span>;</span> and so on. The total yield of each algorithm for the 100 test units can therefore be calculated by multiplying the four utilities above by the corresponding counts in the algorithm’s confusion matrix, and then taking the total. The average yield per unit is obtained dividing the total by the number of units, or directly using the normalized confusion matrix:</p>
+<div class="column-page-inset-right">
+<p><span class="math display">\[
+\begin{aligned}
+\text{$\mathcal{A}$'s average yield } &amp;=
+\bigl[27 \cdot {\color[RGB]{68,119,170}15 \$} +
+23 \cdot ({\color[RGB]{68,119,170}-35 \$}) +
+15 \cdot ({\color[RGB]{68,119,170}-335 \$}) +
+35 \cdot {\color[RGB]{68,119,170}165 \$}\bigr]/100
+\\[1ex]
+&amp;= \boldsymbol{\color[RGB]{68,119,170}+3.5 \$}
+\\[3ex]
+\text{$\mathcal{B}$'s average yield } &amp;=
+\bigl[43 \cdot {\color[RGB]{68,119,170}15 \$} +
+7 \cdot ({\color[RGB]{68,119,170}-35 \$}) +
+18 \cdot ({\color[RGB]{68,119,170}-335 \$}) +
+32 \cdot {\color[RGB]{68,119,170}165 \$}\bigr]/100
+\\[1ex]
+&amp;= \boldsymbol{\color[RGB]{170,51,119}-3.5 \$}
+\end{aligned}
+\]</span></p>
+</div>
+<p>This calculation tells us that <span style="display:inline-block;"><span class="math inline">\(\mathcal{A}\)</span></span> is better, and also gives us an idea of the actual utility it would produce.</p>
+</section>
+<section id="utilities-as-evaluation-metric" class="level3">
+<h3 class="anchored" data-anchor-id="utilities-as-evaluation-metric">Utilities as evaluation metric</h3>
+<p>The calculation above is exactly the one discussed in <a href="utilities.html#sec-utilities-metric">§ &nbsp;<span>36.5</span></a>, where we logically motivated the use of utilities as an evaluation metric. In the case of common machine-learning classifiers the logically correct evaluation metric and procedure are is thus straightforward:</p>
+<ol type="1">
+<li>find the utilities relevant to the specific problem under consideration, collect them into a utility matrix <span class="math inline">\(\boldsymbol{\color[RGB]{68,119,170}U}\)</span></li>
+<li>apply the classifier to a test set and build the confusion matrix <span class="math inline">\(\boldsymbol{\color[RGB]{238,102,119}C}\)</span></li>
+<li>multiply confusion and utility matrices element-wise and take the total</li>
+</ol>
+<p>What’s remarkable in this procedure is that it is not only logically well-founded, but also mathematically simple. The formula for the correct evaluation metric is just a linear combination of the confusion-matrix entries. This linearity is actually a subtle consequence of the axiom of independence discussed in <a href="utilities.html#sec-indep-axiom">§ &nbsp;<span>36.6</span></a>.</p>
+</section>
+<section id="popular-evaluation-metrics-the-good-and-the-bad" class="level3">
+<h3 class="anchored" data-anchor-id="popular-evaluation-metrics-the-good-and-the-bad">Popular evaluation metrics: the good and the bad</h3>
+<p>If an evaluation metric can be rewritten as a linear combination of the confusion-matrix entries, then it can be interpreted as arising from a set of utilities (although they might not be the ones appropriate to the problem).</p>
+<p>This is the case, for instance, of</p>
+<ul>
+<li><span class="green"><em>accuracy</em></span>, which turns out to correspond to the utility matrix <span class="math inline">\(\begin{bsmallmatrix} 1&amp;0\\0&amp;1 \end{bsmallmatrix}\)</span> or its non-binary analogues;</li>
+<li><span class="green"><em>true-positive rate</em></span>, which corresponds to <span class="math inline">\(\begin{bsmallmatrix} 1&amp;0\\0&amp;0 \end{bsmallmatrix}\)</span></li>
+<li><span class="green"><em>true-negative rate</em></span>, which corresponds to <span class="math inline">\(\begin{bsmallmatrix} 0&amp;0\\0&amp;1 \end{bsmallmatrix}\)</span></li>
+</ul>
+<p>If an evaluation metric cannot be rewritten in such a linear form, then it is breaking the axioms of Decision Theory, and is therefore guaranteed to carry some form of cognitive bias. The axiom of independence is specifically broken, because non-linearities imply some functional dependence of utilities on probabilities or vice versa.</p>
+<p>Some quite popular evaluation metrics turn out to break Decision Theory in this way:</p>
+<ul>
+<li><span class="purple"><em>precision</em></span></li>
+<li><span class="purple"><em><span class="math inline">\(F_1\)</span>-measure</em></span></li>
+<li><span class="purple"><em>Matthews correlation coefficient</em></span></li>
+<li><span class="purple"><em>Fowlkes-Mallows index</em></span></li>
+<li><span class="purple"><em>balanced accuracy</em></span></li>
+</ul>
+<p>The <span class="purple"><em>area under the curve of the receiving operating characteristic</em></span> (typically denoted “AUC”) is also an evaluation metric that breaks the axioms of Decision Theory, although it is not based on the confusion matrix.</p>
+<p><span class="small">This fact is actually funny, because the first papers (in the 1960s–1970s, referenced below) that discussed an evaluation method based on the receiver operating characteristic actually derived it from Decision Theory. The papers gave the correct procedure to use the receiver operating characteristic, and pointed out the “area under the curve” only as a quick but possibly erroneous heuristic procedure.</span></p>
+<p>It goes without saying that you should stay away from the cognitive-biased metrics above.</p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -976,13 +1081,15 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li>§ 0 of <a href="https://doi.org/10.31219/osf.io/7rz8t"><em>Does the evaluation stand up to evaluation?</em></a></li>
+<li><p><a href="https://hvl.instructure.com/courses/25074/modules/items/731180"><em>Decision processes in perception</em></a></p></li>
+<li><p><a href="https://hvl.instructure.com/courses/25074/modules/items/731179"><em>Basic principles of ROC analysis</em></a></p></li>
+<li><p>Skim through <a href="https://doi.org/10.31219/osf.io/7rz8t"><em>Does the evaluation stand up to evaluation?</em></a></p></li>
 </ul>
 </div>
 </div>
-<p><span class="yellow"><i class="fa-solid fa-person-digging" aria-label="person-digging"></i> <em>To be finished</em> <i class="fa-solid fa-person-digging" aria-label="person-digging"></i></span></p>
 
 
+</section>
 </section>
 
 
