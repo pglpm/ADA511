@@ -11,7 +11,7 @@ Many machine-learning textbooks say that
 
 Such statement is misleading, because it suggests that there is a functional relationship from input to output, or from predictor to predictand -- a functional relationship that's only waiting to be discovered and "learned". But as we discussed in [chapter @sec-ml-introduction], in many important tasks and applications this is actually not true: **there isn't any functional relationship between input and output at all**.^[This is one more reason why we use the more general terms "predictor" & "predictand", rather that "input" & "output".] Even if any possible "noise" were removed, there would still *not* be any functional relationship between the denoised predictor and predictand ([here is an example from image classification](steven-seagal-emotion-chart.jpg){.external}).
 
-In many important tasks there's only a *statistical* relationship between predictands and predictors. "Statistical" means that whenever a predictor has value $\green X\mo x$, the predictand value may out to be $\green Y\mo y'$ in some units, but also $\green Y\mo y''$ in some other units, and so on. As a simple example, consider the [Norwegian population in 2022](https://www.ssb.no/befolkning/folketall/statistikk/befolkning/artikler/slik-ser-befolkningen-i-norge-ut). If our predictand is *sex* and we take as predictor that a person's *age* is between `85--89 years`, then a proportion $43 542/(43 542 + 28 220) \approx 61\%$ of those persons have *sex*=`female`, and the remaining $39\%$ proportion has *sex*=`male`. This doesn't mean that, say, `female` is the "true" output, and `male` is just the effect of noise, or vice versa. That would be nonsense.
+In many important tasks there's only a *statistical* relationship between predictands and predictors. "Statistical" means that whenever a predictor has value $\green X\mo x$, the predictand value may out to be $\green Y\mo y'$ in some units, but also $\green Y\mo y''$ in some other units, and so on. As a simple example, consider the [Norwegian population in 2022](https://www.ssb.no/befolkning/folketall/statistikk/befolkning/artikler/slik-ser-befolkningen-i-norge-ut). If our predictand is $\mathit{sex}$ and we take as predictor that a person's $\mathit{age}$ is between $85$--$89$ years, then a proportion $43 542/(43 542 + 28 220) \approx 61\%$ of those persons have $\mathit{sex}\mo\cat{female}$, and the remaining $39\%$ proportion has $\mathit{sex}\mo\cat{male}$. This doesn't mean that, say, $\cat{female}$ is the "true" output, and $\cat{male}$ is just the effect of noise, or vice versa. That would be nonsense.
 
 Even in tasks where there actually is a functional relation from predictors to predictands, the agent typically doesn't know what is the function's output for particular predictor values, because no such values have been observed in the training data. It must interpolate or extrapolate what it has learned. Also in this case there are several possibilities to choose from.
 
@@ -48,18 +48,35 @@ The book [*Machine Learning*](https://hvl.instructure.com/courses/25074/modules/
 
 
 
-## Decisions, unknowns, and utilities {#sec-decisions-utilities}
+## Limitations of machine-learning classifiers (and estimators) {#sec-limit-class}
 
-### Decisions
+### Unknowns vs decisions
 
+Decision Theory makes a distinction between what is *unknown* to an agent ("outcomes"), and what the agent has to *choose* ("decisions"). This distinction is common in everyday problems. We may wonder whether it will rain in the next hour. The point of our wonder, however, is not  (except in some situations) the rain phenomenon per se, but its implications about what clothes or shoes we should wear, or about staying indoors or going out, or about going on foot or by car, and so on.
 
-In many decision-making problems in engineering and other fields, for instance medicine, the set of possible decisions does **not** have a correspondence with the set of unknown values.
+An important reason for this distinction is that the set of possible decisions often does **not** have a correspondence with the set of unknown possibilities. In fact, the two sets often have different number of elements. You can think of many situations in which you are unsure whether some event will happen or not, and you have *three* plans: one if you are almost sure the event will happen, one if you are almost sure the event will not happen, and a third "safe" plan if you are around 50%/50% uncertain. The "safe" plan typically has consequences that are neither too bad or too good, so that losses and gains are kept to a minimum. This example also shows why the probabilities of the outcomes are important, which is the reason Decision Theory takes them into account.
 
-For example, a clinician may be uncertain about the presence or absence of some medical condition -- let's say a disease -- and this uncertainty cannot be fully removed. The clinician's task is not simply to guess about the disease, but *to choose among different available treatments*. The crucial point about this choice is that its optimality depends on the *probability* that the disease is present, not on a simple "yes/no guess". Let's develop this example further in order to clearly see this point.
+\
 
-### Utilities
+Many present-day machine-learning algorithms are quite limited in this respect:
 
-The clinician has three treatments available: $\yA$, $\yB$, $\yC$. They have different intensities, which make them more or less effective against the disease, if present, but also less or more damaging to the patient if the disease is not present. Suppose that their efficacy and damage can be measured as the decrease in life expectancy for the patient. The effects are as follows:
+- their output is typically one of the unknown values, not one of the decisions
+- they don't give the probabilities of the unknown values
+
+This limitation may not be important in some tasks, for instance when you are classifying some images as "cat" or "dog" for the purpose of a photo album. But it is extremely important and impairing in serious applications, such as clinical ones. Let's illustrate this with a simple example.
+
+### A typical decision-making problem in medicine
+
+A clinician may be uncertain about the presence or absence of some medical condition, let's say a disease. This uncertainty cannot be fully removed. The clinician's task is **not simply to guess about the disease, but to choose among different available treatments**. Imagine you may have broken a bone, and the clinician simply tells you: "I guess it's broken, though I'm not fully sure. Goodbye!".
+
+Two crucial points about treatment choice are these:
+
+- there may be *more than two* possible treatments, even if the uncertainty is binary (disease present vs absent)
+- which treatment is optimal depends on the *probability* that the disease is present, not on a simple "yes/no guess"
+
+Neglecting both points can lead to disastrous consequences.
+
+For example suppose the clinician has three treatments available: $\yA$, $\yB$, $\yC$. They have different intensities, which make them more or less effective against the disease if present, but also less or more damaging to the patient if the disease is not present. Suppose that their efficacy and damage can be measured as the decrease in life expectancy for the patient. The effects are as follows:
 
 :::{.columns}
 
@@ -89,17 +106,13 @@ The clinician has three treatments available: $\yA$, $\yB$, $\yC$. They have dif
 ::::
 :::
 
-- treatment $\yA$ is mild (this could be the no-treatment option): under it, the patient is expected to live four years shorter if the disease is present, but the life expectancy is unaltered if the disease is not present
+- treatment $\yA$ is mild (it could actually be a no-treatment option): under it, the patient is expected to live four years shorter if the disease is present, but the life expectancy is unaltered if the disease is not present
 
 - treatment $\yB$ is intermediate: under it, the patient is expected to live only one year shorter if the disease is present, but also if the disease is not present, owing to the damage caused by this treatment
 
 - treatment $\yC$ is intensive: under it, the patient is expected not to lose extra years if the disease is present, but will lose four years if the disease is not present, owing to the heavy damage caused by this treatment.
 
-Which of the treatments above should the clinician choose?
-
-### Optimal decision
-
-Let's consider three scenarios. In each scenario, the clinician has prescribed several clinical tests (the predictors) for the patient, and obtained their results.
+Which of the treatments above should the clinician choose? We now know how the clinician should make the optimal decision, but let's explore the possible consequences of not making it, in three different scenarios. In each scenario, the clinician has prescribed several clinical tests (the predictors) for the patient, and obtained their results.
 
 #### Scenario 1: 10%/90%
 
@@ -132,6 +145,8 @@ $$
 
 Clearly the best decision is treatment $\yA$. It is possible that, unfortunately, the present patient's life will be shortened; but this treatment was the patient's and clinician's best bet.
 
+In this scenario, a clinician that doesn't choose the optimal treatment is on average taking away from each patient between 7 months a 3 years of life more than was unavoidable
+
 
 #### Scenario 2: 50%/50%
 
@@ -163,7 +178,9 @@ $$
 = \boldsymbol{-200\yr}
 $$
 
-The best decision is treatment $\yB$. A clinician who chose treatments $\yA$ or $\yC$ for patients having the same predictors as the present patient would on average *reduce* the life expectancy of each patient by one extra year.
+The best decision is treatment $\yB$.
+
+In this scenario, a clinician who chooses treatments $\yA$ or $\yC$ for patients having the same predictors as the present patient is on average taking away one extra year of life from each patient.
 
 #### Scenario 3: 90%/10%
 
@@ -195,25 +212,23 @@ $$
 
 Treatment $\yC$ is the best decision in this scenario, for reasons complementary to those of scenario 1.
 
+In this scenario, like in the first, a clinician that doesn't choose the optimal treatment is on average taking away between 7 months a 3 years of life more than was unavoidable, from each patient.
+
+
 \
 
-The reasoning behind each scenario and its corresponding optimal decision is quite intuitive.
-
-In each scenario, note that *any* decision strategy different from "sticking to the optimal decision" would lead to suboptimal results -- reduced lives. In scenario 1, for instance, a decision strategy such as "[choose treatment $\yA$ most of the time, and treatment $\yB$ from time to time]{.lightblue}" would lead to reduced lives. This is clear from the following graph, which shows the average reduction in life expectancy for each treatment, depending on the percentage of patients with the disease:
+In each scenario, note that *any* decision strategy different from "sticking to the optimal decision" leads to suboptimal results -- that is, lives shortened more than what was unavoidable. In scenario 1, for instance, a decision strategy such as "[choose treatment $\yA$ most of the time, and treatment $\yB$ from time to time]{.midgrey}" leads to an additional life shortening of several months. This is clear from the following graph, which shows the average reduction in life expectancy for each treatment, depending on the percentage of patients with the disease:
 
 ![](utilities_treatments.png){width=100%}
 
-Consider the vertical line with probability 0.1. Any strategy mixing treatment $\yA$ with any of the other two can only increase the reduction in expected-life.
+Consider the vertical line corresponding to probability 0.1. Any strategy that mixes treatment $\yA$ with any of the other two will only reduce the life expectancy. This is true for any other probability values and their corresponding optimal treatments.
 
 From the plot we can see that treatment $\yA$ is optimal if the probability that the disease is present is below $25\%$, treatment $\yC$ is optimal if the probability is above $75\%$, and treatment $\yB$ for intermediate probabilities.
-
-\
-
-[Although the intuitive reasoning above has somewhat been phrased in terms of frequency, it's the *probability* -- the clinician's degree of belief -- that counts.]{.red} Try to reason about this point through the following exercise:
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
 
+[Although the intuitive reasoning above has somewhat been phrased in terms of frequency, it's the *probability* -- the clinician's degree of belief -- that counts.]{.red} Try to reason about this point through the following exercise:
 
 Consider a clinician uncertain with 50% probability that the present patient belongs to a 10%/90% frequency subpopulation, and with 50% that the patient belongs to a 90%/10% frequency subpopulation. And unfortunately this uncertainty cannot be removed by further clinical tests. Which treatment should this clinician choose? why?
 
@@ -229,16 +244,17 @@ Consider a clinician uncertain with 50% probability that the present patient bel
 :::
 
 
-## Decisions: limitations of present-day machine-learning algorithms
+### Sub-optimality of a typical machine-learning algorithm
 
-The clinical example above shows that decisions are often different from the unknown values, and there isn't any one-to-one connection among decisions and unknowns. We cannot say, for instance, that treatment $\yC$ "corresponds" to the presence of the disease, because the best treatment is actually $\yB$, not $\yC$, if the probability for $\dise\mo\yy$ is above 50% but below 75%.
+The clinical example above shows that there isn't any one-to-one connection between decisions and unknowns. We cannot say, for instance, that treatment $\yC$ "corresponds" to the presence of the disease, because the best treatment is actually $\yB$, not $\yC$, if the probability for $\dise\mo\yy$ is above 50% but below 75%.
 
-Many or most present-day machine-learning algorithms focus on the unknown variate-value and don't yield any probabilities. This limitation makes it impossible to determine the optimal decision; such algorithms sub-optimal by construction.
+<!-- Many or most present-day machine-learning algorithms focus on the unknown variate-value and don't yield any probabilities. This limitation makes it impossible to determine the optimal decision; such algorithms sub-optimal by construction. -->
 
-Imagine, for instance, that the clinician inputs the patient's predictors into a neural network, trained to output a guess about the presence or absence of the disease. The neural network outputs `yes`. Which treatment should the clinician choose? It's known that the neural network can err.
+Now imagine that the clinician inputs the patient's predictors into a neural network, trained to give an output about the presence or absence of the disease. The neural network outputs `yes`, but it's known that the neural network can err. Which treatment should the clinician choose?
 
-- Does the output `yes` means that the probability for $\dise\mo\yy$ was above 50%? Then the clinician doesn't know whether it's above or below 75%, and can't make the optimal choice between $\yC$ and $\yB$.
-- Is the output `yes` produced with a particular probability? But what is this probability? The output could be $\yy$ even if the probability were less than 50% or 25%. Then neither in this case can the clinician make the optimal choice between the three treatments.
+- Does the output `yes` mean that the probability for $\dise\mo\yy$ was above 50%? Then the clinician doesn't know whether it's above or below 75%, and can't make the optimal choice between $\yC$ and $\yB$. At best the clinician can unsystematically alternate between these two treatments, but as we saw above this mixture is sub-optimal.
+
+- Is the output `yes` produced with a particular probability? But what is this probability? The output could be $\yy$ even if the probability were less than 50% or 25%. Then neither in this case can the clinician make the optimal choice between all three treatments. And a mixture of all three is again sub-optimal.
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
@@ -248,6 +264,45 @@ Could the clinician deduce an approximate probability by looking at the statisti
 Explore and maybe even implement this possibility.
 
 :::
+
+### Output weights are *not* probabilities!
+
+Some machine-learning algorithms are capable of giving a continuous "score" or "weight" between 0 and 1, instead of a simple "guessed unknown" answer. But unfortunately, typically **such weights are not probabilities or frequencies**, even if there may be some association between the weight and the probability or frequency.
+
+A real example of this mismatch is evident in the following plot. It shows the 0–1 output weight given by a random forest in a binary-classification task (for drug discovery) on a test set, versus the actual frequency of the corresponding class:
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+[*Don't guess what's true: choose what's optimal. A probability transducer for machine-learning classifiers*](https://doi.org/10.31219/osf.io/vct9y)
+:::
+::::
+
+![](mismatch_freq_weight.png){width=100%}
+
+Imagine what would happen if the clinician from our example above *mistook* the output weight for a probability:
+
+- [{{< fa regular face-grin-beam-sweat >}}]{.yellow}\ \ Output weight in the [range $0$--$0.25$]{.midgrey}: the clinician would choose treatment $\yA$. Luckily the upper boundary of this weight range approximately corresponds to a frequency of $0.25$, so in this case the clinician would be choosing the optimal treatment.
+
+- [{{< fa regular face-grin-beam-sweat >}}]{.yellow}\ \ Output weight in the [range $0.25$--$0.5$]{.midgrey}: the clinician would choose treatment $\yB$. Luckily the upper boundary of this weight range approximately corresponds to a frequency of $0.75$ (note the mismatch), so in this case the clinician would be choosing the optimal treatment.
+
+- [{{< fa regular frown >}}]{.red}\ \ Output weight in the [range $0.5$--$0.75$]{.midgrey}: the clinician would choose treatment $\yB$. But the corresponding frequency is approximately between $0.75$--$0.9$, so the optimal treatment is actually $\yC$. As calculated in Scenario 3 above, the clinician would be then be shortening the patient's life by 7 months more than was unavoidable.
+
+- [{{< fa regular face-grin-beam-sweat >}}]{.yellow}\ \ Output weight in the [range $0.75$--$1$]{.midgrey}: the clinician would choose treatment $\yC$. Luckily this corresponds to an approximate frequency range $0.9$--$0.92$, where treatment $\yC$ is indeed optimal.
+
+
+Note that we cannot say "the suboptimal treatment is chosen one out of four times", because in this example we don't know how many patients end up having a weight in the [$0.5$--$0.75$]{.midgrey} range. In a concrete case it could be that 90% of the patients end up in this range, which would mean that the misuse of the output weight would lead to a suboptimal treatment in 90% of cases.
+
+:::{.callout-important}
+## {{< fa exclamation-triangle >}} Don't use misleading terminology
+
+Please don't call the score or weight output of a machine-learning algorithm a "probability", unless you've first made sure that it actually is a probability. Just because some numbers are positive and sum up to one doesn't mean that they are a probability distribution.
+
+Using this kind of mistaken terminology shows downright **scientific incompetence**, and its consequences are borderline **scientific malpractice**.
+:::
+
+
+
 
 ::: {.callout-warning}
 ## {{< fa book >}} Study reading
