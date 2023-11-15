@@ -265,41 +265,56 @@ Explore and maybe even implement this possibility.
 
 :::
 
-### Output weights are *not* probabilities!
+### Output scores or weights are *not* probabilities!
 
-Some machine-learning algorithms are capable of giving a continuous "score" or "weight" between 0 and 1, instead of a simple "guessed unknown" answer. But unfortunately, typically **such weights are not probabilities or frequencies**, even if there may be some association between the weight and the probability or frequency.
+Some machine-learning algorithms are capable of giving a continuous "score" or "weight" between 0 and 1, instead of a simple "guessed unknown" answer. But unfortunately, typically **such scores are not probabilities or frequencies**, even if there may be some association between the weight and the probability or frequency.
 
-A real example of this mismatch is evident in the following plot. It shows the 0–1 output weight given by a random forest in a binary-classification task (for drug discovery) on a test set, versus the actual frequency of the corresponding class:
-
-::::{.column-margin}
-::: {.callout-tip}
-## {{< fa rocket >}} For the extra curious
-[*Don't guess what's true: choose what's optimal. A probability transducer for machine-learning classifiers*](https://doi.org/10.31219/osf.io/vct9y)
-:::
-::::
+A real-life example of this mismatch is evident in the following plot (see "for the extra curious" below for references). It shows the 0–1 output score given by a random forest in a binary-classification task (for drug discovery) on a test set, versus the actual frequency of the corresponding class:
 
 ![](mismatch_freq_weight.png){width=100%}
 
-Imagine what would happen if the clinician from our example above *mistook* the output weight for a probability:
+Imagine what would happen if the clinician from our example above *mistook* the output score for a probability:
 
-- [{{< fa regular face-grin-beam-sweat >}}]{.yellow}\ \ Output weight in the [range $0$--$0.25$]{.midgrey}: the clinician would choose treatment $\yA$. Luckily the upper boundary of this weight range approximately corresponds to a frequency of $0.25$, so in this case the clinician would be choosing the optimal treatment.
+- [{{< fa regular face-grin-beam-sweat >}}]{.yellow}\ \ Output score in the [range $0$--$0.25$]{.midgrey}: the clinician would choose treatment $\yA$. Luckily the upper boundary of this score range approximately corresponds to a frequency of $0.25$, so in this case the clinician would be choosing the optimal treatment.
 
-- [{{< fa regular face-grin-beam-sweat >}}]{.yellow}\ \ Output weight in the [range $0.25$--$0.5$]{.midgrey}: the clinician would choose treatment $\yB$. Luckily the upper boundary of this weight range approximately corresponds to a frequency of $0.75$ (note the mismatch), so in this case the clinician would be choosing the optimal treatment.
+- [{{< fa regular face-grin-beam-sweat >}}]{.yellow}\ \ Output score in the [range $0.25$--$0.5$]{.midgrey}: the clinician would choose treatment $\yB$. Luckily the upper boundary of this score range approximately corresponds to a frequency of $0.75$ (note the mismatch), so in this case the clinician would be choosing the optimal treatment.
 
-- [{{< fa regular frown >}}]{.red}\ \ Output weight in the [range $0.5$--$0.75$]{.midgrey}: the clinician would choose treatment $\yB$. But the corresponding frequency is approximately between $0.75$--$0.9$, so the optimal treatment is actually $\yC$. As calculated in Scenario 3 above, the clinician would be then be shortening the patient's life by 7 months more than was unavoidable.
+- [{{< fa regular frown >}}]{.red}\ \ Output score in the [range $0.5$--$0.75$]{.midgrey}: the clinician would choose treatment $\yB$. But the corresponding frequency is approximately between $0.75$--$0.9$, so the optimal treatment is actually $\yC$. As calculated in Scenario 3 above, the clinician would be then be shortening the patient's life by 7 months more than was unavoidable.
 
-- [{{< fa regular face-grin-beam-sweat >}}]{.yellow}\ \ Output weight in the [range $0.75$--$1$]{.midgrey}: the clinician would choose treatment $\yC$. Luckily this corresponds to an approximate frequency range $0.9$--$0.92$, where treatment $\yC$ is indeed optimal.
+- [{{< fa regular face-grin-beam-sweat >}}]{.yellow}\ \ Output score in the [range $0.75$--$1$]{.midgrey}: the clinician would choose treatment $\yC$. Luckily this corresponds to an approximate frequency range $0.9$--$0.92$, where treatment $\yC$ is indeed optimal.
 
 
-Note that we cannot say "the suboptimal treatment is chosen one out of four times", because in this example we don't know how many patients end up having a weight in the [$0.5$--$0.75$]{.midgrey} range. In a concrete case it could be that 90% of the patients end up in this range, which would mean that the misuse of the output weight would lead to a suboptimal treatment in 90% of cases.
+Note that we cannot say "the suboptimal treatment is chosen one out of four times", because in this example we don't know how many patients end up having a score in the [$0.5$--$0.75$]{.midgrey} range. In a concrete case it could be that 90% of the patients end up in this range, which would mean that the misuse of the output score would lead to a suboptimal treatment in 90% of cases.
+
+\
+
+Another real example of the difference between weights or scores and probabilities is shown in the plot below, obtained by applying a neural network to the same binary-classification task on a test set. The *x*-axis shows the internal output-layer weight that the neural network assign to one class (more precisely, the diagonal where the two output-layer weights have equal values). The *y*-axis shows the frequency of that class. Typically a ["softmax" or sigmoid function](https://mathworld.wolfram.com/SigmoidFunction.html) is applied to the output-layer weights, in order to obtain positive, normalized scores that are often miscalled "probabilities". The softmax in the present case is shown as the [dashed grey line]{.midgrey}.
+
+![](mismatch_freq_weight_NN.png){width=100%}
+
+We can observe an even worse mismatch that in the random-forest case. For instance, if the softmax is between $0$--$0.25$, then the output-layer weight must have been less than approximately $-0.5$, which in turn means that the actual frequency could be anywhere between $0$ and $0.5$.
+
+In both plots above, notice how the probability for each class can never be higher than around $92\%$, yet the weights or scores go up to $1$.
+
 
 :::{.callout-important}
 ## {{< fa exclamation-triangle >}} Don't use misleading terminology
 
-Please don't call the score or weight output of a machine-learning algorithm a "probability", unless you've first made sure that it actually is a probability. Just because some numbers are positive and sum up to one doesn't mean that they are a probability distribution.
+Please don't call the score or weight output of a machine-learning algorithm a "probability" or "frequency", unless you've first made sure that it actually is a probability or frequency. Just because some numbers are positive and sum up to one doesn't mean that they are a probability distribution.
 
-Using this kind of mistaken terminology shows downright **scientific incompetence**, and its consequences are borderline **scientific malpractice**.
+Using this kind of mistaken terminology shows downright [**scientific incompetence**]{.purple}, and its consequences are borderline [**scientific malpractice**]{.purple}.
 :::
+
+\
+
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+[*Don't guess what's true: choose what's optimal. A probability transducer for machine-learning classifiers*](https://doi.org/10.31219/osf.io/vct9y)
+:::
+
+
+## Evaluation metrics: the good and the bad {#sec-eval-metrics}
+
 
 
 
