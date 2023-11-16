@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-15">
+<meta name="dcterms.date" content="2023-11-16">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 39&nbsp; Decisions: limitations of present-day machine-learning algorithms</title>
 <style>
@@ -98,7 +98,7 @@ ul.task-list li input[type="checkbox"] {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-15</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-16</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -505,7 +505,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-15</p>
+      <p class="date">2023-11-16</p>
     </div>
   </div>
   
@@ -1050,6 +1050,36 @@ ul.task-list li input[type="checkbox"] {
 <li>multiply confusion and utility matrices element-wise and take the total</li>
 </ol>
 <p>What’s remarkable in this procedure is that it is not only logically well-founded, but also mathematically simple. The formula for the correct evaluation metric is just a linear combination of the confusion-matrix entries. This linearity is actually a subtle consequence of the axiom of independence discussed in <a href="utilities.html#sec-indep-axiom">§ &nbsp;<span>36.6</span></a>.</p>
+<p>Note something very important:</p>
+<div class="callout callout-style-default callout-important no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i> Don’t do class balancing!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This procedure requires that the test set be a representative, unsystematic sample of the actual population of interest. In particular, <strong>the proportions of classes in the test set should reflect their frequencies in real application</strong>. No “class balancing” should be performed.</p>
+</div>
+</div>
+<p>The evaluation based on decision theory automatically takes into account “class balance” and its interaction with the utilities relevant to the task.</p>
+<p>There are problems for which the simple strategy “<span class="yellow">always choose class <span class="math inline">\(\dotso\)</span></span>” is optimal, given the predictors available in the problem. So this strategy cannot be beaten by “improving” or finding a “better” algorithm: such endeavour is only a waste of time. The reason is that the maximal information that the predictors can give about the predictand is not enough to sharpen probabilities above the thresholds determined by the utilities. This maximal information is an intrinsic properties of predictors and predictands, so it cannot be improved by fiddling with algorithms. The only way for improvement is to find other predictors.</p>
+<p>“Class balancing” does not solve this problem. It transforms the actual task into a <em>different</em> task, where maybe some algorithm can show improvement, simply because we have changed the population statistics and therefore the mutual information between predictors and predictands. But as soon as we get back to reality, to the actual task, the situation will be as before.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-book" aria-label="book"></i> Study reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://hvl.instructure.com/courses/25074/modules/items/731407"><em>Severe Class Imbalance: Why Better Algorithms Aren’t the Answer</em></a></p>
+</div>
+</div>
 </section>
 <section id="popular-evaluation-metrics-the-good-and-the-bad" class="level3">
 <h3 class="anchored" data-anchor-id="popular-evaluation-metrics-the-good-and-the-bad">Popular evaluation metrics: the good and the bad</h3>

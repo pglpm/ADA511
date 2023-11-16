@@ -467,6 +467,24 @@ The calculation above is exactly the one discussed in [§ @sec-utilities-metri
 What's remarkable in this procedure is that it is not only logically well-founded, but also mathematically simple. The formula for the correct evaluation metric is just a linear combination of the confusion-matrix entries.
 This linearity is actually a subtle consequence of the axiom of independence discussed in [§ @sec-indep-axiom].
 
+Note something very important: 
+
+:::{.callout-important}
+## {{< fa exclamation-triangle >}} Don't do class balancing!
+
+This procedure requires that the test set be a representative, unsystematic sample of the actual population of interest. In particular, **the proportions of classes in the test set should reflect their frequencies in real application**. No "class balancing" should be performed.
+:::
+
+The evaluation based on decision theory automatically takes into account "class balance" and its interaction with the utilities relevant to the task.
+
+There are problems for which the simple strategy "[always choose class $\dotso$]{.yellow}" is optimal, given the predictors available in the problem. So this strategy cannot be beaten by "improving" or finding a "better" algorithm: such endeavour is only a waste of time. The reason is that the maximal information that the predictors can give about the predictand is not enough to sharpen probabilities above the thresholds determined by the utilities. This maximal information is an intrinsic properties of predictors and predictands, so it cannot be improved by fiddling with algorithms. The only way for improvement is to find other predictors.
+
+"Class balancing" does not solve this problem. It transforms the actual task into a *different* task, where maybe some algorithm can show improvement, simply because we have changed the population statistics and therefore the mutual information between predictors and predictands. But as soon as we get back to reality, to the actual task, the situation will be as before.
+
+::: {.callout-warning}
+## {{< fa book >}} Study reading
+[*Severe Class Imbalance: Why Better Algorithms Aren't the Answer*](https://hvl.instructure.com/courses/25074/modules/items/731407)
+:::
 
 ### Popular evaluation metrics: the good and the bad
 
