@@ -487,7 +487,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-confusion" id="toc-sec-confusion" class="nav-link active" data-scroll-target="#sec-confusion"><span class="header-section-number">40.1</span> Confusion matrices and confusing evaluation metrics</a>
+  <li><a href="#sec-confusion" id="toc-sec-confusion" class="nav-link active" data-scroll-target="#sec-confusion"><span class="header-section-number">40.1</span> Confusion matrices and evaluation metrics</a>
   <ul class="collapse">
   <li><a href="#majority-votes-are-not-a-criterion-for-correctness" id="toc-majority-votes-are-not-a-criterion-for-correctness" class="nav-link" data-scroll-target="#majority-votes-are-not-a-criterion-for-correctness">Majority votes are not a criterion for correctness</a></li>
   </ul></li>
@@ -537,7 +537,7 @@ ul.task-list li input[type="checkbox"] {
 \]</span></p>
 </div>
 <section id="sec-confusion" class="level2" data-number="40.1">
-<h2 data-number="40.1" class="anchored" data-anchor-id="sec-confusion"><span class="header-section-number">40.1</span> Confusion matrices and confusing evaluation metrics</h2>
+<h2 data-number="40.1" class="anchored" data-anchor-id="sec-confusion"><span class="header-section-number">40.1</span> Confusion matrices and evaluation metrics</h2>
 <p>Machine-learning methodology uses a disconcerting variety of evaluation metrics to try to quantify, compare, rank the performances of one or more algorithms.</p>
 <p>For machine-learning classifiers many of these metrics are constructed from the so-called “confusion matrix”. The basic idea behind it is to test the algorithms of interest on a test dataset (the same for all), and then count for how many units the algorithm outputs value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}y^{*}}\)</span></span> when the true value of the unknown is <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y\)</span>,</span> for all combinations of possible <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}y^{*}}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}y}\)</span>.</span></p>
 <p>Imagine for instance a binary-classification task with classes <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\beta}\)</span>.</span> It could be the electronic-component scenario we met in the first chapters, with class <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span></span> being “<span class="midgrey">the electronic component will function for at least a year</span>”, and class <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\beta}\)</span></span> “<span class="midgrey">the electronic component will fail within a year of use</span>”.</p>
@@ -609,10 +609,10 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <p>These matrices can also be normalized, dividing every entry by the total number of test units. Various aspects can be read from the confusion matrices above. Algorithm <span style="display:inline-block;"><span class="math inline">\(\mathcal{B}\)</span>,</span> for example, seems better than <span style="display:inline-block;"><span class="math inline">\(\mathcal{A}\)</span></span> at inferring class <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span>,</span> but slightly worse at inferring class <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\beta}\)</span>.</span></p>
 <p>Most evaluation metrics for classification combine the entries of a confusion matrix in a mathematical formula that yields a single number.</p>
-<p>Such metrics and formulae can be quite opaque. Their definitions, and the motivations for their introduction, are often arbitrary or very case-specific. It’s common to find works where several metrics are used, because it’s unclear which one should be used. And the only hope is that most or all of them will agree at least on the rankings they lead to.</p>
+<p>Such metrics and formulae can be quite opaque. Their definitions and their motivations are often arbitrary or very case-specific. It’s common to find works where several metrics are used because it’s unclear which single one should be used. And the only hope is that most or all of them will agree at least on the rankings they lead to. However,…</p>
 <section id="majority-votes-are-not-a-criterion-for-correctness" class="level3">
 <h3 class="anchored" data-anchor-id="majority-votes-are-not-a-criterion-for-correctness">Majority votes are not a criterion for correctness</h3>
-<p>Here are the scores that some popular metrics assign to algorithms <span style="display:inline-block;"><span class="math inline">\(\mathcal{A}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathcal{B}\)</span>,</span> based on the confusion matrices above. The better algorithm according to each metric is in <span class="blue"><strong>green bold</strong></span>:</p>
+<p>Here are the scores that some popular metrics assign to algorithms <span style="display:inline-block;"><span class="math inline">\(\mathcal{A}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathcal{B}\)</span>,</span> based on their confusion matrices above. The better algorithm according to each metric is indicated in <span class="blue"><strong>green bold</strong></span>. Almost all these evaluation metrics seem to agree that <span style="display:inline-block;"><span class="math inline">\(\mathcal{B}\)</span></span> should be the best of the two:</p>
 <div class="columns">
 <div class="column" style="width:5%;">
 
@@ -676,7 +676,6 @@ ul.task-list li input[type="checkbox"] {
 
 </div>
 </div>
-<p>Almost all these evaluation metrics seem to agree on <span style="display:inline-block;"><span class="math inline">\(\mathcal{B}\)</span></span> being better.</p>
 <p>Yet, when put to actual use, it turns out that <span style="display:inline-block;"><span class="math inline">\(\mathcal{B}\)</span></span> actually leads to a monetary <em>loss</em> of 3.5 $ per unit, whereas <span style="display:inline-block;"><span class="math inline">\(\mathcal{A}\)</span></span> leads to a monetary <em>gain</em> of 3.5 $ per unit!</p>
 </section>
 </section>
@@ -717,8 +716,8 @@ ul.task-list li input[type="checkbox"] {
 
 </div>
 </div>
-<p>These values may be determined by the combination of sale revenue, disposal costs, warranty refunds, and similar factors.</p>
-<p>The utility matrix above says that for every test unit of true class <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span></span> (will function for at least a year) that is classified as <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span></span> (and therefore sent for sale) by the algorithms, the production company gains <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}15 \$\)</span>;</span> for every test unit of class <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span></span> that is classified as <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\beta}\)</span></span> (and therefore discarded) by the algorithms, the production company “gains” <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}-35 \$\)</span>;</span> and so on. The total yield from each algorithm on the 100 test units can therefore be calculated by multiplying the four utilities above by the corresponding counts in the algorithm’s confusion matrix, and then taking the total. The average yield per unit is obtained dividing the total by the number of units, or directly using the normalized confusion matrix:</p>
+<p>These utility values may be determined by the combination of sale revenue, disposal costs, warranty refunds, and similar factors.</p>
+<p>The utility matrix above says that for every test unit of true class <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span></span> (the unit will function for at least a year) that the algorithm classifies as <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span></span> (and therefore sends for sale), the production company gains <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}15 \$\)</span>;</span> for every test unit of class <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\alpha}\)</span></span> that the algorithm classifies as <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\beta}\)</span></span> (and therefore discards), the production company gains <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}-35 \$\)</span></span> (so actually a loss); and so on. The total yield from each algorithm on the 100 test units can therefore be calculated by multiplying the four utilities above by the corresponding counts in the confusion matrix, and then taking the total. The average yield per unit is obtained dividing the total by the number of units, or directly using the normalized confusion matrix:</p>
 <div class="column-page-inset-right">
 <p><span class="math display">\[
 \begin{aligned}
@@ -740,7 +739,7 @@ ul.task-list li input[type="checkbox"] {
 \end{aligned}
 \]</span></p>
 </div>
-<p>This calculation tells us that <span style="display:inline-block;"><span class="math inline">\(\mathcal{A}\)</span></span> is better, and also gives us an idea of the actual utility it would produce.</p>
+<p>This calculation tells us that <span style="display:inline-block;"><span class="math inline">\(\mathcal{A}\)</span></span> is better, and also gives us an idea of the actual utilities that the two algorithms would yield.</p>
 <section id="utilities-as-evaluation-metric" class="level3">
 <h3 class="anchored" data-anchor-id="utilities-as-evaluation-metric">Utilities as evaluation metric</h3>
 <p>The calculation above is exactly the one discussed in <a href="utilities.html#sec-utilities-metric">§ &nbsp;<span>36.5</span></a>, where we logically motivated the use of utilities as an evaluation metric. In the case of common machine-learning classifiers the logically correct evaluation metric and procedure are is thus straightforward:</p>
