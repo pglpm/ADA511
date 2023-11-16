@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-14">
+<meta name="dcterms.date" content="2023-11-16">
 
 <title>ADA511 0.1 Data science and data-driven engineering - 38&nbsp; The prototype Optimal Predictor Machine makes decisions</title>
 <style>
@@ -133,7 +133,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-14</span></a> 
+      <a href="./">ADA511 <span class="small grey">0.1</span> <br><span class="small grey">updated 2023-11-16</span></a> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -505,7 +505,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#build-opm-agent" id="toc-build-opm-agent" class="nav-link active" data-scroll-target="#build-opm-agent"><span class="header-section-number">38.1</span> Build OPM agent</a></li>
+  <li><a href="#initialization-and-build-of-opm-agent" id="toc-initialization-and-build-of-opm-agent" class="nav-link active" data-scroll-target="#initialization-and-build-of-opm-agent"><span class="header-section-number">38.1</span> Initialization and build of OPM agent</a></li>
   <li><a href="#decision-matrix" id="toc-decision-matrix" class="nav-link" data-scroll-target="#decision-matrix"><span class="header-section-number">38.2</span> Decision matrix</a></li>
   <li><a href="#example-application" id="toc-example-application" class="nav-link" data-scroll-target="#example-application"><span class="header-section-number">38.3</span> Example application</a></li>
   <li><a href="#performance-on-test-set" id="toc-performance-on-test-set" class="nav-link" data-scroll-target="#performance-on-test-set"><span class="header-section-number">38.4</span> Performance on test set</a></li>
@@ -528,7 +528,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-14</p>
+      <p class="date">2023-11-16</p>
     </div>
   </div>
   
@@ -550,7 +550,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="hidden">
 
 </div>
-<p><span class="yellow"><i class="fa-solid fa-person-digging" aria-label="person-digging"></i> <em>Under construction</em> <i class="fa-solid fa-person-digging" aria-label="person-digging"></i></span></p>
+<p>It is straightforward to implement decision-making in our prototype Optimal Predictor Machine. Let’s continue with the example from <a href="example_opm1.html">chapter&nbsp;&nbsp;<span>35</span></a>.</p>
+<section id="initialization-and-build-of-opm-agent" class="level2" data-number="38.1">
+<h2 data-number="38.1" class="anchored" data-anchor-id="initialization-and-build-of-opm-agent"><span class="header-section-number">38.1</span> Initialization and build of OPM agent</h2>
+<p>Load the necessary libraries and functions, including the <code>decide()</code> function, and train the agent as we did previously:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'data.table'</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'extraDistr'</span>)</span>
@@ -566,23 +569,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'rF.R'</span>)</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'plotFsamples1D.R'</span>)</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repr.plot.width=</span><span class="dv">6</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">repr.plot.height=</span><span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<section id="build-opm-agent" class="level2" data-number="38.1">
-<h2 data-number="38.1" class="anchored" data-anchor-id="build-opm-agent"><span class="header-section-number">38.1</span> Build OPM agent</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>opmall <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(<span class="at">metadata=</span><span class="st">'meta_income_data_example.csv'</span>,</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data=</span><span class="st">'train-income_data_example.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repr.plot.width=</span><span class="dv">6</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">repr.plot.height=</span><span class="dv">6</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>opmall <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(<span class="at">metadata=</span><span class="st">'meta_income_data_example.csv'</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data=</span><span class="st">'train-income_data_example.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="decision-matrix" class="level2" data-number="38.2">
 <h2 data-number="38.2" class="anchored" data-anchor-id="decision-matrix"><span class="header-section-number">38.2</span> Decision matrix</h2>
-<p>We use the targeted-advertisement scenario of <a href="making_decisions.html#sec-max-exp-util-example">§ &nbsp;<span>37.2</span></a>.</p>
-<p>Utility matrix: assumed to be the same at each instance</p>
+<p>We use the targeted-advertisement scenario of <a href="making_decisions.html#sec-max-exp-util-example">§ &nbsp;<span>37.2</span></a>, with the following utility matrix for the three ad-types:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>adutilities <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">3</span>, <span class="dv">2</span>,<span class="dv">2</span>, <span class="dv">3</span>,<span class="sc">-</span><span class="dv">1</span>), <span class="at">nrow=</span><span class="dv">3</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>, <span class="at">dimnames=</span><span class="fu">list</span>(<span class="at">ad_type=</span><span class="fu">c</span>(<span class="st">'A'</span>,<span class="st">'B'</span>,<span class="st">'C'</span>), <span class="at">income=</span><span class="fu">c</span>(<span class="st">'&lt;=50K'</span>, <span class="st">'&gt;50K'</span>)))</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(adutilities)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>adutilities <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">3</span>, <span class="dv">2</span>,<span class="dv">2</span>, <span class="dv">3</span>,<span class="sc">-</span><span class="dv">1</span>), <span class="at">nrow=</span><span class="dv">3</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>, <span class="at">dimnames=</span><span class="fu">list</span>(<span class="at">ad_type=</span><span class="fu">c</span>(<span class="st">'A'</span>,<span class="st">'B'</span>,<span class="st">'C'</span>), <span class="at">income=</span><span class="fu">c</span>(<span class="st">'&lt;=50K'</span>, <span class="st">'&gt;50K'</span>)))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(adutilities)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       income
 ad_type &lt;=50K &gt;50K
@@ -594,27 +593,28 @@ ad_type &lt;=50K &gt;50K
 </section>
 <section id="example-application" class="level2" data-number="38.3">
 <h2 data-number="38.3" class="anchored" data-anchor-id="example-application"><span class="header-section-number">38.3</span> Example application</h2>
-<p>Same example as in <a href="making_decisions.html#sec-max-exp-util-example">§ &nbsp;<span>37.2</span></a>:</p>
+<p>First let’s apply the principle of maximal expected utility step-by-step.</p>
+<p>Consider the example from <a href="making_decisions.html#sec-max-exp-util-example">§ &nbsp;<span>37.2</span></a>. The agent calculates the probabilities for the predictand <code>income</code> from the given predictor values:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>userpredictors <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">workclass=</span><span class="st">'Private'</span>, <span class="at">education=</span><span class="st">'Bachelors'</span>,</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">marital_status=</span><span class="st">'Never-married'</span>,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">occupation=</span><span class="st">'Prof-specialty'</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">relationship=</span><span class="st">'Not-in-family'</span>, <span class="at">race=</span><span class="st">'White'</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">sex=</span><span class="st">'Female'</span>, <span class="at">native_country=</span><span class="st">'United-States'</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall, <span class="at">predictand=</span><span class="st">'income'</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictor=</span>userpredictors)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(probs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>userpredictors <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">workclass=</span><span class="st">'Private'</span>, <span class="at">education=</span><span class="st">'Bachelors'</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">marital_status=</span><span class="st">'Never-married'</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">occupation=</span><span class="st">'Prof-specialty'</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">relationship=</span><span class="st">'Not-in-family'</span>, <span class="at">race=</span><span class="st">'White'</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">sex=</span><span class="st">'Female'</span>, <span class="at">native_country=</span><span class="st">'United-States'</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall, <span class="at">predictand=</span><span class="st">'income'</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictor=</span>userpredictors)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(probs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>income
    &lt;=50K     &gt;50K 
 0.833333 0.166667 </code></pre>
 </div>
 </div>
-<p>Find expected utilities by matrix multiplication</p>
+<p>Find the expected utilities of the three possible ad-types by matrix multiplication:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>adutilities <span class="sc">%*%</span> probs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>adutilities <span class="sc">%*%</span> probs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       
 ad_type     [,1]
@@ -623,38 +623,52 @@ ad_type     [,1]
       C  2.33333</code></pre>
 </div>
 </div>
-<p>The function that executes maximization of expected utility is <code>decide()</code>:</p>
+<p>And we see that ad-type <code>C</code> is optimal.</p>
+<p><br>
+</p>
+<p>The <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/decide.R">function <code>decide()</code></a> does the previous calculations. It outputs a list with elements:</p>
+<ul>
+<li><code>EUs</code>: the expected utilities of the decisions, sorted from highest to lowest</li>
+<li><code>optimal</code>: one decision unsystematically chosen among the optimal ones (if more than one)</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>optimalad <span class="ot">&lt;-</span> <span class="fu">decide</span>(<span class="at">utils=</span>adutilities, <span class="at">probs=</span>probs)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(optimalad)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>optimalad <span class="ot">&lt;-</span> <span class="fu">decide</span>(<span class="at">utils=</span>adutilities, <span class="at">probs=</span>probs)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(optimalad)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "C"</code></pre>
+<pre><code>$EUs
+       C        B        A 
+ 2.33333  2.00000 -0.33333 
+
+$optimal
+[1] "C"</code></pre>
 </div>
 </div>
 </section>
 <section id="performance-on-test-set" class="level2" data-number="38.4">
 <h2 data-number="38.4" class="anchored" data-anchor-id="performance-on-test-set"><span class="header-section-number">38.4</span> Performance on test set</h2>
-<p>Load test data</p>
+<p>Finally let’s apply our prototype agent to a test set, as a demonstration, and see how much utility it yields. This procedure will be discussed in more detail in <a href="connection-4-ML.html#sec-eval-decision">§ &nbsp;<span>39.4</span></a>.</p>
+<p>Load the test dataset; <code>M</code> is the number of test data:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>testdata <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">'test-income_data_example.csv'</span>, <span class="at">header=</span><span class="cn">TRUE</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">nrow</span>(testdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>testdata <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">'test-income_data_example.csv'</span>, <span class="at">header=</span><span class="cn">TRUE</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">nrow</span>(testdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We build the analogous of a “confusion matrix”, telling us how many times the agent chooses the three ad-types for both income levels. (Use a for-loop for clarity)</p>
+<p>We build the analogous of a “confusion matrix” (<a href="connection-4-ML.html#sec-eval-decision">§ &nbsp;<span>39.4</span></a>), telling us how many times the agent chooses the three ad-types for both income levels.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>confusionmatrix <span class="ot">&lt;-</span> adutilities <span class="sc">*</span> 0L</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>M){</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    userpredictors <span class="ot">&lt;-</span> testdata[i, <span class="sc">!</span><span class="st">'income'</span>]</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall, <span class="at">predictand=</span><span class="st">'income'</span>,</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">predictor=</span>userpredictors)</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    decision <span class="ot">&lt;-</span> <span class="fu">decide</span>(<span class="at">utils=</span>adutilities, <span class="at">probs=</span>probs)</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    trueincome <span class="ot">&lt;-</span> testdata[i]<span class="sc">$</span>income</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    confusionmatrix[decision, trueincome] <span class="ot">&lt;-</span> confusionmatrix[decision, trueincome] <span class="sc">+</span> 1L</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confusionmatrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>confusionmatrix <span class="ot">&lt;-</span> adutilities <span class="sc">*</span> 0L</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Use a for-loop for clarity</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>M){</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    userpredictors <span class="ot">&lt;-</span> testdata[i, <span class="sc">!</span><span class="st">'income'</span>]</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall, <span class="at">predictand=</span><span class="st">'income'</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">predictor=</span>userpredictors)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    decision <span class="ot">&lt;-</span> <span class="fu">decide</span>(<span class="at">utils=</span>adutilities, <span class="at">probs=</span>probs)<span class="sc">$</span>optimal</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    trueincome <span class="ot">&lt;-</span> testdata[i]<span class="sc">$</span>income</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    confusionmatrix[decision, trueincome] <span class="ot">&lt;-</span> confusionmatrix[decision, trueincome] <span class="sc">+</span> 1L</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confusionmatrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       income
 ad_type &lt;=50K &gt;50K
@@ -665,11 +679,11 @@ ad_type &lt;=50K &gt;50K
 </div>
 <p>The total utility yield is the total sum of the element-wise product of the <code>confusionmatrix</code> and the <code>adutilities</code> matrix</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>totalyield <span class="ot">&lt;-</span> <span class="fu">sum</span>(adutilities <span class="sc">*</span> confusionmatrix)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>averageyield <span class="ot">&lt;-</span> totalyield<span class="sc">/</span>M</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">'</span><span class="sc">\n</span><span class="st">Total yield ='</span>, totalyield, </span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="st">'</span><span class="sc">\n</span><span class="st">Average yield ='</span>, averageyield, <span class="st">'</span><span class="sc">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>totalyield <span class="ot">&lt;-</span> <span class="fu">sum</span>(adutilities <span class="sc">*</span> confusionmatrix)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>averageyield <span class="ot">&lt;-</span> totalyield<span class="sc">/</span>M</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">'</span><span class="sc">\n</span><span class="st">Total yield ='</span>, totalyield, </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="st">'</span><span class="sc">\n</span><span class="st">Average yield ='</span>, averageyield, <span class="st">'</span><span class="sc">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Total yield = 77109 

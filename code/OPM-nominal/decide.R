@@ -1,4 +1,4 @@
-decide <- function(probs=NULL, utils=NULL, all=FALSE){
+decide <- function(probs=NULL, utils=NULL){
 #### Makes a decision depending on probabilities and utilities
 #### Decisions correspond to ROWS of the utilities array
     ##
@@ -32,12 +32,12 @@ decide <- function(probs=NULL, utils=NULL, all=FALSE){
         dim(probs) <- prod(dim(probs))
     }
     ## Calculate expected utilities (matrix product)
-    exputils <- tcrossprod(utils, rbind(probs))
-    ## Select all decisions with max expected utility
-    decisions <- decisions[which(exputils == max(exputils))]
-    if(length(decisions) > 1 && !all){ # if only one requested, then sample
-        decisions <- sample(decisions, size=1)
+    exputils <- sort((utils %*% probs)[,1], decreasing=TRUE)
+    ## Select one decision with max expected utility
+    optimal <- names(exputils)[which(exputils == max(exputils))]
+    if(length(optimal) > 1){ # if only one requested, then sample
+        optimal <- sample(optimal, size=1)
     }
-    ## Output optimal decisions/decision
-    decisions
+    ## Output sorted decisions and one optimal decisions
+    list(EUs=exputils, optimal=optimal)
 }
