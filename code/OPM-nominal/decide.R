@@ -7,12 +7,23 @@ decide <- function(probs=NULL, utils=NULL){
         stop("Either 'probs' or 'utils' must be given")
     }
     if(is.null(utils)){ # utilities not given: assume accuracy utility
+        if(!is.null(dim(probs)) && length(dim(probs)) > 1){
+            stop("'probs' is not a vector, please specify array of utilities")
+        }
         utils <- diag(length(probs))
+        if(!is.null(dimnames(probs))){
+            dimnames(utils) <- c(decision=dimnames(probs), dimnames(probs))
+        }else{
+            if(is.null(names(probs))){
+                names(probs) <- 1:length(probs)
+            }
+            dimnames(utils) <- list(decision=names(probs), outcome=names(probs))
+        }
     }else if(is.null(probs)){ # probabilities not given: assume uniform probs
         probs <- rep(1/ncol(utils), ncol(utils))
         dim(probs) <- ncol(utils)
         if(is.null(dimnames(utils))){
-            dimnames(utils) <- list(1:nrow(utils), 1:ncol(utils))
+            dimnames(utils) <- list(decision=1:nrow(utils), outcome=1:ncol(utils))
         }
         dimnames(probs) <- dimnames(utils)[-1]
     }
@@ -20,8 +31,23 @@ decide <- function(probs=NULL, utils=NULL){
     if(length(probs) != prod(dim(utils)[-1])){
         stop('Mismatch between inference and utility variates')
     }
-    if(is.null(names(utils)) && dim(utils)[1] == dim(utils)[2]){
-        dimnames(utils) <- c(decision=dimnames(probs), dimnames(probs))
+    if(is.null(dimnames(utils))){
+        if(dim(utils)[1] == dim(utils)[2]){
+            dimnames(utils) <- c(decision=dimnames(probs), dimnames(probs))
+        }else{
+            dimnames(utils) <- c(decision=1:nrow(utils), dimnames(probs))
+        }
+    }else{
+        if(!identical(dimnames(utils)[-1], dimnames(probs))){
+            stop('Mismatch in outcomes for utilities and probabilities')
+        }
+        if(is.null(dimnames(utils)[[1]])){
+            if(dim(utils)[1] == dim(utils)[2]){
+                dimnames(utils)[1] <- dimnames(probs)
+            }else{
+                dimnames(utils)[1] <- list(decision=1:nrow(utils))
+            }
+        }
     }
     decisions <- dimnames(utils)[[1]] # names of decisions
     ##
