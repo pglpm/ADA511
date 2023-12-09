@@ -1,0 +1,266 @@
+# [What next?]{.midgrey}
+{{< include macros.qmd >}}
+{{< include macros_prob_inference.qmd >}}
+{{< include macros_connection-3.qmd >}}
+{{< include macros_decisions.qmd >}}
+{{< include macros_exchangeability.qmd >}}
+
+You have finally reached the end of this course. **Congratulations!**
+
+...Or maybe we should say: ***Good luck on your new journey!** -- Because this is just the beginning.
+
+What we hope you have taken from this course is a big picture of the science underneath data science and data-driven engineering, with a clear idea of its main (and few!) principles. You can now apply these principles to engineering problems similar to those explored in this course, and to other, more challenging problems. The principles you have learned are exactly the same.
+
+
+\
+
+Now it is up to you in which directions to continue your journey as a data scientist. Maybe you want to...
+
+:::{.green}
+
+- {{< fa rocket >}}\ \ build "optimal predictor machines" that can deal with more complex kind of data
+
+- {{< fa screwdriver-wrench >}}\ \ improve existing machine-learning algorithms by analysing how they approximate an optimal predictor machine
+
+- {{< fa magnifying-glass >}}\ \ use your understanding of the foundations to interpret and explain how present-day algorithms work
+
+- {{< fa flask-vial >}}\ \ look for new technologies that can make possible the complicated computations required by an optimal predictor machine
+
+- {{< fa tower-cell >}}\ \ disseminate what you have learned here, or find ways to make it more understandable
+
+:::
+
+...and many other possibilities.
+
+It's important to be aware that most of these directions will require [*more difficult mathematics*]{.blue}, in order to write working code, to face more realistic problems, and to find actual solutions to them. In the part "[A prototype Optimal Predictor Machine*]{.red}" you saw that we needed to bring up Dirichlet distributions, factorials, integrals, and other mathematics in order to build a concrete, working prototype of an optimal agent. And that agent can only work in a limited and somewhat simple class of problems. Solving more complicated problems will, inevitably, require more complicated mathematics. For some this is actually a fun challenge. In any case, don't forget the ever-positive side: the basic principles are few and intuitively understandable in their essence.
+
+### Using Probability Theory and Decision Theory as thinking and organizational frameworks
+
+We hope that you will use basic probability theory, decision theory, and their notation as tools to *frame* and *organize* inference, prediction, and decision problems.
+
+It does not matter whether the problem can then be solved exactly according to the rules of probability & decision theory, or whether only a crude approximation is available. You have seen that these two theories are extremely useful even just in the beginning stage, when we ask questions like "[what do I need to find?]{.yellow}", "[why do I need to find it?]{.yellow}" "[what do I know?]{.yellow}", "[what am I assuming?]{.yellow}", "[what's are the gains and costs of success and failure?]{.yellow}" -- and similar questions.
+
+For example, see again how the basic probability notation helped us classify different types of machine-learning algorithms in [chapter @sec-beyond-ML]. The notation even suggested at once how to correctly deal with partially missing data ([§ @sec-categ-probtheory]).
+
+
+### The basic, universal formula behind all supervised- and unsupervised-learning algorithms
+
+We also hope that you will not forget, and actually use as much as possible, the basic formula ([chapter @sec-beyond-ML]) that represents how an agent doing any kind of supervised- or unsupervised-learning works. This formula is what a neural network or a random forest are doing under the hood, even if just in an approximate way:
+
+::::{.column-page-right}
+:::{.callout-note}
+##
+
+- All previous predictors and predictands known (supervised learning)
+
+$$
+\begin{aligned}
+&\P(\red
+Y_{\text{new}}\mo y
+\black\|
+\green
+X_{\text{new}}\mo x
+\, \and\, 
+Y_{N}\mo y_{N}
+\and
+X_{N}\mo x_{N}
+\and \dotsb \and
+Y_{1}\mo y_{1}
+\and
+X_{1}\mo x_{1}
+\black \and \yI)
+\\[2ex]
+&\qquad{}=
+\frac{
+\P(\red
+Y_{\text{new}}\mo y
+\black\and
+\green
+X_{\text{new}}\mo x
+\, \and\, 
+Y_{N}\mo y_{N}
+\and
+X_{N}\mo x_{N}
+\and \dotsb \and
+Y_{1}\mo y_{1}
+\and
+X_{1}\mo x_{1}
+\black \| \yI)
+}{
+\sum_{\purple y}
+\P(\red
+Y_{\text{new}}\mo {\purple y}
+\black\and
+\green
+X_{\text{new}}\mo x
+\, \and\, 
+Y_{N}\mo y_{N}
+\and
+X_{N}\mo x_{N}
+\and \dotsb \and
+Y_{1}\mo y_{1}
+\and
+X_{1}\mo x_{1}
+\black \| \yI)
+}
+\end{aligned}
+$$
+
+\
+
+
+
+- "Guess all variates" (unsupervised learning, generative algorithms):
+
+$$
+\P(\red
+Z_{\text{new}}\mo z
+\black\|
+\green
+Z_{N}\mo z_{N}
+\and \dotsb \and
+Z_{1}\mo z_{1}
+\black \and \yI)
+=
+\frac{
+\P(\red
+Z_{\text{new}}\mo z
+\black\and
+\green
+Z_{N}\mo z_{N}
+\and \dotsb \and
+Z_{1}\mo z_{1}
+\black \| \yI)
+}{
+\sum_{\purple z}
+\P(
+\red
+Z_{\text{new}}\mo {\purple z}
+\black\and\green
+Z_{N}\mo z_{N}
+\and \dotsb \and
+Z_{1}\mo z_{1}
+\black \| \yI)
+}
+$$
+
+\
+
+- Previous predictors known, previous predictands unknown (unsupervised learning, clustering)
+
+$$
+\begin{aligned}
+&\P(\red
+Y_{\text{new}}\mo y
+\black\|
+\green
+X_{\text{new}}\mo x
+\, \and\, 
+X_{N}\mo x_{N}
+\and \dotsb\and
+X_{1}\mo x_{1}
+\black \and \yI)
+\\[2ex]
+&\quad{}=
+\frac{
+\sum_{\yellow y_{N}, \dotsc, y_{1}}
+\P(\red
+Y_{\text{new}}\mo y
+\black\and
+\green
+X_{\text{new}}\mo x
+\black\, \and\, 
+\yellow
+Y_{N}\mo y_{N}
+\black\and\green
+X_{N}\mo x_{N}
+\black\and \dotsb\and
+\yellow
+Y_{1}\mo y_{1}
+\black\and\green
+X_{1}\mo x_{1}
+\black \| \yI)
+}{
+\sum_{{\purple y}, \yellow y_{N}, \dotsc, y_{1}}
+\P(\red
+Y_{\text{new}}\mo {\purple y}
+\black\and
+\green
+X_{\text{new}}\mo x
+\black\, \and\, 
+\yellow
+Y_{N}\mo y_{N}
+\black\and\green
+X_{N}\mo x_{N}
+\black\and \dotsb\and
+\yellow
+Y_{1}\mo y_{1}
+\black\and\green
+X_{1}\mo x_{1}
+\black \| \yI)
+}
+\end{aligned}
+$$
+
+\
+
+All these formulae, even for hybrid tasks, involve sums and ratios of only one distribution:
+
+$$\boldsymbol{
+\P(\blue
+Y_{\text{new}}\mo y_{\text{new}}
+\and
+X_{\text{new}}\mo x_{\text{new}}
+\and \dotsb \and
+Y_{1}\mo y_{1}
+\and
+X_{1}\mo x_{1}
+\black \| \yI)
+}
+$$
+
+and if the problem is exchangeable, for instance without time dependence or memory effects, the distribution can be calculated in a simpler way:
+
+$$
+\begin{aligned}
+&\P\bigl(
+\blue Y_{\text{new}} \mo y
+\and
+X_{\text{new}} \mo x
+\and
+\dotsb
+\and
+Y_{1} \mo y_{1}
+\and
+X_{1} \mo x_{1}
+\black \pmb{\|[\big]} \yI\bigr)
+\\[2ex]
+&\qquad{}=
+\sum_{\vf}
+f({\blue Y_{\text{new}}\mo y \and X_{\text{new}}\mo x}) \cdot
+\, \dotsb\, \cdot
+f({\blue Y_{1}\mo y_{1} \and X_{1}\mo x_{1}})
+\cdot
+\P(F\mo\vf \| \yI)
+\end{aligned}
+$$
+
+\
+
+Possibly there is a final decision about the output (if a single output is required), using some utilities and the principle of maximal expected utility:
+
+$$
+\yD_{\text{optimal}} =
+\argmax_{\yD} \sum_{\red y} \uu(\yD \and {\red Y\mo y} \| \yI) \cdot
+\P({\red Y\mo y} \| {\green X\mo x} \and \data \and \yI)
+$$
+
+\
+
+
+:::
+::::
+
+
+
+
