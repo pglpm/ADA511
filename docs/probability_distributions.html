@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-07">
+<meta name="dcterms.date" content="2023-11-16">
 
 <title>ADA511 0.1 Foundations of data science and data-driven engineering - 14&nbsp; Probability distributions</title>
 <style>
@@ -23,7 +23,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -85,7 +85,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -94,6 +100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -102,6 +109,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="ada511styles.css">
 </head>
@@ -112,12 +146,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./probability_distributions.html"><span class="green"><strong>Inference II</strong></span></a></li><li class="breadcrumb-item"><a href="./probability_distributions.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">[Probability distributions]{.green}</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span id="sec-prob-distribs" class="quarto-section-identifier"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title"><span class="green">Probability distributions</span></span></span></h1>
+        </a>     
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -127,13 +161,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2023-11-07</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2024-01-08</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -544,7 +578,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
@@ -577,7 +611,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-prob-distribs" class="quarto-section-identifier"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title"><span class="green">Probability distributions</span></span></span></h1>
+<h1 class="title d-none d-lg-block"><span id="sec-prob-distribs" class="quarto-section-identifier"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title"><span class="green">Probability distributions</span></span></span></h1>
 </div>
 
 
@@ -588,7 +622,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-07</p>
+      <p class="date">2023-11-16</p>
     </div>
   </div>
   
@@ -596,7 +630,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <div class="hidden">
 <p><span class="math display">\[
@@ -680,13 +716,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 \mathrm{P}(\mathsfit{X}_1 \lor \mathsfit{X}_2 \lor \mathsfit{X}_3 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = 1
 \end{gathered}
 \]</span></p>
-<p>Prove, using the fundamental rules of inferences and any derived rules from <a href="probability_inference.html">§ &nbsp;<span>8</span></a>, that we must then have</p>
+<p>Prove, using the fundamental rules of inferences and any derived rules from <a href="probability_inference.html" class="quarto-xref">§ &nbsp;<span>8</span></a>, that we must then have</p>
 <p><span class="math display">\[
 \mathrm{P}(\mathsfit{X}_1 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) + \mathrm{P}(\mathsfit{X}_2 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) + \mathrm{P}(\mathsfit{X}_3 \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = 1
 \]</span></p>
 </div>
 </div>
-<p>Let’s see how probability distributions can be represented and visualized for the basic types of quantities discussed in <a href="quantities_types.html">§ &nbsp;<span>12</span></a>.</p>
+<p>Let’s see how probability distributions can be represented and visualized for the basic types of quantities discussed in <a href="quantities_types.html" class="quarto-xref">§ &nbsp;<span>12</span></a>.</p>
 <p>We start with probability distributions over discrete domains.</p>
 </section>
 <section id="sec-discr-prob-distr" class="level2 page-columns page-full" data-number="14.2">
@@ -742,7 +778,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="example_histogram.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption class="figure-caption">Histogram for the probability distribution over possible component failures</figcaption>
+<figcaption>Histogram for the probability distribution over possible component failures</figcaption>
 </figure>
 </div>
 </div></div><p>The possible values are placed on a line. For an ordinal or interval quantity, the sequence of values on the line should correspond to their natural order. For a nominal quantity the order is irrelevant.</p>
@@ -765,8 +801,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="sec-prob-densities" class="level2 page-columns page-full" data-number="14.3">
 <h2 data-number="14.3" class="anchored" data-anchor-id="sec-prob-densities"><span class="header-section-number">14.3</span> Probability densities</h2>
 <p>Distributions of probability over continuous domains present several counter-intuitive aspects, which essentially arise because we are dealing with uncountable infinities – while often still using linguistic expressions that make at most sense for countable infinities. Here we follow a practical and realistic approach for working with such distributions.</p>
-<div class="page-columns page-full"><p>Consider a quantity <span class="green"><span class="math inline">\(X\)</span></span> with a continuous domain. When we say that such a quantity has some value <span class="green"><span class="math inline">\(x\)</span></span> we really mean that it has a value somewhere in the range&nbsp;&nbsp; <span class="green"><span class="math inline">\(x -\epsilon/2\)</span>&nbsp;&nbsp;to&nbsp;&nbsp;<span class="math inline">\(x+\epsilon/2\)</span></span>,&nbsp;&nbsp; where the width <span style="display:inline-block;"><span class="math inline">\(\epsilon\)</span></span> is usually extremely small. For example, for <a href="https://rdrr.io/r/base/double.html">double-precision</a> values stored in a computer, the width<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> must be at least <span style="display:inline-block;"><span class="math inline">\(\epsilon \approx 2\cdot 10^{-16}\)</span> :</span></p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;more precisely the relative width</p></li></div></div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## R code</span></span>
+<p>Consider a quantity <span class="green"><span class="math inline">\(X\)</span></span> with a continuous domain. When we say that such a quantity has some value <span class="green"><span class="math inline">\(x\)</span></span> we really mean that it has a value somewhere in the range&nbsp;&nbsp; <span class="green"><span class="math inline">\(x -\epsilon/2\)</span>&nbsp;&nbsp;to&nbsp;&nbsp;<span class="math inline">\(x+\epsilon/2\)</span></span>,&nbsp;&nbsp; where the width <span style="display:inline-block;"><span class="math inline">\(\epsilon\)</span></span> is usually extremely small. For example, for <a href="https://rdrr.io/r/base/double.html">double-precision</a> values stored in a computer, the width<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> must be at least <span style="display:inline-block;"><span class="math inline">\(\epsilon \approx 2\cdot 10^{-16}\)</span> :</span></p>
+<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;more precisely the relative width</p></div><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## R code</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fl">1.234567890123456</span> <span class="sc">==</span> <span class="fl">1.234567890123455</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>] <span class="cn">FALSE</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -817,8 +853,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>where <span style="display:inline-block;">“<span class="math inline">\(\mathrm{d}X\)</span>”</span> stands for the width of a small range around <span style="display:inline-block;"><span class="math inline">\(x\)</span>.</span> This notation is also helpful with integrals. Unfortunately it becomes a little cumbersome when we are dealing with more than one quantity.</p>
 <section id="physical-dimensions-and-units" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="physical-dimensions-and-units">Physical dimensions and units</h3>
-<div class="page-columns page-full"><p>In the <a href="https://www.nist.gov/pml/owm/metric-si/si-units">International System of Units (SI)</a><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, “Degree of belief” is considered to be a dimensionless quantity, or more precisely a quantity of dimension “1”. This is why we don’t write units such as “metres” (<span style="display:inline-block;"><span class="math inline">\(\mathrm{m}\)</span>),</span> “kilograms” (<span style="display:inline-block;"><span class="math inline">\(\mathrm{kg}\)</span>)</span> or similar together with a probability value.</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;see also the material at the <a href="https://www.bipm.org/en/measurement-units">International Bureau of Weights and Measures (BIPM)</a></p></li></div></div>
-<p>A probability <em>density</em>, however, is defined as the ratio of a probability amount and an interval <span style="display:inline-block;"><span class="math inline">\(\epsilon\)</span></span> of some quantity. This latter quantity might well have physical dimensions, say “metres” <span style="display:inline-block;"><span class="math inline">\(\mathrm{m}\)</span>.</span> Then the ratio, which is the probability density, has dimensions <span style="display:inline-block;"><span class="math inline">\(1/\mathrm{m}\)</span>.</span> So <span class="blue"><em>probability densities in general have physical dimensions</em></span>.</p>
+<p>In the <a href="https://www.nist.gov/pml/owm/metric-si/si-units">International System of Units (SI)</a><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, “Degree of belief” is considered to be a dimensionless quantity, or more precisely a quantity of dimension “1”. This is why we don’t write units such as “metres” (<span style="display:inline-block;"><span class="math inline">\(\mathrm{m}\)</span>),</span> “kilograms” (<span style="display:inline-block;"><span class="math inline">\(\mathrm{kg}\)</span>)</span> or similar together with a probability value.</p>
+<div class="no-row-height column-margin column-container"><p><sup>2</sup>&nbsp;see also the material at the <a href="https://www.bipm.org/en/measurement-units">International Bureau of Weights and Measures (BIPM)</a></p></div><p>A probability <em>density</em>, however, is defined as the ratio of a probability amount and an interval <span style="display:inline-block;"><span class="math inline">\(\epsilon\)</span></span> of some quantity. This latter quantity might well have physical dimensions, say “metres” <span style="display:inline-block;"><span class="math inline">\(\mathrm{m}\)</span>.</span> Then the ratio, which is the probability density, has dimensions <span style="display:inline-block;"><span class="math inline">\(1/\mathrm{m}\)</span>.</span> So <span class="blue"><em>probability densities in general have physical dimensions</em></span>.</p>
 <p>As another example, suppose that an agent with background knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span></span> assigns a degree of belief <span style="display:inline-block;"><span class="math inline">\(0.00012\)</span></span> to an interval of temperature of width <span style="display:inline-block;"><span class="math inline">\(0.0001\,\mathrm{°C}\)</span>,</span> around the temperature <span style="display:inline-block;"><span class="math inline">\(T = 20\,\mathrm{°C}\)</span>.</span> Then the probability <em>density</em> at <span style="display:inline-block;"><span class="math inline">\(20\,\mathrm{°C}\)</span></span> is equal to</p>
 <p><span class="math display">\[
 \mathrm{p}(T \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}20\mathrm{°C} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) =
@@ -860,39 +896,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="callout-body-container callout-body">
 <div style="font-size:110%;">
 <p>Which of these plots shows the correct placement of the 50 lines? <span class="small">(NB: the position of the correct answer is determined by a pseudorandom-number generator.)</span></p>
-<div class="quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout-nrow="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="example_scatter_densityd_p50.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">(A)</figcaption>
+<figcaption>(A)</figcaption>
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="example_scatter_densitya_p50.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">(B)</figcaption>
+<figcaption>(B)</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="example_scatter_densityb_p50.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">(C)</figcaption>
+<figcaption>(C)</figcaption>
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="example_scatter_densityf_p50.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">(D)</figcaption>
+<figcaption>(D)</figcaption>
 </figure>
 </div>
 </div>
@@ -927,7 +966,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="sec-combined-probs" class="level2 page-columns page-full" data-number="14.5">
 <h2 data-number="14.5" class="anchored" data-anchor-id="sec-combined-probs"><span class="header-section-number">14.5</span> Combined probabilities</h2>
 <p>A probability distribution is defined over a set of mutually exclusive and exhaustive sentences. In some inference problems, however, we do not need the probability of those sentences, but of some other sentence that can be obtained from them by an <code>or</code> operation. The probability of this sentence can then be obtained by a sum, according to the <code>or</code>-rule of inference. We can call this a <em>combined probability</em>. Let’s explain this procedure with an example.</p>
-<p>Back to our initial assembly-line scenario from <a href="intro.html">§ &nbsp;<span>1</span></a>, the inference problem was to predict whether a specific component would fail within a year or not. Consider the time when the component will fail (if sold), and represent it by the quantity <span style="display:inline-block;"><span class="math inline">\(T\)</span></span> with the following 24 different values, where <span style="display:inline-block;">“<span class="math inline">\(\mathrm{mo}\)</span>”</span> stands for “months”:</p>
+<p>Back to our initial assembly-line scenario from <a href="intro.html" class="quarto-xref">§ &nbsp;<span>1</span></a>, the inference problem was to predict whether a specific component would fail within a year or not. Consider the time when the component will fail (if sold), and represent it by the quantity <span style="display:inline-block;"><span class="math inline">\(T\)</span></span> with the following 24 different values, where <span style="display:inline-block;">“<span class="math inline">\(\mathrm{mo}\)</span>”</span> stands for “months”:</p>
 <p><span class="math display">\[\begin{aligned}
 &amp;\textsf{\small`The component will fail during it 1st month of use'}\\
 &amp;\textsf{\small`The component will fail during it 2nd month of use'}\\
@@ -1109,10 +1148,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1122,8 +1178,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1136,6 +1201,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1179,6 +1363,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1204,6 +1389,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1261,35 +1472,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./quantities_types_multi.html" class="pagination-link">
+      <a href="./quantities_types_multi.html" class="pagination-link  aria-label=" &lt;span="" quantities="" and="" complex="" data="" types]{.yellow}&lt;="" span&gt;"="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title"><span class="yellow">Joint quantities and complex data types</span></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./joint_probability.html" class="pagination-link">
+      <a href="./joint_probability.html" class="pagination-link" aria-label="<span class='chapter-number'>15</span>&nbsp; <span class='chapter-title'>[Joint probability distributions]{.green}</span>">
         <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><span class="green">Joint probability distributions</span></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

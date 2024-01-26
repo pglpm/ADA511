@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-07">
+<meta name="dcterms.date" content="2023-11-16">
 
 <title>ADA511 0.1 Foundations of data science and data-driven engineering - 22&nbsp; Subpopulations and conditional frequencies</title>
 <style>
@@ -51,7 +51,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -60,6 +66,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -68,6 +75,33 @@ ul.task-list li input[type="checkbox"] {
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="ada511styles.css">
 </head>
@@ -78,12 +112,12 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./populations_variates.html"><span class="yellow"><strong>Data II</strong></span></a></li><li class="breadcrumb-item"><a href="./subpopulations.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">[Subpopulations and conditional frequencies]{.yellow}</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><span class="yellow">Subpopulations and conditional frequencies</span></span></h1>
+        </a>     
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -93,13 +127,13 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2023-11-07</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2024-01-08</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -510,7 +544,7 @@ ul.task-list li input[type="checkbox"] {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
@@ -531,7 +565,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><span class="yellow">Subpopulations and conditional frequencies</span></span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><span class="yellow">Subpopulations and conditional frequencies</span></span></h1>
 </div>
 
 
@@ -542,7 +576,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-07</p>
+      <p class="date">2023-11-16</p>
     </div>
   </div>
   
@@ -550,7 +584,9 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
+
 </header>
+
 
 <div class="hidden">
 <p><span class="math display">\[
@@ -577,9 +613,13 @@ ul.task-list li input[type="checkbox"] {
 <li><span class="math inline">\(\mathit{Type}\)</span> of glass fragment (nominal variate), with seven possible values <span class="math inline">\(\{{\small\verb;building_windows_float_processed;}\)</span>, <span class="math inline">\({\small\verb;building_windows_non_float_processed;}\)</span>, <span class="math inline">\({\small\verb;containers;}\)</span>, <span class="math inline">\({\small\verb;tableware;}\)</span>, <span class="math inline">\({\small\verb;headlamps;}\}\)</span></li>
 </ul></li>
 </ul>
-<div id="tbl-glass-simple" class="anchored">
+<div id="tbl-glass-simple" class="sm quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-glass-simple-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;22.1: Simplified glass-fragment population data
+</figcaption>
+<div aria-describedby="tbl-glass-simple-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="table-sm small table">
-<caption>Table&nbsp;22.1: Simplified glass-fragment population data</caption>
 <colgroup>
 <col style="width: 6%">
 <col style="width: 13%">
@@ -658,10 +698,16 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </div>
+</figure>
+</div>
 <p>Let’s say we are interested only in units that have the <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> variate equal to <span style="display:inline-block;"><span class="math inline">\({\small\verb;tableware;}\)</span>.</span> Discarding all others we obtain a new, smaller population with four units:</p>
-<div id="tbl-glass-tableware" class="anchored">
+<div id="tbl-glass-tableware" class="sm quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-glass-tableware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;22.2: Selection according to <span class="math inline">\(\mathit{Type}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;tableware;}\)</span>
+</figcaption>
+<div aria-describedby="tbl-glass-tableware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="table-sm small table">
-<caption>Table&nbsp;22.2: Selection according to <span class="math inline">\(\mathit{Type}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;tableware;}\)</span></caption>
 <colgroup>
 <col style="width: 6%">
 <col style="width: 13%">
@@ -704,11 +750,17 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </div>
+</figure>
+</div>
 <p>were a bar <span style="display:inline-block;">“<span class="math inline">\(\boldsymbol{\nonscript\:\vert\nonscript\:\mathopen{}}\)</span>”</span> indicates the variate used for the selection.</p>
 <p>As another example, we could be interested instead in those units that have <em>both</em> <span style="display:inline-block;"><span class="math inline">\(\mathit{Ca}\)</span></span> <em>and</em> <span style="display:inline-block;"><span class="math inline">\(\mathit{Si}\)</span></span> variates equal to <span style="display:inline-block;"><span class="math inline">\({\small\verb;medium;}\)</span>.</span> We obtain a smaller population with five units:</p>
-<div id="tbl-glass-ca-si-medium" class="anchored">
+<div id="tbl-glass-ca-si-medium" class="sm quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-glass-ca-si-medium-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;22.3: Selection according to <span class="math inline">\(\mathit{Ca}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;medium;}\)</span> and <span class="math inline">\(\mathit{Si}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;medium;}\)</span>
+</figcaption>
+<div aria-describedby="tbl-glass-ca-si-medium-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="table-sm small table">
-<caption>Table&nbsp;22.3: Selection according to <span class="math inline">\(\mathit{Ca}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;medium;}\)</span> and <span class="math inline">\(\mathit{Si}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;medium;}\)</span></caption>
 <colgroup>
 <col style="width: 6%">
 <col style="width: 13%">
@@ -757,6 +809,8 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </div>
+</figure>
+</div>
 <p>Populations formed in this way are called <span class="blue"><strong>subpopulations</strong></span> of the original one. They are statistical populations in their own right. The notion of “subpopulation” is a relative notion. Any population can often be considered as a subpopulation of some larger population having additional variates.</p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -769,7 +823,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li>From the population of <a href="#tbl-glass-simple">table&nbsp;&nbsp;<span>22.1</span></a>:
+<li>From the population of <a href="#tbl-glass-simple" class="quarto-xref">table&nbsp;&nbsp;<span>22.1</span></a>:
 <ul>
 <li>Construct the <em>marginal</em> population with variate <span class="math inline">\(\mathit{Ca}\)</span></li>
 <li>Report the frequency distribution for the marginal population above (remember that <span class="math inline">\(\mathit{Ca}\)</span> has <em>three</em> possible values)</li>
@@ -779,7 +833,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p><em>Check your understanding of the reasoning behind the notions of marginal population and subpopulation with this exercise:</em></p>
 <ul>
-<li>From the population of <a href="#tbl-glass-simple">table&nbsp;&nbsp;<span>22.1</span></a>, construct the subpopulation with variate <span class="math inline">\(\mathit{Type}\)</span> equal to <em>either</em> <span class="math inline">\({\small\verb;headlamps;}\)</span> <em>or</em> <span class="math inline">\({\small\verb;tableware;}\)</span>.</li>
+<li>From the population of <a href="#tbl-glass-simple" class="quarto-xref">table&nbsp;&nbsp;<span>22.1</span></a>, construct the subpopulation with variate <span class="math inline">\(\mathit{Type}\)</span> equal to <em>either</em> <span class="math inline">\({\small\verb;headlamps;}\)</span> <em>or</em> <span class="math inline">\({\small\verb;tableware;}\)</span>.</li>
 </ul>
 </div>
 </div>
@@ -791,7 +845,7 @@ ul.task-list li input[type="checkbox"] {
 f({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x})
 \]</span></p>
 <p>where <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> is the symbol for the joint frequency of the population.</p>
-<p>Consider for instance the glass-fragment population of <a href="#tbl-glass-simple">table&nbsp;&nbsp;<span>22.1</span></a>. The conditional frequency of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\mathit{Ca}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;low;}}\)</span></span> given <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}\mathit{Type}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;tableware;}}\)</span></span> is the (marginal) frequency of <span style="display:inline-block;"><span class="math inline">\(\mathit{Ca}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;low;}\)</span></span> in the subpopulation of <a href="#tbl-glass-tableware">table&nbsp;&nbsp;<span>22.2</span></a>, from which we find</p>
+<p>Consider for instance the glass-fragment population of <a href="#tbl-glass-simple" class="quarto-xref">table&nbsp;&nbsp;<span>22.1</span></a>. The conditional frequency of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}\mathit{Ca}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;low;}}\)</span></span> given <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}\mathit{Type}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;tableware;}}\)</span></span> is the (marginal) frequency of <span style="display:inline-block;"><span class="math inline">\(\mathit{Ca}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;low;}\)</span></span> in the subpopulation of <a href="#tbl-glass-tableware" class="quarto-xref">table&nbsp;&nbsp;<span>22.2</span></a>, from which we find</p>
 <p><span class="math display">\[
 f({\color[RGB]{238,102,119}\mathit{Ca}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;low;}} \nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{34,136,51}\mathit{Type}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;tableware;}}) = \frac{1}{4}
 \]</span></p>
@@ -817,7 +871,7 @@ f({\color[RGB]{238,102,119}\mathit{Ca}\mathclose{}\mathord{\nonscript\mkern 0mu\
 <p>It doesn’t make sense to speak of the conditional frequency distribution of <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> “conditional <span class="yellow">on <span class="math inline">\(X\)</span>”</span>. Conditional frequencies and frequency distributions are always conditional on some value of a variate. If we consider all possible values of <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> <em>and</em> of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> we obtain a collection of frequencies that is <em>not</em> a distribution.</p>
 </div>
 </div>
-<p>A conditional frequency can be calculated as the ratio of a joint and a marginal frequencies, in a way analogous to conditional probabilities (<a href="conditional_probability.html#sec-conditional-probs">§ &nbsp;<span>17.1</span></a>):</p>
+<p>A conditional frequency can be calculated as the ratio of a joint and a marginal frequencies, in a way analogous to conditional probabilities (<a href="conditional_probability.html#sec-conditional-probs" class="quarto-xref">§ &nbsp;<span>17.1</span></a>):</p>
 <p><span class="math display">\[
 f({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x}) =
 \frac{f({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y} \mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x})}{f({\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x})} =
@@ -834,7 +888,7 @@ f({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sm
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Calculate the conditional frequency distributions corresponding to the subpopulations of tables <a href="#tbl-glass-tableware"><span>22.2</span></a> and <a href="#tbl-glass-ca-si-medium"><span>22.3</span></a>. For example, for <a href="#tbl-glass-tableware">table&nbsp;&nbsp;<span>22.2</span></a> this means calculating</p>
+<p>Calculate the conditional frequency distributions corresponding to the subpopulations of tables <a href="#tbl-glass-tableware" class="quarto-xref"><span>22.2</span></a> and <a href="#tbl-glass-ca-si-medium" class="quarto-xref"><span>22.3</span></a>. For example, for <a href="#tbl-glass-tableware" class="quarto-xref">table&nbsp;&nbsp;<span>22.2</span></a> this means calculating</p>
 <p><span class="math display">\[\begin{aligned}
 &amp;f(\mathit{Ca}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;low;} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathit{Si}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;low;} \nonscript\:\vert\nonscript\:\mathopen{} \mathit{Type}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;tableware;})\ ,
 \\
@@ -849,11 +903,15 @@ f({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sm
 </section>
 <section id="sec-association" class="level2 page-columns page-full" data-number="22.3">
 <h2 data-number="22.3" class="anchored" data-anchor-id="sec-association"><span class="header-section-number">22.3</span> Associations</h2>
-<div class="page-columns page-full"><p>The analysis of subpopulations and conditional frequencies is important because it often reveals peculiar <span class="blue"><em>associations</em></span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> among different variates and groups of variates. Let’s illustrate what we mean by “association” with an example.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;In everyday language this is the same as “correlation”. The term “association” is used in statistics to avoid confusion with the Pearson correlation coefficient (see <a href="information.html#sec-entropy-mutualinfo">§ &nbsp;<span>18.5</span></a>)</p></li></div></div>
-<p>Extract the subpopulation having variate <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> equal to <span style="display:inline-block;"><span class="math inline">\({\small\verb;headlamps;}\)</span></span> from the population of <a href="#tbl-glass-simple">table&nbsp;&nbsp;<span>22.1</span></a>:</p>
-<div id="tbl-glass-headlamps" class="anchored">
+<p>The analysis of subpopulations and conditional frequencies is important because it often reveals peculiar <span class="blue"><em>associations</em></span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> among different variates and groups of variates. Let’s illustrate what we mean by “association” with an example.</p>
+<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;In everyday language this is the same as “correlation”. The term “association” is used in statistics to avoid confusion with the Pearson correlation coefficient (see <a href="information.html#sec-entropy-mutualinfo" class="quarto-xref">§ &nbsp;<span>18.5</span></a>)</p></div><p>Extract the subpopulation having variate <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\)</span></span> equal to <span style="display:inline-block;"><span class="math inline">\({\small\verb;headlamps;}\)</span></span> from the population of <a href="#tbl-glass-simple" class="quarto-xref">table&nbsp;&nbsp;<span>22.1</span></a>:</p>
+<div id="tbl-glass-headlamps" class="sm quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-glass-headlamps-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;22.4: Selection according to <span class="math inline">\(\mathit{Type}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;headlamps;}\)</span>
+</figcaption>
+<div aria-describedby="tbl-glass-headlamps-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="table-sm small table">
-<caption>Table&nbsp;22.4: Selection according to <span class="math inline">\(\mathit{Type}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;headlamps;}\)</span></caption>
 <colgroup>
 <col style="width: 6%">
 <col style="width: 13%">
@@ -884,6 +942,8 @@ f({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sm
 </tbody>
 </table>
 </div>
+</figure>
+</div>
 <p>we notice that all units have variate <span style="display:inline-block;"><span class="math inline">\(\mathit{Ca}\)</span></span> equal to <span style="display:inline-block;"><span class="math inline">\({\small\verb;low;}\)</span>.</span> In terms of conditional frequencies, this means</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -894,11 +954,15 @@ f({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sm
 &amp;f(\mathit{Ca}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;high;} \nonscript\:\vert\nonscript\:\mathopen{} \mathit{Type}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;headlamps;}) = 0
 \end{aligned}
 \]</span></p>
-<div class="page-columns page-full"><p>It is therefore impossible to observe other values of <span style="display:inline-block;"><span class="math inline">\(\mathit{Ca}\)</span></span> in this new population.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;We are not claiming that this fact will be true if new units are considered; this important question will be discussed later.</p></li></div></div>
-<p>On the other hand, if we extract the subpopulation having variate <span style="display:inline-block;"><span class="math inline">\(\mathit{Ca}\)</span></span> equal to <span style="display:inline-block;"><span class="math inline">\({\small\verb;low;}\)</span></span> we obtain</p>
-<div id="tbl-glass-ca-low" class="anchored">
+<p>It is therefore impossible to observe other values of <span style="display:inline-block;"><span class="math inline">\(\mathit{Ca}\)</span></span> in this new population.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="no-row-height column-margin column-container"><p><sup>2</sup>&nbsp;We are not claiming that this fact will be true if new units are considered; this important question will be discussed later.</p></div><p>On the other hand, if we extract the subpopulation having variate <span style="display:inline-block;"><span class="math inline">\(\mathit{Ca}\)</span></span> equal to <span style="display:inline-block;"><span class="math inline">\({\small\verb;low;}\)</span></span> we obtain</p>
+<div id="tbl-glass-ca-low" class="sm quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-glass-ca-low-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;22.5: Selection according to <span class="math inline">\(\mathit{Ca}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;low;}\)</span>
+</figcaption>
+<div aria-describedby="tbl-glass-ca-low-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="table-sm small table">
-<caption>Table&nbsp;22.5: Selection according to <span class="math inline">\(\mathit{Ca}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;low;}\)</span></caption>
 <colgroup>
 <col style="width: 6%">
 <col style="width: 13%">
@@ -947,6 +1011,8 @@ f({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sm
 </tbody>
 </table>
 </div>
+</figure>
+</div>
 <p>with conditional frequencies such as</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -986,8 +1052,8 @@ f(\mathit{Type}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscri
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><p>Calculate the (marginal) frequency distribution for the <span style="display:inline-block;"><span class="math inline">\(\mathit{Ca}\)</span></span> variate for the glass-fragment population of <a href="#tbl-glass-simple">table&nbsp;&nbsp;<span>22.1</span></a>. Is the value <span style="display:inline-block;"><span class="math inline">\({\small\verb;low;}\)</span></span> more frequent than <span style="display:inline-block;"><span class="math inline">\({\small\verb;medium;}\)</span>?</span> or vice versa?</p></li>
-<li><p>Calculate the frequency distribution for <span style="display:inline-block;"><span class="math inline">\(\mathit{Ca}\)</span>,</span> conditional on <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;tableware;}\)</span></span> (see <a href="#tbl-glass-tableware">table&nbsp;&nbsp;<span>22.2</span></a>). How does this frequency distribution differ from the one you calculated above? Come up with possible ways to exploit this difference in concrete applications.</p></li>
+<li><p>Calculate the (marginal) frequency distribution for the <span style="display:inline-block;"><span class="math inline">\(\mathit{Ca}\)</span></span> variate for the glass-fragment population of <a href="#tbl-glass-simple" class="quarto-xref">table&nbsp;&nbsp;<span>22.1</span></a>. Is the value <span style="display:inline-block;"><span class="math inline">\({\small\verb;low;}\)</span></span> more frequent than <span style="display:inline-block;"><span class="math inline">\({\small\verb;medium;}\)</span>?</span> or vice versa?</p></li>
+<li><p>Calculate the frequency distribution for <span style="display:inline-block;"><span class="math inline">\(\mathit{Ca}\)</span>,</span> conditional on <span style="display:inline-block;"><span class="math inline">\(\mathit{Type}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;tableware;}\)</span></span> (see <a href="#tbl-glass-tableware" class="quarto-xref">table&nbsp;&nbsp;<span>22.2</span></a>). How does this frequency distribution differ from the one you calculated above? Come up with possible ways to exploit this difference in concrete applications.</p></li>
 </ul>
 </div>
 </div>
@@ -1009,10 +1075,14 @@ f(\mathit{Type}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscri
 <li><p><span class="math inline">\(\mathit{\color[RGB]{238,102,119}Outcome}\)</span> of the repair procedure, with values <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}{\small\verb;success;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}{\small\verb;fail;}\)</span>.</span></p></li>
 </ul></li>
 </ul>
-<div id="tbl-reparations" class="anchored">
+<div id="tbl-reparations" class="sm striped quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-reparations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;22.6: Reparations (each row is one unit, representing 100 reparations).<br>
+file <a href="datasets/repair_data.csv"><code>repair_data.csv</code></a>
+</figcaption>
+<div aria-describedby="tbl-reparations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="table-sm table-striped small table">
-<caption>Table&nbsp;22.6: Reparations (each row is one unit, representing 100 reparations).<br>
-file <a href="datasets/repair_data.csv"><code>repair_data.csv</code></a></caption>
 <thead>
 <tr class="header">
 <th style="text-align: center;"><span class="math inline">\(\mathit{\color[RGB]{238,102,119}Outcome}\)</span></th>
@@ -1153,6 +1223,8 @@ file <a href="datasets/repair_data.csv"><code>repair_data.csv</code></a></captio
 </tr>
 </tbody>
 </table>
+</div>
+</figure>
 </div>
 <p><strong>The repair company claims that, in this population, the <span class="math inline">\({\color[RGB]{34,136,51}{\small\verb;new;}}\)</span> repair method is more effective than the <span class="math inline">\({\color[RGB]{34,136,51}{\small\verb;old;}}\)</span>.</strong> Can you back up their claims?:</p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
@@ -1308,10 +1380,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1321,8 +1410,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1335,6 +1433,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1378,6 +1595,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1403,6 +1621,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1460,35 +1704,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./statistics.html" class="pagination-link">
+      <a href="./statistics.html" class="pagination-link  aria-label=" &lt;span="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title"><span class="yellow">Statistics</span></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./samples.html" class="pagination-link">
+      <a href="./samples.html" class="pagination-link" aria-label="<span class='chapter-number'>23</span>&nbsp; <span class='chapter-title'>[Infinite populations and samples]{.yellow}</span>">
         <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title"><span class="yellow">Infinite populations and samples</span></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

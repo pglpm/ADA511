@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-10-23">
+<meta name="dcterms.date" content="2023-11-16">
 
 <title>ADA511 0.1 Foundations of data science and data-driven engineering - 24&nbsp; Introduction to machine learning</title>
 <style>
@@ -51,7 +51,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -60,6 +66,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -68,6 +75,33 @@ ul.task-list li input[type="checkbox"] {
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="ada511styles.css">
 </head>
@@ -78,12 +112,12 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./machine_learning_overview.html"><span class="midgrey"><strong>Machine learning</strong></span></a></li><li class="breadcrumb-item"><a href="./machine_learning_overview.html"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Introduction to machine learning</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span id="sec-ml-introduction" class="quarto-section-identifier"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Introduction to machine learning</span></span></h1>
+        </a>     
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -93,13 +127,13 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2023-10-23</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2024-01-08</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -510,7 +544,7 @@ ul.task-list li input[type="checkbox"] {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
@@ -521,14 +555,14 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#model-selection-in-practice" id="toc-model-selection-in-practice" class="nav-link" data-scroll-target="#model-selection-in-practice"><span class="header-section-number">24.2</span> Model selection (in practice)</a></li>
   <li><a href="#machine-learning-taxonomy" id="toc-machine-learning-taxonomy" class="nav-link" data-scroll-target="#machine-learning-taxonomy"><span class="header-section-number">24.3</span> Machine learning taxonomy</a></li>
   </ul>
-<div class="quarto-alternate-notebooks"><h2>Notebooks</h2><ul><li><a href="over_and_underfitting.ipynb.html"><i class="bi bi-journal-code"></i>over_and_underfitting.ipynb</a></li></ul></div></nav>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-ml-introduction" class="quarto-section-identifier"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Introduction to machine learning</span></span></h1>
+<h1 class="title d-none d-lg-block"><span id="sec-ml-introduction" class="quarto-section-identifier"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Introduction to machine learning</span></span></h1>
 </div>
 
 
@@ -539,7 +573,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-10-23</p>
+      <p class="date">2023-11-16</p>
     </div>
   </div>
   
@@ -547,7 +581,9 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
+
 </header>
+
 
 <div class="hidden">
 <p><span class="math display">\[
@@ -560,14 +596,14 @@ ul.task-list li input[type="checkbox"] {
 <p><span id="eq-model-as-function"><span class="math display">\[
     \hat{y} = f(x, \mathbf{w}).
 \tag{24.1}\]</span></span></p>
-<p>The prediction <span style="display:inline-block;"><span class="math inline">\(\hat{y}\)</span></span> can be any quantity discussed in <a href="quantities_types.html#sec-basic-types">section&nbsp;<span>12.2</span></a> – most commonly we want to classify the data (and we say we are doing <span class="green"><em>classification</em></span>), or we want to estimate some value (in which case we call it <span class="green"><em>regression</em></span>).</p>
+<p>The prediction <span style="display:inline-block;"><span class="math inline">\(\hat{y}\)</span></span> can be any quantity discussed in <a href="quantities_types.html#sec-basic-types" class="quarto-xref">section&nbsp;<span>12.2</span></a> – most commonly we want to classify the data (and we say we are doing <span class="green"><em>classification</em></span>), or we want to estimate some value (in which case we call it <span class="green"><em>regression</em></span>).</p>
 <p>It has been pointed out already – and we will see it also in the coming chapters – that often there <em>is actually not</em> a functional relationship between the inputs <span style="display:inline-block;"><span class="math inline">\(\mathbf{x}\)</span>,</span> and the property we want to predict. This leaves us with two possibilities for a solution:</p>
 <ul>
 <li>If there is an <em>approximate</em> functional relationship, we can write an analytical function to model that. More specifically, we can write a <strong>deterministic</strong> function, which for a given input <span class="math inline">\(x\)</span> will repeatedly give an output <span class="math inline">\(y\)</span>. Common machine learning methods will work well here.</li>
 <li>If there is <em>no</em> functional relationship, it does not make sense to make a model that tries to enforce one. Instead of having a model that outputs a deterministic value, we need instead, is one that outputs a probability distribution.</li>
 </ul>
-<p>Because of the second point above, when we describe equation <a href="#eq-model-as-function"><span>24.1</span></a>, we will use the word “function” in the wide sense where we allow it to be non-deterministic. An example is <a href="https://chat.openai.com/">ChatGPT</a>, which will answer you differently if you ask it the same exact question twice. If you prefer more mathematical rigour, we could call <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> a <em>process</em> instead, which is a more loose term.</p>
-<p>Let us break down equation <a href="#eq-model-as-function"><span>24.1</span></a>. As engineers, when faced with the task of using data to model the behaviour of some system, our job is twofold. First, we need to select a suitable method to serve as the function <span style="display:inline-block;"><span class="math inline">\(f\)</span>,</span> and second, we need to find the optimal values for the parameters <span style="display:inline-block;"><span class="math inline">\(\mathbf{w}\)</span>.</span> In <a href="https://www.hvl.no/en/studies-at-hvl/study-programmes/courses/2023/ADA501">ADA501</a> we will see how to choose an analytical <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> that corresponds to certain physical systems, while in our course, we will look at methods where <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> can be practically anything.</p>
+<p>Because of the second point above, when we describe equation <a href="#eq-model-as-function" class="quarto-xref"><span>24.1</span></a>, we will use the word “function” in the wide sense where we allow it to be non-deterministic. An example is <a href="https://chat.openai.com/">ChatGPT</a>, which will answer you differently if you ask it the same exact question twice. If you prefer more mathematical rigour, we could call <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> a <em>process</em> instead, which is a more loose term.</p>
+<p>Let us break down equation <a href="#eq-model-as-function" class="quarto-xref"><span>24.1</span></a>. As engineers, when faced with the task of using data to model the behaviour of some system, our job is twofold. First, we need to select a suitable method to serve as the function <span style="display:inline-block;"><span class="math inline">\(f\)</span>,</span> and second, we need to find the optimal values for the parameters <span style="display:inline-block;"><span class="math inline">\(\mathbf{w}\)</span>.</span> In <a href="https://www.hvl.no/en/studies-at-hvl/study-programmes/courses/2023/ADA501">ADA501</a> we will see how to choose an analytical <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> that corresponds to certain physical systems, while in our course, we will look at methods where <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> can be practically anything.</p>
 <p>Finding the parameters <span style="display:inline-block;"><span class="math inline">\(\mathbf{w}\)</span></span> is what takes us from a general method, to the specific solution to a problem. As we will see, the way of finding them differs between the various machine learning methods, but the principle is always the same: We need to choose a <span class="blue"><strong>loss function</strong></span>, and then iteratively adjust <span style="display:inline-block;"><span class="math inline">\(\mathbf{w}\)</span></span> so that the loss, when computed on known data, becomes as small as possible. The loss function should represent the difference between what the model outputs, and the correct answer – the better the model, the smaller the difference. The choice of this loss function depends on what kind of problem we wish to solve, and we will look at the common ones shortly. But at this point we can already define the three main types of machine learning:</p>
 <ul>
 <li>If we know the “correct answers” (the labels) for all entries in our data set, this is what the model should aim to learn, and we call it <strong>supervised learning</strong>.</li>
@@ -583,102 +619,142 @@ ul.task-list li input[type="checkbox"] {
 </blockquote>
 <p>Although coming off as a somewhat negative view on things, the quote still captures an important point about statistical modelling – our goal is not to make a complete, 100% accurate description of reality, but rather a simplified description that is meaningful in the context of our task at hand. The “correct” level of simplicity, in other words the optimal number of parameters <span style="display:inline-block;"><span class="math inline">\(\mathbf{w}\)</span>,</span> can be hard to find. Often it will be influenced by practical considerations such as time and computing power, but it is <em>always</em> governed by the amount of data we have available. We will look at the theory of model selection later, but let us first consider a visual example, from which we can define some important concepts.</p>
 <p>Imagine that you don’t have a thermometer that shows the outside temperature. Never knowing whether you should wear a jacket or not when leaving the house, you get a great idea: If you can construct a mathematical model for the outside temperature as a function of the time of day, then a look at the clock yould be enough to decide for or against bringing a jacket. You manage to borrow a thermometer for a day, and make ten measurements at different times, which will form the basis for the model:</p>
-<div class="quarto-embed-nb-cell">
-<div class="cell" data-execution_count="56">
+<div class="quarto-embed-nb-cell" data-notebook="/home/pglpm/repositories/ADA511/over_and_underfitting.ipynb" data-notebook-cellid="cell-fig-simple-measurements">
+<div id="cell-fig-simple-measurements" class="cell" data-execution_count="56">
 <div class="cell-output cell-output-display">
-<div id="fig-simple-measurements" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="machine_learning_overview_files/figure-html/fig-simple-measurements-output-1.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;24.1: Temperature measurements over the course of 24 hours.</figcaption>
+<div id="fig-simple-measurements" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-simple-measurements-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="machine_learning_overview_files/figure-html/over_and_underfitting-fig-simple-measurements-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-simple-measurements-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;24.1: Temperature measurements over the course of 24 hours.
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<a class="quarto-notebook-link" id="nblink-1" href="over_and_underfitting.ipynb.html">Source: over_and_underfitting.ipynb</a></div>
+</div>
 <p>The next step is to choose a function <span style="display:inline-block;"><span class="math inline">\(f\)</span>.</span> For one-dimensional data like this, we could for instance select among the group of polynomials, of the form</p>
 <p><span class="math display">\[
     f (x, \mathbf{w}) = w_0 + w_1 x + w_2 x^2 + \dots + w_M x^M = \sum_{j=0}^{M} w_j x^j \,,
 \]</span></p>
 <p>where <span style="display:inline-block;"><span class="math inline">\(M\)</span></span> is the order of the polynomial. Recall that a zero’th order polymonial is just a constant value, so such a model would be represented with one single parameter. A first-order polynomial is a linear function (two parameters), and the higher in order (and number of parameters) we go, the more “curves” the function can have. This already presents us with a problem. Which order polynomial (i.e.&nbsp;which value of <span style="display:inline-block;"><span class="math inline">\(M\)</span>)</span> should we choose? Let us try different ones, and for each case, <em>fit</em> the parameters, meaning we find the parameter values that yield the smallest difference from the measured data points:</p>
-<div class="quarto-embed-nb-cell">
-<div id="fig-polynomial-fit" class="cell quarto-layout-panel" data-execution_count="37">
-<figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-polynomial-fit-1" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="machine_learning_overview_files/figure-html/fig-polynomial-fit-output-1.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit"></p>
-<figcaption class="figure-caption">(a) Zeroth-order polymonial</figcaption>
+<div class="quarto-embed-nb-cell" data-notebook="/home/pglpm/repositories/ADA511/over_and_underfitting.ipynb" data-notebook-cellid="cell-fig-polynomial-fit">
+<div id="fig-polynomial-fit" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-polynomial-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-polynomial-fit" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-polynomial-fit-1" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-polynomial-fit-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="machine_learning_overview_files/figure-html/over_and_underfitting-fig-polynomial-fit-output-1.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-polynomial-fit-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Zeroth-order polymonial
+</figcaption>
 </figure>
 </div>
 </div>
-<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-polynomial-fit-2" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="machine_learning_overview_files/figure-html/fig-polynomial-fit-output-2.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit"></p>
-<figcaption class="figure-caption">(b) First-order polymonial</figcaption>
-</figure>
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-polynomial-fit" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-polynomial-fit-2" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-polynomial-fit-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="machine_learning_overview_files/figure-html/over_and_underfitting-fig-polynomial-fit-output-2.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit">
 </div>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-polynomial-fit-3" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="machine_learning_overview_files/figure-html/fig-polynomial-fit-output-3.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit"></p>
-<figcaption class="figure-caption">(c) Fourth-order polymonial</figcaption>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
-<div id="fig-polynomial-fit-4" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="machine_learning_overview_files/figure-html/fig-polynomial-fit-output-4.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit"></p>
-<figcaption class="figure-caption">(d) Ninth-order polymonial</figcaption>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-polynomial-fit-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) First-order polymonial
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;24.2: Fitting polymonials (red lines) of different orders to the set of measurements (blue circles).</figcaption><p></p>
+<div class="quarto-layout-row">
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-polynomial-fit" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-polynomial-fit-3" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-polynomial-fit-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="machine_learning_overview_files/figure-html/over_and_underfitting-fig-polynomial-fit-output-3.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-polynomial-fit-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Fourth-order polymonial
+</figcaption>
 </figure>
 </div>
-<a class="quarto-notebook-link" id="nblink-2" href="over_and_underfitting.ipynb.html#fig-polynomial-fit">Source: over_and_underfitting.ipynb</a></div>
+</div>
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-polynomial-fit" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-polynomial-fit-4" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-polynomial-fit-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="machine_learning_overview_files/figure-html/over_and_underfitting-fig-polynomial-fit-output-4.png" class="img-fluid figure-img" data-ref-parent="fig-polynomial-fit">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-polynomial-fit-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Ninth-order polymonial
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-polynomial-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;24.2: Fitting polymonials (red lines) of different orders to the set of measurements (blue circles).
+</figcaption>
+</figure>
+</div>
+</div>
 <p>Obviously, the constant function does a poor job of describing our data, and likewise for the linear function. A fourth-order polynomial, on the other hand, looks very reasonable. Now consider the ninth-order polynomial: it matches the measurements <em>perfectly</em>, but surely, this does not match our expectation for what the temperature should look like.</p>
 <p>We say that the first and second model <strong>underfit</strong> the data. This can happen for two reasons: Either the model has too little complexity to be able to describe the data (which is the case in this example), or, potentially, the optimal parameter values have not been found. The opposite case is <strong>overfitting</strong>, as shown for the last model, where the complexity is too high and the model adapts to artifacts in the data.</p>
 <p>This concept is also called the <span class="blue"><strong>bias-variance tradeoff</strong></span>. We will not go into too much detail on this yet, but qualitatively, we can say that <span class="blue"><em>bias</em></span> (used in this setting) is the difference between the predicted value and the true value, when averaging over different data sets. <span class="blue"><em>Variance</em></span> (again when used in this setting) indicates how big the change in parameters, and hence in model predictions, we get from fitting to different data sets. Let us say you measure the temperature on ten different days, and for each day, you fit a model, like before. These may be the results:</p>
-<div class="quarto-embed-nb-cell">
-<div id="fig-bias-variance-tradeoff" class="cell quarto-layout-panel" data-execution_count="67">
-<figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
-<div id="fig-bias-variance-tradeoff-1" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="machine_learning_overview_files/figure-html/fig-bias-variance-tradeoff-output-1.png" class="img-fluid figure-img" data-ref-parent="fig-bias-variance-tradeoff"></p>
-<figcaption class="figure-caption">(a) Large bias, low variance</figcaption>
+<div class="quarto-embed-nb-cell" data-notebook="/home/pglpm/repositories/ADA511/over_and_underfitting.ipynb" data-notebook-cellid="cell-fig-bias-variance-tradeoff">
+<div id="fig-bias-variance-tradeoff" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bias-variance-tradeoff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-bias-variance-tradeoff" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-bias-variance-tradeoff-1" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-bias-variance-tradeoff-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="machine_learning_overview_files/figure-html/over_and_underfitting-fig-bias-variance-tradeoff-output-1.png" class="img-fluid figure-img" data-ref-parent="fig-bias-variance-tradeoff">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-bias-variance-tradeoff-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Large bias, low variance
+</figcaption>
 </figure>
 </div>
 </div>
-<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
-<div id="fig-bias-variance-tradeoff-2" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="machine_learning_overview_files/figure-html/fig-bias-variance-tradeoff-output-2.png" class="img-fluid figure-img" data-ref-parent="fig-bias-variance-tradeoff"></p>
-<figcaption class="figure-caption">(b) Resonably low bias and variance</figcaption>
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-bias-variance-tradeoff" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-bias-variance-tradeoff-2" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-bias-variance-tradeoff-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="machine_learning_overview_files/figure-html/over_and_underfitting-fig-bias-variance-tradeoff-output-2.png" class="img-fluid figure-img" data-ref-parent="fig-bias-variance-tradeoff">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-bias-variance-tradeoff-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Resonably low bias and variance
+</figcaption>
 </figure>
 </div>
 </div>
-<div class="cell-output cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 33.3%;justify-content: center;">
-<div id="fig-bias-variance-tradeoff-3" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="machine_learning_overview_files/figure-html/fig-bias-variance-tradeoff-output-3.png" class="img-fluid figure-img" data-ref-parent="fig-bias-variance-tradeoff"></p>
-<figcaption class="figure-caption">(c) Low bias, large variance</figcaption>
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-bias-variance-tradeoff" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-bias-variance-tradeoff-3" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-bias-variance-tradeoff-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="machine_learning_overview_files/figure-html/over_and_underfitting-fig-bias-variance-tradeoff-output-3.png" class="img-fluid figure-img" data-ref-parent="fig-bias-variance-tradeoff">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-bias-variance-tradeoff-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Low bias, large variance
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;24.3: Red lines: Different models fitted to separate datasets, where each dataset is drawn from the same distribution as the original one. The original dataset shown in blue circles.</figcaption><p></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bias-variance-tradeoff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;24.3: Red lines: Different models fitted to separate datasets, where each dataset is drawn from the same distribution as the original one. The original dataset shown in blue circles.
+</figcaption>
 </figure>
 </div>
-<a class="quarto-notebook-link" id="nblink-3" href="over_and_underfitting.ipynb.html#fig-bias-variance-tradeoff">Source: over_and_underfitting.ipynb</a></div>
+</div>
 <p>The blue dots are our “original” data points, plotted for reference, while the red lines corresponds to models fitted for each day’s measurements. Due to fluctuations in the measurements, they are different, but note how the difference is related to the model complexity. Our linear models (<span style="display:inline-block;"><span class="math inline">\(M=1\)</span>)</span> are all quite similar, but neither capture the pattern in the data very well, so they all have high bias. The overly complex models (<span style="display:inline-block;"><span class="math inline">\(M=9\)</span>)</span> have zero bias on their repective dataset, but high variance. The optimal choice is likely somewhere in-between (hence the <em>tradeoff</em>), as for the <span style="display:inline-block;"><span class="math inline">\(M=4\)</span></span> models, which perform well without being overly sensitive to fluctuations in data. Since the value of <span style="display:inline-block;"><span class="math inline">\(M\)</span></span> is chosen by us, we call it a <span class="blue"><strong>hyperparameter</strong></span>, to separate it from the regular parameters which are optimised by minimising the loss function.</p>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -692,7 +768,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="callout-body-container callout-body">
 <ol class="example" type="1">
 <li><p>Our simple temperature model relies on a series of assumptions, some which might be good, and some which might be (very) bad. State the ones you can think of, and evaluate if they are sensible. <em>Hints: are polynomials a good choice for <span class="math inline">\(f\)</span>? Is the data representative?</em></p></li>
-<li><p>For the different models in <a href="#fig-polynomial-fit">figure&nbsp;<span>24.2</span></a> we started by choosing polymonial degree <span style="display:inline-block;"><span class="math inline">\(M\)</span>,</span> and then computed the parameters that minimized the difference between the data points and the model. Then we had a look at the results, compared them to our expectations, and decided that <span style="display:inline-block;"><span class="math inline">\(M=0\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(M=9\)</span></span> were both unlikely. Can you think of a way to incorporate our initial expectations into the computation?</p></li>
+<li><p>For the different models in <a href="#fig-polynomial-fit" class="quarto-xref">figure&nbsp;<span>24.2</span></a> we started by choosing polymonial degree <span style="display:inline-block;"><span class="math inline">\(M\)</span>,</span> and then computed the parameters that minimized the difference between the data points and the model. Then we had a look at the results, compared them to our expectations, and decided that <span style="display:inline-block;"><span class="math inline">\(M=0\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(M=9\)</span></span> were both unlikely. Can you think of a way to incorporate our initial expectations into the computation?</p></li>
 </ol>
 </div>
 </div>
@@ -709,7 +785,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="machine-learning-taxonomy" class="level2" data-number="24.3">
 <h2 data-number="24.3" class="anchored" data-anchor-id="machine-learning-taxonomy"><span class="header-section-number">24.3</span> Machine learning taxonomy</h2>
-<p>Machine learning has been around for many decades, and the list of methods that fit under our simple definition of looking like equation <a href="#eq-model-as-function"><span>24.1</span></a> and learning their parameters from data, is very long. For a (non-exhaustive) systematic list, have a look at the methods that are implemented in <a href="https://scikit-learn.org/stable/supervised_learning.html#supervised-learning">scikit-learn</a>, a Python library dedicated to data analysis.</p>
+<p>Machine learning has been around for many decades, and the list of methods that fit under our simple definition of looking like equation <a href="#eq-model-as-function" class="quarto-xref"><span>24.1</span></a> and learning their parameters from data, is very long. For a (non-exhaustive) systematic list, have a look at the methods that are implemented in <a href="https://scikit-learn.org/stable/supervised_learning.html#supervised-learning">scikit-learn</a>, a Python library dedicated to data analysis.</p>
 <p>In this course we will not try to go through all of them, but rather focus on the fundamentals of what they all have in common. With this fundamental understanding, learning about new methods is like learning a new programming language – each has their specific syntax and specific uses, but the underlying mechanism is the same. We will look at two important methods, that are inherently very different, but still accomplish the same end result. The first is decision trees (and the extension into <em>random forests</em>), while the second is neural networks.</p>
 
 
@@ -795,10 +871,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -808,8 +901,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -822,6 +924,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -865,6 +1086,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -890,6 +1112,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -947,35 +1195,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./samples.html" class="pagination-link">
+      <a href="./samples.html" class="pagination-link  aria-label=" &lt;span="" populations="" and="" samples]{.yellow}&lt;="" span&gt;"="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title"><span class="yellow">Infinite populations and samples</span></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./decision_trees.html" class="pagination-link">
+      <a href="./decision_trees.html" class="pagination-link" aria-label="<span class='chapter-number'>25</span>&nbsp; <span class='chapter-title'>Decision trees</span>">
         <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Decision trees</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-14">
+<meta name="dcterms.date" content="2023-11-16">
 
 <title>ADA511 0.1 Foundations of data science and data-driven engineering - 8&nbsp; Probability inference</title>
 <style>
@@ -51,7 +51,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -60,6 +66,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -68,6 +75,33 @@ ul.task-list li input[type="checkbox"] {
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="ada511styles.css">
 </head>
@@ -78,12 +112,12 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./inference.html"><span class="green"><strong>Inference I</strong></span></a></li><li class="breadcrumb-item"><a href="./probability_inference.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">[Probability inference]{.green}</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span id="sec-probability" class="quarto-section-identifier"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title"><span class="green">Probability inference</span></span></span></h1>
+        </a>     
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -93,13 +127,13 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2023-11-14</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2024-01-08</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -510,7 +544,7 @@ ul.task-list li input[type="checkbox"] {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
@@ -544,7 +578,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-probability" class="quarto-section-identifier"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title"><span class="green">Probability inference</span></span></span></h1>
+<h1 class="title d-none d-lg-block"><span id="sec-probability" class="quarto-section-identifier"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title"><span class="green">Probability inference</span></span></span></h1>
 </div>
 
 
@@ -555,7 +589,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-14</p>
+      <p class="date">2023-11-16</p>
     </div>
   </div>
   
@@ -563,7 +597,9 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
+
 </header>
+
 
 <div class="hidden">
 <p><span class="math display">\[
@@ -580,8 +616,8 @@ ul.task-list li input[type="checkbox"] {
 <h2 data-number="8.1" class="anchored" data-anchor-id="sec-probability-def"><span class="header-section-number">8.1</span> When truth isn’t known: probability</h2>
 <p>When we cross a busy city street we look left and right to check whether any cars are approaching. We typically don’t look <em>up</em> to check whether something is falling from the sky. Yet, couldn’t it be <code>false</code> that cars are approaching at that moment? and couldn’t it be <code>true</code> that <a href="https://www.aerotime.aero/articles/32818-cessna-door-falls-off-lands-in-parking-lot">some object is falling from the sky</a>? Of course both events are possible. Then why do we look left and right, but not up?</p>
 <p>The main reason is that we <em>believe strongly</em> that cars might be approaching, and <em>believe very weakly</em> that some object might be falling from the sky. In other words, we consider the first occurrence to be <em>very probable</em>, and the second extremely <em>improbable</em>.</p>
-<div class="page-columns page-full"><p>We shall take the notion of <span class="blue"><strong>probability</strong></span> as intuitively understood (just as we did with the notion of truth). Terms equivalent to “probability” are <span class="blue"><em>degree of belief</em></span>, <span class="blue"><em>plausibility</em></span>, <span class="blue"><em>credibility</em></span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;<em>credibility</em> literally means “believability” (from Latin <em>credo</em>&nbsp;=&nbsp;<em>to believe</em>).</p></li></div></div>
-<div class="callout callout-style-default callout-important no-icon callout-titled">
+<p>We shall take the notion of <span class="blue"><strong>probability</strong></span> as intuitively understood (just as we did with the notion of truth). Terms equivalent to “probability” are <span class="blue"><em>degree of belief</em></span>, <span class="blue"><em>plausibility</em></span>, <span class="blue"><em>credibility</em></span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;<em>credibility</em> literally means “believability” (from Latin <em>credo</em>&nbsp;=&nbsp;<em>to believe</em>).</p></div><div class="callout callout-style-default callout-important no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
@@ -591,13 +627,13 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>In everyday language, “<a href="https://dictionary.cambridge.org/dictionary/english/likelihood">likelihood</a>” is synonym with “probability”. In technical writings about probability or statistics, however, “likelihood” means something different and is <em>not</em> a synonym of “probability”, as we explain below (<a href="#sec-likelihood">§ &nbsp;<span>8.8.1</span></a>).</p>
+<p>In everyday language, “<a href="https://dictionary.cambridge.org/dictionary/english/likelihood">likelihood</a>” is synonym with “probability”. In technical writings about probability or statistics, however, “likelihood” means something different and is <em>not</em> a synonym of “probability”, as we explain below (<a href="#sec-likelihood" class="quarto-xref">§ &nbsp;<span>8.8.1</span></a>).</p>
 </div>
 </div>
 <p>Probabilities are quantified between <span style="display:inline-block;"><span class="math inline">\(0\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(1\)</span>,</span> or equivalently between <span style="display:inline-block;"><span class="math inline">\(0\%\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(100\%\)</span>.</span> Assigning to a sentence a probability <code>1</code> is the same as saying that it is <code>true</code>; and a probability <code>0</code>, that it is <code>false</code>. A probability of <span style="display:inline-block;"><span class="math inline">\(0.5\)</span></span> represents a belief completely symmetric with respect to truth and falsity.</p>
 <p>Let’s emphasize and agree on some important facts about probabilities:</p>
 <ul>
-<li><p><span class="blue"><strong><i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i> Probabilities are assigned to <em>sentences</em></strong></span>. We already discussed this point in <a href="sentences.html#sec-sentence-notation">§ &nbsp;<span>6.3</span></a>, but let’s reiterate it. Consider an engineer working on a problem of electric-power distribution in a specific geographical region. At a given moment the engineer may believe with <span style="display:inline-block;"><span class="math inline">\(75\%\)</span></span> probability that the measured average power output in the next hour will be 100 MW. The <span style="display:inline-block;"><span class="math inline">\(75\%\)</span></span> probability is assigned not to the quantity “100 MW”, but to the <em>sentence</em></p>
+<li><p><span class="blue"><strong><i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i> Probabilities are assigned to <em>sentences</em></strong></span>. We already discussed this point in <a href="sentences.html#sec-sentence-notation" class="quarto-xref">§ &nbsp;<span>6.3</span></a>, but let’s reiterate it. Consider an engineer working on a problem of electric-power distribution in a specific geographical region. At a given moment the engineer may believe with <span style="display:inline-block;"><span class="math inline">\(75\%\)</span></span> probability that the measured average power output in the next hour will be 100 MW. The <span style="display:inline-block;"><span class="math inline">\(75\%\)</span></span> probability is assigned not to the quantity “100 MW”, but to the <em>sentence</em></p>
 <p><span class="math display">\[
 \textsf{\small`The measured average power output in the next hour will be 100\,MW'}
 \]</span></p>
@@ -629,11 +665,11 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <p><br>
 </p>
-<div class="page-columns page-full"><p>These points listed above are not just a matter of principle. They have important practical consequences. A data scientist who is not attentive to the source of the data (measured? set? reported, and so maybe less trustworthy?), or who does not carefully assess the context of a probability, or who mixes a probability with a frequency, or who does not take advantage (when possible) of the physics involved in the a problem – such data scientist will design systems with sub-optimal performance<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> – or even cause deaths.</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;This fact can be mathematically proven.</p></li></div></div>
-</section>
+<p>These points listed above are not just a matter of principle. They have important practical consequences. A data scientist who is not attentive to the source of the data (measured? set? reported, and so maybe less trustworthy?), or who does not carefully assess the context of a probability, or who mixes a probability with a frequency, or who does not take advantage (when possible) of the physics involved in the a problem – such data scientist will design systems with sub-optimal performance<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> – or even cause deaths.</p>
+<div class="no-row-height column-margin column-container"><p><sup>2</sup>&nbsp;This fact can be mathematically proven.</p></div></section>
 <section id="sec-uncertain-inference" class="level2" data-number="8.2">
 <h2 data-number="8.2" class="anchored" data-anchor-id="sec-uncertain-inference"><span class="header-section-number">8.2</span> An unsure inference</h2>
-<p>Consider now the following variation of the trivial inference problem of <a href="truth_inference.html#sec-trivial-inference">§ &nbsp;<span>7.1</span></a>.</p>
+<p>Consider now the following variation of the trivial inference problem of <a href="truth_inference.html#sec-trivial-inference" class="quarto-xref">§ &nbsp;<span>7.1</span></a>.</p>
 <blockquote class="blockquote">
 <p>This electric component had an early failure. If an electric component fails early, then at production it either didn’t pass the heating test or didn’t pass the shock test. The probability that it didn’t pass both tests is 10%. There’s no reason to believe that the component passed the heating test, more than it passed the shock test.</p>
 </blockquote>
@@ -658,7 +694,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probability-notation" class="level2" data-number="8.3">
 <h2 data-number="8.3" class="anchored" data-anchor-id="probability-notation"><span class="header-section-number">8.3</span> Probability notation</h2>
-<p>For this inference problem we can’t find a <code>true</code> or <code>false</code> final value. The truth-inference rules (<a href="truth_inference.html#eq-t-not"><span>7.1</span></a>)–(<a href="truth_inference.html#eq-t-unity"><span>7.4</span></a>) therefore cannot help us here. In fact even the <span style="display:inline-block;">“<span class="math inline">\(\mathrm{T}(\dotso \nonscript\:\vert\nonscript\:\mathopen{} \dotso)\)</span>”</span> notation is unsuitable, because it only admits the values <span style="display:inline-block;"><span class="math inline">\(1\)</span></span> (<code>true</code>) and <span style="display:inline-block;"><span class="math inline">\(0\)</span></span> (<code>false</code>).</p>
+<p>For this inference problem we can’t find a <code>true</code> or <code>false</code> final value. The truth-inference rules (<a href="truth_inference.html#eq-t-not" class="quarto-xref"><span>7.1</span></a>)–(<a href="truth_inference.html#eq-t-unity" class="quarto-xref"><span>7.4</span></a>) therefore cannot help us here. In fact even the <span style="display:inline-block;">“<span class="math inline">\(\mathrm{T}(\dotso \nonscript\:\vert\nonscript\:\mathopen{} \dotso)\)</span>”</span> notation is unsuitable, because it only admits the values <span style="display:inline-block;"><span class="math inline">\(1\)</span></span> (<code>true</code>) and <span style="display:inline-block;"><span class="math inline">\(0\)</span></span> (<code>false</code>).</p>
 <p>Let us first generalize this notation in a straightforward way:</p>
 <p>First, let’s represent the probability or degree of belief of a sentence by a number in the range <span class="m"><span class="math inline">\([0,1]\)</span>,</span> that is, between <span style="display:inline-block;"><span class="math inline">\(\mathbf{1}\)</span></span> (certainty or <code>true</code>) and <span style="display:inline-block;"><span class="math inline">\(\mathbf{0}\)</span></span> (impossibility or <code>false</code>). The value <span style="display:inline-block;"><span class="math inline">\(0.5\)</span></span> represents that the belief in the truth of the sentence is as strong as that in its falsity.</p>
 <p>Second, let’s symbolically write that the probability of a proposal <span style="display:inline-block;"><span class="math inline">\(\mathsfit{Y}\)</span>,</span> given a conditional <span style="display:inline-block;"><span class="math inline">\(\mathsfit{X}\)</span>,</span> is some number <span style="display:inline-block;"><span class="math inline">\(p\)</span>,</span> as follows:</p>
@@ -675,7 +711,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="sec-fundamental" class="level2 page-columns page-full" data-number="8.4">
 <h2 data-number="8.4" class="anchored" data-anchor-id="sec-fundamental"><span class="header-section-number">8.4</span> Inference rules</h2>
 <p>Extending our truth-inference notation to probability-inference notation has been straightforward. But which rules should we use for drawing inferences when probabilities are involved?</p>
-<p>The amazing result is that <em>the rules for truth-inference, formulae (<a href="truth_inference.html#eq-t-not"><span>7.1</span></a>)–(<a href="truth_inference.html#eq-t-unity"><span>7.4</span></a>), extend also to probability-inference</em>. The only difference is that they now hold for all values in the range <span style="display:inline-block;"><span class="math inline">\([0,1]\)</span>,</span> rather than for <span style="display:inline-block;"><span class="math inline">\(0\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(1\)</span></span> only.</p>
+<p>The amazing result is that <em>the rules for truth-inference, formulae (<a href="truth_inference.html#eq-t-not" class="quarto-xref"><span>7.1</span></a>)–(<a href="truth_inference.html#eq-t-unity" class="quarto-xref"><span>7.4</span></a>), extend also to probability-inference</em>. The only difference is that they now hold for all values in the range <span style="display:inline-block;"><span class="math inline">\([0,1]\)</span>,</span> rather than for <span style="display:inline-block;"><span class="math inline">\(0\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(1\)</span></span> only.</p>
 <p>This important result was taken more or less for granted at least since Laplace in the 1700s. But was formally proven for the first time in the 1946 by R.&nbsp;T.&nbsp;Cox. The proof has been refined since then. What kind of proof is it? It shows that if we don’t follow the rules we are doomed to arrive at illogical conclusions; we’ll show some examples later.</p>
 <p><br>
 </p>
@@ -736,7 +772,7 @@ ul.task-list li input[type="checkbox"] {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-
+Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -877,8 +913,8 @@ ul.task-list li input[type="checkbox"] {
 <section id="how-the-inference-rules-are-used" class="level2 page-columns page-full" data-number="8.6">
 <h2 data-number="8.6" class="anchored" data-anchor-id="how-the-inference-rules-are-used"><span class="header-section-number">8.6</span> How the inference rules are used</h2>
 <p>In the solution above you noticed that the equations of the fundamental rules are not only used to obtain some of the probabilities appearing in them from the remaining probabilities.</p>
-<div class="page-columns page-full"><p>The rules represent, first of all, <span class="blue"><em>constraints of logical consistency</em></span><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> among probabilities. For instance, if we have probabilities&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X}\land \mathsfit{Z})=0.1\)</span>,&nbsp;&nbsp;</span><span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(\mathsfit{X}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{Z})=0.7\)</span>,&nbsp;&nbsp;and</span> <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(\mathsfit{X}\land \mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{Z})=0.2\)</span>,&nbsp;&nbsp;then</span> there’s an inconsistency somewhere, because these values violate the and-rule:&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(0.2 \ne 0.1 \cdot 0.7\)</span>.&nbsp;&nbsp;In</span> this case we must find the inconsistency and solve it. However, since probabilities are quantified by real numbers, it’s possible and acceptable to have slight discrepancies within numerical round-off errors.</p><div class="no-row-height column-margin column-container"><li id="fn3"><p><sup>3</sup>&nbsp;The technical term is <span class="blue"><strong>coherence</strong></span>.</p></li></div></div>
-<p>The rules also imply more general constraints. For example we must <em>always</em> have</p>
+<p>The rules represent, first of all, <span class="blue"><em>constraints of logical consistency</em></span><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> among probabilities. For instance, if we have probabilities&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X}\land \mathsfit{Z})=0.1\)</span>,&nbsp;&nbsp;</span><span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(\mathsfit{X}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{Z})=0.7\)</span>,&nbsp;&nbsp;and</span> <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(\mathsfit{X}\land \mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{Z})=0.2\)</span>,&nbsp;&nbsp;then</span> there’s an inconsistency somewhere, because these values violate the and-rule:&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(0.2 \ne 0.1 \cdot 0.7\)</span>.&nbsp;&nbsp;In</span> this case we must find the inconsistency and solve it. However, since probabilities are quantified by real numbers, it’s possible and acceptable to have slight discrepancies within numerical round-off errors.</p>
+<div class="no-row-height column-margin column-container"><p><sup>3</sup>&nbsp;The technical term is <span class="blue"><strong>coherence</strong></span>.</p></div><p>The rules also imply more general constraints. For example we must <em>always</em> have</p>
 <p><span class="math display">\[
 \begin{gathered}
 \mathrm{P}(\mathsfit{X}\land \mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{Z}) \le \min\set[\big]{\mathrm{P}(\mathsfit{X}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{Z}),\  \mathrm{P}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{Z})}
@@ -955,7 +991,7 @@ ul.task-list li input[type="checkbox"] {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i>
+Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -966,7 +1002,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="omitting-background-information" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="omitting-background-information">Omitting background information</h3>
-<p>In the analyses of the inference examples of <a href="truth_inference.html#sec-trivial-inference">§ &nbsp;<span>7.1</span></a> and <a href="#sec-uncertain-inference">§ &nbsp;<span>8.2</span></a> we defined sentences (<span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathsfit{J}\)</span>)</span> expressing all background information, and always included these sentences in the conditionals of the inferences – because those inferences obviously depended on that background information.</p>
+<p>In the analyses of the inference examples of <a href="truth_inference.html#sec-trivial-inference" class="quarto-xref">§ &nbsp;<span>7.1</span></a> and <a href="#sec-uncertain-inference" class="quarto-xref">§ &nbsp;<span>8.2</span></a> we defined sentences (<span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathsfit{J}\)</span>)</span> expressing all background information, and always included these sentences in the conditionals of the inferences – because those inferences obviously depended on that background information.</p>
 <p>In many concrete inference problems the background information usually stays there in the conditional from beginning to end, while the other sentences jump around between conditional and proposal as we apply the rules of inference. For this reason the background information is often omitted from the notation, being implicitly understood. For instance, if the background information is denoted <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> one writes</p>
 <ul>
 <li><p><span style="display:inline-block;">“<span class="math inline">\(\mathrm{P}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X})\)</span>”</span>&nbsp;&nbsp;instead of&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(\mathsfit{Y}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{X}\land \mathsfit{I})\)</span></span></p></li>
@@ -1006,11 +1042,11 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="maxwell1.jpg" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption class="figure-caption"><a href="https://clerkmaxwellfoundation.org/html/about_maxwell.html">James&nbsp;Clerk&nbsp;Maxwell</a> is one of the main founders of statistical mechanics and kinetic theory (and electromagnetism). Yet he never used the word “random” in his technical writings. Maxwell is known for being very clear and meticulous with explanations and terminology.</figcaption>
+<figcaption><a href="https://clerkmaxwellfoundation.org/html/about_maxwell.html">James&nbsp;Clerk&nbsp;Maxwell</a> is one of the main founders of statistical mechanics and kinetic theory (and electromagnetism). Yet he never used the word “random” in his technical writings. Maxwell is known for being very clear and meticulous with explanations and terminology.</figcaption>
 </figure>
 </div>
 </div></div><ul>
-<li><p>As discussed in <a href="#sec-probability-def">§ &nbsp;<span>8.1</span></a>, in concrete applications it is important to know how a quantity “takes on” a value: for example it could be directly measured, indirectly reported, or purposely set to that specific value. Thinking and working in terms of sentences, rather than of random variables, allows us to account for these important differences.</p></li>
+<li><p>As discussed in <a href="#sec-probability-def" class="quarto-xref">§ &nbsp;<span>8.1</span></a>, in concrete applications it is important to know how a quantity “takes on” a value: for example it could be directly measured, indirectly reported, or purposely set to that specific value. Thinking and working in terms of sentences, rather than of random variables, allows us to account for these important differences.</p></li>
 <li><p>We want a general AI agent to be able to deal with uncertainty and probability even in situations that do not involve mathematical sets.</p></li>
 <li><p>Very often the object (proposal) of a probability is not a “variable”: it is actually a <em>constant</em> value that is simply unknown (simple example: we are uncertain about the mass of a particular block of concrete, so we speak of the probability of some mass value; this doesn’t mean that the mass of the block is changing).</p></li>
 <li><p>What does “random” (or “chance”) mean? Good luck finding an understandable and non-circular definition in texts that use that word; strangely enough, they never define it. In these notes, if the word “random” is ever used, it stands for “unpredictable” or “unsystematic”.</p></li>
@@ -1105,10 +1141,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1118,8 +1171,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1132,6 +1194,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1175,6 +1356,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1200,6 +1382,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1257,35 +1465,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./truth_inference.html" class="pagination-link">
+      <a href="./truth_inference.html" class="pagination-link  aria-label=" &lt;span="" inference]{.green}&lt;="" span&gt;"="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><span class="green">Truth inference</span></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./derived_rules.html" class="pagination-link">
+      <a href="./derived_rules.html" class="pagination-link" aria-label="<span class='chapter-number'>9</span>&nbsp; <span class='chapter-title'>[Shortcut rules]{.green}</span>">
         <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><span class="green">Shortcut rules</span></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

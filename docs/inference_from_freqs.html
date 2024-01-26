@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-07">
+<meta name="dcterms.date" content="2023-11-16">
 
 <title>ADA511 0.1 Foundations of data science and data-driven engineering - 29&nbsp; Inferences from frequencies</title>
 <style>
@@ -51,7 +51,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -60,6 +66,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -68,6 +75,33 @@ ul.task-list li input[type="checkbox"] {
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="ada511styles.css">
 </head>
@@ -78,12 +112,12 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./beyond-ML.html"><span class="green"><strong>Inference III</strong></span></a></li><li class="breadcrumb-item"><a href="./inference_from_freqs.html"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">[Inferences from frequencies]{.green}</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span id="sec-inference-from-freqs" class="quarto-section-identifier"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="green">Inferences from frequencies</span></span></span></h1>
+        </a>     
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -93,13 +127,13 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2023-11-07</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2024-01-08</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -510,7 +544,7 @@ ul.task-list li input[type="checkbox"] {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
@@ -536,7 +570,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-inference-from-freqs" class="quarto-section-identifier"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="green">Inferences from frequencies</span></span></span></h1>
+<h1 class="title d-none d-lg-block"><span id="sec-inference-from-freqs" class="quarto-section-identifier"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="green">Inferences from frequencies</span></span></span></h1>
 </div>
 
 
@@ -547,7 +581,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-07</p>
+      <p class="date">2023-11-16</p>
     </div>
   </div>
   
@@ -555,7 +589,9 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
+
 </header>
+
 
 <div class="hidden">
 <p><span class="math display">\[
@@ -568,12 +604,12 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <section id="sec-pop-freq-known" class="level2" data-number="29.1">
 <h2 data-number="29.1" class="anchored" data-anchor-id="sec-pop-freq-known"><span class="header-section-number">29.1</span> If the population frequencies were known</h2>
-<p>Let’s now see how the exchangeability of an agent’s degrees of belief allows it to calculate probabilities about the units of a population. We shall do this calculation in two steps. First, in the case where <em>the agent knows the joint frequency distribution</em> (§§ <a href="statistics.html#sec-freq-distr"><span>21.2</span></a>, <a href="statistics.html#sec-joint-freq"><span>21.3</span></a>, <a href="samples.html#sec-limit-freqs"><span>23.2</span></a>) <em>for the full population</em>. Second, in the more general case where the agent lacks this population-frequency information.</p>
+<p>Let’s now see how the exchangeability of an agent’s degrees of belief allows it to calculate probabilities about the units of a population. We shall do this calculation in two steps. First, in the case where <em>the agent knows the joint frequency distribution</em> (§§ <a href="statistics.html#sec-freq-distr" class="quarto-xref"><span>21.2</span></a>, <a href="statistics.html#sec-joint-freq" class="quarto-xref"><span>21.3</span></a>, <a href="samples.html#sec-limit-freqs" class="quarto-xref"><span>23.2</span></a>) <em>for the full population</em>. Second, in the more general case where the agent lacks this population-frequency information.</p>
 <p>When the full-population frequency distribution is known, the calculation of probabilities is very intuitive and analogous to the stereotypical “drawing balls from an urn”. We shall rely on this intuition; keep in mind, however, that the probabilities are not assigned “by intuition”, but actually fully determined by the two basic pieces of knowledge or assumptions: <em>exchangeability</em> and <em>known population frequencies</em>. Some simple proof sketches of this will also be given.</p>
 <p>We consider an infinite population with any number of variates. For concreteness we assume these variates to have finite, discrete domains; but the formulae we obtain can be easily generalized to other kinds of variates. In this and the following chapters we shall often use the simplified <span class="midgrey">income</span> dataset (file <a href="datasets/income_data_nominal_nomissing.csv"><code>income_data_nominal_nomissing.csv</code></a> and its underlying population as an example. This population has nine nominal variates. The variates, their domain sizes, and their possible values are listed <a href="https://github.com/pglpm/ADA511/blob/master/datasets/meta_income_data_nominal_nomissing.csv">at this link</a>.</p>
 <section id="notation-recap" class="level3">
 <h3 class="anchored" data-anchor-id="notation-recap">Notation recap</h3>
-<p>We shall mainly use the notation introduced in <a href="beyond-ML.html#sec-categ-probtheory">§ &nbsp;<span>27.3</span></a>:</p>
+<p>We shall mainly use the notation introduced in <a href="beyond-ML.html#sec-categ-probtheory" class="quarto-xref">§ &nbsp;<span>27.3</span></a>:</p>
 <p>All population variates, jointly, are denoted <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span>.</span> In the case of the income dataset, for instance, the variate <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> stands for the joint variate with nine components:</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -646,15 +682,15 @@ f({\color[RGB]{68,119,170}Z\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sma
 </section>
 <section id="sec-1unit-freq-known" class="level2 page-columns page-full" data-number="29.3">
 <h2 data-number="29.3" class="anchored" data-anchor-id="sec-1unit-freq-known"><span class="header-section-number">29.3</span> Inference about a single unit</h2>
-<div class="page-columns page-full"><p>Now imagine that the agent, given the information <span style="display:inline-block;"><span class="math inline">\(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\)</span></span> about the frequencies and some background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> must infer all <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> variates for a specific unit <span style="display:inline-block;"><span class="math inline">\(u\)</span>.</span> In the <span class="midgrey">income</span> case, it would be an inference about a specific USA citizen. This unit <span style="display:inline-block;"><span class="math inline">\(u\)</span></span> could have any particular combination of variate values; in the <span class="midgrey">income</span> case it could have any one of the 54 001 920 possible combined values. The agent must assign a probability to each of these possibilities.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Which probability values should it assign?</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;Remember that this is what we mean when we say “drawing an inference”! (See <a href="inference.html">chap. &nbsp;<span>5</span></a> and <a href="probability_distributions.html#sec-distribute-prob">§ &nbsp;<span>14.1</span></a>)</p></li></div></div>
-<p>Intuitively we would say that the probability for a particular value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}Z\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z\)</span></span> should be equal to the frequency of that value in the full population:</p>
+<p>Now imagine that the agent, given the information <span style="display:inline-block;"><span class="math inline">\(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\)</span></span> about the frequencies and some background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> must infer all <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}\)</span></span> variates for a specific unit <span style="display:inline-block;"><span class="math inline">\(u\)</span>.</span> In the <span class="midgrey">income</span> case, it would be an inference about a specific USA citizen. This unit <span style="display:inline-block;"><span class="math inline">\(u\)</span></span> could have any particular combination of variate values; in the <span class="midgrey">income</span> case it could have any one of the 54 001 920 possible combined values. The agent must assign a probability to each of these possibilities.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Which probability values should it assign?</p>
+<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;Remember that this is what we mean when we say “drawing an inference”! (See <a href="inference.html" class="quarto-xref">chap. &nbsp;<span>5</span></a> and <a href="probability_distributions.html#sec-distribute-prob" class="quarto-xref">§ &nbsp;<span>14.1</span></a>)</p></div><p>Intuitively we would say that the probability for a particular value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}Z\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z\)</span></span> should be equal to the frequency of that value in the full population:</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled" style="font-size:120%">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-
+Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -775,7 +811,7 @@ R_{3}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0
 &amp;\text{all other probabilities are zero}
 \end{aligned}
 \]</span></p>
-<p>Now let’s find the probability that a rock, say #1, has haematite (<span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span>),</span> given that we haven’t observed any other rocks: <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K}_{\textsf{3}})\)</span>.</span> This is a marginal probability (<a href="marginal_probability.html#sec-marginal-probs">§ &nbsp;<span>16.1</span></a>), so it’s given by the sum</p>
+<p>Now let’s find the probability that a rock, say #1, has haematite (<span style="display:inline-block;"><span class="math inline">\({\color[RGB]{102,204,238}{\small\verb;Y;}}\)</span>),</span> given that we haven’t observed any other rocks: <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K}_{\textsf{3}})\)</span>.</span> This is a marginal probability (<a href="marginal_probability.html#sec-marginal-probs" class="quarto-xref">§ &nbsp;<span>16.1</span></a>), so it’s given by the sum</p>
 <p><span class="math display">\[
 \begin{aligned}
 \mathrm{P}(R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K}_{\textsf{3}}) &amp;=
@@ -848,8 +884,8 @@ R_{3}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0
 <p>This situation is quite general: in a collection of many rocks, the probabilities for new observations change accordingly to information about previous observations (and also subsequent ones, if already known).</p>
 <p><br>
 </p>
-<div class="page-columns page-full"><p>But consider now the case <span style="display:inline-block;"><span class="math inline">\(\mathsfit{K}\)</span></span> of a large collection of 3 000 000 rocks, 2 000 000 of which have haematite and the rest doesn’t.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> The population’s relative frequencies are exactly as in the case with three rocks, and for the probability that rock&nbsp;#1 contains haematite we still have</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;Note how this scenario becomes very similar to that of coin tosses.</p></li></div></div>
-<p><span class="math display">\[
+<p>But consider now the case <span style="display:inline-block;"><span class="math inline">\(\mathsfit{K}\)</span></span> of a large collection of 3 000 000 rocks, 2 000 000 of which have haematite and the rest doesn’t.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> The population’s relative frequencies are exactly as in the case with three rocks, and for the probability that rock&nbsp;#1 contains haematite we still have</p>
+<div class="no-row-height column-margin column-container"><p><sup>2</sup>&nbsp;Note how this scenario becomes very similar to that of coin tosses.</p></div><p><span class="math display">\[
 \mathrm{P}(R_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}\nonscript\:\vert\nonscript\:\mathopen{} F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{K}) =
 f(R\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{102,204,238}{\small\verb;Y;}}) = \frac{2 000 000}{3 000 000} = 2/3
 \]</span></p>
@@ -891,7 +927,7 @@ f(R\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-
+Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -925,7 +961,7 @@ f({\color[RGB]{68,119,170}Z}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sm
 </div>
 </div>
 <p>The formula above solves our initial problem: <em>How to calculate and encode the joint probability distribution for the full population?</em>, although it does so only in the case where the full-population frequencies <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{f}\)</span></span> are known. In this case this probability is encoded in the <span style="display:inline-block;"><span class="math inline">\(\boldsymbol{f}\)</span></span> itself (which can be represented as a multidimensional array), and can be calculated for any desired joint probability distribution just by a multiplication.</p>
-<p>In the <span class="midgrey">income</span> example from <a href="#sec-know-freq">§ &nbsp;<span>29.2</span></a>, the probability that two units (citizens) <span class="m">#<span class="math inline">\(a\)</span>,</span> <span class="m">#<span class="math inline">\(c\)</span></span> have value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}Z\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z^{**}\)</span></span> and one unit <span class="m">#<span class="math inline">\(b\)</span></span> has value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z^{*}\)</span></span> is</p>
+<p>In the <span class="midgrey">income</span> example from <a href="#sec-know-freq" class="quarto-xref">§ &nbsp;<span>29.2</span></a>, the probability that two units (citizens) <span class="m">#<span class="math inline">\(a\)</span>,</span> <span class="m">#<span class="math inline">\(c\)</span></span> have value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}Z\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z^{**}\)</span></span> and one unit <span class="m">#<span class="math inline">\(b\)</span></span> has value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z^{*}\)</span></span> is</p>
 <div class="column-page-inset-right">
 <p><span class="math display">\[
 \begin{aligned}
@@ -1167,10 +1203,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1180,8 +1233,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1194,6 +1256,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1237,6 +1418,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1262,6 +1444,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1319,35 +1527,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./exchangeable_probabilities.html" class="pagination-link">
+      <a href="./exchangeable_probabilities.html" class="pagination-link  aria-label=" &lt;span="" beliefs]{.green}&lt;="" span&gt;"="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title"><span class="green">Exchangeable beliefs</span></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./inference_about_freqs.html" class="pagination-link">
+      <a href="./inference_about_freqs.html" class="pagination-link" aria-label="<span class='chapter-number'>30</span>&nbsp; <span class='chapter-title'>[Inference about frequencies]{.green}</span>">
         <span class="nav-page-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title"><span class="green">Inference about frequencies</span></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

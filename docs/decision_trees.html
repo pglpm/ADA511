@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-10-14">
+<meta name="dcterms.date" content="2023-11-16">
 
 <title>ADA511 0.1 Foundations of data science and data-driven engineering - 25&nbsp; Decision trees</title>
 <style>
@@ -23,7 +23,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -85,7 +85,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -94,6 +100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -102,6 +109,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="ada511styles.css">
 </head>
@@ -112,12 +146,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./machine_learning_overview.html"><span class="midgrey"><strong>Machine learning</strong></span></a></li><li class="breadcrumb-item"><a href="./decision_trees.html"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Decision trees</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span id="sec-ml-decision-trees" class="quarto-section-identifier"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Decision trees</span></span></h1>
+        </a>     
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -127,13 +161,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2023-10-14</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2024-01-08</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -544,7 +578,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
@@ -563,7 +597,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-ml-decision-trees" class="quarto-section-identifier"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Decision trees</span></span></h1>
+<h1 class="title d-none d-lg-block"><span id="sec-ml-decision-trees" class="quarto-section-identifier"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Decision trees</span></span></h1>
 </div>
 
 
@@ -574,7 +608,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-10-14</p>
+      <p class="date">2023-11-16</p>
     </div>
   </div>
   
@@ -582,105 +616,155 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <div class="hidden">
 <p><span class="math display">\[
 \DeclarePairedDelimiters{\set}{\{}{\}}
-\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmax}{argmax}
 \]</span></p>
 </div>
 <p>Decision trees are simple and intuitive machine learning models, that can be expanded and elaborated into a surprisingly powerful and general method for both classification and regression. They are based on the idea of performing a series of yes-or-no tests on the data, which finally lead to decision.</p>
-<p>We have already seen the tree-like structure for illustrating decision problems in <a href="basic_decisions.html"><span>Chapter&nbsp;3</span></a>, but in this section, we are doing similar yet different things. The name of “decision trees” still pertains to both, but it should hopefully be clear from context when we are talking about what.</p>
+<p>We have already seen the tree-like structure for illustrating decision problems in <a href="basic_decisions.html" class="quarto-xref"><span>Chapter 3</span></a>, but in this section, we are doing similar yet different things. The name of “decision trees” still pertains to both, but it should hopefully be clear from context when we are talking about what.</p>
 <section id="decision-trees-for-classification-on-categorical-values" class="level2 page-columns page-full" data-number="25.1">
 <h2 data-number="25.1" class="anchored" data-anchor-id="decision-trees-for-classification-on-categorical-values"><span class="header-section-number">25.1</span> Decision trees for classification on categorical values</h2>
 <p>For a trivial example, lets us say you want to go and spend the day at the beach. There are certain criteria that should be fullfilled for that to be a good idea, and some of them depend on each other. A decision tree could look like this:</p>
-<div class="cell">
+<div class="cell" data-layout-align="default">
 <div class="cell-output-display">
-<div id="fig-simple-decision-tree" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<div id="fig-simple-decision-tree" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-simple-decision-tree-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
 <svg width="672" height="480" viewbox="0.00 0.00 441.13 425.40" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 421.4)">
-<title>
-G
-</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-421.4 437.13,-421.4 437.13,4 -4,4"></polygon> <g id="node1" class="node">
-<title>
-A
-</title>
-<polygon fill="#edc6f5" stroke="black" stroke-width="0.75" points="222.08,-417.4 97.16,-417.4 97.16,-381.4 222.08,-381.4 222.08,-417.4"></polygon> <text text-anchor="middle" x="159.62" y="-395.2" font-family="Helvetica,Arial,sans-serif" font-size="14.00"> &nbsp;Go to the beach? &nbsp;</text> </g> <g id="node2" class="node">
-<title>
-B
-</title>
-<polygon fill="#eeeeee" stroke="black" stroke-width="0.75" points="159.62,-344.4 99.11,-319.4 159.62,-294.4 220.14,-319.4 159.62,-344.4"></polygon> <text text-anchor="middle" x="159.62" y="-315.2" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Workday?</text> </g> <g id="node3" class="node">
-<title>
-C
-</title>
-<polygon fill="#ffaaaa" stroke="black" stroke-width="0.75" points="169.65,-234.6 105.6,-234.6 105.6,-198.6 169.65,-198.6 169.65,-234.6"></polygon> <text text-anchor="middle" x="137.62" y="-212.4" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Don’t go</text> </g> <g id="edge2" class="edge">
-<title>
-B-&gt;C
-</title>
-<path fill="none" stroke="black" d="M154.74,-296.03C151.44,-280.9 147.06,-260.83 143.55,-244.78"></path> <polygon fill="black" stroke="black" points="146.95,-243.93 141.4,-234.9 140.11,-245.42 146.95,-243.93"></polygon> <text text-anchor="middle" x="161.51" y="-263.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Yes</text> </g> <g id="node4" class="node">
-<title>
-D
-</title>
-<polygon fill="#eeeeee" stroke="black" stroke-width="0.75" points="234.62,-241.6 187.16,-216.6 234.62,-191.6 282.09,-216.6 234.62,-241.6"></polygon> <text text-anchor="middle" x="234.62" y="-212.4" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Sunny?</text> </g> <g id="edge3" class="edge">
-<title>
-B-&gt;D
-</title>
-<path fill="none" stroke="black" d="M173.38,-299.91C185.23,-283.99 202.45,-260.85 215.61,-243.15"></path> <polygon fill="black" stroke="black" points="218.54,-245.07 221.71,-234.96 212.93,-240.89 218.54,-245.07"></polygon> <text text-anchor="middle" x="210.18" y="-263.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">No</text> </g> <g id="node5" class="node">
-<title>
-E
-</title>
-<polygon fill="#eeeeee" stroke="black" stroke-width="0.75" points="133.62,-138.8 57.21,-113.8 133.62,-88.8 210.04,-113.8 133.62,-138.8"></polygon> <text text-anchor="middle" x="133.62" y="-109.6" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Temp &gt; 18ºC</text> </g> <g id="edge4" class="edge">
-<title>
-D-&gt;E
-</title>
-<path fill="none" stroke="black" d="M218.84,-199.85C202.87,-183.91 177.93,-159.02 159.15,-140.28"></path> <polygon fill="black" stroke="black" points="161.58,-137.76 152.03,-133.17 156.64,-142.71 161.58,-137.76"></polygon> <text text-anchor="middle" x="201.51" y="-161" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Yes</text> </g> <g id="node6" class="node">
-<title>
-F
-</title>
-<polygon fill="#eeeeee" stroke="black" stroke-width="0.75" points="304.62,-138.8 228.21,-113.8 304.62,-88.8 381.04,-113.8 304.62,-138.8"></polygon> <text text-anchor="middle" x="304.62" y="-109.6" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Temp &gt; 23ºC</text> </g> <g id="edge5" class="edge">
-<title>
-D-&gt;F
-</title>
-<path fill="none" stroke="black" d="M247.14,-197.58C257.65,-182.44 272.86,-160.53 285,-143.06"></path> <polygon fill="black" stroke="black" points="288.19,-144.6 291.02,-134.39 282.44,-140.6 288.19,-144.6"></polygon> <text text-anchor="middle" x="283.18" y="-161" font-family="Helvetica,Arial,sans-serif" font-size="14.00">No</text> </g> <g id="node7" class="node">
-<title>
-G
-</title>
-<polygon fill="#aaffaa" stroke="black" stroke-width="0.75" points="111.37,-36 -0.12,-36 -0.12,0 111.37,0 111.37,-36"></polygon> <text text-anchor="middle" x="55.62" y="-13.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00"> Go to the beach </text> </g> <g id="edge6" class="edge">
-<title>
-E-&gt;G
-</title>
-<path fill="none" stroke="black" d="M117.84,-93.82C105.86,-79.41 89.29,-59.48 76.26,-43.81"></path> <polygon fill="black" stroke="black" points="78.89,-41.51 69.81,-36.06 73.51,-45.99 78.89,-41.51"></polygon> <text text-anchor="middle" x="108.51" y="-58.2" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Yes</text> </g> <g id="node8" class="node">
-<title>
-H
-</title>
-<polygon fill="#ffaaaa" stroke="black" stroke-width="0.75" points="200.15,-36 129.1,-36 129.1,0 200.15,0 200.15,-36"></polygon> <text text-anchor="middle" x="164.62" y="-13.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00"> Don’t go </text> </g> <g id="edge7" class="edge">
-<title>
-E-&gt;H
-</title>
-<path fill="none" stroke="black" d="M140.81,-91.04C145.25,-77.63 150.97,-60.32 155.69,-46.03"></path> <polygon fill="black" stroke="black" points="159.1,-46.85 158.92,-36.26 152.46,-44.66 159.1,-46.85"></polygon> <text text-anchor="middle" x="162.18" y="-58.2" font-family="Helvetica,Arial,sans-serif" font-size="14.00">No</text> </g> <g id="node9" class="node">
-<title>
-I
-</title>
-<polygon fill="#aaffaa" stroke="black" stroke-width="0.75" points="344.37,-36 232.88,-36 232.88,0 344.37,0 344.37,-36"></polygon> <text text-anchor="middle" x="288.62" y="-13.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00"> Go to the beach </text> </g> <g id="edge8" class="edge">
-<title>
-F-&gt;I
-</title>
-<path fill="none" stroke="black" d="M300.67,-89.61C298.41,-76.38 295.57,-59.74 293.22,-45.93"></path> <polygon fill="black" stroke="black" points="296.66,-45.3 291.53,-36.03 289.76,-46.48 296.66,-45.3"></polygon> <text text-anchor="middle" x="308.51" y="-58.2" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Yes</text> </g> <g id="node10" class="node">
-<title>
-J
-</title>
-<polygon fill="#ffaaaa" stroke="black" stroke-width="0.75" points="433.15,-36 362.1,-36 362.1,0 433.15,0 433.15,-36"></polygon> <text text-anchor="middle" x="397.62" y="-13.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00"> Don’t go </text> </g> <g id="edge9" class="edge">
-<title>
-F-&gt;J
-</title>
-<path fill="none" stroke="black" d="M323,-94.27C337.37,-79.77 357.49,-59.48 373.22,-43.61"></path> <polygon fill="black" stroke="black" points="375.99,-45.79 380.54,-36.23 371.02,-40.87 375.99,-45.79"></polygon> <text text-anchor="middle" x="370.18" y="-58.2" font-family="Helvetica,Arial,sans-serif" font-size="14.00">No</text> </g> </g>
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-421.4 437.13,-421.4 437.13,4 -4,4"></polygon>
+<!-- A -->
+<g id="node1" class="node">
+<title>A</title>
+<polygon fill="#edc6f5" stroke="black" stroke-width="0.75" points="222.08,-417.4 97.16,-417.4 97.16,-381.4 222.08,-381.4 222.08,-417.4"></polygon>
+<text text-anchor="middle" x="159.62" y="-395.2" font-family="Helvetica,Arial,sans-serif" font-size="14.00"> &nbsp;Go to the beach? &nbsp;</text>
+</g>
+<!-- B -->
+<g id="node2" class="node">
+<title>B</title>
+<polygon fill="#eeeeee" stroke="black" stroke-width="0.75" points="159.62,-344.4 99.11,-319.4 159.62,-294.4 220.14,-319.4 159.62,-344.4"></polygon>
+<text text-anchor="middle" x="159.62" y="-315.2" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Workday?</text>
+</g>
+<!-- A&#45;&gt;B -->
+<!-- C -->
+<g id="node3" class="node">
+<title>C</title>
+<polygon fill="#ffaaaa" stroke="black" stroke-width="0.75" points="169.65,-234.6 105.6,-234.6 105.6,-198.6 169.65,-198.6 169.65,-234.6"></polygon>
+<text text-anchor="middle" x="137.62" y="-212.4" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Don't go</text>
+</g>
+<!-- B&#45;&gt;C -->
+<g id="edge2" class="edge">
+<title>B-&gt;C</title>
+<path fill="none" stroke="black" d="M154.74,-296.03C151.44,-280.9 147.06,-260.83 143.55,-244.78"></path>
+<polygon fill="black" stroke="black" points="146.95,-243.93 141.4,-234.9 140.11,-245.42 146.95,-243.93"></polygon>
+<text text-anchor="middle" x="161.51" y="-263.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Yes</text>
+</g>
+<!-- D -->
+<g id="node4" class="node">
+<title>D</title>
+<polygon fill="#eeeeee" stroke="black" stroke-width="0.75" points="234.62,-241.6 187.16,-216.6 234.62,-191.6 282.09,-216.6 234.62,-241.6"></polygon>
+<text text-anchor="middle" x="234.62" y="-212.4" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Sunny?</text>
+</g>
+<!-- B&#45;&gt;D -->
+<g id="edge3" class="edge">
+<title>B-&gt;D</title>
+<path fill="none" stroke="black" d="M173.38,-299.91C185.23,-283.99 202.45,-260.85 215.61,-243.15"></path>
+<polygon fill="black" stroke="black" points="218.54,-245.07 221.71,-234.96 212.93,-240.89 218.54,-245.07"></polygon>
+<text text-anchor="middle" x="210.18" y="-263.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">No</text>
+</g>
+<!-- E -->
+<g id="node5" class="node">
+<title>E</title>
+<polygon fill="#eeeeee" stroke="black" stroke-width="0.75" points="133.62,-138.8 57.21,-113.8 133.62,-88.8 210.04,-113.8 133.62,-138.8"></polygon>
+<text text-anchor="middle" x="133.62" y="-109.6" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Temp &gt; 18ºC</text>
+</g>
+<!-- D&#45;&gt;E -->
+<g id="edge4" class="edge">
+<title>D-&gt;E</title>
+<path fill="none" stroke="black" d="M218.84,-199.85C202.87,-183.91 177.93,-159.02 159.15,-140.28"></path>
+<polygon fill="black" stroke="black" points="161.58,-137.76 152.03,-133.17 156.64,-142.71 161.58,-137.76"></polygon>
+<text text-anchor="middle" x="201.51" y="-161" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Yes</text>
+</g>
+<!-- F -->
+<g id="node6" class="node">
+<title>F</title>
+<polygon fill="#eeeeee" stroke="black" stroke-width="0.75" points="304.62,-138.8 228.21,-113.8 304.62,-88.8 381.04,-113.8 304.62,-138.8"></polygon>
+<text text-anchor="middle" x="304.62" y="-109.6" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Temp &gt; 23ºC</text>
+</g>
+<!-- D&#45;&gt;F -->
+<g id="edge5" class="edge">
+<title>D-&gt;F</title>
+<path fill="none" stroke="black" d="M247.14,-197.58C257.65,-182.44 272.86,-160.53 285,-143.06"></path>
+<polygon fill="black" stroke="black" points="288.19,-144.6 291.02,-134.39 282.44,-140.6 288.19,-144.6"></polygon>
+<text text-anchor="middle" x="283.18" y="-161" font-family="Helvetica,Arial,sans-serif" font-size="14.00">No</text>
+</g>
+<!-- G -->
+<g id="node7" class="node">
+<title>G</title>
+<polygon fill="#aaffaa" stroke="black" stroke-width="0.75" points="111.37,-36 -0.12,-36 -0.12,0 111.37,0 111.37,-36"></polygon>
+<text text-anchor="middle" x="55.62" y="-13.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00"> Go to the beach </text>
+</g>
+<!-- E&#45;&gt;G -->
+<g id="edge6" class="edge">
+<title>E-&gt;G</title>
+<path fill="none" stroke="black" d="M117.84,-93.82C105.86,-79.41 89.29,-59.48 76.26,-43.81"></path>
+<polygon fill="black" stroke="black" points="78.89,-41.51 69.81,-36.06 73.51,-45.99 78.89,-41.51"></polygon>
+<text text-anchor="middle" x="108.51" y="-58.2" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Yes</text>
+</g>
+<!-- H -->
+<g id="node8" class="node">
+<title>H</title>
+<polygon fill="#ffaaaa" stroke="black" stroke-width="0.75" points="200.15,-36 129.1,-36 129.1,0 200.15,0 200.15,-36"></polygon>
+<text text-anchor="middle" x="164.62" y="-13.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00"> Don't go </text>
+</g>
+<!-- E&#45;&gt;H -->
+<g id="edge7" class="edge">
+<title>E-&gt;H</title>
+<path fill="none" stroke="black" d="M140.81,-91.04C145.25,-77.63 150.97,-60.32 155.69,-46.03"></path>
+<polygon fill="black" stroke="black" points="159.1,-46.85 158.92,-36.26 152.46,-44.66 159.1,-46.85"></polygon>
+<text text-anchor="middle" x="162.18" y="-58.2" font-family="Helvetica,Arial,sans-serif" font-size="14.00">No</text>
+</g>
+<!-- I -->
+<g id="node9" class="node">
+<title>I</title>
+<polygon fill="#aaffaa" stroke="black" stroke-width="0.75" points="344.37,-36 232.88,-36 232.88,0 344.37,0 344.37,-36"></polygon>
+<text text-anchor="middle" x="288.62" y="-13.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00"> Go to the beach </text>
+</g>
+<!-- F&#45;&gt;I -->
+<g id="edge8" class="edge">
+<title>F-&gt;I</title>
+<path fill="none" stroke="black" d="M300.67,-89.61C298.41,-76.38 295.57,-59.74 293.22,-45.93"></path>
+<polygon fill="black" stroke="black" points="296.66,-45.3 291.53,-36.03 289.76,-46.48 296.66,-45.3"></polygon>
+<text text-anchor="middle" x="308.51" y="-58.2" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Yes</text>
+</g>
+<!-- J -->
+<g id="node10" class="node">
+<title>J</title>
+<polygon fill="#ffaaaa" stroke="black" stroke-width="0.75" points="433.15,-36 362.1,-36 362.1,0 433.15,0 433.15,-36"></polygon>
+<text text-anchor="middle" x="397.62" y="-13.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00"> Don't go </text>
+</g>
+<!-- F&#45;&gt;J -->
+<g id="edge9" class="edge">
+<title>F-&gt;J</title>
+<path fill="none" stroke="black" d="M323,-94.27C337.37,-79.77 357.49,-59.48 373.22,-43.61"></path>
+<polygon fill="black" stroke="black" points="375.99,-45.79 380.54,-36.23 371.02,-40.87 375.99,-45.79"></polygon>
+<text text-anchor="middle" x="370.18" y="-58.2" font-family="Helvetica,Arial,sans-serif" font-size="14.00">No</text>
+</g>
+</g>
 </svg>
 </div>
-<figcaption class="figure-caption">Figure&nbsp;25.1: A very simple decision tree.</figcaption>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-simple-decision-tree-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;25.1: A very simple decision tree.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -716,7 +800,7 @@ F-&gt;J
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>The same algorithm is shown and explained in section 19.3 in Russell and Norvig, although they fail to specify that this is ID3.</p>
-</div></div><p>We start by creating a node, which becomes a <em>leaf</em> node either if it classifies all examples correctly (no reason to split), or if there are no more features left (not possible to split). Otherwise, we find the most important feature by calling <code>Importance(examples)</code>, and proceed to make all possible splits. Now, the magic happens in the <code>Importance</code> function. How can we quantify which feature is best to discriminate on? We have in sections <a href="samples.html#sec-infinite-populations"><span>Section&nbsp;23.1</span></a> and <a href="information.html#sec-entropy-mutualinfo"><span>Section&nbsp;18.5</span></a> met a useful definition from information theory, which is the <strong>Shannon entropy</strong>:</p>
+</div></div><p>We start by creating a node, which becomes a <em>leaf</em> node either if it classifies all examples correctly (no reason to split), or if there are no more features left (not possible to split). Otherwise, we find the most important feature by calling <code>Importance(examples)</code>, and proceed to make all possible splits. Now, the magic happens in the <code>Importance</code> function. How can we quantify which feature is best to discriminate on? We have in sections <a href="samples.html#sec-infinite-populations" class="quarto-xref"><span>Section 23.1</span></a> and <a href="information.html#sec-entropy-mutualinfo" class="quarto-xref"><span>Section 18.5</span></a> met a useful definition from information theory, which is the <strong>Shannon entropy</strong>:</p>
 <p><span class="math display">\[
     H(f) \coloneqq-\sum_{i} f_i\ \log_2 f_i
     \qquad\text{\color[RGB]{119,119,119}\small(with \(0\cdot\log 0 \coloneqq 0\))}
@@ -741,7 +825,7 @@ F-&gt;J
 <p><span class="math display">\[
     Gain(\texttt{Sunny}, S) = H(S) - \left(\frac{S_{\texttt{Sunny=yes}}}{S} H(S_{\texttt{Sunny=yes}}) + \frac{S_{\texttt{Sunny=no}}}{S} H(S_{\texttt{Sunny=no}})\right) \,.
 \]</span></p>
-<p>This equation can be read as “gain equals the original entropy <em>before</em> splitting on <code>Sunny</code>, minus the weighted entropy <em>after</em> splitting”, which is what we were after. One thing to note about equation <a href="#eq-gain-categorical-features"><span>25.1</span></a>: while it allows for splitting on an arbitrary number of values, we typically <span class="red">always want to split in two</span>, resulting in <strong>binary trees</strong>. Non-binary trees tend to quickly overfit, which why few of the successors to the ID3 algorithm allow this. The extreme case would be if a feature is continuous instead of categorical. For a continuous feature it is unlikely that the data will contain values that are identical – probably many values are similar, but not identical to e.g.&nbsp;ten digits precision. ID3 would potentially split such a feature into as many branches as there are data points, which is maximal overfitting. Binary trees can of course overfit too (we will get back to this shortly), but first, let us introduce a similar algorithm that can deal with both continuous inputs, and continuous output.</p>
+<p>This equation can be read as “gain equals the original entropy <em>before</em> splitting on <code>Sunny</code>, minus the weighted entropy <em>after</em> splitting”, which is what we were after. One thing to note about equation <a href="#eq-gain-categorical-features" class="quarto-xref"><span>25.1</span></a>: while it allows for splitting on an arbitrary number of values, we typically <span class="red">always want to split in two</span>, resulting in <strong>binary trees</strong>. Non-binary trees tend to quickly overfit, which why few of the successors to the ID3 algorithm allow this. The extreme case would be if a feature is continuous instead of categorical. For a continuous feature it is unlikely that the data will contain values that are identical – probably many values are similar, but not identical to e.g.&nbsp;ten digits precision. ID3 would potentially split such a feature into as many branches as there are data points, which is maximal overfitting. Binary trees can of course overfit too (we will get back to this shortly), but first, let us introduce a similar algorithm that can deal with both continuous inputs, and continuous output.</p>
 </section>
 <section id="decision-trees-for-regression-in-addition-to-classification" class="level2" data-number="25.2">
 <h2 data-number="25.2" class="anchored" data-anchor-id="decision-trees-for-regression-in-addition-to-classification"><span class="header-section-number">25.2</span> Decision trees for regression (in addition to classification)</h2>
@@ -761,7 +845,7 @@ F-&gt;J
 </section>
 <section id="random-forests" class="level4">
 <h4 class="anchored" data-anchor-id="random-forests">Random forests</h4>
-<p>Training several decision trees on similar data tends to end up looking like figure <a href="machine_learning_overview.html#fig-bias-variance-tradeoff"><span>24.3</span></a> (c): they are sensitive to small variations in the data and hence have high variance. But while each individual tree can be far off the target, the <em>average</em> is still good, since the variations often cancel out. This can be the case for many types of machine learning methods. We can improve performance by defining a new <span class="blue">ensemble</span> model <span style="display:inline-block;"><span class="math inline">\(f(\mathbf{x})\)</span></span> composed of several separate models <span style="display:inline-block;"><span class="math inline">\(f_m(\mathbf{x})\)</span>,</span></p>
+<p>Training several decision trees on similar data tends to end up looking like figure <a href="machine_learning_overview.html#fig-bias-variance-tradeoff" class="quarto-xref"><span>24.3</span></a> (c): they are sensitive to small variations in the data and hence have high variance. But while each individual tree can be far off the target, the <em>average</em> is still good, since the variations often cancel out. This can be the case for many types of machine learning methods. We can improve performance by defining a new <span class="blue">ensemble</span> model <span style="display:inline-block;"><span class="math inline">\(f(\mathbf{x})\)</span></span> composed of several separate models <span style="display:inline-block;"><span class="math inline">\(f_m(\mathbf{x})\)</span>,</span></p>
 <p><span class="math display">\[
 f(\mathbf{x}) = \sum_{m=1}^M \frac{1}{M} f_m(\mathbf{x}) \,,
 \]</span></p>
@@ -814,7 +898,7 @@ f(\mathbf{x}) = \sum_{m=1}^M \frac{1}{M} f_m(\mathbf{x}) \,,
 <section id="regression" class="level3">
 <h3 class="anchored" data-anchor-id="regression">Regression</h3>
 <p>Now, we want to try out decision trees for predicting continuous target values. We will leave you alone from the start, and only give you the recipe for generating the 1-dimensional data we want to predict:</p>
-<div class="cell" data-execution_count="1">
+<div id="d6b6f3ad" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng()   <span class="co"># If not done already</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.sort(<span class="dv">5</span> <span class="op">*</span> rng.uniform(size<span class="op">=</span>(<span class="dv">80</span>, <span class="dv">1</span>)), axis<span class="op">=</span><span class="dv">0</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> np.sin(X).ravel()</span>
@@ -921,10 +1005,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -934,8 +1035,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -948,6 +1058,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -991,6 +1220,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1016,6 +1246,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1073,35 +1329,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./machine_learning_overview.html" class="pagination-link">
+      <a href="./machine_learning_overview.html" class="pagination-link  aria-label=" &lt;span="" to="" machine="" learning&lt;="" span&gt;"="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Introduction to machine learning</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./neural_networks.html" class="pagination-link">
+      <a href="./neural_networks.html" class="pagination-link" aria-label="<span class='chapter-number'>26</span>&nbsp; <span class='chapter-title'>Neural networks</span>">
         <span class="nav-page-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Neural networks</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

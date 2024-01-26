@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-12-10">
+<meta name="dcterms.date" content="2023-11-16">
 
 <title>ADA511 0.1 Foundations of data science and data-driven engineering - 35&nbsp; Example application: adult-income task</title>
 <style>
@@ -23,7 +23,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -85,7 +85,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -94,6 +100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -102,6 +109,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="ada511styles.css">
 </head>
@@ -112,12 +146,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./dirichlet-mixture.html"><span class="red"><strong>A prototype Optimal Predictor Machine</strong></span></a></li><li class="breadcrumb-item"><a href="./example_opm1.html"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">[Example application: adult-income task]{.red}</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span id="sec-example-opm1" class="quarto-section-identifier"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title"><span class="red">Example application: adult-income task</span></span></span></h1>
+        </a>     
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -127,13 +161,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2023-12-10</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2024-01-08</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -544,7 +578,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
@@ -576,7 +610,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-example-opm1" class="quarto-section-identifier"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title"><span class="red">Example application: adult-income task</span></span></span></h1>
+<h1 class="title d-none d-lg-block"><span id="sec-example-opm1" class="quarto-section-identifier"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title"><span class="red">Example application: adult-income task</span></span></span></h1>
 </div>
 
 
@@ -587,7 +621,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-12-10</p>
+      <p class="date">2023-11-16</p>
     </div>
   </div>
   
@@ -595,7 +629,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <div class="hidden">
 <p><span class="math display">\[
@@ -610,11 +646,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </div>
 <p>[You can find a Jupyther notebook associated with the present chapter: <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/example_opm1.ipynb"><code>example_opm1.ipynb</code></a>, but note that it’s less annotated and partly unmaintained.</p>
-<p>Let’s illustrate the example workflow described in <a href="prototype_code.html#sec-opm-workflow">§ &nbsp;<span>34.2</span></a> with a toy, but not too simplistic, example, based on the <a href="https://archive.ics.uci.edu/dataset/2/adult">adult-income dataset</a>.</p>
+<p>Let’s illustrate the example workflow described in <a href="prototype_code.html#sec-opm-workflow" class="quarto-xref">§ &nbsp;<span>34.2</span></a> with a toy, but not too simplistic, example, based on the <a href="https://archive.ics.uci.edu/dataset/2/adult">adult-income dataset</a>.</p>
 <p>All code functions and data files are in the directory<br>
 <a href="https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal">https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal</a></p>
-<div class="page-columns page-full"><p>We start loading the R libraries and functions needed at several stages. You need to have installed<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> the packages <a href="https://cran.r-project.org/package=data.table"><em>data.table</em></a>, <a href="https://cran.r-project.org/package=extraDistr"><em>extraDistr</em></a>, <a href="https://cran.r-project.org/package=foreach"><em>foreach</em></a>, <a href="https://cran.r-project.org/package=khroma"><em>khroma</em></a>. Make sure you have saved all source files and data files in the same directory.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;This is done with the <a href="https://rdrr.io/r/utils/install.packages.html"><code>install.packages()</code> function</a>.</p></li></div></div>
-<div class="cell">
+<p>We start loading the R libraries and functions needed at several stages. You need to have installed<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> the packages <a href="https://cran.r-project.org/package=data.table"><em>data.table</em></a>, <a href="https://cran.r-project.org/package=extraDistr"><em>extraDistr</em></a>, <a href="https://cran.r-project.org/package=foreach"><em>foreach</em></a>, <a href="https://cran.r-project.org/package=khroma"><em>khroma</em></a>. Make sure you have saved all source files and data files in the same directory.</p>
+<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;This is done with the <a href="https://rdrr.io/r/utils/install.packages.html"><code>install.packages()</code> function</a>.</p></div><div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'data.table'</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'extraDistr'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'foreach'</span>)</span>
@@ -722,7 +758,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>the array <code>counts</code>, containing the counts <span class="math inline">\(\color[RGB]{34,136,51}\# z\)</span></li>
 <li>the vector <code>alphas</code>, containing the values of <span class="math inline">\(2^k\)</span></li>
-<li>the vector <code>auxalphas</code>, containing the (logarithm of) the multiplicative factors (<a href="code_design.html#sec-code-computations">§ &nbsp;<span>33.2</span></a>)</li>
+<li>the vector <code>auxalphas</code>, containing the (logarithm of) the multiplicative factors (<a href="code_design.html#sec-code-computations" class="quarto-xref">§ &nbsp;<span>33.2</span></a>)</li>
 <li>the vector <code>palphas</code>, containing the updated probabilities about the required amount of training data</li>
 </ul>
 <p>The agent has internally guessed how many training data should be necessary to affect its prior beliefs. We can peek at its guess by plotting the <code>alphas</code> parameters against the <code>palphas</code> probabilities:</p>
@@ -731,7 +767,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10000</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>),</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab=</span><span class="st">'required number of training data'</span>, <span class="at">ylab=</span><span class="st">'probability'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="example_opm1_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The most probable amount seems to be of the order of magnitude of 2000 units.</p>
@@ -795,7 +835,11 @@ $race
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="co"># y-axis range</span></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">main=</span><span class="st">'opm10'</span>) <span class="co"># plot title</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="example_opm1_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>where the <span class="blue">blue line</span> is the probability distribution previously calculated with the <code>infer()</code> function.</p>
@@ -805,7 +849,11 @@ $race
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opmall, <span class="at">n=</span><span class="dv">200</span>, <span class="at">predictand=</span><span class="st">'income'</span>,</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opmall'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="example_opm1_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The probability that the next unit has <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&lt;=50;}\)</span></span> is now above 70%. Also note that the <code>opmall</code>-agent doesn’t believe that this probability would change appreciably if more training data were provided.</p>
@@ -817,7 +865,11 @@ $race
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opm10'</span>,</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">cex.axis=</span><span class="fl">0.75</span>) <span class="co"># smaller axis-font size</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="example_opm1_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Note again how the little-trained <code>opm10</code>-agent has practically uniform beliefs. But it’s also expressing the fact that future training data will probably increase the probability of <span style="display:inline-block;"><span class="math inline">\(\mathit{race}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;White;}\)</span>.</span></p>
@@ -826,7 +878,11 @@ $race
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opmall, <span class="at">n=</span><span class="dv">200</span>, <span class="at">predictand=</span><span class="st">'race'</span>,</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opmall'</span>, <span class="at">cex.axis=</span><span class="fl">0.75</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="example_opm1_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p><br>
@@ -839,17 +895,17 @@ $race
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-
+Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p><span class="blue"><strong>Our goal: optimality, not “success”</strong></span></p>
-<p>Remember (<a href="framework.html#sec-optimality">§ &nbsp;<span>2.3</span></a> and <a href="probability_inference.html#sec-probability-def">§ &nbsp;<span>8.1</span></a>) that a probability represents the <em>rational</em> degree of belief that an agent should have <em>given the particular information available</em>. We can’t judge a probability from the value it assigns to something we later learn to be true – because according to the information available it could be more rational (and optimal) to consider that something implausible (recall the example in <a href="probability_inference.html#sec-probability-def">§ &nbsp;<span>8.1</span></a> of an object falling from the sky as we cross the street).</p>
+<p>Remember (<a href="framework.html#sec-optimality" class="quarto-xref">§ &nbsp;<span>2.3</span></a> and <a href="probability_inference.html#sec-probability-def" class="quarto-xref">§ &nbsp;<span>8.1</span></a>) that a probability represents the <em>rational</em> degree of belief that an agent should have <em>given the particular information available</em>. We can’t judge a probability from the value it assigns to something we later learn to be true – because according to the information available it could be more rational (and optimal) to consider that something implausible (recall the example in <a href="probability_inference.html#sec-probability-def" class="quarto-xref">§ &nbsp;<span>8.1</span></a> of an object falling from the sky as we cross the street).</p>
 <p>From this point of view we should be wary of comparing the probability of something with our a-posteriori knowledge about it.</p>
 <p><br>
 </p>
 <p><span class="blue"><strong>The data cannot speak for themselves</strong></span></p>
-<p>We could build an agent that remains more “open-minded” (more spread in the <span class="grey">grey lines</span>), having received <em>exactly the same</em> training data. This “open-mindedness” therefore cannot be determined by the training data. Once more this shows that data <em>cannot</em> “speak for themselves” (<a href="beyond-ML.html#sec-underlying-distribution">§ &nbsp;<span>27.4</span></a>).</p>
+<p>We could build an agent that remains more “open-minded” (more spread in the <span class="grey">grey lines</span>), having received <em>exactly the same</em> training data. This “open-mindedness” therefore cannot be determined by the training data. Once more this shows that data <em>cannot</em> “speak for themselves” (<a href="beyond-ML.html#sec-underlying-distribution" class="quarto-xref">§ &nbsp;<span>27.4</span></a>).</p>
 </div>
 </div>
 
@@ -862,7 +918,7 @@ $race
 <h3 class="anchored" data-anchor-id="application-specifying-predictors">Application: specifying predictors</h3>
 <p>Let’s now draw inferences by specifying some predictors.</p>
 <p>We ask the <code>opm10</code> agent to forecast the <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span></span> of a new unit, given that the unit is known to have <span style="display:inline-block;"><span class="math inline">\(\mathit{occupation}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Exec-managerial;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathit{sex}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Male;}\)</span></span> (two predictor variates). What would you expect?</p>
-<p>The <code>opm10</code>-agent’s belief about the unit – as well as about the <em>full subpopulation</em> (<a href="subpopulations.html#sec-subpopulations">§ &nbsp;<span>22.1</span></a>) of units having those predictors – is shown in the following plot:</p>
+<p>The <code>opm10</code>-agent’s belief about the unit – as well as about the <em>full subpopulation</em> (<a href="subpopulations.html#sec-subpopulations" class="quarto-xref">§ &nbsp;<span>22.1</span></a>) of units having those predictors – is shown in the following plot:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opm10, <span class="at">n=</span><span class="dv">200</span>,</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictand=</span><span class="st">'income'</span>,</span>
@@ -870,7 +926,11 @@ $race
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">sex=</span><span class="st">'Male'</span>),</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opm10'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="example_opm1_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Note how the <code>opm10</code>-agent still slightly higher probability to <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&lt;=50;}\)</span>,</span> but at the same time it is quite uncertain about the subpopulation frequencies; more than if the predictor had not been specified. That is, according to this little-trained agent there could be large variety of possibilities <em>within this specific subpopulation</em>.</p>
@@ -882,7 +942,11 @@ $race
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">sex=</span><span class="st">'Male'</span>),</span>
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opmall'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="example_opm1_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>it believes with around 55% probability that such a unit would have higher, <span style="display:inline-block;"><span class="math inline">\({\small\verb;&gt;50K;}\)</span></span> income. The representative subpopulation-frequency distributions in grey indicate that this belief is unlikely to be changed by new training data.</p>
@@ -1008,7 +1072,7 @@ occupation          Female Male
 </section>
 <section id="exploring-the-population-properties-mutual-information" class="level3">
 <h3 class="anchored" data-anchor-id="exploring-the-population-properties-mutual-information">Exploring the population properties: mutual information</h3>
-<p>In <a href="information.html#sec-entropy-mutualinfo">§ &nbsp;<span>18.5</span></a> we introduced <span class="blue"><em>mutual information</em></span> as the information-theoretic measure of mutual relevance and association of two quantities or variates. For the present task, the <code>opmall</code>-agent can tell us the mutual information between any two sets of variates of our choice, with the function <code>mutualinfo()</code>.</p>
+<p>In <a href="information.html#sec-entropy-mutualinfo" class="quarto-xref">§ &nbsp;<span>18.5</span></a> we introduced <span class="blue"><em>mutual information</em></span> as the information-theoretic measure of mutual relevance and association of two quantities or variates. For the present task, the <code>opmall</code>-agent can tell us the mutual information between any two sets of variates of our choice, with the function <code>mutualinfo()</code>.</p>
 <p>For instance, let’s calculate the mutual information between <span style="display:inline-block;"><span class="math inline">\(\mathit{occupation}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathit{marital\_status}\)</span>.</span></p>
 <p>First we need the joint probability distribution for both variates, which the agent can calculate with <code>infer()</code>:</p>
 <div class="cell">
@@ -1083,7 +1147,7 @@ native_country            sex           race
 <li>calculates the probability of <span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&lt;=50;}\)</span>, via the function <code>infer()</code>, using as predictors all variates except <span class="math inline">\(\mathit{income}\)</span></li>
 <li>chooses one of the two values <span class="math inline">\(\set{{\small\verb;&lt;=50K;}, {\small\verb;&gt;50K;}}\)</span>, via the function <code>decide()</code> trying to maximizing utilities corresponding to the accuracy metric</li>
 </ul>
-<p>The function <code>decide()</code> will be described in more detail in chapters&nbsp;<a href="making_decisions.html"><span>37</span></a> and&nbsp;<a href="example_opm2.html"><span>38</span></a>.</p>
+<p>The function <code>decide()</code> will be described in more detail in chapters&nbsp;<a href="making_decisions.html" class="quarto-xref"><span>37</span></a> and&nbsp;<a href="example_opm2.html" class="quarto-xref"><span>38</span></a>.</p>
 <p>At the end we plot a histogram of the probabilities calculated for the new units, to check for instance for how many of the agent was sure (beliefs around 0% or 100%) or unsure (beliefs around 50%). We also report the final utility/accuracy per unit, and the time needed for the computation:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Load test data</span></span>
@@ -1121,7 +1185,11 @@ native_country            sex           race
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylab=</span><span class="st">'frequency density in test set'</span>,</span>
 <span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">main=</span><span class="fu">paste0</span>(<span class="st">'accuracy: '</span>, <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span><span class="fu">mean</span>(testhits), <span class="dv">1</span>), <span class="st">'%'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="example_opm1_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p><br>
@@ -1233,10 +1301,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1246,8 +1331,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1260,6 +1354,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1303,6 +1516,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1328,6 +1542,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1385,35 +1625,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./prototype_code.html" class="pagination-link">
+      <a href="./prototype_code.html" class="pagination-link  aria-label=" &lt;span="" code="" and="" workflow]{.red}&lt;="" span&gt;"="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title"><span class="red">Prototype code and workflow</span></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./utilities.html" class="pagination-link">
+      <a href="./utilities.html" class="pagination-link" aria-label="<span class='chapter-number'>36</span>&nbsp; <span class='chapter-title'>[Utilities]{.blue}</span>">
         <span class="nav-page-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title"><span class="blue">Utilities</span></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

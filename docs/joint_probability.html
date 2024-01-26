@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-07">
+<meta name="dcterms.date" content="2023-11-16">
 
 <title>ADA511 0.1 Foundations of data science and data-driven engineering - 15&nbsp; Joint probability distributions</title>
 <style>
@@ -51,7 +51,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -60,6 +66,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -68,6 +75,33 @@ ul.task-list li input[type="checkbox"] {
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="ada511styles.css">
 </head>
@@ -78,12 +112,12 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./probability_distributions.html"><span class="green"><strong>Inference II</strong></span></a></li><li class="breadcrumb-item"><a href="./joint_probability.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">[Joint probability distributions]{.green}</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span id="sec-prob-joint" class="quarto-section-identifier"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><span class="green">Joint probability distributions</span></span></span></h1>
+        </a>     
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -93,13 +127,13 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2023-11-07</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2024-01-08</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -510,7 +544,7 @@ ul.task-list li input[type="checkbox"] {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
@@ -540,7 +574,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-prob-joint" class="quarto-section-identifier"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><span class="green">Joint probability distributions</span></span></span></h1>
+<h1 class="title d-none d-lg-block"><span id="sec-prob-joint" class="quarto-section-identifier"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><span class="green">Joint probability distributions</span></span></span></h1>
 </div>
 
 
@@ -551,7 +585,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-07</p>
+      <p class="date">2023-11-16</p>
     </div>
   </div>
   
@@ -559,7 +593,9 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
+
 </header>
+
 
 <div class="hidden">
 <p><span class="math display">\[
@@ -570,7 +606,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="hidden">
 
 </div>
-<p>So far we have considered probability distributions for quantities of a basic (binary, nominal, ordinal, interval) type. These distributions have a sort of one-dimensional character and can be represented by ordinary histograms, line plots, and scatter plots. We now consider probability distributions for the kind of joint quantities that were discussed in <a href="quantities_types_multi.html#sec-data-multiv">§ &nbsp;<span>13.1</span></a>.</p>
+<p>So far we have considered probability distributions for quantities of a basic (binary, nominal, ordinal, interval) type. These distributions have a sort of one-dimensional character and can be represented by ordinary histograms, line plots, and scatter plots. We now consider probability distributions for the kind of joint quantities that were discussed in <a href="quantities_types_multi.html#sec-data-multiv" class="quarto-xref">§ &nbsp;<span>13.1</span></a>.</p>
 <section id="joint-probability-distributions" class="level2" data-number="15.1">
 <h2 data-number="15.1" class="anchored" data-anchor-id="joint-probability-distributions"><span class="header-section-number">15.1</span> Joint probability distributions</h2>
 <p>A joint quantity is just a collection or set of quantities of basic types. Saying that a joint quantity has a particular value means that each basic component quantity has a particular value in its specific domain. This is expressed by an <code>and</code> of sentences.</p>
@@ -589,7 +625,7 @@ ul.task-list li input[type="checkbox"] {
 \mathrm{P}\bigl({\color[RGB]{102,204,238}A \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}31\,\mathrm{y}} \land {\color[RGB]{34,136,51}S\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\mathrm{m}} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}\bigr) \ , \qquad
 \dotsc
 \]</span></p>
-<p>where <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span></span> is the agent’s state of knowledge, and the probabilities sum up to one. We call each of these probabilities a <span class="blue"><strong>joint probability</strong></span>, and their collection a <span class="blue"><strong>joint probability distribution</strong></span>. Usually these probabilities are written in much abbreviated form, and a comma <span style="display:inline-block;">“<span class="math inline">\(\mathbin{\mkern-0.5mu,\mkern-0.5mu}\)</span>”</span> is used instead of <span style="display:inline-block;">“<span class="math inline">\(\land\)</span>”</span> (<a href="sentences.html#sec-connecting-sentences">§ &nbsp;<span>6.4</span></a>); for instance you can commonly find the following notation:</p>
+<p>where <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span></span> is the agent’s state of knowledge, and the probabilities sum up to one. We call each of these probabilities a <span class="blue"><strong>joint probability</strong></span>, and their collection a <span class="blue"><strong>joint probability distribution</strong></span>. Usually these probabilities are written in much abbreviated form, and a comma <span style="display:inline-block;">“<span class="math inline">\(\mathbin{\mkern-0.5mu,\mkern-0.5mu}\)</span>”</span> is used instead of <span style="display:inline-block;">“<span class="math inline">\(\land\)</span>”</span> (<a href="sentences.html#sec-connecting-sentences" class="quarto-xref">§ &nbsp;<span>6.4</span></a>); for instance you can commonly find the following notation:</p>
 <p><span class="math display">\[
 \mathrm{P}(A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}25 \mathbin{\mkern-0.5mu,\mkern-0.5mu}S\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\mathrm{f} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \]</span></p>
@@ -603,11 +639,15 @@ ul.task-list li input[type="checkbox"] {
 <p>There is a wide variety of ways of representing joint probability distributions, and new ways are invented (and rediscovered) all the time. In some cases, especially when the quantity has more than three component quantities, it can become impossible to graphically represent the probability distribution in a faithful way. Therefore one often tries to represent only some aspects or features of interest from the full distribution. Whenever you see a plot of a joint probability distribution, you should carefully read what the plot shows and how it was made. Here we only illustrate some examples and ideas for representations.</p>
 <section id="tables" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="tables">Tables</h3>
-<div class="page-columns page-full"><p>When a joint quantity consists of <em>two, discrete and finite</em> component quantities, the joint probabilities can be reported as a table, sometimes called a <span class="blue"><strong>contingency table</strong></span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;this term is most often used for joint distributions of <em>frequencies</em> rather than probability</p></li></div></div>
-<p>Example: Consider the next patient that will arrive at a particular hospital. There’s the possibility of arrival by <span style="display:inline-block;"><span class="math inline">\({\small\verb;ambulance;}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\small\verb;helicopter;}\)</span>,</span> or <span style="display:inline-block;"><span class="math inline">\({\small\verb;other;}\)</span></span> transportation means; and the possibility that the patient will need <span style="display:inline-block;"><span class="math inline">\({\small\verb;urgent;}\)</span></span> <span style="display:inline-block;"><span class="math inline">\({\small\verb;non-urgent;}\)</span></span> care. These can be seen as two quantities <span style="display:inline-block;"><span class="math inline">\(T\)</span></span> (nominal) and <span style="display:inline-block;"><span class="math inline">\(U\)</span></span> (binary). When these two quantities are taken together; their joint probability distribution is as follows, conditional on the hospital’s data <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}_{\text{H}}\)</span>:</span></p>
-<div id="tbl-urgent-arrival" class="anchored">
+<p>When a joint quantity consists of <em>two, discrete and finite</em> component quantities, the joint probabilities can be reported as a table, sometimes called a <span class="blue"><strong>contingency table</strong></span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;this term is most often used for joint distributions of <em>frequencies</em> rather than probability</p></div><p>Example: Consider the next patient that will arrive at a particular hospital. There’s the possibility of arrival by <span style="display:inline-block;"><span class="math inline">\({\small\verb;ambulance;}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\small\verb;helicopter;}\)</span>,</span> or <span style="display:inline-block;"><span class="math inline">\({\small\verb;other;}\)</span></span> transportation means; and the possibility that the patient will need <span style="display:inline-block;"><span class="math inline">\({\small\verb;urgent;}\)</span></span> <span style="display:inline-block;"><span class="math inline">\({\small\verb;non-urgent;}\)</span></span> care. These can be seen as two quantities <span style="display:inline-block;"><span class="math inline">\(T\)</span></span> (nominal) and <span style="display:inline-block;"><span class="math inline">\(U\)</span></span> (binary). When these two quantities are taken together; their joint probability distribution is as follows, conditional on the hospital’s data <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}_{\text{H}}\)</span>:</span></p>
+<div id="tbl-urgent-arrival" class="sm quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-urgent-arrival-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;15.1: Joint probability distribution for transportation and urgency
+</figcaption>
+<div aria-describedby="tbl-urgent-arrival-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="table-sm small table">
-<caption>Table&nbsp;15.1: Joint probability distribution for transportation and urgency</caption>
 <colgroup>
 <col style="width: 30%">
 <col style="width: 16%">
@@ -644,6 +684,8 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </div>
+</figure>
+</div>
 <p>We see for instance that the most probable possibility is that the next patient will arrive by transportation means other than ambulance and helicopter, and won’t require urgent care:</p>
 <p><span class="math display">\[\mathrm{P}(U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;non-urgent;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}T\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;other;}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}_{\text{H}}) =
 0.64\]</span></p>
@@ -664,7 +706,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="scatter-plots-and-similar" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="scatter-plots-and-similar">Scatter plots and similar</h3>
-<p>Probability distributions for nominal, ordinal, or discrete-interval quantities can be represented by histograms or line plots, as we saw in <a href="probability_distributions.html#sec-discr-prob-distr">§ &nbsp;<span>14.2</span></a>. Histograms could be generalized to quantities consisting of <em>two</em> joint discrete quantities: a probability could be represented by a <a href="https://mathworld.wolfram.com/Cuboid.html">cuboid or rectangular prism</a> (a sort of small tower with rectangular section), or cylinder, or similar. This representation, even if it can look flamboyant, is often inconvenient because some of the three-dimensional objects can be hidden from view, as in the generic example on the side.</p>
+<p>Probability distributions for nominal, ordinal, or discrete-interval quantities can be represented by histograms or line plots, as we saw in <a href="probability_distributions.html#sec-discr-prob-distr" class="quarto-xref">§ &nbsp;<span>14.2</span></a>. Histograms could be generalized to quantities consisting of <em>two</em> joint discrete quantities: a probability could be represented by a <a href="https://mathworld.wolfram.com/Cuboid.html">cuboid or rectangular prism</a> (a sort of small tower with rectangular section), or cylinder, or similar. This representation, even if it can look flamboyant, is often inconvenient because some of the three-dimensional objects can be hidden from view, as in the generic example on the side.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><img src="2d_hist.png" class="img-fluid" style="width:100.0%"> Example of generalized histogram (from <a href="https://reference.wolfram.com/language/ref/Histogram3D.html">Mathematica</a>)</p>
@@ -673,19 +715,24 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><img src="colour_hist.png" class="img-fluid" style="width:100.0%"> Example of density histogram (from <a href="https://reference.wolfram.com/language/ref/DensityHistogram.html">Mathematica</a>)</p>
-</div></div><p>Another example, similar to the scatter plot (<a href="probability_distributions.html#sec-scatter-plot">§ &nbsp;<span>14.4.2</span></a>), is to encode the probability values with a proportional number of points or other shapes, as illustrated here for the probabilities of <a href="#tbl-urgent-arrival">table&nbsp;<span>15.1</span></a>:</p>
-<div id="fig-scatter-contingency" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="scatter_hospital_arrival.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;15.1: <span class="small">Scatter plot for the urgency-transportation joint probability distribution</span></figcaption>
+</div></div><p>Another example, similar to the scatter plot (<a href="probability_distributions.html#sec-scatter-plot" class="quarto-xref">§ &nbsp;<span>14.4.2</span></a>), is to encode the probability values with a proportional number of points or other shapes, as illustrated here for the probabilities of <a href="#tbl-urgent-arrival" class="quarto-xref">table&nbsp;<span>15.1</span></a>:</p>
+<div id="fig-scatter-contingency" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scatter-contingency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="scatter_hospital_arrival.png" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scatter-contingency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.1: <span class="small">Scatter plot for the urgency-transportation joint probability distribution</span>
+</figcaption>
 </figure>
 </div>
-<p>the points do not need to be scattered in regular fashion as long as it’s clear which quantity value they are associated with. The scatter plot above has 100 points, and therefore we can see for instance that <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\textrm{\small urgent} \mathbin{\mkern-0.5mu,\mkern-0.5mu}T\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\textrm{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}_{\text{H}}) = 0.03\)</span>,</span> since the corresponding region has 3 points out of 100.</p>
+<p>the points do not need to be scattered in regular fashion as long as it’s clear which quantity value they are associated with. The scatter plot above has 100 points, and therefore we can see for instance that <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\textrm{\small urgent} \mathbin{\mkern-0.5mu,\mkern-0.5mu}T\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\textrm{\small helicopter}\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{I}_{\text{H}}) =
+0.03\)</span>,</span> since the corresponding region has 3 points out of 100.</p>
 </section>
 </section>
 <section id="sec-joint-prob-densities" class="level2" data-number="15.3">
 <h2 data-number="15.3" class="anchored" data-anchor-id="sec-joint-prob-densities"><span class="header-section-number">15.3</span> Joint probability densities</h2>
-<p>If a joint quantity consists in several continuous interval quantities, then its joint probability distribution is usually represented by a <span class="blue"><strong>joint probability density</strong></span>, which generalize the one-dimensional discussion of <a href="probability_distributions.html#sec-prob-densities">§ &nbsp;<span>14.3</span></a> to several dimensions.</p>
+<p>If a joint quantity consists in several continuous interval quantities, then its joint probability distribution is usually represented by a <span class="blue"><strong>joint probability density</strong></span>, which generalize the one-dimensional discussion of <a href="probability_distributions.html#sec-prob-densities" class="quarto-xref">§ &nbsp;<span>14.3</span></a> to several dimensions.</p>
 <p>For instance, if <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> are two continuous interval quantity, then the notation</p>
 <p><span class="math display">\[
 \mathrm{p}(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x \mathbin{\mkern-0.5mu,\mkern-0.5mu}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = 0.001
@@ -697,11 +744,11 @@ ul.task-list li input[type="checkbox"] {
 \bigl(y-\tfrac{\delta}{2} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small&lt;}\nonscript\mkern 0mu}\mathopen{} Y \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small&lt;}\nonscript\mkern 0mu}\mathopen{} y+\tfrac{\delta}{2}\bigr)
 \]</span></p>
 <p>has probability <span style="display:inline-block;"><span class="math inline">\(0.001\cdot\epsilon\cdot\delta\)</span>,</span> conditional on the background knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>.</span> Said otherwise, the rectangular region of values around <span style="display:inline-block;"><span class="math inline">\((x,y)\)</span></span> with widths <span style="display:inline-block;"><span class="math inline">\(\epsilon\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\delta\)</span></span> is assigned a probability <span style="display:inline-block;"><span class="math inline">\(0.001\cdot\epsilon\cdot\delta\)</span>.</span></p>
-<p>Remember that a density typically has physical units, as in the one-dimensional case (<a href="probability_distributions.html#sec-prob-densities">§ &nbsp;<span>14.3</span></a>). For instance, if <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> above is a temperature measured in kelvin (<span style="display:inline-block;"><span class="math inline">\(\mathrm{K}\)</span>)</span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> a resistance measured in ohm (<span style="display:inline-block;"><span class="math inline">\(\Omega\)</span>),</span> then we would write&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{p}(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x \mathbin{\mkern-0.5mu,\mkern-0.5mu}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = \frac{0.001}{\mathrm{K}\,\Omega}\)</span>.</span></p>
+<p>Remember that a density typically has physical units, as in the one-dimensional case (<a href="probability_distributions.html#sec-prob-densities" class="quarto-xref">§ &nbsp;<span>14.3</span></a>). For instance, if <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> above is a temperature measured in kelvin (<span style="display:inline-block;"><span class="math inline">\(\mathrm{K}\)</span>)</span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> a resistance measured in ohm (<span style="display:inline-block;"><span class="math inline">\(\Omega\)</span>),</span> then we would write&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{p}(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x \mathbin{\mkern-0.5mu,\mkern-0.5mu}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = \frac{0.001}{\mathrm{K}\,\Omega}\)</span>.</span></p>
 </section>
 <section id="sec-repr-joint-dens" class="level2 page-columns page-full" data-number="15.4">
 <h2 data-number="15.4" class="anchored" data-anchor-id="sec-repr-joint-dens"><span class="header-section-number">15.4</span> Representation of joint probability densities</h2>
-<p>For one-dimensional densities we discussed line-based representations and scatter plots (<a href="probability_distributions.html#sec-represent-dens">§ &nbsp;<span>14.4</span></a>). The first of these representations can be generalized to two-dimensional densities, leading to a <span class="blue"><strong>surface plot</strong></span>. Below is the surface density plot for the probability density given by the formula</p>
+<p>For one-dimensional densities we discussed line-based representations and scatter plots (<a href="probability_distributions.html#sec-represent-dens" class="quarto-xref">§ &nbsp;<span>14.4</span></a>). The first of these representations can be generalized to two-dimensional densities, leading to a <span class="blue"><strong>surface plot</strong></span>. Below is the surface density plot for the probability density given by the formula</p>
 <div class="column-page-inset-right">
 <p><span class="math display">\[
 \mathrm{p}(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x \mathbin{\mkern-0.5mu,\mkern-0.5mu}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) =
@@ -712,10 +759,14 @@ ul.task-list li input[type="checkbox"] {
 <p><img src="surfaceXY.svg" class="img-fluid" style="width:100.0%"></p>
 <p>This kind of representation can be very neat, but it has three drawbacks: it sometimes hides features of the density from view, it cannot be extended to three-dimensional densities, and sometimes the analytical expression for the probability density (like the formula above) is not available.</p>
 <p>The scatter plot instead does not hides features, can also be used for three-dimensional densities, and can be used in cases where we can at least obtain “representative” points from the probability density, even if the analytical expression of the latter is too complicated or not available. This representation is, however, quantitatively more imprecise. Here is a scatter plot, using 10 000 points, for the probability density given above:</p>
-<div id="fig-scatterXY" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="scatter_2d.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;15.2: Scatter-plot representation of the joint probability density <span class="math inline">\(\mathrm{p}(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x \mathbin{\mkern-0.5mu,\mkern-0.5mu}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span></figcaption>
+<div id="fig-scatterXY" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scatterXY-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="scatter_2d.png" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scatterXY-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.2: Scatter-plot representation of the joint probability density <span class="math inline">\(\mathrm{p}(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x \mathbin{\mkern-0.5mu,\mkern-0.5mu}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>
+</figcaption>
 </figure>
 </div>
 <p>As usual, the probability of a small region is proportional to the density of points in that region. If we had a joint density for <em>three</em> continuous quantities, its scatter plot would consist of three-dimensional clouds of points instead.</p>
@@ -736,10 +787,14 @@ ul.task-list li input[type="checkbox"] {
 <section id="multi-line-plots" class="level3">
 <h3 class="anchored" data-anchor-id="multi-line-plots">Multi-line plots</h3>
 <p>A line plot can be used to represent the probability density for the continuous quantity and each specific value of the discrete quantity:</p>
-<div id="fig-multiline" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="hospital_age_transp.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;15.3: [Line plot for the age-transportation joint probability]</figcaption>
+<div id="fig-multiline" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-multiline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="hospital_age_transp.png" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-multiline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.3: [Line plot for the age-transportation joint probability]
+</figcaption>
 </figure>
 </div>
 <p>With the plot above it’s important to keep in mind that the three curves are three pieces of the <em>same</em> probability density, not three different densities. This is also clear seeing that the three areas under them (which partly overlap) cannot each be <span style="display:inline-block;"><span class="math inline">\(1\)</span>,</span> as would instead be expected for a probability density. The probability density is separated into three curves owing to the presence of the discrete quantity having three possible values.</p>
@@ -752,11 +807,15 @@ ul.task-list li input[type="checkbox"] {
 <p>An example of scatter plot for the probability density of our example is the following (note that the <span class="blue">blue</span> colour is here no longer associated with <span style="display:inline-block;"><span class="math inline">\({\small\verb;ambulance;}\)</span>):</span></p>
 <p><img src="hospital_age_transp_scatter.png" class="img-fluid" style="width:100.0%"></p>
 <p>In the plot above, the probability density is reflected by the density of vertical lines. Using points instead of vertical lines, the density would have been difficult to discern, since all points would be on one of three vertical positions.</p>
-<p>We can use points if we give some variation to their vertical coordinate – keeping in mind that such vertical variation has no meaning. The idea is similar to the one of <a href="#fig-scatter-contingency">fig.&nbsp;&nbsp;<span>15.1</span></a>. We obtain a plot like this:</p>
-<div id="fig-pointscatter" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="hospital_age_transp_scatter2.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;15.4: [Point-scatter plot for the age-transportation joint probability]</figcaption>
+<p>We can use points if we give some variation to their vertical coordinate – keeping in mind that such vertical variation has no meaning. The idea is similar to the one of <a href="#fig-scatter-contingency" class="quarto-xref">fig.&nbsp;&nbsp;<span>15.1</span></a>. We obtain a plot like this:</p>
+<div id="fig-pointscatter" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pointscatter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="hospital_age_transp_scatter2.png" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pointscatter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.4: [Point-scatter plot for the age-transportation joint probability]
+</figcaption>
 </figure>
 </div>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
@@ -769,8 +828,8 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Compare the line plot of <a href="#fig-multiline">fig.&nbsp;&nbsp;<span>15.3</span></a> and the point-scatter plot of <a href="#fig-pointscatter">fig.&nbsp;&nbsp;<span>15.4</span></a>, which represent the same joint probability density. Do some introspection, and analyse the contrasting impressions that the two kinds of representations may give you. For instance, does the line plot give you a wrong intuition about the sharpness of the peaks in the density?</p>
-<p>Compare with what you did in the exercise of <a href="probability_distributions.html#sec-represent-dens">§ &nbsp;<span>14.4</span></a>.</p>
+<p>Compare the line plot of <a href="#fig-multiline" class="quarto-xref">fig.&nbsp;&nbsp;<span>15.3</span></a> and the point-scatter plot of <a href="#fig-pointscatter" class="quarto-xref">fig.&nbsp;&nbsp;<span>15.4</span></a>, which represent the same joint probability density. Do some introspection, and analyse the contrasting impressions that the two kinds of representations may give you. For instance, does the line plot give you a wrong intuition about the sharpness of the peaks in the density?</p>
+<p>Compare with what you did in the exercise of <a href="probability_distributions.html#sec-represent-dens" class="quarto-xref">§ &nbsp;<span>14.4</span></a>.</p>
 </div>
 </div>
 </section>
@@ -785,10 +844,14 @@ ul.task-list li input[type="checkbox"] {
 <p><img src="voltage-current_converter.jpg" class="img-fluid" style="width:100.0%"> A voltage-current converter</p>
 </div></div><p>An agent may be uncertain about which is the actual value of <span style="display:inline-block;"><span class="math inline">\(L\)</span>,</span> that is, which is the straight line that correctly expresses the voltage-current relationship of the electronic component. The agent therefore assign a probability density over all possible values – over all possible straight lines. How to visually represent such a probability density?</p>
 <p>One way is to use a scatter plot: the probability distribution is represented by a cloud of <em>straight lines</em>, whose density is approximately proportional to the probability density. Here is an example using 360 representative straight lines:</p>
-<div id="fig-scatterlines" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="scatter_lines.svg" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;15.5: [Scatter plot for the probability density over the voltage-current relationship]</figcaption>
+<div id="fig-scatterlines" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scatterlines-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="scatter_lines.svg" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scatterlines-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15.5: [Scatter plot for the probability density over the voltage-current relationship]
+</figcaption>
 </figure>
 </div>
 <p>From this plot we can read some important semi-quantitative information about the agent’s probability density. For example, it’s most probable that the voltage-current relationship has a positive angular coefficient <span style="display:inline-block;"><span class="math inline">\(m\)</span></span> around <span style="display:inline-block;"><span class="math inline">\(0.5\,\mathrm{A/V}\)</span>,</span> and an intercept <span style="display:inline-block;"><span class="math inline">\(q\)</span></span> around <span style="display:inline-block;"><span class="math inline">\(3\,\mathrm{A}\)</span>;</span> it improbable, but not impossible, that the voltage-current relationship has a negative angular coefficient (the output current decreases as the input voltage is increased); and it’s practically impossible that the voltage-current relationship is almost vertical (say, changes in current larger than <span style="display:inline-block;"><span class="math inline">\(\sim 5\,\mathrm{A}\)</span></span> with changes in voltage smaller than <span style="display:inline-block;"><span class="math inline">\(\sim 0.2\,\mathrm{V}\)</span>).</span></p>
@@ -921,10 +984,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -934,8 +1014,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -948,6 +1037,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -991,6 +1199,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1016,6 +1225,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1073,35 +1308,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./probability_distributions.html" class="pagination-link">
+      <a href="./probability_distributions.html" class="pagination-link  aria-label=" &lt;span="" distributions]{.green}&lt;="" span&gt;"="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title"><span class="green">Probability distributions</span></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./marginal_probability.html" class="pagination-link">
+      <a href="./marginal_probability.html" class="pagination-link" aria-label="<span class='chapter-number'>16</span>&nbsp; <span class='chapter-title'>[Marginal probability distributions]{.green}</span>">
         <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><span class="green">Marginal probability distributions</span></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

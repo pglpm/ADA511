@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-07">
+<meta name="dcterms.date" content="2023-11-16">
 
 <title>ADA511 0.1 Foundations of data science and data-driven engineering - 18&nbsp; Information, relevance, independence, association</title>
 <style>
@@ -51,7 +51,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -60,6 +66,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -68,6 +75,33 @@ ul.task-list li input[type="checkbox"] {
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="ada511styles.css">
 </head>
@@ -78,12 +112,12 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./probability_distributions.html"><span class="green"><strong>Inference II</strong></span></a></li><li class="breadcrumb-item"><a href="./information.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">[Information, relevance, independence, association]{.green}</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span id="sec-info-chapter" class="quarto-section-identifier"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="green">Information, relevance, independence, association</span></span></span></h1>
+        </a>     
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -93,13 +127,13 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2023-11-07</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2024-01-08</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -510,7 +544,7 @@ ul.task-list li input[type="checkbox"] {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
@@ -541,7 +575,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-info-chapter" class="quarto-section-identifier"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="green">Information, relevance, independence, association</span></span></span></h1>
+<h1 class="title d-none d-lg-block"><span id="sec-info-chapter" class="quarto-section-identifier"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="green">Information, relevance, independence, association</span></span></span></h1>
 </div>
 
 
@@ -552,7 +586,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-07</p>
+      <p class="date">2023-11-16</p>
     </div>
   </div>
   
@@ -560,7 +594,9 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
+
 </header>
+
 
 <div class="hidden">
 <p><span class="math display">\[
@@ -599,7 +635,7 @@ ul.task-list li input[type="checkbox"] {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i>
+Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -632,7 +668,7 @@ ul.task-list li input[type="checkbox"] {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i>
+Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -654,7 +690,6 @@ ul.task-list li input[type="checkbox"] {
 <div class="callout-body-container callout-body">
 <p>Consider our familiar next-patient inference problem with quantities urgency <span style="display:inline-block;"><span class="math inline">\(U\)</span></span> and transportation <span style="display:inline-block;"><span class="math inline">\(T\)</span>.</span> Assume a different background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{J}\)</span></span> that leads to the following joint probability distribution:</p>
 <table class="table-sm small table">
-<caption></caption>
 <colgroup>
 <col style="width: 30%">
 <col style="width: 16%">
@@ -822,9 +857,13 @@ Importance is non-additive
 <h3 class="anchored" data-anchor-id="third-characteristic-a-two-quantity-scenario">Third characteristic: A two-quantity scenario</h3>
 <p>Suppose we have a discrete quantities <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> with domain <span style="display:inline-block;"><span class="math inline">\(\set{1,2,3,4,5,6}\)</span></span> and another discrete quantity <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> with domain <span style="display:inline-block;"><span class="math inline">\(\set{1,2,3,4}\)</span>.</span> We want to infer the value of <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> after we are told the value of <span style="display:inline-block;"><span class="math inline">\(X\)</span>.</span></p>
 <p>The conditional probabilities for <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> given different values of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> are as follows (each column sums up to <span style="display:inline-block;"><span class="math inline">\(1\)</span>)</span></p>
-<div id="tbl-distr-entropy" class="anchored">
+<div id="tbl-distr-entropy" class="sm quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-distr-entropy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;18.1: Example conditional distribution for two discrete quantities
+</figcaption>
+<div aria-describedby="tbl-distr-entropy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="table-sm small table">
-<caption>Table&nbsp;18.1: Example conditional distribution for two discrete quantities</caption>
 <colgroup>
 <col style="width: 11%">
 <col style="width: 4%">
@@ -890,6 +929,8 @@ Importance is non-additive
 </tr>
 </tbody>
 </table>
+</div>
+</figure>
 </div>
 <p>Let’s see what kind of inferences could occur.</p>
 <p>If we observe <span style="display:inline-block;"><span class="math inline">\(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}1\)</span>,</span> then we know <em>for sure</em> that <span style="display:inline-block;"><span class="math inline">\(Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}1\)</span>;</span> similarly for <span style="display:inline-block;"><span class="math inline">\(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}2\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}3\)</span>.</span> These three values of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> are therefore “most important” for inference about <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span> If we instead observe <span style="display:inline-block;"><span class="math inline">\(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}4\)</span>,</span> then our uncertainty about <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> is between two of its values; similarly for <span style="display:inline-block;"><span class="math inline">\(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}5\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}6\)</span>,</span> These three values of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> are therefore “least important” for inference about <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p>
@@ -957,8 +998,8 @@ The importance of a quantity depends on its probability distribution
 </section>
 <section id="conditional-entropy" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="conditional-entropy">Conditional entropy</h3>
-<div class="page-columns page-full"><p>The <span class="blue"><strong>conditional entropy</strong></span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> of a quantity <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> given a quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and additional knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> is defined as</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;or “equivocation” according to ISO standard</p></li></div></div>
-<div class="column-page-inset-right">
+<p>The <span class="blue"><strong>conditional entropy</strong></span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> of a quantity <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> given a quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and additional knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> is defined as</p>
+<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;or “equivocation” according to ISO standard</p></div><div class="column-page-inset-right">
 <p><span class="math display">\[
 \mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}) \coloneqq
 -\sum_x \sum_y
@@ -972,10 +1013,10 @@ The importance of a quantity depends on its probability distribution
 <p>It has several remarkable properties:</p>
 <ul>
 <li><p>If knowledge of <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> is completely determined by that of <span style="display:inline-block;"><span class="math inline">\(X\)</span>,</span> that is, if <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> is a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span>,</span> then the conditional entropy <span style="display:inline-block;"><span class="math inline">\(\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})\)</span></span> is zero. Vice versa, if the conditional entropy is zero, then <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> must be a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span>.</span></p></li>
-<li><p>If knowledge of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> is irrelevant, in the sense of <a href="#sec-indep-quantities">§ &nbsp;<span>18.2</span></a>, to knowledge of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> then the conditional entropy <span style="display:inline-block;"><span class="math inline">\(\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})\)</span></span> takes on its maximal value, determined by the marginal probability for <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span> Vice versa, if the conditional entropy takes on its maximal value, then <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> is irrelevant to <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p></li>
+<li><p>If knowledge of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> is irrelevant, in the sense of <a href="#sec-indep-quantities" class="quarto-xref">§ &nbsp;<span>18.2</span></a>, to knowledge of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> then the conditional entropy <span style="display:inline-block;"><span class="math inline">\(\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})\)</span></span> takes on its maximal value, determined by the marginal probability for <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span> Vice versa, if the conditional entropy takes on its maximal value, then <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> is irrelevant to <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p></li>
 <li><p>The value (in shannons) of the conditional entropy has the same meaning as for the Shannon entropy: if the conditional entropy amounts to <span style="display:inline-block;"><span class="math inline">\(h\,\mathrm{Sh}\)</span>,</span> then after knowing <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> our uncertainty about <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> is the same as if we were fully uncertain among <span style="display:inline-block;"><span class="math inline">\(2^h\)</span></span> possible alternatives.</p></li>
 </ul>
-<p>For instance, in the case of <a href="#tbl-distr-entropy">table &nbsp;<span>18.1</span></a>, the conditional entropy has the following values in the three scenarios:</p>
+<p>For instance, in the case of <a href="#tbl-distr-entropy" class="quarto-xref">table &nbsp;<span>18.1</span></a>, the conditional entropy has the following values in the three scenarios:</p>
 <ol type="1">
 <li><p><span class="math inline">\(\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_1) = 0.01\,\mathrm{Sh}\)</span> , almost zero; indeed <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> can almost be considered a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> in this case.</p></li>
 <li><p><span class="math inline">\(\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_2) = 0.99\,\mathrm{Sh}\)</span> , almost 1; indeed in this case we are approximately uncertain between two values of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p></li>
@@ -984,10 +1025,10 @@ The importance of a quantity depends on its probability distribution
 </section>
 <section id="mutual-information" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="mutual-information">Mutual information</h3>
-<div class="page-columns page-full"><p>Suppose that, according to background knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> for any value of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> there’s a 100% probability that <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> has one and the same value, say <span style="display:inline-block;"><span class="math inline">\(Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}1\)</span>.</span> The conditional entropy <span style="display:inline-block;"><span class="math inline">\(\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})\)</span></span> is then zero. In this case it is true that <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> is formally a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span>.</span> But it is also true that we could perfectly predict <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> without any knowledge of <span style="display:inline-block;"><span class="math inline">\(X\)</span>.</span> The observed value of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> didn’t really help us in forecasting <span style="display:inline-block;"><span class="math inline">\(Y\)</span>;</span> in other words, <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> is not relevant for inference about <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;There’s no contradiction with the second “remarkable property” previously discussed: in this case the maximal value that the conditional entropy can take is zero.</p></li></div></div>
-<p>If we are interested in quantifying how much our knowledge about <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> “helped” in inferring <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> we can subtract the conditional entropy for <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> given <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> from the maximum value it would have if <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> were unavailable.</p>
-<div class="page-columns page-full"><p>This is the <span class="blue"><strong>mutual information</strong></span><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> of a quantity <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> given a quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and additional knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>.</span> It is defined as</p><div class="no-row-height column-margin column-container"><li id="fn3"><p><sup>3</sup>&nbsp;or “mean transinformation content” according to ISO standard</p></li></div></div>
-<div class="column-page-inset-right">
+<p>Suppose that, according to background knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>,</span> for any value of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> there’s a 100% probability that <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> has one and the same value, say <span style="display:inline-block;"><span class="math inline">\(Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}1\)</span>.</span> The conditional entropy <span style="display:inline-block;"><span class="math inline">\(\mathrm{H}(Y \nonscript\:\vert\nonscript\:\mathopen{} X\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})\)</span></span> is then zero. In this case it is true that <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> is formally a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span>.</span> But it is also true that we could perfectly predict <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> without any knowledge of <span style="display:inline-block;"><span class="math inline">\(X\)</span>.</span> The observed value of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> didn’t really help us in forecasting <span style="display:inline-block;"><span class="math inline">\(Y\)</span>;</span> in other words, <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> is not relevant for inference about <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="no-row-height column-margin column-container"><p><sup>2</sup>&nbsp;There’s no contradiction with the second “remarkable property” previously discussed: in this case the maximal value that the conditional entropy can take is zero.</p></div><p>If we are interested in quantifying how much our knowledge about <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> “helped” in inferring <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> we can subtract the conditional entropy for <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> given <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> from the maximum value it would have if <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> were unavailable.</p>
+<p>This is the <span class="blue"><strong>mutual information</strong></span><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> of a quantity <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> given a quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and additional knowledge <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\)</span>.</span> It is defined as</p>
+<div class="no-row-height column-margin column-container"><p><sup>3</sup>&nbsp;or “mean transinformation content” according to ISO standard</p></div><div class="column-page-inset-right">
 <p><span class="math display">\[
 \mathrm{H}(Y : X\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) \coloneqq
 \sum_x \sum_y
@@ -1000,12 +1041,12 @@ The importance of a quantity depends on its probability distribution
 </div>
 <p>and, as defined above, is also measured in <em>shannons</em>. It also satisfies the three requirements for a measure of “importance”. Its properties are somehow complementary to those of the conditional entropy:</p>
 <ul>
-<li><p>If <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> are independent, in the sense of <a href="#sec-indep-quantities">§ &nbsp;<span>18.2</span></a>, then their mutual information is zero. Vice versa, if it is zero, then <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> are independent.</p></li>
+<li><p>If <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> are independent, in the sense of <a href="#sec-indep-quantities" class="quarto-xref">§ &nbsp;<span>18.2</span></a>, then their mutual information is zero. Vice versa, if it is zero, then <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> are independent.</p></li>
 <li><p>If knowledge of <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> is completely determined by that of <span style="display:inline-block;"><span class="math inline">\(X\)</span>,</span> that is, if <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> is a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span>,</span> then their mutual information attains its maximal value (which could be zero). Vice versa, if the mutual information attains its maximal value, then <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> must be a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span>.</span></p></li>
 <li><p>If the mutual information between <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> amounts to <span style="display:inline-block;"><span class="math inline">\(h\,\mathrm{Sh}\)</span>,</span> then knowledge of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> <em>reduces, on average, <span class="math inline">\(2^h\)</span>-fold times</em> the possibilities regarding the value of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p></li>
 <li><p>It is symmetric in the roles of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> that is, <span style="display:inline-block;"><span class="math inline">\(\mathrm{H}(Y : X\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) = \mathrm{H}(X : Y\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>.</span></p></li>
 </ul>
-<p>In the case of <a href="#tbl-distr-entropy">table &nbsp;<span>18.1</span></a>, the mutual information has the following values in the three scenarios:</p>
+<p>In the case of <a href="#tbl-distr-entropy" class="quarto-xref">table &nbsp;<span>18.1</span></a>, the mutual information has the following values in the three scenarios:</p>
 <ol type="1">
 <li><p><span class="math inline">\(\mathrm{H}(Y : X\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_1) = 1.61\,\mathrm{Sh}\)</span> , almost equal to the maximal value achievable in this scenario (<span style="display:inline-block;"><span class="math inline">\(1.62\,\mathrm{Sh}\)</span>);</span> indeed <span style="display:inline-block;"><span class="math inline">\(Y\)</span></span> can almost be considered a function of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> in this case. Since <span style="display:inline-block;"><span class="math inline">\(2^{1.61}\approx 2.1\)</span>,</span> knowledge of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> roughly halves the number of possible values of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p></li>
 <li><p><span class="math inline">\(\mathrm{H}(Y : X\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_2) = 0.81\,\mathrm{Sh}\)</span> ; this means that knowledge of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> reduces by <span style="display:inline-block;"><span class="math inline">\(2^{0.81}\approx 1.8\)</span></span> or almost 2 times the number of possible values of <span style="display:inline-block;"><span class="math inline">\(Y\)</span>.</span></p></li>
@@ -1023,7 +1064,7 @@ The importance of a quantity depends on its probability distribution
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i>
+Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1052,7 +1093,7 @@ The importance of a quantity depends on its probability distribution
 <section id="sec-utility-importance" class="level2" data-number="18.6">
 <h2 data-number="18.6" class="anchored" data-anchor-id="sec-utility-importance"><span class="header-section-number">18.6</span> Utility Theory to quantify relevance and importance</h2>
 <p>The entropy-based measures discussed in the previous section originate from, have deep connections with, the problem of repeated communication or signal transmission. They do not require anything else beside joint probabilities. In a general decision problem – where an agent has probabilities <em>and utilities</em> – another approach is required, however.</p>
-<p>Questions such as <span style="display:inline-block;">“What happens if I discard quantity <span class="math inline">\(X\)</span> in my inference?”</span> or <span style="display:inline-block;">“If I have to choose between quantity <span class="math inline">\(U\)</span> and quantity <span class="math inline">\(V\)</span> to condition my inference, which one should I choose?”</span> are actually <em>decision-making problems</em>. They must therefore be solved using Decision Theory (this is an example of the recursive capabilities of Decision Theory, discussed in <a href="framework.html#sec-decision-theory">§ &nbsp;<span>2.4</span></a>).</p>
+<p>Questions such as <span style="display:inline-block;">“What happens if I discard quantity <span class="math inline">\(X\)</span> in my inference?”</span> or <span style="display:inline-block;">“If I have to choose between quantity <span class="math inline">\(U\)</span> and quantity <span class="math inline">\(V\)</span> to condition my inference, which one should I choose?”</span> are actually <em>decision-making problems</em>. They must therefore be solved using Decision Theory (this is an example of the recursive capabilities of Decision Theory, discussed in <a href="framework.html#sec-decision-theory" class="quarto-xref">§ &nbsp;<span>2.4</span></a>).</p>
 <p>The application of decision theory in these situations if often intuitively understandable. For example, if we need to rank the importance of quantities <span style="display:inline-block;"><span class="math inline">\(U\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(V\)</span>,</span> we can calculate how much the expected utility would decrease if we discarded the one or the other.</p>
 <p>We’ll come back to these questions toward the end of the course.</p>
 
@@ -1140,10 +1181,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1153,8 +1211,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1167,6 +1234,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1210,6 +1396,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1235,6 +1422,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1292,35 +1505,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./conditional_probability.html" class="pagination-link">
+      <a href="./conditional_probability.html" class="pagination-link  aria-label=" &lt;span="" probability="" and="" learning]{.green}&lt;="" span&gt;"="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probability and learning</span></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./connection-3-ML.html" class="pagination-link">
+      <a href="./connection-3-ML.html" class="pagination-link" aria-label="<span class='chapter-number'>19</span>&nbsp; <span class='chapter-title'>[Third connection with machine learning]{.midgrey}</span>">
         <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title"><span class="midgrey">Third connection with machine learning</span></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

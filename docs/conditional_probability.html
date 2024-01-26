@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-07">
+<meta name="dcterms.date" content="2023-11-16">
 
 <title>ADA511 0.1 Foundations of data science and data-driven engineering - 17&nbsp; Conditional probability and learning</title>
 <style>
@@ -51,7 +51,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -60,6 +66,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -68,6 +75,33 @@ ul.task-list li input[type="checkbox"] {
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="ada511styles.css">
 </head>
@@ -78,12 +112,12 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./probability_distributions.html"><span class="green"><strong>Inference II</strong></span></a></li><li class="breadcrumb-item"><a href="./conditional_probability.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">[Conditional probability and learning]{.green}</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span id="sec-learning" class="quarto-section-identifier"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probability and learning</span></span></span></h1>
+        </a>     
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -93,13 +127,13 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2023-11-07</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2024-01-08</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -510,7 +544,7 @@ ul.task-list li input[type="checkbox"] {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
@@ -533,7 +567,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-learning" class="quarto-section-identifier"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probability and learning</span></span></span></h1>
+<h1 class="title d-none d-lg-block"><span id="sec-learning" class="quarto-section-identifier"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probability and learning</span></span></span></h1>
 </div>
 
 
@@ -544,7 +578,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-11-07</p>
+      <p class="date">2023-11-16</p>
     </div>
   </div>
   
@@ -552,7 +586,9 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
+
 </header>
+
 
 <div class="hidden">
 <p><span class="math display">\[
@@ -565,7 +601,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <section id="sec-conditional-probs" class="level2" data-number="17.1">
 <h2 data-number="17.1" class="anchored" data-anchor-id="sec-conditional-probs"><span class="header-section-number">17.1</span> Conditional probability: augmenting knowledge</h2>
-<p>When we introduced the notion of degree of belief – a.k.a. probability – in <a href="probability_inference.html">chapter&nbsp;&nbsp;<span>8</span></a>, we stressed the fact that <em>every probability is conditional on some state of knowledge or information</em>. So the term “conditional probability” sounds like a <a href="https://dictionary.cambridge.org/dictionary/english/pleonasm">pleonasm</a>, just like saying “round circle”.</p>
+<p>When we introduced the notion of degree of belief – a.k.a. probability – in <a href="probability_inference.html" class="quarto-xref">chapter&nbsp;&nbsp;<span>8</span></a>, we stressed the fact that <em>every probability is conditional on some state of knowledge or information</em>. So the term “conditional probability” sounds like a <a href="https://dictionary.cambridge.org/dictionary/english/pleonasm">pleonasm</a>, just like saying “round circle”.</p>
 <p>This term must be understood in a way analogous to “marginal probability”: it applies in situations where we have two or more sentences of interest. We speak of a “conditional probability” when we want to emphasize that additional sentences appear in the conditional (right side of <span style="display:inline-block;">“<span class="math inline">\(\nonscript\:\vert\nonscript\:\mathopen{}\)</span>”</span>) of that probability, as compared to other probabilities. For instance, in a scenario in which these two probabilities appear:</p>
 <p><span class="math display">\[
 \mathrm{P}(\mathsfit{A} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{B} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
@@ -573,12 +609,12 @@ ul.task-list li input[type="checkbox"] {
 \mathrm{P}(\mathsfit{A} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \]</span></p>
 <p>we call the first <span class="blue"><strong>conditional probability</strong></span> of <span style="display:inline-block;"><span class="math inline">\(\mathsfit{A}\)</span></span> (<span class="blue"><strong>given</strong></span> <span style="display:inline-block;"><span class="math inline">\(\mathsfit{B}\)</span>)</span> to emphasize or point out that its conditional includes an additional sentence (<span style="display:inline-block;"><span class="math inline">\(\mathsfit{B}\)</span>),</span> whereas the conditional of the second probability doesn’t.</p>
-<p>Such emphasis is important because it also means that the “conditional” probability is based on some <em>additional knowledge, information, or hypothesis</em> with respect to the “non-conditional” one. This has obvious connections with the idea of “learning”. Indeed the calculation of “conditional” probabilities enters in all situations (even if hypothetical or counterfactual, see <a href="inference.html#sec-inference-scenarios">§ &nbsp;<span>5.1</span></a>) in which some knowledge is augmented by new knowledge. This can happens in several ways, which we now examine.</p>
+<p>Such emphasis is important because it also means that the “conditional” probability is based on some <em>additional knowledge, information, or hypothesis</em> with respect to the “non-conditional” one. This has obvious connections with the idea of “learning”. Indeed the calculation of “conditional” probabilities enters in all situations (even if hypothetical or counterfactual, see <a href="inference.html#sec-inference-scenarios" class="quarto-xref">§ &nbsp;<span>5.1</span></a>) in which some knowledge is augmented by new knowledge. This can happens in several ways, which we now examine.</p>
 </section>
 <section id="sec-conditional-joint-dis" class="level2 page-columns page-full" data-number="17.2">
 <h2 data-number="17.2" class="anchored" data-anchor-id="sec-conditional-joint-dis"><span class="header-section-number">17.2</span> Conditional from joint probability: dissimilar quantities</h2>
-<p>Consider once more the next-patient arrival scenario of <a href="joint_probability.html#sec-repr-joint-prob">§ &nbsp;<span>15.2</span></a>, with joint quantity <span style="display:inline-block;"><span class="math inline">\((U,T)\)</span></span> and an agent’s joint probability distribution as in <a href="joint_probability.html#tbl-urgent-arrival">table&nbsp;&nbsp;<span>15.1</span></a>. Suppose that the agent must forecast whether the next patient will require <span style="display:inline-block;"><span class="math inline">\({\small\verb;urgent;}\)</span></span> or <span style="display:inline-block;"><span class="math inline">\({\small\verb;non-urgent;}\)</span></span> care, so it needs to calculate the probability distribution for <span style="display:inline-block;"><span class="math inline">\(U\)</span></span> (that is, the probabilities for <span style="display:inline-block;"><span class="math inline">\(U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;non-urgent;}\)</span>).</span></p>
-<p>In the first exercise of <a href="marginal_probability.html#sec-marginal-probs">§ &nbsp;<span>16.1</span></a> you found that the marginal probability that the next patient will need urgent care is</p>
+<p>Consider once more the next-patient arrival scenario of <a href="joint_probability.html#sec-repr-joint-prob" class="quarto-xref">§ &nbsp;<span>15.2</span></a>, with joint quantity <span style="display:inline-block;"><span class="math inline">\((U,T)\)</span></span> and an agent’s joint probability distribution as in <a href="joint_probability.html#tbl-urgent-arrival" class="quarto-xref">table&nbsp;&nbsp;<span>15.1</span></a>. Suppose that the agent must forecast whether the next patient will require <span style="display:inline-block;"><span class="math inline">\({\small\verb;urgent;}\)</span></span> or <span style="display:inline-block;"><span class="math inline">\({\small\verb;non-urgent;}\)</span></span> care, so it needs to calculate the probability distribution for <span style="display:inline-block;"><span class="math inline">\(U\)</span></span> (that is, the probabilities for <span style="display:inline-block;"><span class="math inline">\(U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;non-urgent;}\)</span>).</span></p>
+<p>In the first exercise of <a href="marginal_probability.html#sec-marginal-probs" class="quarto-xref">§ &nbsp;<span>16.1</span></a> you found that the marginal probability that the next patient will need urgent care is</p>
 <p><span class="math display">\[\mathrm{P}(U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\text{H}}) = 18\%\]</span></p>
 <p>this is the agent’s degree of belief if it has the knowledge encoded in the sentence <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}_{\text{H}}\)</span>,</span> nothing more and nothing less.</p>
 <p>But now let’s imagine that the agent <em>receives a new piece of information</em>: it is told that the next patient is being transported by helicopter. In other words, the agent now knows that the sentence <span style="display:inline-block;"><span class="math inline">\(T\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;helicopter;}\)</span></span> is true. The agent’s complete knowledge is then encoded in the <code>and</code>ed sentence</p>
@@ -604,7 +640,7 @@ ul.task-list li input[type="checkbox"] {
 \end{aligned}
 \]</span></p>
 </div>
-<p>We do have the joint probability for <span style="display:inline-block;"><span class="math inline">\(U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\land T\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;helicopter;}\)</span></span> that appears in the numerator of the fraction above. The probability in the denominator is just a marginal probability for <span style="display:inline-block;"><span class="math inline">\(T\)</span>,</span> and we know how to calculate that too from <a href="marginal_probability.html#sec-marginal-probs">§ &nbsp;<span>16.1</span></a>. Finally we find</p>
+<p>We do have the joint probability for <span style="display:inline-block;"><span class="math inline">\(U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\land T\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;helicopter;}\)</span></span> that appears in the numerator of the fraction above. The probability in the denominator is just a marginal probability for <span style="display:inline-block;"><span class="math inline">\(T\)</span>,</span> and we know how to calculate that too from <a href="marginal_probability.html#sec-marginal-probs" class="quarto-xref">§ &nbsp;<span>16.1</span></a>. Finally we find</p>
 <p><span class="math display">\[
 \mathrm{P}(U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\nonscript\:\vert\nonscript\:\mathopen{} T\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;helicopter;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\text{H}})
 =\frac{
@@ -628,7 +664,7 @@ ul.task-list li input[type="checkbox"] {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i>
+Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -656,7 +692,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><p>Using the values from <a href="joint_probability.html#tbl-urgent-arrival">table&nbsp;<span>15.1</span></a> and the formula for marginal probabilities, calculate:</p>
+<li><p>Using the values from <a href="joint_probability.html#tbl-urgent-arrival" class="quarto-xref">table&nbsp;<span>15.1</span></a> and the formula for marginal probabilities, calculate:</p>
 <ul>
 <li><p>The conditional probability that the next patient needs urgent care, given that the patient is being transported by helicopter.</p></li>
 <li><p>The conditional probability that the next patient is being transported by helicopter, given that the patient needs urgent care.</p></li>
@@ -797,7 +833,7 @@ U_1\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i>
+Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -911,15 +947,19 @@ U_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 </section>
 <section id="sec-conditional-conditional" class="level2 page-columns page-full" data-number="17.5">
 <h2 data-number="17.5" class="anchored" data-anchor-id="sec-conditional-conditional"><span class="header-section-number">17.5</span> Conditional from conditional probability</h2>
-<p>As emphasized in <a href="inference.html#sec-inference-origin">§ &nbsp;<span>5.2</span></a>, probabilities are either obtained from other probabilities, or taken as given probabilities, maybe determined by symmetry requirements. This is also true when we want to calculate conditional probabilities.</p>
-<p>Up to now we have calculated conditional probabilities starting from the joint distribution as given, using the derived formula (<a href="#eq-conditional-joint"><span>17.1</span></a>). In some situations, however, an agent may have <strong>given conditional probabilities</strong> together with <strong>given marginal probabilities</strong>.</p>
+<p>As emphasized in <a href="inference.html#sec-inference-origin" class="quarto-xref">§ &nbsp;<span>5.2</span></a>, probabilities are either obtained from other probabilities, or taken as given probabilities, maybe determined by symmetry requirements. This is also true when we want to calculate conditional probabilities.</p>
+<p>Up to now we have calculated conditional probabilities starting from the joint distribution as given, using the derived formula (<a href="#eq-conditional-joint" class="quarto-xref"><span>17.1</span></a>). In some situations, however, an agent may have <strong>given conditional probabilities</strong> together with <strong>given marginal probabilities</strong>.</p>
 <p>As an example let’s consider a variation of our next-patient scenario one more time. The agent has background information <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}_{\text{S}}\)</span></span> that provides the following set of probabilities:</p>
 <ul>
 <li>Two conditional probability distributions&nbsp;&nbsp;<span class="math inline">\(\mathrm{P}(T\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \nonscript\:\vert\nonscript\:\mathopen{} U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\text{S}})\)</span> for transportation <span class="math inline">\(T\)</span> given urgency <span class="math inline">\(U\)</span>, as reported in the following table:</li>
 </ul>
-<div id="tbl-T-given-U" class="anchored">
+<div id="tbl-T-given-U" class="sm quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-T-given-U-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;17.1: Probability distributions for transportation given urgency
+</figcaption>
+<div aria-describedby="tbl-T-given-U-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="table-sm small table">
-<caption>Table&nbsp;17.1: Probability distributions for transportation given urgency</caption>
 <colgroup>
 <col style="width: 30%">
 <col style="width: 16%">
@@ -956,6 +996,8 @@ U_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 </tbody>
 </table>
 </div>
+</figure>
+</div>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <div class="callout callout-style-default callout-important no-icon callout-titled">
@@ -964,7 +1006,7 @@ U_2\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i>
+Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1041,7 +1083,7 @@ P(U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 &amp;\quad{}=\boldsymbol{82.8\%}
 \end{aligned}
 \]</span></p>
-<p>This calculation has been slightly more involved than the one in <a href="#sec-conditional-joint-dis">§ &nbsp;<span>17.2</span></a> because the joint probabilities were not directly available. Our calculation involved the steps&nbsp;&nbsp;<span style="display:inline-block;">“ <span class="math inline">\(T\nonscript\:\vert\nonscript\:\mathopen{}U \longrightarrow T\land U \longrightarrow U\nonscript\:\vert\nonscript\:\mathopen{}T\)</span> ”</span>.</p>
+<p>This calculation has been slightly more involved than the one in <a href="#sec-conditional-joint-dis" class="quarto-xref">§ &nbsp;<span>17.2</span></a> because the joint probabilities were not directly available. Our calculation involved the steps&nbsp;&nbsp;<span style="display:inline-block;">“ <span class="math inline">\(T\nonscript\:\vert\nonscript\:\mathopen{}U \longrightarrow T\land U \longrightarrow U\nonscript\:\vert\nonscript\:\mathopen{}T\)</span> ”</span>.</p>
 <p><br>
 </p>
 <p>If the agent were instead interested, say, in forecasting the transportation means knowing that the next patient requires urgent care, then the relevant degree of belief&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(T\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \nonscript\:\vert\nonscript\:\mathopen{} U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;urgent;}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\text{S}})\)</span></span> would be immediately available and no calculations would be needed.</p>
@@ -1062,12 +1104,12 @@ P(U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 }
 \tag{17.3}\]</span></span></p>
 <p>for all possible values <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}y\)</span>.</span></p>
-<p>In the above formula we recognize <span class="blue"><strong>Bayes’s theorem</strong></span> from <a href="derived_rules.html#sec-bayes-theorem">§ &nbsp;<span>9.5</span></a>.</p>
+<p>In the above formula we recognize <span class="blue"><strong>Bayes’s theorem</strong></span> from <a href="derived_rules.html#sec-bayes-theorem" class="quarto-xref">§ &nbsp;<span>9.5</span></a>.</p>
 <p>This formula is often exaggeratedly emphasized in the literature; some texts even present it as an “axiom” to be used in situations such as the present one. But we see that it is simply a by-product of the four fundamental rules of inference in a specific situation. An AI agent who knows the four fundamental inference rules, and doesn’t know what “Bayes’s theorem” is, will nevertheless arrive at this very formula.</p>
 </section>
 <section id="sec-conditional-dens" class="level2" data-number="17.7">
 <h2 data-number="17.7" class="anchored" data-anchor-id="sec-conditional-dens"><span class="header-section-number">17.7</span> Conditional densities</h2>
-<p>The discussion so far about conditional probabilities extends to conditional probability <em>densities</em>, in the usual way explained in §§ <a href="joint_probability.html#sec-joint-prob-densities"><span>15.3</span></a> and&nbsp;<a href="marginal_probability.html#sec-marginal-dens"><span>16.2</span></a>.</p>
+<p>The discussion so far about conditional probabilities extends to conditional probability <em>densities</em>, in the usual way explained in §§ <a href="joint_probability.html#sec-joint-prob-densities" class="quarto-xref"><span>15.3</span></a> and&nbsp;<a href="marginal_probability.html#sec-marginal-dens" class="quarto-xref"><span>16.2</span></a>.</p>
 <p>If <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}Y\)</span></span> are continuous quantities, the notation</p>
 <p><span class="math display">\[
 \mathrm{p}({\color[RGB]{238,102,119}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y} \nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}) = {\color[RGB]{68,119,170}q}
@@ -1099,7 +1141,7 @@ P(U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 </section>
 <section id="sec-repr-conditional" class="level2" data-number="17.8">
 <h2 data-number="17.8" class="anchored" data-anchor-id="sec-repr-conditional"><span class="header-section-number">17.8</span> Graphical representation of conditional probability distributions and densities</h2>
-<p>Conditional probability distributions and densities can be plotted in all the ways discussed in chapters&nbsp;<a href="joint_probability.html"><span>15</span></a> and&nbsp;<a href="marginal_probability.html"><span>16</span></a>. If we have two quantities <span style="display:inline-block;"><span class="math inline">\(A\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(B\)</span>,</span> often we want to compare the different conditional probability distributions for <span style="display:inline-block;"><span class="math inline">\(A\)</span></span> given different values of <span style="display:inline-block;"><span class="math inline">\(B\)</span>:</span></p>
+<p>Conditional probability distributions and densities can be plotted in all the ways discussed in chapters&nbsp;<a href="joint_probability.html" class="quarto-xref"><span>15</span></a> and&nbsp;<a href="marginal_probability.html" class="quarto-xref"><span>16</span></a>. If we have two quantities <span style="display:inline-block;"><span class="math inline">\(A\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(B\)</span>,</span> often we want to compare the different conditional probability distributions for <span style="display:inline-block;"><span class="math inline">\(A\)</span></span> given different values of <span style="display:inline-block;"><span class="math inline">\(B\)</span>:</span></p>
 <ul>
 <li><span class="math inline">\(\mathrm{P}(A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \nonscript\:\vert\nonscript\:\mathopen{} B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;one-value;} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})\)</span>,</li>
 <li><span class="math inline">\(\mathrm{P}(A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \nonscript\:\vert\nonscript\:\mathopen{} B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;another-value;} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})\)</span>,</li>
@@ -1108,7 +1150,7 @@ P(U\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu
 <p>and so on. This can be achieved by representing them by overlapping line plots, or side-by-side scatter plots, or similar ways.</p>
 <p><br>
 </p>
-<p>In <a href="marginal_probability.html#sec-marginal-scatter">§ &nbsp;<span>16.3</span></a> we saw that if we have the scatter plot for a joint probability <em>density</em>, then from its points we can often obtain a scatter plot for its marginal densities. Unfortunately no similar advantage exists for the conditional densities that can be obtained from a joint density. In theory, a conditional density for <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> given that a quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> has value in some small interval <span style="display:inline-block;"><span class="math inline">\(\delta\)</span></span> around <span style="display:inline-block;"><span class="math inline">\(x\)</span>,</span> could be obtained by only considering scatter-plot points having <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> coordinate in a small interval between <span style="display:inline-block;"><span class="math inline">\(x-\delta/2\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(x+\delta/2\)</span>.</span> But the number of such points is usually too small and the resulting scatter plot could be very misleading.</p>
+<p>In <a href="marginal_probability.html#sec-marginal-scatter" class="quarto-xref">§ &nbsp;<span>16.3</span></a> we saw that if we have the scatter plot for a joint probability <em>density</em>, then from its points we can often obtain a scatter plot for its marginal densities. Unfortunately no similar advantage exists for the conditional densities that can be obtained from a joint density. In theory, a conditional density for <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> given that a quantity <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> has value in some small interval <span style="display:inline-block;"><span class="math inline">\(\delta\)</span></span> around <span style="display:inline-block;"><span class="math inline">\(x\)</span>,</span> could be obtained by only considering scatter-plot points having <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> coordinate in a small interval between <span style="display:inline-block;"><span class="math inline">\(x-\delta/2\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(x+\delta/2\)</span>.</span> But the number of such points is usually too small and the resulting scatter plot could be very misleading.</p>
 <p><br>
 </p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -1213,10 +1255,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1226,8 +1285,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1240,6 +1308,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1283,6 +1470,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1308,6 +1496,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1365,35 +1579,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./marginal_probability.html" class="pagination-link">
+      <a href="./marginal_probability.html" class="pagination-link  aria-label=" &lt;span="" probability="" distributions]{.green}&lt;="" span&gt;"="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><span class="green">Marginal probability distributions</span></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./information.html" class="pagination-link">
+      <a href="./information.html" class="pagination-link" aria-label="<span class='chapter-number'>18</span>&nbsp; <span class='chapter-title'>[Information, relevance, independence, association]{.green}</span>">
         <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="green">Information, relevance, independence, association</span></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

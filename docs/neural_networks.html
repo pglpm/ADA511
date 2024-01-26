@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-10-21">
+<meta name="dcterms.date" content="2023-11-16">
 
 <title>ADA511 0.1 Foundations of data science and data-driven engineering - 26&nbsp; Neural networks</title>
 <style>
@@ -51,7 +51,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -60,6 +66,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -68,6 +75,33 @@ ul.task-list li input[type="checkbox"] {
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="ada511styles.css">
 </head>
@@ -78,12 +112,12 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./machine_learning_overview.html"><span class="midgrey"><strong>Machine learning</strong></span></a></li><li class="breadcrumb-item"><a href="./neural_networks.html"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Neural networks</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Neural networks</span></h1>
+        </a>     
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -93,13 +127,13 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2023-10-21</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.1</span><br><span class="small grey">2024-01-08</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><embed src="https://portamana.org/cc_by_sa.htm" class="img-fluid" style="width:3em"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -510,7 +544,7 @@ ul.task-list li input[type="checkbox"] {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
@@ -531,7 +565,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Neural networks</span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Neural networks</span></h1>
 </div>
 
 
@@ -542,7 +576,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-10-21</p>
+      <p class="date">2023-11-16</p>
     </div>
   </div>
   
@@ -550,7 +584,9 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
+
 </header>
+
 
 <div class="hidden">
 <p><span class="math display">\[
@@ -560,9 +596,14 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <p>Neural networks are performing extremely well on complex tasks such as language modelling and realistic image generation, although the principle behind how they work, is quite simple.</p>
 <p>The basic building block is a <strong>node</strong>, which receives some values as input, and computes a single output:</p>
-<div id="fig-neural-network-node" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="fig_neural_network_node.png" class="img-fluid figure-img" width="400"></p>
+<div id="fig-neural-network-node" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="400">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-neural-network-node-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="fig_neural_network_node.png" id="fig-neural-network-node" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="400">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-neural-network-node-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;26.1
+</figcaption>
 </figure>
 </div>
 <p>The output is computed from the inputs <span style="display:inline-block;"><span class="math inline">\(x_0, x_1, \dots, x_N\)</span>,</span> each of which is multiplied by a weight <span style="display:inline-block;"><span class="math inline">\(w_1, w_2, \dots w_N\)</span>,</span> and summed together along with an additional parameter <span style="display:inline-block;"><span class="math inline">\(b\)</span>,</span> which is typically called a <em>bias</em>. You can probably identify this step as good old linear regression:</p>
@@ -586,7 +627,7 @@ z = h(a) = h \left( b + \sum_{i=0}^N w_i x_i \right)
 <p>This is a very powerful property, which is explained in understandable terms <a href="http://neuralnetworksanddeeplearning.com/chap4.html">here</a> (the proof (CITE) is rather technical). But, as we know already, this only helps if we are trying to model something which has a functional relationship.</p>
 <section id="training-neural-networks" class="level2" data-number="26.1">
 <h2 data-number="26.1" class="anchored" data-anchor-id="training-neural-networks"><span class="header-section-number">26.1</span> Training neural networks</h2>
-<p>Finding the optimal values of the model’s parameters <span style="display:inline-block;"><span class="math inline">\(\mathbf{w}\)</span></span> is usually called to <em>train</em> the model. When we looked at polynomials in the machine learning introduction (<a href="machine_learning_overview.html"><span>Chapter&nbsp;24</span></a>) we did not talk about this yet, partly because polynomial models have a closed-form solution for the best parameters, meaning they can be computed directly. Since neural networks are nonlinear by design, we need a different approach, which it to start with random parameter values and iteratively try to improve them.</p>
+<p>Finding the optimal values of the model’s parameters <span style="display:inline-block;"><span class="math inline">\(\mathbf{w}\)</span></span> is usually called to <em>train</em> the model. When we looked at polynomials in the machine learning introduction (<a href="machine_learning_overview.html" class="quarto-xref"><span>Chapter 24</span></a>) we did not talk about this yet, partly because polynomial models have a closed-form solution for the best parameters, meaning they can be computed directly. Since neural networks are nonlinear by design, we need a different approach, which it to start with random parameter values and iteratively try to improve them.</p>
 <section id="loss-functions" class="level3">
 <h3 class="anchored" data-anchor-id="loss-functions">Loss functions</h3>
 <p>The first step towards improving the parameters, is to define what improvement is. Ultimately, our goal is to make predictions about the data that equal the true values, which is to say, we want to minimise the difference between predictions <span style="display:inline-block;"><span class="math inline">\(f(\mathbf{x}, \mathbf{w}\)</span></span> and true values <span style="display:inline-block;"><span class="math inline">\(y\)</span>.</span> This difference can be formulated in several different ways, but in the case of regression, the most common is the sum of squared errors:</p>
@@ -608,9 +649,9 @@ L(\mathbf{w}) = \sum_{\text{data points } i} (f(\mathbf{x}_i, \mathbf{w}) - y_i)
 <section id="gradient-descent" class="level3">
 <h3 class="anchored" data-anchor-id="gradient-descent">Gradient descent</h3>
 <p>While we did not get into it earlier, the concept of defining a loss function and doing gradient descent, is in fact how the majority of machine learning algorithms are trained. Even for decision trees, which had their dedicated algorith, we ended up with a loss minimisation task once we introduced boosting.</p>
-<p>Straight-forward gradient descent as shown in equation {<a href="#eq-gradient-descent"><span>26.2</span></a>} can work fine for relatively simple models, but will stop at the first minimum it encounters. For a reasonably complicated network, the loss function landscape can be expected to have several local minima or saddle points, causing the method to get stuck in places with suboptimal parameters. Several improved algorithms aim to tackle this.</p>
+<p>Straight-forward gradient descent as shown in equation {<a href="#eq-gradient-descent" class="quarto-xref"><span>26.2</span></a>} can work fine for relatively simple models, but will stop at the first minimum it encounters. For a reasonably complicated network, the loss function landscape can be expected to have several local minima or saddle points, causing the method to get stuck in places with suboptimal parameters. Several improved algorithms aim to tackle this.</p>
 <ul>
-<li><em>Stochastic</em> gradient descent updates the parameters through equation {<a href="#eq-gradient-descent"><span>26.2</span></a>} for only a subset of data at a time. This is more computationally efficient, and the stochastic element helps against getting stuck in a local minimum, since a local minimum for some subset of data might not be a minimum for a different subset.</li>
+<li><em>Stochastic</em> gradient descent updates the parameters through equation {<a href="#eq-gradient-descent" class="quarto-xref"><span>26.2</span></a>} for only a subset of data at a time. This is more computationally efficient, and the stochastic element helps against getting stuck in a local minimum, since a local minimum for some subset of data might not be a minimum for a different subset.</li>
 <li><em>Adaptive</em> gradient methods use different learning rates per parameter, which is updated for each iteration.</li>
 <li><em>Momentum</em> methods remember the previous gradients and keeps moving in the same direction even through flat or uphill parts, like a massive rolling ball.</li>
 </ul>
@@ -622,7 +663,7 @@ L(\mathbf{w}) = \sum_{\text{data points } i} (f(\mathbf{x}_i, \mathbf{w}) - y_i)
 <p>In the previous chapter, we had several ways of limiting decision trees so they would not overfit to the training data. Many apply also here, but having introduced the concept of loss functions, we will add a general approach.</p>
 <p>First, limiting complexity by tuning hyperparameters, is always an option. For a standard network, we can adjust the number of layers and the number of nodes per layer. Making good guesses about the architecture of the network is difficult, so a <em>hyperparameter search</em> if often necessary to develop a performant model.</p>
 <p>Secondly, similar to random forests, one can make ensembles of models, trained on subsets (with replacement) of the data. For neural networks, however, this is less common, since the network is sort of an ensemble by itself. But remember that for random forests we also randomly dropped some of the features during training. The equivalent for neural networks is to randomly drop <em>nodes</em>, by zeroing their output for a single training iteration. This is called <strong>dropout</strong>.</p>
-<p>Lastly, let us introduce general regularisation, which is based on modifying the loss function. This means it can be applied to any machine learning algorithm that minimises loss, and is not specific to the algorithm itself. What we want to do is to add a term in the loss function that penalises large parameter values. This way we do not need to restrict the explicit complexity of the model by changing the structure, but we rather restrict the “volume” the parameters can span out. The minimisation problem in equation {<a href="#eq-loss-minimisation"><span>26.1</span></a>} then becomes</p>
+<p>Lastly, let us introduce general regularisation, which is based on modifying the loss function. This means it can be applied to any machine learning algorithm that minimises loss, and is not specific to the algorithm itself. What we want to do is to add a term in the loss function that penalises large parameter values. This way we do not need to restrict the explicit complexity of the model by changing the structure, but we rather restrict the “volume” the parameters can span out. The minimisation problem in equation {<a href="#eq-loss-minimisation" class="quarto-xref"><span>26.1</span></a>} then becomes</p>
 <p><span id="eq-loss-with-regularisation"><span class="math display">\[
 \underset{\mathbf{w}}{\mathrm{arg\,min}}\, L(\mathbf{w}) + \alpha ||\mathbf{w}||_p \,,
 \tag{27.1}\]</span></span></p>
@@ -633,9 +674,14 @@ L(\mathbf{w}) = \sum_{\text{data points } i} (f(\mathbf{x}_i, \mathbf{w}) - y_i)
 <li><span class="math inline">\(L^2\)</span>, which is the Euclidean distance: <span class="math inline">\(||\mathbf{w}||_2 = \sum_i w_i^2\)</span>. This is also known as <em>ridge</em> regularisation, and is perhaps the most commonly used.</li>
 </ul>
 <p>The <code>scikit-learn</code> <a href="https://scikit-learn.org/stable/modules/neural_networks_supervised.html">User Guide</a> has a nice example showing the effect of <span style="display:inline-block;"><span class="math inline">\(L^2\)</span></span> regularisation for varying regularisation strength:</p>
-<div id="fig-mlp-regularisation-sklearn" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="mlp_regularisation_sklearn.png" class="img-fluid figure-img"></p>
+<div id="fig-mlp-regularisation-sklearn" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mlp-regularisation-sklearn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mlp_regularisation_sklearn.png" id="fig-mlp-regularisation-sklearn" class="img-fluid quarto-figure quarto-figure-center anchored figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-mlp-regularisation-sklearn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;27.1
+</figcaption>
 </figure>
 </div>
 <div class="callout callout-style-default callout-caution no-icon callout-titled">
@@ -739,10 +785,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -752,8 +815,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -766,6 +838,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -809,6 +1000,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -834,6 +1026,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -891,35 +1109,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./decision_trees.html" class="pagination-link">
+      <a href="./decision_trees.html" class="pagination-link  aria-label=" &lt;span="" trees&lt;="" span&gt;"="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Decision trees</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./beyond-ML.html" class="pagination-link">
+      <a href="./beyond-ML.html" class="pagination-link" aria-label="<span class='chapter-number'>27</span>&nbsp; <span class='chapter-title'>[Beyond machine learning]{.midgrey}</span>">
         <span class="nav-page-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="midgrey">Beyond machine learning</span></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 
