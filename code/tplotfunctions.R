@@ -1,7 +1,6 @@
-## Requires library 'khroma'
 ## Colour-blind friendly palettes, from https://personal.sron.nl/~pault/
 ## palette(colour('bright')())
-cc <- colour('bright')()
+cc <- khroma::colour('bright')()
 cc[8] <- '#000000'
 names(cc)[8] <- 'black'
 cc[9] <- '#777777'
@@ -18,71 +17,86 @@ grey <- palette()[7]
 midgrey <- palette()[9]
 darkgrey <- '#555555'
 black <- '#000000'
-scale_colour_discrete <- scale_colour_bright
+scale_colour_discrete <- khroma::scale_colour_bright
 
 ## to output in pdf format
-pdff <- function(file='Rplot', apaper=5, portrait=FALSE, height=148/25.4, width=210/25.4, asp=NA, ...){
-    if(is.numeric(apaper)){
-        if(portrait){
-            height <- floor(841/sqrt(2)^(apaper-1))/25.4
-            width <- floor(841/sqrt(2)^(apaper))/25.4
-        }else{
-            width <- floor(841/sqrt(2)^(apaper-1))/25.4
-            height <- floor(841/sqrt(2)^(apaper))/25.4
-        }
+pdff <- function(file = 'Rplot', apaper = 5, portrait = FALSE,
+                 height = 148 / 25.4, width = 210 / 25.4, asp = NA, ...) {
+  if (is.numeric(apaper)) {
+    if (portrait) {
+      height <- floor(841 / sqrt(2)^(apaper - 1)) / 25.4
+      width <- floor(841 / sqrt(2)^(apaper)) / 25.4
+    } else {
+      width <- floor(841 / sqrt(2)^(apaper - 1)) / 25.4
+      height <- floor(841 / sqrt(2)^(apaper)) / 25.4
     }
-    if(!is.na(asp)){
-        width <- height*asp
-    }
-    pdf(file=paste0(file,'.pdf'), paper='special', height=height, width=width, ...)
+  }
+  if (!is.na(asp)) {
+    width <- height * asp
+  }
+  pdf(file = paste0(sub('.pdf$', '', file), '.pdf'), paper = 'special',
+      height = height, width = width, ...)
 }
 
 ## to output in svg format
-svgf <- function(filename='Rplot', apaper=5, portrait=FALSE, height=148/25.4, width=210/25.4, asp=NA, ...){
-    if(is.numeric(apaper)){
-        if(portrait){
-            height <- floor(841/sqrt(2)^(apaper-1))/25.4
-            width <- floor(841/sqrt(2)^(apaper))/25.4
-        }else{
-            width <- floor(841/sqrt(2)^(apaper-1))/25.4
-            height <- floor(841/sqrt(2)^(apaper))/25.4
-        }
+svgf <- function(filename = 'Rplot', apaper = 5, portrait = FALSE,
+                 height = 148 / 25.4, width = 210 / 25.4, asp = NA, ...) {
+  if (is.numeric(apaper)) {
+    if (portrait) {
+      height <- floor(841 / sqrt(2)^(apaper - 1)) / 25.4
+      width <- floor(841 / sqrt(2)^(apaper)) / 25.4
+    } else {
+      width <- floor(841 / sqrt(2)^(apaper - 1)) / 25.4
+      height <- floor(841 / sqrt(2)^(apaper)) / 25.4
     }
-    if(!is.na(asp)){
-        width <- height*asp
-    }
-    svg(file=paste0(filename,'.svg'), height=height, width=width)
+  }
+  if (!is.na(asp)) {
+    width <- height * asp
+  }
+  svg(file = paste0(sub('.svg$', '', file), '.svg'), height = height,
+                 width = width)
 }
 
 
 ## to output in png format
-pngf <- function(filename='Rplot', res=300, apaper=5, portrait=FALSE, height=148/25.4, width=210/25.4, asp=NA, ...){
-    if(is.numeric(apaper)){
-        if(portrait){
-            height <- floor(841/sqrt(2)^(apaper-1))/25.4
-            width <- floor(841/sqrt(2)^(apaper))/25.4
-        }else{
-            width <- floor(841/sqrt(2)^(apaper-1))/25.4
-            height <- floor(841/sqrt(2)^(apaper))/25.4
-        }
+pngf <- function(filename = 'Rplot', res = 300, apaper = 5, portrait = FALSE,
+                 height = 148 / 25.4, width = 210 / 25.4, asp = NA, ...) {
+  if (is.numeric(apaper)) {
+    if (portrait) {
+      height <- floor(841 / sqrt(2)^(apaper - 1)) / 25.4
+      width <- floor(841 / sqrt(2)^(apaper)) / 25.4
+    } else {
+      width <- floor(841 / sqrt(2)^(apaper - 1)) / 25.4
+      height <- floor(841 / sqrt(2)^(apaper)) / 25.4
     }
-    if(!is.na(asp)){
-        ## width <- height*asp
-        height <- width/asp
-    }
-    png(file=paste0(filename,'.png'), height=height, width=width, units='in', res=res)
+  }
+  if (!is.na(asp)) {
+    ## width <- height*asp
+    height <- width / asp
+  }
+  png(file = paste0(sub('.png$', '', file), '.png'), height = height,
+                 width = width, units = 'in', res = res)
 }
 
-alpha2hex2 <- function(alpha,col=NULL){
-    if(!is.character(alpha)){alpha <- sprintf('%02x', round((1-alpha)*255))}
-    if(is.numeric(col)){col <- palette()[col]}
-    paste0(col,alpha)
+alpha2hex2 <- function(alpha, col = NULL) {
+  if (!is.character(alpha)) {
+    alpha <- sprintf('%02x', round((1 - alpha) * 255))
+  }
+  if (is.numeric(col)) {
+    col <- palette()[col]
+  }
+  paste0(col, alpha)
 }
 
-alpha2hex <- function(col, alpha=NULL){
-    if(is.null(alpha)){alpha <- 0}
-    if(!is.character(col)){col <- palette()[col]}
-    do.call(rgb, c(as.list(col2rgb(col)),list((1-alpha)*255, maxColorValue=255)))
+alpha2hex <- function(col, alpha = NULL) {
+  if (is.null(alpha)) {
+    alpha <- 0
+  }
+  if (!is.character(col)) {
+    col <- palette()[col]
+  }
+  do.call(rgb, c(as.list(col2rgb(col)),
+                list((1 - alpha) * 255, maxColorValue = 255)))
 }
 
 tticks <- pretty
@@ -108,222 +122,307 @@ tticks <- pretty
 ##     ((rg[1]%/%delta):((rg[2]%/%delta) + (rg[2]%%delta > 0)))*delta
 ## }
 
-tplot <- function(x, y, xlim=c(NA,NA), ylim=c(NA,NA), asp=NA, n=10, family='', xticks=NULL, xlabels=TRUE, yticks=NULL, ylabels=TRUE, cex=1.5, ly=NULL, lx=NULL, mar=NULL, lty.axis=1, lwd.axis=0, lwd.ticks=1, col.ticks='#bbbbbb80', col.lab='black', cex.axis=1.12, las.y=1, xgrid=NULL, ygrid=NULL, main=NULL, cex.main=1.5, xlab=NULL, ylab=NULL, cex.lab=1.5, type='l', col=palette(), pch=c(1,0,2,5,6,3,4), lty=1:4, lwd=2, alpha=NA, border=palette(), border.alpha=NA, xtransf=NULL, ytransf=NULL, add=FALSE){
-    ## if (missing(x)) {
-    ##     if (missing(y)) 
-    ##         stop("must specify at least one of 'x' and 'y'")
-    ##     else x <- seq_len(NROW(y))
-    ## }
-    ## else if (missing(y)) {
-    ##     if (missing(x)) 
-    ##         stop("must specify at least one of 'x' and 'y'")
-    ##     else y <- seq_len(NROW(x))
-    ## }
-    if(!missing(y) & !missing(x)){
-        if(!is.list(x)){
-            x <- apply(cbind(x), 2, identity, simplify='list')
-        }
-        if(!is.list(y)){
-            y <- apply(cbind(y), 2, identity, simplify='list')
-        }
+tplot <- function(x, y, xlim = c(NA, NA), ylim = c(NA, NA), asp = NA,
+                  n = 10, family = '', xticks = NULL, xlabels = TRUE,
+                  yticks = NULL, ylabels = TRUE, cex = 1.5, ly = NULL,
+                  lx = NULL, mar = NULL, lty.axis = 1, lwd.axis = 0,
+                  lwd.ticks = 1, col.ticks = '#bbbbbb80', col.lab = 'black',
+                  cex.axis = 1.12, las.y = 1, xgrid = NULL, ygrid = NULL,
+                  main = NULL, cex.main = 1.5, xlab = NULL, ylab = NULL,
+                  cex.lab = 1.5, type = 'l', col = palette(),
+                  pch = c(1, 0, 2, 5, 6, 3, 4), lty = 1:4, lwd = 2, alpha = NA,
+                  border = palette(), border.alpha = NA, xtransf = NULL,
+                  ytransf = NULL, add = FALSE) {
+  ## if (missing(x)) {
+  ##     if (missing(y))
+  ##         stop("must specify at least one of 'x' and 'y'")
+  ##     else x <- seq_len(NROW(y))
+  ## }
+  ## else if (missing(y)) {
+  ##     if (missing(x))
+  ##         stop("must specify at least one of 'x' and 'y'")
+  ##     else y <- seq_len(NROW(x))
+  ## }
+  if (!missing(y) && !missing(x)) {
+    if (!is.list(x)) {
+      x <- apply(cbind(x), 2, identity, simplify = 'list')
+    }
+    if (!is.list(y)) {
+      y <- apply(cbind(y), 2, identity, simplify = 'list')
+    }
+  }
+  ##
+  else if (missing(x) && !missing(y)) {
+    if (!is.list(y)) {
+      y <- apply(cbind(y), 2, identity, simplify = 'list')
+    }
+    x <- lapply(y, seq_along)
+  } else if (missing(y) && !missing(x)) {
+    if (!is.list(x)) {
+      x <- apply(cbind(x), 2, identity, simplify = 'list')
+    }
+    y <- lapply(x, seq_along)
+  }
+  ##
+  xx <- unlist(x)
+  yy <- unlist(y)
+  if (!is.character(xx)) {
+    xlim0 <- range(xx[is.finite(xx)], na.rm = TRUE)
+  } else {
+    uxx <- unique(xx)
+    if (is.character(xlabels) && all(uxx %in% xlabels)) {
+      uxx <- intersect(xlabels, uxx)
+    }
+    if (any(type == 'h')) {
+      xlim0 <- c(0.5, length(uxx) + 0.5)
+    } else {
+      xlim0 <- c(1, length(uxx))
+    }
+  }
+  if (!is.character(yy)) {
+    ylim0 <- range(yy[is.finite(yy)], na.rm = TRUE)
+  } else {
+    uyy <- unique(yy)
+    if (is.character(ylabels) && all(uyy %in% ylabels)) {
+      uyy <- intersect(ylabels, uyy)
+    }
+    if (any(type == 'h')) {
+      ylim0 <- c(0.5, length(uyy) + 0.5)
+    } else {
+      ylim0 <- c(1, length(uyy))
+    }
+  }
+  if (is.na(ylim[1]) & any(type == 'h')) {
+    ylim[1] <- 0
+  }
+  xlim[is.na(xlim)] <- xlim0[is.na(xlim)]
+  ylim[is.na(ylim)] <- ylim0[is.na(ylim)]
+  if (length(n) < 2) {
+    n <- rep(n, 2)
+  }
+  if (is.null(xticks)) {
+    if (!is.character(xx)) {
+      xticks <- pretty(xlim, n = n[1])
+    } else {
+      xticks <- seq_along(uxx)
+    }
+  }
+  if (is.character(xx) && length(xlabels) == 1 && xlabels == TRUE) {
+    xlabels <- uxx
+  }
+  ## if(length(xlabels)==1 && xlabels){
+  ##     xlabels <- xticks
+  ##     xlabels[!(xticks %in% pretty(xlim, n=round(n[1]/2)))] <- NA
+  ## }
+  if (is.null(yticks)) {
+    if (!is.character(yy)) {
+      yticks <- pretty(ylim, n = n[2])
+    } else {
+      yticks <- seq_along(uyy)
+    }
+  }
+  if (is.character(yy) && length(ylabels) == 1 && ylabels == TRUE) {
+    ylabels <- uyy
+  }
+  ## if(length(ylabels)==1 && ylabels){
+  ##     ylabels <- yticks
+  ##     ylabels[!(yticks %in% pretty(ylim, n=round(n[2]/2)))] <- NA
+  ## }
+  if (is.null(lx)) {
+    lx <- 0
+  }
+  if (is.null(ly)) {
+    ly <- 1
+    if (!(length(yticks) == 1 && (any(is.na(yticks) | yticks == FALSE)))) {
+      ly <- 1 + max(nchar(sprintf('%.7g', yticks))) * 0.75
+    } else if (length(ylabels) > 1) {
+      ly <- 1 + max(nchar(ylabels)) * 0.75
+    }
+  }
+  if (is.null(xlab)) {
+    xlab <- names(x)[1]
+  }
+  if (is.null(ylab)) {
+    ylab <- names(y)[1]
+  }
+  ##
+  if (!add) {
+    plot.new()
+    ## par(mai=c(2, 3.5, 2, 0)/2.54, family='Palatino')#, mar=c(4,6,4,0)+0.1)
+    if (is.null(main)) {
+      marup <- 0
+    } else {
+      marup <- 3.5
+    }
+    if (is.null(mar)) {
+      mar <- c(3.25, ly, marup, 1) + c(1, 1.5, 1, 1)
+    }
+    mar[is.na(mar)] <- (c(3.25, ly, marup, 1) + c(1, 1.5, 1, 1))[is.na(mar)]
+    par(mar = mar, family = family) # , mar=c(4,6,4,0)+0.1)
+    ##
+    plot.window(xlim = xlim, ylim = ylim, xaxs = 'r', yaxs = 'r', asp = asp)
+    ##
+    if (!is.null(xtransf)) {
+      xlabels <- xtransf(xticks)
+    }
+    if (!is.null(ytransf)) {
+      ylabels <- ytransf(yticks)
+    }
+    if (!(length(xticks) == 1 & (any(is.na(xticks) | xticks == FALSE)))) {
+      axis(side = 1, at = xticks, labels = xlabels, tick = TRUE, lty = lty.axis,
+      lwd = lwd.axis, lwd.ticks = lwd.ticks, col.ticks = col.ticks,
+      gap.axis = NA, cex.axis = cex.axis, line = 0)
+    }
+    if (!(length(yticks) == 1 & (any(is.na(yticks) | yticks == FALSE)))) {
+      axis(side = 2, at = yticks, labels = ylabels, tick = TRUE, lty = lty.axis,
+      lwd = lwd.axis, lwd.ticks = lwd.ticks, col.ticks = col.ticks,
+      gap.axis = NA,las = las.y, cex.axis = cex.axis, line = 0)
     }
     ##
-    else if(missing(x) & !missing(y)){
-        if(!is.list(y)){
-            y <- apply(cbind(y), 2, identity, simplify='list')
-        }
-        x <- lapply(y,seq_along)
+    if (length(cex.lab) == 1) {
+      cex.lab <- rep(cex.lab, 2)
     }
-    else if(missing(y) & !missing(x)){
-        if(!is.list(x)){
-            x <- apply(cbind(x), 2, identity, simplify='list')
-        }
-        y <- lapply(x,seq_along)
+    if (length(col.lab) == 1) {
+      col.lab <- rep(col.lab, 2)
     }
-    ##
-    xx <- unlist(x)
-    yy <- unlist(y)
-    if(!is.character(xx)){
-        xlim0 <- range(xx[is.finite(xx)], na.rm=TRUE)
-    }else{
-        uxx <- unique(xx)
-        if(is.character(xlabels) && all(uxx %in% xlabels)){
-            uxx <- intersect(xlabels,uxx)
-        }
-        if(any(type=='h')){
-            xlim0 <- c(0.5,length(uxx)+0.5)
-        }else{
-            xlim0 <- c(1,length(uxx))
-        }
+    if (!is.null(main)) {
+      title(main = main, cex.main = cex.main, line = 3)
     }
-    if(!is.character(yy)){
-        ylim0 <- range(yy[is.finite(yy)], na.rm=TRUE)
-    }else{
-        uyy <- unique(yy)
-        if(is.character(ylabels) && all(uyy %in% ylabels)){
-            uyy <- intersect(ylabels,uyy)
+    if (!is.null(xlab)) {
+      title(xlab = xlab, cex.lab = cex.lab[1], line = 3 + lx,
+            col.lab = col.lab[1])
+    }
+    if (!is.null(ylab)) {
+      title(ylab = ylab, cex.lab = cex.lab[2], line = ly, col.lab = col.lab[2])
+    }
+  }
+  if (is.null(xgrid)) {
+    xgrid <- !add
+  }
+  if (is.null(ygrid)) {
+    ygrid <- !add
+  }
+  if (xgrid) {
+    for (i in xticks) {
+      abline(v = i, lty = lty.axis, lwd = lwd.ticks, col = col.ticks)
+    }
+  }
+  if (ygrid) {
+    for (i in yticks) {
+      abline(h = i, lty = lty.axis, lwd = lwd.ticks, col = col.ticks)
+    }
+  }
+  ##
+  ## col[!grepl('^#',col)] <- palette()[as.numeric(col[!grepl('^#',col)])]
+  ## border[!grepl('^#',border)] <- palette()[as.numeric(border[!grepl('^#',border)])]
+  if (is.numeric(col)) {
+    col <- palette()[col]
+  }
+  if (is.numeric(border)) {
+    col <- palette()[border]
+  }
+  ##
+  nx <- length(x)
+  ny <- length(y)
+  if (all(!is.na(x) & !is.na(y))) {
+    for (j in 1:max(nx, ny)) {
+      xx <- x[[(j - 1) %% nx + 1]]
+      if (is.character(xx)) {
+        xx <- match(xx, uxx)
+      }
+      yy <- y[[(j - 1) %% ny + 1]]
+      if (is.character(yy)) {
+        yy <- match(yy, uyy)
+      }
+      if (length(xx) > length(yy) + 1 || length(yy) > length(xx) + 1) {
+        stop(paste0('plot ', j, ': "x" and "y" must have same number ',
+                    'of rows or differ by 1'))
+      }
+      ialpha <- alpha[(j - 1) %% length(alpha) + 1]
+      icol <- col[(j - 1) %% length(col) + 1]
+      if (!(type[(j - 1) %% length(type) + 1] == 'h' ||
+              length(xx) == length(yy) + 1 ||
+              length(yy) == length(xx) + 1)) { # not a histogram
+        if (is.na(ialpha)) {
+          ialpha <- 0
         }
-        if(any(type=='h')){
-            ylim0 <- c(0.5,length(uyy)+0.5)
-        }else{
-            ylim0 <- c(1,length(uyy))
-        }
-    }
-    if(is.na(ylim[1]) & any(type=='h')){ylim[1] <- 0}
-    xlim[is.na(xlim)] <- xlim0[is.na(xlim)]
-    ylim[is.na(ylim)] <- ylim0[is.na(ylim)]
-    if(length(n)<2){n <- rep(n,2)}
-    if(is.null(xticks)){
-        if(!is.character(xx)){
-            xticks <- pretty(xlim, n=n[1])
-        }else{
-            xticks <- 1:length(uxx)
-        }
-    }
-    if(is.character(xx) && length(xlabels)==1 && xlabels==TRUE){
-        xlabels <- uxx
-    }
-    ## if(length(xlabels)==1 && xlabels){
-    ##     xlabels <- xticks
-    ##     xlabels[!(xticks %in% pretty(xlim, n=round(n[1]/2)))] <- NA
-    ## }
-    if(is.null(yticks)){
-        if(!is.character(yy)){
-            yticks <- pretty(ylim, n=n[2])
-        }else{
-            yticks <- 1:length(uyy)
-        }
-    }
-    if(is.character(yy) && length(ylabels)==1 && ylabels==TRUE){
-        ylabels <- uyy
-    }
-    ## if(length(ylabels)==1 && ylabels){
-    ##     ylabels <- yticks
-    ##     ylabels[!(yticks %in% pretty(ylim, n=round(n[2]/2)))] <- NA
-    ## }
-    if(is.null(lx)){lx <- 0}
-    if(is.null(ly)){
-        ly <- 1
-        if(!(length(yticks)==1 & (any(is.na(yticks) | yticks==FALSE)))){
-            ly <- 1+max(nchar(sprintf('%.7g',yticks)))*0.75
-        } else if(length(ylabels)>1){
-            ly <- 1+max(nchar(ylabels))*0.75
-        }
-    }
-    if(is.null(xlab)){xlab <- names(x)[1]}
-    if(is.null(ylab)){ylab <- names(y)[1]}
-    ##
-    if(!add){plot.new()
-    ##par(mai=c(2, 3.5, 2, 0)/2.54, family='Palatino')#, mar=c(4,6,4,0)+0.1)
-        if(is.null(main)){marup <- 0}else{marup <- 3.5}
-        if(is.null(mar)){mar <- c(3.25, ly, marup, 1)+c(1,1.5,1,1)}
-        mar[is.na(mar)] <- (c(3.25, ly, marup, 1)+c(1,1.5,1,1))[is.na(mar)]
-        par(mar=mar, family=family)#, mar=c(4,6,4,0)+0.1)
-    ##
-    plot.window(xlim=xlim, ylim=ylim, xaxs='r', yaxs='r', asp=asp)
+        icol <- alpha2hex(icol, ialpha)
+        ## else if(!is.character(ialpha)){ialpha <- alpha2hex(ialpha)}
+        ## if(!(is.na(icol) | nchar(icol)>7)){icol <- paste0(icol, ialpha)}
         ##
-        if(!is.null(xtransf)){xlabels <- xtransf(xticks)}
-        if(!is.null(ytransf)){ylabels <- ytransf(yticks)}
-        if(!(length(xticks)==1 & (any(is.na(xticks) | xticks==FALSE)))){ axis(side=1, at=xticks, labels=xlabels, tick=TRUE, lty=lty.axis, lwd=lwd.axis, lwd.ticks=lwd.ticks, col.ticks=col.ticks, gap.axis=NA, cex.axis=cex.axis, line=0)}
-        if(!(length(yticks)==1 & (any(is.na(yticks) | yticks==FALSE)))){ axis(side=2, at=yticks, labels=ylabels, tick=TRUE, lty=lty.axis, lwd=lwd.axis, lwd.ticks=lwd.ticks, col.ticks=col.ticks, gap.axis=NA, las=las.y, cex.axis=cex.axis, line=0)}
+        plot.xy(xy.coords(x = xx, y = yy),
+          type = type[(j - 1) %% length(type) + 1],
+          col = icol,
+          pch = pch[[(j - 1) %% length(pch) + 1]],
+          lty = lty[(j - 1) %% length(lty) + 1],
+          lwd = lwd[(j - 1) %% length(lwd) + 1],
+          cex = cex[(j - 1) %% length(cex) + 1]
+        )
+      } else { # histogram
+        iborder <- border[(j - 1) %% length(border) + 1]
+        iborder.alpha <- border.alpha[(j - 1) %% length(border.alpha) + 1]
         ##
-        if(length(cex.lab)==1){cex.lab <- rep(cex.lab, 2)}
-        if(length(col.lab)==1){col.lab <- rep(col.lab, 2)}
-    if(!is.null(main)){title(main=main, cex.main=cex.main, line=3)}
-    if(!is.null(xlab)){title(xlab=xlab, cex.lab=cex.lab[1], line=3+lx, col.lab=col.lab[1])}
-    if(!is.null(ylab)){title(ylab=ylab, cex.lab=cex.lab[2], line=ly, col.lab=col.lab[2])}
-    }
-    if(is.null(xgrid)){xgrid <- !add}
-    if(is.null(ygrid)){ygrid <- !add}
-    if(xgrid){for(i in xticks){abline(v=i, lty=lty.axis, lwd=lwd.ticks, col=col.ticks)}}
-    if(ygrid){for(i in yticks){abline(h=i, lty=lty.axis, lwd=lwd.ticks, col=col.ticks)}}
-    ##
-    ## col[!grepl('^#',col)] <- palette()[as.numeric(col[!grepl('^#',col)])]
-    ## border[!grepl('^#',border)] <- palette()[as.numeric(border[!grepl('^#',border)])]
-    if(is.numeric(col)){col <- palette()[col]}
-    if(is.numeric(border)){col <- palette()[border]}
-    ##
-    nx <- length(x)
-    ny <- length(y)
-    if(all(!is.na(x) & !is.na(y))){
-        for(j in 1:max(nx,ny)){
-            xx <- x[[(j-1)%%nx+1]]
-            if(is.character(xx)){
-                xx <- match(xx,uxx)
-            }
-            yy <- y[[(j-1)%%ny+1]]
-            if(is.character(yy)){
-                yy <- match(yy,uyy)
-            }
-            if(length(xx)>length(yy)+1 || length(yy)>length(xx)+1){stop(paste0("plot ",j,": 'x' and 'y' must have same number of rows or differ by 1"))}
-            ialpha <- alpha[(j-1)%%length(alpha)+1]
-            icol <- col[(j-1)%%length(col)+1]
-            if(!(type[(j-1)%%length(type)+1]=='h' || length(xx)==length(yy)+1 || length(yy)==length(xx)+1)){# not a histogram
-                if(is.na(ialpha)){ialpha <- 0}
-                icol <- alpha2hex(icol, ialpha)
-                ## else if(!is.character(ialpha)){ialpha <- alpha2hex(ialpha)}
-                ## if(!(is.na(icol) | nchar(icol)>7)){icol <- paste0(icol, ialpha)}
-                ##
-                plot.xy(xy.coords(x=xx, y=yy),
-                        type=type[(j-1)%%length(type)+1],
-                        col=icol,
-                        pch=pch[[(j-1)%%length(pch)+1]], lty=lty[(j-1)%%length(lty)+1], lwd=lwd[(j-1)%%length(lwd)+1], cex=cex[(j-1)%%length(cex)+1])
-            }else{# histogram
-                iborder <- border[(j-1)%%length(border)+1]
-                iborder.alpha <- border.alpha[(j-1)%%length(border.alpha)+1]
-                ##
-                if(is.na(ialpha)){ialpha <- 0.5}
-                icol <- alpha2hex(icol, ialpha)
-                ##
-                if(is.na(iborder.alpha)){iborder.alpha <- 0.5}
-                iborder <- alpha2hex(iborder, iborder.alpha)
-                ##
-                if(length(yy)==length(xx)){
-                    xx <- c((3*xx[1]-xx[2])/2,
-                            xx[-length(xx)] + diff(xx)/2,
-                            (3*xx[length(xx)]-xx[length(xx)-1])/2
-                            )
-                    }
-                if(length(xx)==length(yy)+1){
-                ## if(is.na(ialpha)){ialpha <- '80'}
-                ## else if(!is.character(ialpha)){ialpha <- alpha2hex(ialpha)}
-                ## if(!(is.na(icol) | nchar(icol)>7)){icol <- paste0(icol, ialpha)}
-                ## if(is.na(iborder.alpha)){iborder.alpha <- '80'}
-                ## else if(!is.character(iborder.alpha)){iborder.alpha <- alpha2hex(iborder.alpha)}
-                ## if(!(is.na(iborder) | nchar(iborder)>7)){iborder <- paste0(iborder, iborder.alpha)}
-                for(i in 1:(length(xx)-1)){
-                    polygon(x=rbind(xx[i], xx[i], xx[i+1], xx[i+1]),
-                            y=rbind(ylim[1], yy[i], yy[i], ylim[1]),
-                            col=icol, border=iborder,
-                            lty=lty[(j-1)%%length(lty)+1],
-                            lwd=lwd[(j-1)%%length(lwd)+1])
-                }
-                }else{
-                ## iborder <- border[(j-1)%%length(border)+1]
-                ## iborder.alpha <- border.alpha[(j-1)%%length(border.alpha)+1]
-                ##
-                ## if(is.na(ialpha)){ialpha <- 0.5}
-                ## icol <- alpha2hex(icol, ialpha)
-                ## if(is.na(ialpha)){ialpha <- '80'}
-                ## else if(!is.character(ialpha)){ialpha <- alpha2hex(ialpha)}
-                ## if(!(is.na(icol) | nchar(icol)>7)){icol <- paste0(icol, ialpha)}
-                ##
-                ## if(is.na(iborder.alpha)){iborder.alpha <- 0.5}
-                ## iborder <- alpha2hex(iborder, iborder.alpha)
-                ## if(is.na(iborder.alpha)){iborder.alpha <- '80'}
-                ## else if(!is.character(iborder.alpha)){iborder.alpha <- alpha2hex(iborder.alpha)}
-                ## if(!(is.na(iborder) | nchar(iborder)>7)){iborder <- paste0(iborder, iborder.alpha)}
-                for(i in 1:(length(yy)-1)){
-                    polygon(y=rbind(yy[i], yy[i], yy[i+1], yy[i+1]),
-                            x=rbind(xlim[1], xx[i], xx[i], xlim[1]),
-                            col=icol, border=iborder,
-                            lty=lty[(j-1)%%length(lty)+1],
-                            lwd=lwd[(j-1)%%length(lwd)+1])
-                }
-                }
-            }
+        if (is.na(ialpha)) {
+          ialpha <- 0.5
         }
+        icol <- alpha2hex(icol, ialpha)
+        ##
+        if (is.na(iborder.alpha)) {
+          iborder.alpha <- 0.5
+        }
+        iborder <- alpha2hex(iborder, iborder.alpha)
+        ##
+        if (length(yy) == length(xx)) {
+          xx <- c(
+            (3 * xx[1] - xx[2]) / 2,
+            xx[-length(xx)] + diff(xx) / 2,
+            (3 * xx[length(xx)] - xx[length(xx) - 1]) / 2
+          )
+        }
+        if (length(xx) == length(yy) + 1) {
+          ## if(is.na(ialpha)){ialpha <- '80'}
+          ## else if(!is.character(ialpha)){ialpha <- alpha2hex(ialpha)}
+          ## if(!(is.na(icol) | nchar(icol)>7)){icol <- paste0(icol, ialpha)}
+          ## if(is.na(iborder.alpha)){iborder.alpha <- '80'}
+          ## else if(!is.character(iborder.alpha)){iborder.alpha <- alpha2hex(iborder.alpha)}
+          ## if(!(is.na(iborder) | nchar(iborder)>7)){iborder <- paste0(iborder, iborder.alpha)}
+          for (i in 1:(length(xx) - 1)) {
+            polygon(
+              x = rbind(xx[i], xx[i], xx[i + 1], xx[i + 1]),
+              y = rbind(ylim[1], yy[i], yy[i], ylim[1]),
+              col = icol, border = iborder,
+              lty = lty[(j - 1) %% length(lty) + 1],
+              lwd = lwd[(j - 1) %% length(lwd) + 1]
+            )
+          }
+        } else {
+          ## iborder <- border[(j-1)%%length(border)+1]
+          ## iborder.alpha <- border.alpha[(j-1)%%length(border.alpha)+1]
+          ##
+          ## if(is.na(ialpha)){ialpha <- 0.5}
+          ## icol <- alpha2hex(icol, ialpha)
+          ## if(is.na(ialpha)){ialpha <- '80'}
+          ## else if(!is.character(ialpha)){ialpha <- alpha2hex(ialpha)}
+          ## if(!(is.na(icol) | nchar(icol)>7)){icol <- paste0(icol, ialpha)}
+          ##
+          ## if(is.na(iborder.alpha)){iborder.alpha <- 0.5}
+          ## iborder <- alpha2hex(iborder, iborder.alpha)
+          ## if(is.na(iborder.alpha)){iborder.alpha <- '80'}
+          ## else if(!is.character(iborder.alpha)){iborder.alpha <- alpha2hex(iborder.alpha)}
+          ## if(!(is.na(iborder) | nchar(iborder)>7)){iborder <- paste0(iborder, iborder.alpha)}
+          for (i in 1:(length(yy) - 1)) {
+            polygon(
+              y = rbind(yy[i], yy[i], yy[i + 1], yy[i + 1]),
+              x = rbind(xlim[1], xx[i], xx[i], xlim[1]),
+              col = icol, border = iborder,
+              lty = lty[(j - 1) %% length(lty) + 1],
+              lwd = lwd[(j - 1) %% length(lwd) + 1]
+            )
+          }
+        }
+      }
     }
+  }
 }
 
 tlegend <- function(x, y=NULL, legend, col=palette(), pch=c(1,0,2,5,6,3,4), lty=1:4, lwd=2, alpha=0, cex=1.5, ...){
