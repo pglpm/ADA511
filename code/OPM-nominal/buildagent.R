@@ -35,9 +35,9 @@ buildagent <- function(metadata, data=NULL, kmi=0, kma=20, alphas=NULL, base=2){
     dim(counts) <- domainsizes # transform to array
     ## give names to the array elements, from metadata
     dimnames(counts) <- apply(metadata, 1,
-                             function(metadatum){
-                                 unname(metadatum[paste0('V',1:(metadatum['domainsize']))])
-                             }, simplify=list)
+        function(metadatum){
+            unname(metadatum[paste0('V',1:(metadatum['domainsize']))])
+        }, simplify=list)
     names(dimnames(counts)) <- variates
     ##
     ## Calculate #z from data, if data are given
@@ -76,7 +76,7 @@ buildagent <- function(metadata, data=NULL, kmi=0, kma=20, alphas=NULL, base=2){
     })  - M*lgamma(alphas/M) + lgamma(alphas) + logpalphas0
     ##
     ## Final palphas := probability distribution for the alpha parameters
-    ### used for population-frequency forecasts
+### used for population-frequency forecasts
     palphas <- auxalphas - lgamma(alphas + NN)
     palphas <- exp(palphas-max(palphas)) # renormalize against overflow
     palphas <- palphas/sum(palphas)
