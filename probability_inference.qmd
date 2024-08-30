@@ -15,14 +15,13 @@ The main reason
 <!-- ^[We shall see later that one more factor enters this explanation.] -->
 is that we *believe strongly* that cars might be approaching, and *believe very weakly* that some object might be falling from the sky. In other words, we consider the first occurrence to be *very probable*, and the second extremely *improbable*.
 
-We shall take the notion of [**probability**]{.blue} as intuitively understood (just as we did with the notion of truth). Terms equivalent to "probability" are [*degree of belief*]{.blue}, [*plausibility*]{.blue}, [*credibility*]{.blue}^[*credibility* literally means "believability" (from Latin *credo* = *to believe*).].
-
-:::{.callout-important}
-## {{< fa exclamation-triangle >}} Beware of *likelihood* as a synonym for *probability*
-In everyday language, "[likelihood](https://dictionary.cambridge.org/dictionary/english/likelihood)" is synonym with "probability". In technical writings about probability or statistics, however, "likelihood" means something different and is *not* a synonym of "probability", as we explain below ([§ @sec-likelihood]).
-:::
+We shall take the notion of [**probability**]{.blue} as intuitively understood (just as we did with the notion of truth). Terms equivalent to "probability" are [*degree of belief*]{.blue}, [*plausibility*]{.blue}, [*credibility*]{.blue}^[*credibility* literally means "believability" (from Latin *credo* = *to believe*).], [*certainty*]{.blue}.
+\
+\
 
 Probabilities are quantified between $0$ and $1$, or equivalently between $0\%$ and $100\%$. Assigning to a sentence a probability `1` is the same as saying that it is `true`; and a probability `0`, that it is `false`. A probability of $0.5$ represents a belief completely symmetric with respect to truth and falsity.
+
+Alternatively, if an agent assigns to a sentence a probability `1`, it means that the agent is completely certain that the sentence is `true`. If the agent assigns a probability `0`, it means that the agent is completely certain that the sentence is `false`. If the agent assigns a probability `0.5`, it means that the agent is equally uncertain about the truth as about the falsity of the sentence.
 
 Let's emphasize and agree on some important facts about probabilities:
 
@@ -38,12 +37,12 @@ $$
 \pr{The average power output in the next hour will be \emph{set} to 100\,MW}
 $$
 
-	the numerical quantity is the same, but the meaning is very different. The probability can therefore be very different (if the engineer is the person deciding how to set that output, then the probability is $100\%$, because has decided and knows what the output is). The probability depends not only on a number, but on what it's being done with that number -- measuring, setting, third-party reporting, and so on. Often we write simply "$O \mo 10\,\mathrm{W}$" provided that the full sentence behind this kind of shorthand is understood.
+	the numerical quantity is the same, but the meaning is very different. The probability can therefore be very different. If the engineer is the person who decides how to set that output, and has decided to set it to 100 MW, then the probability is obviously $100\%$ (or very close to), because the engineer already knows what the output will be. The probability depends not only on a number, but on what it's being done with that number: measuring, setting, third-party reporting, and so on. Often we write simply "$O \mo 10\,\mathrm{W}$", provided that the full sentence behind this shorthand is understood.
 
 
 - [**{{< fa hand-point-right >}} Probabilities are agent- and knowledge-dependent**]{.blue}. A coin is tossed, comes down heads, and is quickly hidden from view. Alice sees that it landed heads-up. Bob instead doesn't manage to see the outcome and has no clue. Alice considers the sentence $\pr{Coin came down heads}$ to be `true`, that is, to have $100\%$ probability. Bob considers the same sentence to have $50\%$ probability.
 
-    Note how Alice and Bob assign two different probabilities to the same sentence; yet both assignments are completely rational. If Bob assigned $100\%$ to $\pr{heads}$, we would suspect that he had seen the outcome after all; if he assigned $0\%$ to $\pr{heads}$, we would consider that unreasonable (he didn't see the outcome, so why exclude $\pr{heads}$?). At the same time we would be baffled if Alice assigned only $50\%$ to $\pr{heads}$, because she actually saw that the outcome was heads; maybe we would hypothesize that she feels unsure about what she saw.
+    Note how Alice and Bob assign two different probabilities to the same sentence; yet both assignments are completely rational. If Bob assigned $100\%$ to $\pr{heads}$, we would suspect that he had seen the outcome after all. If he assigned $0\%$ to $\pr{heads}$, we would consider it unreasonable (he didn't see the outcome, so why exclude $\pr{heads}$?). At the same time we would be baffled if Alice assigned only $50\%$ to $\pr{heads}$, because she actually saw that the outcome was heads; maybe we would wonder whether she feels unsure about what she saw.
 
     An omniscient agent would know the truth or falsity of every sentence, and assign only probabilities `0` or `1`. Some authors speak of "*actual* (but unknown) probabilities". But if there were "actual" probabilities, they would be all `0` or `1`, and it would be pointless to speak about probabilities at all -- every inference would be a truth-inference.
 
@@ -66,6 +65,29 @@ $$
 \
 
 These points listed above are not just a matter of principle. They have important practical consequences. A data scientist who is not attentive to the source of the data (measured? set? reported, and so maybe less trustworthy?), or who does not carefully assess the context of a probability, or who mixes a probability with a frequency, or who does not take advantage (when possible) of the physics involved in the a problem -- such data scientist will design systems with sub-optimal performance^[This fact can be mathematically proven.] -- or even cause deaths.
+
+
+## [{{< fa exclamation-triangle >}}]{.red} The many meanings of the word "probability"
+In these notes we shall consistently use the term "probability" in the sense explained above. But beware that this term is used in many different and incompatible senses, depending on whom you're speaking with or which literature you're reading.
+
+Some people use this term in the sense of "frequency": the number of times something happened in a series of repetitions. But a frequency is an objective, measurable quantity; it doesn't depend on the knowledge of an agent. To us is not useful, because it doesn't quantify the belief or certainty of an agent. Suppose a coin is tossed 100 times, and it comes up heads 80 times. The frequency of heads is 80/100. Now suppose that an agent *that does not know anything about the 100 tosses* is asked to predict whether the next toss will be heads or tails. What should the agent's degree of belief or of certainty be? Obviously it should be 50%/50%. If we were to program the agent so that it has a degree of belief of 80% for heads *in situations where nothing is know about previous tosses* (because that's the situation our agent was in), then such an agent would on average lose big time in dealing with new coins.
+
+But frequency is *data*, and if a frequency is known, then obviously an agent should take it into account in quantifying its credibility. If an agent *knows* that the coin came up heads 80 times in 100, then it is reasonable that the agent's degree of belief for the next toss should be around 80% for heads. And we shall see that this is indeed what happens.
+
+So the distinction between "frequency" and "probability" is crucial. Frequencies do not enable us to quantify an agent's beliefs in situations where data are missing.
+\
+\
+
+Some people use "probability" in the sense of the number of *a-priori* successes over the number of possibilities. For instance, if you roll a die, and the die comes up {{< fa dice-three >}}, then this result was 1 among six possible results. This is fine, but this definition does not allow us to capture the difference between an agent who has seen the outcome of the roll was {{< fa dice-three >}}, and an agent who has *not* seen the outcome of the roll. We expect the two agents to behave differently. If we programmed the agent to have a degree of belief of 1/6 *even after seeing the outcome of a die roll*, we would have programmed an agent incapable of using new data (seeing the outcome). Would you be happy if a clinician made some medical tests, and then ignored the results of the tests, behaving as if they were still unknown?
+\
+\
+
+All these different uses are just a matter of semantics, and in the end it doesn't matter which word we use, as long as we understand its meaning and as long as we're adopting the meaning that is *useful* for our present task.
+
+:::{.callout-important}
+## {{< fa exclamation-triangle >}} Beware of *likelihood* as a synonym for *probability*
+In everyday language, "[likelihood](https://dictionary.cambridge.org/dictionary/english/likelihood)" is synonym with "probability". In technical writings about probability or statistics, however, "likelihood" means something different and is *not* a synonym of "probability", as we explain below ([§ @sec-likelihood]).
+:::
 
 
 ## An unsure inference {#sec-uncertain-inference}
