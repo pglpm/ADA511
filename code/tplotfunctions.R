@@ -133,7 +133,7 @@ tplot <- function(x, y, xlim = c(NA, NA), ylim = c(NA, NA), asp = NA,
     pch = c(1, 0, 2, 5, 6, 3, 4), lty = 1:4, lwd = 2, alpha = NA,
     border = palette(), border.alpha = NA, xtransf = NULL,
     ytransf = NULL, add = FALSE) {
-    palette(colour('bright')())
+    palette(khroma::colour('bright')())
     scale_colour_discrete <- khroma::scale_colour_bright
     ## if (missing(x)) {
     ##     if (missing(y))
@@ -447,7 +447,7 @@ tlegend <- function(x, y=NULL, legend, col=palette(), pch=c(1,0,2,5,6,3,4), lty=
     legend(x=x, y=y, legend=legend, col=col, pch=pch, lty=lty, lwd=lwd, bty='n', cex=cex, ...)
 }
 
-fivenumaxis <- function(side, x, col='#555555', type=8){
+fivenumaxis <- function(side, x, col='#555555', type=6){
     x <- x[!is.na(x) && is.finite(x)]
     if(length(x)==0){x <- c(0,1)}
     if(diff(range(x))==0){x <- range(x) + c(-1,1)}
@@ -480,8 +480,11 @@ fivenumaxis <- function(side, x, col='#555555', type=8){
     matpoints(x=xp, y=yp, pch=18, cex=2, col=col)
 }
 
-plotquantiles <- function(x, y, col=7, alpha=0.75, border=NA, xlim=range(x), ylim=range(y), ...){
-    if(dim(y)[2]==2){y <- t(y)}
+plotquantiles <- function(x, y, col=7, alpha=0.75, border=NA, ...){
+    y <- t(y)
+    isfin <- is.finite(x) & apply(y, 2, function(xx){all(is.finite(xx))})
+    x <- x[isfin]
+    y <- y[, isfin]
     ##
     ## col[!grepl('^#',col)] <- palette()[as.numeric(col[!grepl('^#',col)])]
     if(is.na(alpha)){alpha <- 0}
@@ -490,7 +493,7 @@ plotquantiles <- function(x, y, col=7, alpha=0.75, border=NA, xlim=range(x), yli
     ## else if(!is.character(alpha)){alpha <- alpha2hex(alpha)}
     ## if(!(is.na(col) | nchar(col)>7)){col <- paste0(col, alpha)}
     ##
-    tplot(x=NA, y=NA, xlim=xlim, ylim=ylim, ...)
+    tplot(x=x, y=t(y), type = 'p', pch=NA, ...)
     polygon(x=c(x,rev(x)), y=c(y[1,], rev(y[2,])),
         col=col, border=border)
 }
@@ -523,7 +526,7 @@ scatteraxis <- function(x, side=1, n=128, col='#555555', alpha=0.5, ext=5, pos=N
     matlines(x=xl, y=yl, lty=1, lwd=lwd, col=col, ...)
 }
 
-thist <- function(x, n=NULL, type=8, pretty=FALSE, plot=FALSE, extendbreaks=FALSE, ...){
+thist <- function(x, n=NULL, type=6, pretty=FALSE, plot=FALSE, extendbreaks=FALSE, ...){
     if(!is.list(x)){x <- list(x)}
     if(!is.list(n)){n <- list(n)}
     out <- list()
