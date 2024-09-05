@@ -2,15 +2,15 @@
 {{< include macros.qmd >}}
 {{< include macros_prob_inference.qmd >}}
 
-In these first chapters we have been developing notions and methods about agents drawing inferences and making decisions, sentences expressing facts and information, and probabilities expressing uncertainty and certainty. Let's draw some first qualitative connections between these notions and notions typically used in machine learning.
+In these first chapters we have been developing notions and methods about agents that draw inferences and make decisions, sentences expressing facts and information, and probabilities expressing uncertainty and certainty. Let's draw some first qualitative connections between these notions and notions typically used in machine learning.
 
-A machine-learning algorithm is usually presented in textbooks as something that first "learns" from some training data, and thereafter performs some kind of task -- typically it yields a response or outcome of some kind. More precisely, the training data are instances or examples of the task that the algorithm is expected to perform. These instances have a special status because their details are fully known, whereas new instances, where the algorithm will be applied, have some uncertain elements: typically they have an ideal or optimal outcome, but this outcome is unknown beforehand. The response given by the algorithm in new instances depend on the algorithm's internal architecture and parameters; for brevity we shall just use "architecture" to mean both.
+A machine-learning algorithm is usually presented in textbooks as something that first "learns" from some training data, and thereafter performs some kind of task -- typically it yields a response or outcome, for example a label, of some kind. More precisely, the training data are instances or examples of the task that the algorithm is expected to perform. These instances have a special status because their details are fully known, whereas new instances, where the algorithm will be applied, have some uncertain aspects. A new instance typically has an ideal or optimal outcome, for example "choosing the correct label", but this outcome is unknown beforehand. The response given by the algorithm in new instances depends on the algorithm's internal architecture and parameters (for brevity we shall just use "architecture" to mean both).
 
-Let's try to rephrase this description from the point of view developed in the past chapters. A machine-learning algorithm is given [known pieces of information (the training data)]{.green}, and then forms some kind of connection with [another piece of information of a similar kind (the outcome in a new application) that was not known beforehand]{.red}. The connection depends on the [algorithm's architecture]{.yellow}.
+Let's try to rephrase this description from the point of view of the previous chapters. A machine-learning algorithm is given [known pieces of information (the training data)]{.green}, and then forms some kind of connection with [a new piece of information of similar kind (the outcome in a new application) that was not known beforehand]{.red}. The connection depends on the [algorithm's architecture]{.yellow}.
 
 ## "Learning" and "output" from the point of view of inference & decision {#sec-1stconn-inference}
 
-The remarks above reveal similarities with what an agent does when drawing an inference: it uses known pieces of information, expressed by sentences ${\green\se{D}_1}, {\green\se{D}_2}, {\green\dots}, {\green\se{D}_N}$, together with some background or built-in information $\yellow\yI$, in order to calculate the probability of a piece of information of a similar kind, expressed by a sentence $\red\se{D}_{N+1}$:
+The remarks above reveal similarities with what an agent does when drawing an inference: it uses known pieces of information, expressed by sentences ${\green\se{D}_1}, {\green\se{D}_2}, {\green\dots}, {\green\se{D}_N}$, together with some background or built-in information $\yellow\yI$, in order to calculate the probability of a new piece of information of a similar kind, expressed by a sentence $\red\se{D}_{N+1}$:
 
 $$
 \P(\red\se{D}_{N+1}\black \| 
@@ -26,16 +26,16 @@ $$
 \black\land \underbracket[0ex]{\yellow\yI}_{\mathrlap{\yellow\uparrow\ \text{architecture?}}})
 $$
 
-This correspondence seems convincing with regard to [architecture]{.yellow} and [training data]{.green}: in both cases we're speaking about the use of pre-existing or built-in information, combined with additional one.
+This correspondence seems convincing for [architecture]{.yellow} and [training data]{.green}: in both cases we're speaking about the use of pre-existing or built-in information, combined with additional information.
 
-But it is less convincing with regarding to the [outcome]{.red}, because an agent gives the probabilities for several possible "outputs", it doesn't just yield one. This indicates that there must be also be some **decision** involved among the possible outcomes.
+But the correspondence is less convincing with regard to the [outcome]{.red}. The "agents" that we have envisioned find the probabilities for several possible "outcomes" or "outputs"; they don't yield only one output. This indicates that there must also be some **decision** involved among the possible outcomes.
 
 We'll return to this tentative connection later.
 
 
 ## Why different outputs? {#sec-1stconn-outputs}
 
-In the past chapters we have seen, over and over, what was claimed in the introduction to the present lecture notes: that an inference & decision problem has only one optimal solution. Once we specify the utilities and the initial probabilities of the problem, the fundamental rules of inference and the principle of maximal expected utility leads to one unique answer (unless, of course, there are several optimal ones with equal expected utilities).
+In the previous chapters we have seen, over and over, what was claimed at the beginning of these lecture notes: that an inference & decision problem has only one optimal solution. Once we specify the utilities and the initial probabilities of the problem, the fundamental rules of inference and the principle of maximal expected utility lead to one unique answer (unless, of course, there are several optimal ones with equal expected utilities).
 
 Different machine-learning algorithms, trained with the same training data, often give different answers or outputs to the same problem. Where do these differences come from? From the point of view of decision theory there are three possibilities, which don't exclude one another:
 
@@ -47,39 +47,39 @@ Different machine-learning algorithms, trained with the same training data, ofte
 
     It is therefore also important to [*understand what are the built-in utilities*]{.blue} of different machine-learning algorithms. The built-in utilities must also match those of the real problem as closely as possible.
 
-- [**The calculations made by the algorithms are approximate**]{.red}, and different algorithms make different kinds of approximations. This means that the algorithms don't arrive at the unique answer determined by decision theory, but to some other answers which may be approximately close to the correct one and to one another -- or not.
+- [**The calculations made by the algorithms are approximate**]{.red}, and different algorithms use different approximations. This means that the algorithms don't arrive at the unique answer determined by decision theory, but to some other answers which may be approximately close to the optimal one -- or not!
 
     It is therefore important to [*understand what are the calculation approximations*]{.red} made by different machine-learning algorithms. Some approximations may be too crude for some real problems, and may again lead to sub-optimal or even disastrously wrong answers and outputs.
 
 
 ## Data pre-processing and the data-processing inequality {#sec-1stconn-preprocess}
 
-"Data pre-processing" is a collective name given to very different operations on data before they are used in some algorithm to solve a decision or inference problem. Some of these operations are often said to be "essential" or "crucial" for the solution of these problems. This statement in not completely true, and needs qualification.
+"Data pre-processing" is a collective name given to very different operations on data before they are used in some algorithm to solve a decision or inference problem. Some of these operations are often said to be essential for the solution of these problems. This statement in not completely true, and needs qualification.
 
 We can divide pre-processing procedures in roughly three categories:
 
 Inconsistency checks
-:  Procedures in this category make sure that the data are what they were intended to be. For instance, if data should consist of the power outputs of several engines, but one datapoint is the physical weight of an engine, then that "datapoint" is actually no data at all for the present problem. It's something included by mistake and should be removed. Similarly if, say, data about distances should be expressed in metres, but some turn out to be expressed in kilometres (this case overlaps with formatting procedures described below). Such procedures are necessary and useful, but they are just consistency checks and do not change the information contained in the *proper* data.
+:  Procedures in this category make sure that the data are what they were intended to be. For instance, if data should consist of the power outputs of several engines, but one datapoint is the physical *weight* of an engine, then that "datapoint" is actually no data at all for the present problem. It's something included by mistake and should be removed. Such procedures are necessary and useful, but they are just consistency checks and do not change the information contained in the *proper* data.
 
 :::{.callout-important}
 ## {{< fa exclamation-triangle >}}
-In later chapters we shall say more about some often erroneous procedures, like "tail trimming", that actually remove *proper* data, lead to sub-optimal or completely erroneous solutions.
+In later chapters we shall say more about some often erroneous procedures, like "tail trimming", that actually remove *proper* data and lead to sub-optimal or completely erroneous solutions.
 :::
 
 
 Formatting
-: These procedures make sure that data are in the correct format to be inputted into the algorithm. They may also include rescaling of numerical values for avoiding numerical overflow or underflow errors during computation. Such procedures are often necessary and useful, but they just change the way data are encoded, possibly including the zero and unit of measurement; they do not actually change the information contained in the data.
+: These procedures make sure that data are in the correct format to be inputted into the algorithm. They may also include rescaling of numerical values for avoiding numerical overflow or underflow errors during computation. Such procedures are often necessary and useful, but they just change the way data are encoded. They do not actually change the information contained in the data.
 
 
 "Mutilation" or information-alteration
-: Procedures of this kind *alter the content of proper data*. For instance, such a procedure may replace, in a data set of temperatures, a datapoint having value 20 °C with one having value 25 °C; this is not just a simple rescaling. These procedures include "de-noising", "de-biasing", "de-trending", "filtering", "dimensionality reduction" and similar procedures (often having noble-sounding names). We must state, clearly and strongly, that [*within Decision Theory and Probability Theory, such information-altering pre-processing is **not** necessary , and is in fact **detrimental***]{.blue}; this is why we call it "mutilation" here.
+: Procedures of this kind *alter the content of data*. For instance, such a procedure may replace, in a dataset of temperatures, a datapoint having value 20 °C with one having value 25 °C; this is not just a simple rescaling. Procedures of this kind include "de-noising", "de-biasing", "de-trending", "filtering", "dimensionality reduction" and similar ones (often having noble-sounding names). We must state, clearly and strongly, that [*within Decision Theory and Probability Theory, such information-altering pre-processing is **not** necessary , and is in fact **detrimental***]{.blue}. This is why we call it "mutilation" here.
 
-*It is important that you understand that such data pre-processing is **not** something that one has to do in data science in general -- quite the opposite, in principle you should **not** do it, because it is a destructive procedure. Such pre-processing is done in order to correct deficiencies of the algorithms currently in use, as discussed below.*
+*It is important that you understand that such data pre-processing is **not** something that one, in principle, has to do in data science. Quite the opposite, in principle we should **not** do it, because it is a destructive procedure. Such pre-processing is done in order to correct deficiencies of the algorithms currently in use, as discussed below.*
 
 
-If we build an "optimal predictor machine" that fully operates according to the four rules of inference ([§@sec-fundamental]) and of maximization of expected utility, then the data fed into this machine *should not be pre-processed with any information-altering procedures*. The reason is that the four fundamental rules automatically take care of factors such as noise, bias, systematic errors, redundancy in the optimal way. We briefly discussed in [§@sec-idempotent] and saw a simple example of how redundancy is accounted for by the four rules.
+If we build an "optimal predictor machine" that fully operates according to the four rules of inference ([§@sec-fundamental]) and of maximization of expected utility, then the data fed into this machine *should not be pre-processed with any information-altering procedures*. The reason is that the four fundamental rules automatically take care, in an optimal way, of factors such as noise, bias, systematic errors, redundancy. We briefly discussed this fact in [§@sec-idempotent] and saw a simple example of how redundancy is accounted for by the four inference rules.
 
-If we have information about noise or other factors affecting the data, then we should include this information in the background information provided to the "optimal predictor machine", rather than altering the data given to it. The reason, in intuitive terms, is that the machine does the adjustments while fully exploring the data themselves, so it can more deeply "see" how to make optimal adjustments given the "inner structure" of the data. In the pre-processing phase -- as the prefix "*pre-*" indicates -- we don't have the full picture about the data, so any adjustment risks eliminating actually useful information and is always sub-optimal.
+If we have information about noise or other factors affecting the data, then we should include this information in the background information provided to the "optimal predictor machine", rather than altering the data given to it. The reason, in intuitive terms, is that the machine does the adjustments while fully exploring the data themselves; so it can "see" more deeply how to make optimal adjustments given the "inner structure" of the data. In the pre-processing phase -- as the prefix "*pre-*" indicates -- we don't have the full picture about the data, so any adjustment risks to eliminate actually useful information.
 
 More formally, this is the content of the [**data-processing inequality**]{.blue} from information theory:
 
@@ -89,7 +89,7 @@ More formally, this is the content of the [**data-processing inequality**]{.blue
 "No clever manipulation of the data can improve the inferences that can be made from the data"\
 [(*Elements of Information Theory* §2.8)]{.small}
 
-[or, from the complementary point of view:]{.small .black}
+[or, from a complementary point of view:]{.small .black}
 
 "Data processing can only destroy information"\
 [(*Information Theory, Inference, and Learning Algorithms* exercise 8.9)]{.small}
@@ -104,10 +104,8 @@ More formally, this is the content of the [**data-processing inequality**]{.blue
 :::
 
 \
+There are two main, partially connected reasons why one performs "mutilating" pre-processing of data:
 
-There are two main, partially connected reasons why one performs "mutilation" pre-processing of data:
+- The algorithm used is *non-optimal*: it's only using approximations of the four fundamental rules, and therefore cannot remove noise, bias, redundancies, or similar factors in an optimal way, or at all. In this case, pre-processing is an approximate way of correcting the deficiency of the non-optimal algorithm.
 
-- The algorithm used is *non-optimal*: it's only using approximations of the four fundamental rules, and therefore cannot remove noise, bias, redundancies, and similar in an optimal way -- or at all. In this case, pre-processing is an approximate way of correcting this deficiency of the non-optimal algorithm.
-
-- Full optimal processing is *computationally too expensive*. In this case we try to simplify the optimal calculation by doing in advance and in a cruder, faster way some of the "cleaning" that the full calculation would otherwise spend time doing in an optimal way.
-
+- Full optimal processing is *computationally too expensive*. In this case we try to simplify the optimal calculation by doing, in advance and in a cruder, faster way, some of the "cleaning" that the full calculation would otherwise spend time doing in an optimal way.
