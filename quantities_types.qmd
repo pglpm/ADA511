@@ -3,11 +3,11 @@
 
 ## [Motivation for the "Data I" part]{.yellow} {.unnumbered}
 
-In the "[Inference I]{.green}" part we surveyed the four fundamental rules of inference, which determine how the degrees of belief of an agent should propagate and be mutually consistent, and we explored some of their consequences and applications. The rules can be used with any sentences whatsoever, so their  application can be developed in detail in a wide variety of directions, with applications ranging from robotics to psychology. Each of these possible developments would require a full university course by itself.
+In the "[Inference I]{.green}" part we surveyed the four fundamental rules of inference, which determine how an agent's degrees of belief should propagate and be self-consistent. We explored some applications and consequences of the four fundamental rules. The rules can be used with any sentences whatsoever, so their  application can be further developed and specialized in a wide spectrum of directions, with applications ranging from robotics to psychology. Each of these possible developments would require by itself a full university course!
 
-We shall now restrict our attention to applications typical of engineering, data science, and machine learning, such as classification, forecast, prognosis, and hypothesis testing, in situations that involve *quantifiable* and *measurable* phenomena. For this purpose we focus on sentences of particular kinds, which can express such quantification and measurement. In a sense, we develop a specialized "language" for this kind of situations.
+We shall now restrict our attention to applications typical of "data science" and machine learning, like classification, forecast, prognosis, hypothesis testing, in situations that involve *quantifiable* and *measurable* phenomena. For this purpose we focus on sentences of particular kinds, which can express such quantification and measurement. In a sense, we develop a specialized "language" for this kind of situations.
 
-Still, since we're dealing with sentences, the probability calculus and inference rules apply without changes of any kind.
+Still, since we're nonetheless dealing with sentences ([Ch. @sec-sentences]), the probability calculus and its inference rules apply without changes of any kind.
 
 ----
 
@@ -17,9 +17,9 @@ Still, since we're dealing with sentences, the probability calculus and inferenc
 
 ### Quantities, values, domains {#sec-quant-value-dom}
 
-Most decisions and inferences in engineering and data science involve things or properties of things that we can measure. We represent them by mathematical objects -- most often, collections of numbers -- with particular mathematical properties and operations.
+Most decisions and inferences in engineering and data science involve things or properties of things that we can *measure*. We represent them by mathematical objects of different kinds. These objects have particular mathematical properties and can undergo particular operations.
 
-The mathematical properties reflect the kind of activities that we can do with these things. For instance, colours are represented by particular tuples of numbers, and these tuples can be multiplied by some numeric weights and added, to obtain another tuple. This mathematical operation represents the fact that colours can be obtained by mixing other colours in different proportions. Physics and engineering are founded on this approach.
+The different mathematical properties of these things reflect the kind of activities that we can do with them. For instance, colours are represented by particular tuples of numbers. These tuples can be multiplied by some numeric weights and added, to obtain another tuple. This mathematical operation, called "convex combination", represents the fact that colours can be obtained by mixing other colours in different proportions.
 
 :::{.column-margin}
 25% [**#FF0000**]{style="color:#FF0000"} + 75% [**#0000FF**]{style="color:#0000FF"} = [**#4000C0**]{style="color:#4000C0"}
@@ -32,58 +32,70 @@ It's difficult to find a general term to denote any instance of such "things" an
 
 The definition of "quantity" we are using here is similar to the one having the *maximum specific level* as defined in [§1.1 of the *International vocabulary of metrology*](https://www.iso.org/sites/JCGM/VIM/JCGM_200e_FILES/MAIN_JCGM_200e/01_e.html#L_1_1) by the [Joint Committee for Guides in Metrology](https://www.bipm.org/en/committees/jc/jcgm/publications).
 
-Using the word "quantity" this way is just a convention between us. Other texts and scientists may use other words -- for example "variable", "event", "state". When you read a text or listen to a scientist, try to grasp the general *idea* behind the words.
+Using the word "quantity" this way is just a convention between us. Other texts and scientists may use other words -- for example "variable", "event", "state". When you read a text or listen to a scientist, try to grasp the general idea *behind* their words.
 
-As a general term we prefer the word "quantity" to a word like "variable", because the latter word may give the idea of something changing in time -- which may very well not be the case (think of the mass of a block of concrete). Same goes with a word like "state" for the opposite reason.
+As a general term, we prefer the word "quantity" to a word like "variable", because the latter may give the idea of something changing in time, and that may very well *not* be the case (think of the mass of a block of concrete). Same goes with a word like "state", for the opposite reason.
 :::
 
 \
 
-We distinguish between a quantity and its [**value**]{.blue}. For instance, a quantity could be "[The temperature at the point with [coordinates](https://www.unavco.org/education/resources/tutorials-and-handouts/tutorials/geoid-gps-receivers.html)\ \ 60.3775029, 5.3869233, 643,\ \ at [time](https://fits.gsfc.nasa.gov/iso-time.html) 1895-10-04T10:03:14Z]{.green}"; and its value could be [$24\,\mathrm{°C}$]{.yellow}.
+We distinguish between a quantity and its [**value**]{.blue}. For instance, a quantity could be:\
+"[The temperature at the point having GPS coordinates\ \ 60.3775029, 5.3869233, 643,\ \ at time 1895-10-04T10:03:14Z]{.green}";\
+and its value could be:\
+[$24\,\mathrm{°C}$]{.yellow}.
+<!-- [GPS coordinates](https://www.unavco.org/education/resources/tutorials-and-handouts/tutorials/geoid-gps-receivers.html)\ \ 60.3775029, 5.3869233, 643,\ \ at [time](https://fits.gsfc.nasa.gov/iso-time.html) 1895-10-04T10:03:14Z]{.green}"; -->
+To understand the difference between a quantity and its value, you may think of the quantity as a question, and of the value as the answer to that question:
 
-This distinction is necessary in inference and decision problems, because we may *not* know the value of a particular quantity. We then consider every possible value that quantity could have, and we can assign a probability to each. The set of possible values is called the [**domain**]{.blue} of the quantity. In our temperature example, the domain is the set of all possible temperatures from $0\,\mathrm{K}$ and above.
+(*quantity*:) "[What was the temperature at the point having GPS coordinates\ \ 60.3775029, 5.3869233, 643,\ \ at time 1895-10-04T10:03:14Z]{.green}?"\
+(*value*:) "It was [$24\,\mathrm{°C}$]{.yellow}."
 
-Another example:
+The distinction between a quantity and its value is important and necessary in inference and decision problems, because an agent may *not* know the value of a particular quantity, while still knowing what the quantity is. In this case the agent can consider every possible value that the quantity could have, and assign a probability to each. The set of possible values is called the [**domain**]{.blue} of the quantity. Think of it as the collection of all meaningful answers that could be given to the question. In our temperature example, the domain is the set of all possible temperatures from $0\,\mathrm{K}$ and above.
 
-- *quantity*: the image taken by a particular camera at a particular time, represented by a specific collection of numbers (say 128 × 128 × 3$ integers between $0$ and $255$)
-- *values*: one possible value is this: ![](cat_image.png){width=2em} (corresponding to a grid of  128 × 128 × 3 *specific* numbers), another possible value is this: ![](saitama_image.png){width=2em}, and there are many other possible values
-- *domain*: the collection of $256^{3\times128\times128} \approx 10^{118 370}$ possible images (corresponding to the collection of possible grids of numeric values)
+Keep in mind that our definition of quantity is quite general. Here's another example:
 
-Other examples of quantities and domains:
+- *Quantity*: the image taken by a particular camera at a particular time, represented by a specific collection of numbers (say 128 × 128 × 3 integers between $0$ and $255$).
 
-1. The distance between two objects in the Solar System at a specific time. The domain could be, say, all values from $0\,\mathrm{m}$ to $6\cdot10^{12}\,\mathrm{m}$ ([Pluto](https://solarsystem.nasa.gov/planets/dwarf-planets/pluto)'s average orbital distance).
+- One example *value* is this: ![](cat_image.png){width=2em} (corresponding to a grid of  128 × 128 × 3 *specific* numbers). Another example value: ![](saitama_image.png){width=2em}.
 
-1. The number of total views of some online video (at a specific time), with a domain, say, from 0 to 20 billions.
+- *Domain*: the collection of $256^{3\times128\times128} \approx 10^{118 370}$ possible images (corresponding to the collection of possible grids of numeric values).
 
-1. The force on an object (at a specific time and place). The domain could be, say, 3D vectors with components in $[-100\,\mathrm{N},\,+100\,\mathrm{N}]$.
+
+\
+Other examples of quantities and their domains:
+
+1. The distance between two objects in the Solar System at a specific [Barycentric Coordinate Time](https://www.aanda.org/articles/aa/full/2002/34/aa2452/aa2452.html). The domain could be, say, all values from $0\,\mathrm{m}$ to $6\cdot10^{12}\,\mathrm{m}$ ([Pluto](https://solarsystem.nasa.gov/planets/dwarf-planets/pluto)'s average orbital distance).
+
+1. The number of total views of a specific online video (at a specific time), with a domain, say, from 0 to 20 billions.
+
+1. The force on an object at a specific time and place. The domain could be, say, 3D vectors with components in $[-100\,\mathrm{N},\,+100\,\mathrm{N}]$.
 
 1. The degree of satisfaction in a customer survey, with five possible values `Not at all satisfied`, `Slightly satisfied`, `Moderately satisfied`, `Very satisfied`, `Extremely satisfied`.
 
-1. The graph representing a particular social network. Individuals are represented by nodes, and different kinds of relationships by directed or undirected links between nodes, possibly with numbers indicating their strength. The domain consists of all possible graphs with, say, $0$ to $10000$ nodes and all possible combinations of links and weights between the nodes.
+1. The graph representing a particular social network. Individuals are represented by nodes, and different kinds of relationships by directed or undirected links between nodes, possibly with numbers indicating their strength. The domain consists of all possible graphs with, say, 0 to 10 000 nodes and all possible combinations of links and weights between the nodes.
 
-1. The relationship between the input voltage and output current of an electric component. The domain could be all possible continuous curves from $[0\,\mathrm{V}, 10\,\mathrm{V}]$ to $[0\,\mathrm{A}, 1\,\mathrm{A}]$.
+1. The relationship between the input voltage and output current of an electric component. The domain could be all possible continuous *curves* from $[0\,\mathrm{V}, 10\,\mathrm{V}]$ to $[0\,\mathrm{A}, 1\,\mathrm{A}]$. Note that the domain in this case is not made of *numbers*.
 
 1. A 1-minute audio track recorded by a device with a sampling frequency of 48 kHz (that is, 48 000 audio samples per second). The domain could be all possible sequences of 2 880 000 numbers in $[0,1]$.
 
 1. The subject of an image, with domain of three possible values `cat`, `dog`, `something else`.
 
-1. The [roll, pitch, yaw](https://www.grc.nasa.gov/www/k-12/rocket/rotations.html) of a rocket (at a specific time and place), with domain $(-180°,+180°]\times(-90°,+90°]\times(-180°,+180°]$.
+1. The [roll, pitch, yaw](https://www.grc.nasa.gov/www/k-12/rocket/rotations.html) of a rocket at a specific time and place, with domain $(-180°,+180°]\times(-90°,+90°]\times(-180°,+180°]$.
 
 \
 
 The vague term "data" typically means the values of a collection of quantities.
 
-In these notes we agree that [*a **quantity** has one, and only one, value*]{.blue}.
+**In these notes we agree that [*a **quantity** has one, and only one, actual value*]{.blue}.**
 
 
 :::{.callout-important}
 ## {{< fa exclamation-triangle >}} Quantity vs variate or variable
 
-We can consider something that changes with time, or with space, or from individual to individual, or from unit to unit. This "something" is then not a quantity, according to our present terminology, but a *collection* of quantities: one for each time, or space, or individual. Later we shall call this collection a **variate**, especially when it refers to individuals or unit; or a **variable**.
+We can consider something that changes with time, or with space, or from individual to individual, or from unit to unit. Then this "something" is not a quantity, according to our present terminology, but a *collection* of quantities: one for each time, or space, or individual. Later we shall call this collection a **variate**, especially when it refers to individuals or unit; or a **variable**, especially when it refers to time.
 
-For instance, your height at this exact moment is a quantity, but your height throughout your life is a variable, and the height (at this moment) across all Norwegian people is a variate.
+For instance, your height at this exact moment is a *quantity*, but your height throughout your life is a *variable*, and the height (at this moment) across all Norwegian people is a *variate*.
 
-These are just terminological conventions adopted in these notes. As mentioned before, different scientists often adopt different terms. What matters is not the terms, but that you have a clear understanding of the difference between the two **notions** that we here call "quantity" and "variate".
+These are just terminological conventions adopted in the present notes. As mentioned before, different scientists often adopt different terms. What matters is not the terms, but that you have a clear understanding of the difference between the two **notions** that we here call "quantity" and "variate".
 :::
 
 
@@ -91,19 +103,23 @@ These are just terminological conventions adopted in these notes. As mentioned b
 
 ### Notation
 
-We shall denote quantities by italic letters, such as $X$, or $U$, or $A$. The sentences that appear in decision-making and inferences are therefore often of the kind "the quantity $X$ was observed to have value $x$", where "$x$" stands for a specific value, for instance ![](saitama_image.png){width=2em}. This kind of sentences are often abbreviated in the form "$X\mo x$".
+We shall denote quantities by italic letters, such as $X$, or $U$, or $A$. The sentences that appear in decision-making and inferences are therefore often of the kind:\
+"the quantity $X$ was observed to have value $x$",\
+where "$x$" stands for a specific value.
+<!-- , for instance this image: ![](saitama_image.png){width=2em}, if the quantity.  -->
+This kind of sentences are often abbreviated in the form "$X\mo x$".
 
 :::{.callout-important}
 ##
-{{< fa exclamation-circle >}} Keep in mind our discussion from [§@sec-sentence-notation]: we must make clear what that "$\mo$" means; it could mean "observed", "set", "reported", and so on.
+{{< fa exclamation-circle >}} Keep in mind our discussion from [§@sec-sentence-notation]: we must make clear what "$\mo$" means. It could mean "observed", "set", "reported", and so on.
 
-{{< fa exclamation-circle >}} Note the subtle difference between [$X$]{.black}, in italics, and [$\se{X}$]{.black}, in so-called sans-serif typographic family. The first denotes a *quantity*, the second denotes a *sentence*. Usually we don't have to worry too much about these symbol differences, because the meaning of the symbol is clear from the context. But just in case, you know the convention.
+{{< fa exclamation-circle >}} Note the subtle difference between [$X$]{.black}, in italics, and [$\se{X}$]{.black}, in sans-serif. The first denotes a *quantity*, the second denotes a *sentence*. Usually we don't have to worry too much about these symbol differences, because the meaning of the symbol is clear from the context. But just in case, you know the convention.
 :::
 
 
 ## Basic types of quantities {#sec-basic-types}
 
-As the examples above show, quantities and data come in all sorts and with different degrees of complexity. There is no clear-cut divide between different sorts of quantities. The same quantity can moreover be viewed and represented in many different ways, depending on the specific context, problem, purpose, and background information.
+As the examples above show, quantities and data come in all sorts, and with various degrees of complexity. There is no clear-cut divide between different sorts of quantities. The same quantity can moreover be viewed and represented in many different ways, depending on the specific context, problem, purpose, and background information.
 
 It is possible, however, to roughly differentiate between a handful of basic [**types**]{.blue} of quantities, from which more complex types are built. Here is one kind of differentiation that is useful for inference problems about quantities:
 
@@ -111,7 +127,7 @@ It is possible, however, to roughly differentiate between a handful of basic [**
 
 A [**nominal**]{.blue} or [**categorical**]{.blue} quantity has a domain with a discrete and usually finite number of values. The values [*are not related by any mathematical property*]{.blue}, and [*do not have any specific order*]{.blue}.
 
-This means that it does not make sense to say, for instance, that some value is "twice" or "1.5 times" another, or "larger" or "later" than another one. Nor does it make sense to "add" two quantities. In particular, [*there is no notion of cumulative probability, quantile, median, average, or standard deviation for a nominal quantity*]{.blue}.
+This means that when we speak of a nominal quantity, it does not make sense to say, for instance, that one value is "twice" or "1.5 times" another; or that one value is "larger" or "later" than another. Nor does it make sense to "add" two quantities. In particular, [*there is no notion of cumulative probability, quantile, median, average, or standard deviation for a nominal quantity*]{.blue}; these are notions that we'll discuss in [Ch. @sec-statistics].
 
 Examples: the possible breeds of a dog, or the characters of a film.
 
@@ -119,18 +135,18 @@ It is of course possible to represent the values of a nominal quantity with numb
 \
 `Dalmatian`${}-{}$`Labrador`${}={}$`Labrador`${}-{}$`Dachshund`
 \
-(just because $3-2=2-1$) or similar nonsense.
+just because $3-2=2-1$, or similar nonsense.
 
 
 ### Ordinal
 
 An [**ordinal**]{.blue} quantity has a domain with a discrete and usually finite number of values. The values [*are not related by any mathematical property*]{.blue}, but they [*do have a specific order*]{.blue}.
 
-This means that it does *not* make sense to say that some value is "twice" or "1.5 times" another, and we can*not* add or subtract two values. But it does make sense to say, for any two values, which one has higher rank, for example "stronger", or "later", "larger", and similar. Owing to the ordering property, [*it does make sense to speak of cumulative probability, quantile, and median of an ordinal quantity*]{.blue}; but [*there is no notion of average or standard deviation for an ordinal quantity*]{.blue}.
+This means that that when we speak of a nominal quantity, it does *not* make sense to say that one value is "twice" or "1.5 times" another, and we can*not* add or subtract two values. But it does make sense to say, for any two values, which one has higher rank, for example "stronger", or "later", or "larger", and similar. Owing to the ordering property, [*it does make sense to speak of cumulative probability, quantile, and median of an ordinal quantity*]{.blue}; but [*there is no notion of average or standard deviation for an ordinal quantity*]{.blue}.
 
 Example: a [pain-intensity scale](https://doi.org/10.1016/j.jpainsymman.2004.08.007). A patient can say whether some pain is more severe than another, but it isn't clear what a pain "twice as severe" as another would mean (although there's a lot of research on more precise quantification of pain). Another example: the "strength of friendship" in a social network. We can say that we have a "stronger friendship" with a person than with another; but it doesn't make sense to say that we are "four times stronger friends" with a person than with another.
 
-It is possible to represent the values of an ordinal quantity with numbers which reflect the *order* of the values. But it's important to keep in mind that differences or averages of such numbers do *not* make sense. For this reason the use of numbers can be misleading at times; a less misleading possibility is to represent ordered values by alphabet letters, for example.
+It is possible to represent the values of an ordinal quantity with numbers which reflect the *order* of the values. But it's important to keep in mind that differences or averages of such numbers do *not* make sense. For this reason the use of numbers to represent an ordinal quantity can be misleading. A less misleading possibility is to represent ordered values by alphabet letters.
 
 ### Binary
 
@@ -144,7 +160,7 @@ There's an abundance of examples of binary quantities: yes/no answers, presence/
 
 An [**interval**]{.blue} quantity has a domain that can be discrete or continuous, finite or infinite. The values [*do admit some mathematical operations*]{.blue}, at least *convex combination* and *subtraction*. They also admit an ordering.
 
-This means that we can say, at the very least, whether the interval or "distance" between a pair of values is the same, or larger, or smaller than the interval between another pair. For this reason we can also say whether a value is larger than another. We can also take weighted sums of values, called *convex combinations* (keep in mind that simple *addition* of values may be meaningless for some quantities).
+This means that for such a quantity we can say, at the very least, whether the interval or "distance" between one pair of values is the same, or larger, or smaller than the interval between another pair. For this reason we can also say whether one value is larger than another. We can also take weighted sums of values, called *convex combinations* (keep in mind that simple *addition* of values may be meaningless for some quantities).
 
 Owing to these mathematical properties, [*it does make sense to speak of the cumulative probability, quantile, median, and also average and standard deviation for an interval quantity*]{.blue}.
 
@@ -155,9 +171,9 @@ It is also possible to speak of *ratio* quantities, which are a special case of 
 
 ### How to decide the basic type of a quantity?
 
-To attribute a basic type to a quantity we must ultimately [*check how that quantity is defined, obtained, and used*]{.blue}. In some cases the values of the quantity may give some clue; for example, if we see values "$2.74$", "$8.23$", "$3.01$", then the quantity is probably of the interval kind. But if we see values "$1$", "$2$", "$3$", it's unclear whether the quantity is interval, ordinal, nominal, or maybe of yet some other kind.
+To attribute a basic type to a quantity we must ultimately [*check how that quantity is defined, obtained, and used*]{.blue}. In some cases the values of the quantity may give some clue. For example, if we see values "$2.74$", "$8.23$", "$3.01$", then the quantity is probably of the interval type. But if we see values "$1$", "$2$", "$3$", then it's unclear whether the quantity is interval, ordinal, nominal, or maybe of yet some other type.
 
-The type of a quantity also depends on its use in the specific problem. A quantity of a more complex type can be treated as a simpler type if needed. For instance, the response time of some device is in principle an interval quantity (measured, say, in seconds, as precisely as we want); but in a specific situation we could simply label its values as `slow`, `medium`, `fast`, thus turning it into an ordinal quantity.
+The type of a quantity also depends on its use in the specific problem. A quantity of a more complex type can be treated as a simpler type if needed. For instance, the response time of some device is in principle an interval quantity: it could be measured, say, in seconds, as precisely as we want. But in a specific situation we could simply label its values as `slow`, `medium`, `fast`, thus turning it into an ordinal quantity.
 
 [@@ TODO: add examples for image spaces]{.small .grey}
 
@@ -166,7 +182,7 @@ The type of a quantity also depends on its use in the specific problem. A quanti
 ## {{< fa user-edit >}} Exercises
 - For each example at the beginning of the present section, assess whether that quantity can be considered as being of a basic type, and which type.
 
-- For each basic type discussed above, find two more concrete examples of that type of quantity
+- For each basic type discussed above, find two more concrete examples of that type of quantity.
 :::
 
 ::::{.column-margin}
@@ -183,41 +199,41 @@ It is useful to consider other basic aspects of quantities that are somewhat tra
 
 ### Discrete vs continuous
 
-Nominal and ordinal quantities have discrete domains. The domain of an interval quantity can be discrete or continuous. In practice all domains are discrete, since we cannot observe, measure, report, or store values with infinite precision. In a modern computer, for example, a real number can "only" take on $2^{64} \approx 20 000 000 000 000 000 000$ possible values. In many situations the available precision is so high that we can consider the quantity as continuous for all practical purposes and use the mathematics of continuous sets -- derivation, integration, and so on -- to our advantage.
+Nominal and ordinal quantities have discrete domains. The domain of an interval quantity can be discrete or continuous. Ultimately all domains are discrete, since we cannot observe, measure, report, or store values with infinite precision. In a modern computer, for example, a real number can "only" take on $2^{64} \approx 20 000 000 000 000 000 000$ possible values. But in practice, in many situations the available precision is so high that we can consider the quantity as continuous for all practical purposes. This can be convenient also because we can then use the mathematics of continuous sets -- derivation, integration, and so on -- to our advantage.
 
 <!-- [@@ TODO comment on repetition]{.small .grey} -->
 
 ### Bounded vs unbounded
 
-Ordinal and interval quantities may have domains with no minimum value, or no maximum value, or neither. Typical terms for these situations are *lower-* or *upper-bounded*, or *left-* or *right-bounded*, and *unbounded*; or similar terms.
+Ordinal and interval quantities may have domains with no minimum value, or no maximum value, or neither. Typical terms for these situations are *lower-* or *upper-bounded*, or *left-* or *right-bounded*, and analogously with *unbounded*; or similar terms.
 
-Whether to treat a quantity domain as bounded or unbounded depends on the quantity, the specific problem, and the computational resources. For example, the number of times a link on a webpage has been clicked can in principle be (right-)unbounded. Another example is the distance between two objects: we can consider it unbounded, but in concrete problems might be bounded, say, by the size of a laboratory, or by [Earth](https://solarsystem.nasa.gov/planets/earth)'s circumference, or the [Solar System](https://solarsystem.nasa.gov/solar-system/our-solar-system)'s extension, and so on.
+Whether to treat a quantity domain as bounded or unbounded depends on the quantity, the specific problem, and the computational resources. For example, the number of times a link on a webpage has been clicked can in principle be (upper-)unbounded. Another example is the distance between two objects: we can consider it unbounded, but in concrete problems might be bounded, say, by the size of a laboratory, or by [Earth](https://solarsystem.nasa.gov/planets/earth)'s circumference, or the [Solar System](https://solarsystem.nasa.gov/solar-system/our-solar-system)'s extension, and so on.
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercises
-- If you had to set a maximum number of times a web link can be clicked, what number would you choose? Try to find a reasonable number, considering factors such as how fast a person can repeatedly click on a link, how long can a website (or the Earth?) last, and how many people can live in such an extent of time.
+- If you had to set a maximum number of times a web link can be clicked, what number would you choose? Try to find a reasonable number, considering factors such as how fast a person can repeatedly click on a link, how long a website (or the Earth?) can last, and how many people can live during such an extent of time.
 
-- What about the age of a person? What bound would you set, if you had to treat it as a bounded quantity?
+- What about the age of a person? What upper bound would you set, if you had to treat it as a bounded quantity?
 :::
 
 ### Finite vs infinite
 
-The domain of a discrete quantity can consist of a finite or -- at least in theory -- an infinite number of possible values (the domain of a continuous quantity always has an infinite number of values). A domain can be infinite and yet bounded: consider the numbers in the range $[0,1]$.
+The domain of a discrete quantity can consist of a finite or an infinite number (at least in theory) of possible values. The domain of a continuous quantity always has an infinite number of values. Note that a domain can be infinite and yet bounded: consider the numbers in the range $[0,1]$.
 
 Whether to treat a domain as finite or infinite depends on the quantity, the specific problem, and the computational resources. For example, the intensity of a base colour in a pixel of a particular image might really take on 256 discrete steps between $0$ and $1$: [$0, 0.0039215686, 0.0078431373, \dotsc, 1$]{.small}. But in some situations we can treat this domain as practically infinite, with any possible value between $0$ and $1$.
 
 ### Rounded
 
-A continuous interval quantity may be rounded, owing to the way it's measured. In this case the quantity could be considered discrete rather than continuous. Rounding can impact the way we do inferences about such a quantity.
+A continuous interval quantity may be rounded, because of the way it's measured. In this case the quantity could be considered discrete rather than continuous.
 
 :::{.column-margin}
 ![](iris_dataset.png){width=100%}
 The *Iris* dataset from its original paper
 :::
 
-The famous [*Iris* dataset](https://doi.org/10.1111/j.1469-1809.1936.tb02137.x), for instance, consists of several lengths -- continuous interval quantities -- of parts of flowers. All values are rounded to the millimetre, even if in reality the lengths could have intermediate values, of course. The age of a person is another frequent example of an in-principle continuous quantity which is rounded, say to the year or the month.
+For instance, the famous [*Iris* dataset](https://doi.org/10.1111/j.1469-1809.1936.tb02137.x) consists of several lengths -- continuous interval quantities -- of parts of flowers. All values are rounded to the millimetre, even if in reality the lengths could of course have intermediate values. The age of a person is another frequent example of an in-principle continuous quantity which is often rounded, say to the year or to the month.
 
-In some situations it's important to be aware of rounding, because it can lead to quantities with different unrounded values to have identical rounded ones.
+ Rounding can impact the way we do inferences about such a quantity. In some situations, rounding can lead to quantities with different unrounded values to take on identical rounded ones.
 
 ### Censored
 
@@ -244,9 +260,7 @@ Explore datasets in a database such as the [UC Irvine Machine Learning Repositor
 
 ## "True" vs "measured" values {#sec-true-quantities}
 
-A difference is often drawn, especially in physics and engineering, between the "true" value of a quantity and the value "measured" or "observed" with a particular measuring instrument. What's the difference? and how is the "true" value defined?
-
-There are deep philosophical questions and choices underlying this distinction, and it would take a whole university course to do them justice.
+A difference is often drawn, especially in physics and engineering, between the "true" value of a quantity and the value "observed" or "measured" with a particular measuring instrument. What's the difference? and how is the "true" value defined? There actually are deep philosophical questions and choices underlying this distinction, and it would take a whole university course to do them justice.
 
 ::::{.column-margin}
 ::: {.callout-tip}
@@ -255,11 +269,11 @@ There are deep philosophical questions and choices underlying this distinction, 
 :::
 ::::
 
-Intuitively we define the "true" value as the value that would be measured with an instrument that is perfectly calibrated and as precise as theoretically possible. If we make a distinction between such value and the currently measured value then we're implying that the current measurement is made with a less precise instrument, and the true and measured values could be different.
+Intuitively we define the "true" value as the value that would be measured with an instrument that is perfectly calibrated and as precise as theoretically possible. If we make a distinction between such value and the currently measured value then we're implying that the current measurement is made with a less precise instrument, and that the "true" and "measured" values could be different.
 
-In some circumstances this distinction is unimportant: an agent can use the "measured" value without worries, and consider it as the "true" one. Typically this is the case when the possible discrepancy between measured and true value is enough small to have no consequences. In other circumstances the discrepancy is important: slightly different values lead to quite different consequences. Then it is necessary for the agent to try to *infer* -- using the probability calculus -- the true value, using the measured one as "data" or "evidence". Said otherwise, the agent doesn't use the measured value directly, but only as an intermediate step to guess the true value. The latter, in turn, can be used for further inferences.
+In some circumstances this distinction is unimportant and an agent can use the "measured" value without worries, and consider it as the "true" one. Typically this is the case when the possible discrepancy between measured and true value is enough small to have no consequences. In other circumstances the discrepancy is important: slightly different values might lead to quite different consequences. In such circumstances it is then necessary for the agent to try to *infer* -- using the probability calculus -- the true value, using the measured one as "data" or "evidence". Said otherwise, the agent doesn't use the measured value directly, but only as an intermediate step to guess the true value. The latter, in turn, can be used for further inferences.
 
-From the point of view of inference and decision-making, this distinction doesn't lead to anything methodologically new: it just means that an agent has to do a chain of inferences instead of just one, using the four rules of inference as usual. This situation often requires the definition of two distinct quantities, the "true" and the "observed", which can have slightly different domains. For instance we could have a voltage $V_\text{obs}$ measured with rounding to $1\,\mathrm{V}$ and therefore with discrete domain $\set{10\,\mathrm{V}, 11\,\mathrm{V}, 12\,\mathrm{V}, \dotsc}$; while needing the "true" voltage $V_\text{true}$ with a precision of at least $0.01\,\mathrm{V}$, so this latter quantity could have a continuous domain.
+From the point of view of inference and decision-making, the distinction between "true" and "measured" value doesn't lead to anything methodologically new. It just means that an agent has to do a chain of inferences instead of just one, using the four rules of inference as usual. This situation often requires the definition of two distinct quantities, the "true" and the "observed", which can have slightly different domains. For instance, we could have a voltage $V_\text{obs}$ measured with rounding to $1\,\mathrm{V}$ and therefore with discrete domain $\set{10\,\mathrm{V}, 11\,\mathrm{V}, 12\,\mathrm{V}, \dotsc}$; but we need the "true" voltage $V_\text{true}$ with a precision of at least $0.01\,\mathrm{V}$, so this latter quantity could have a continuous domain.
 
 In solving data-science and engineering problems it's important to make clear whether a particular quantity value can be considered "true" and used as-is, or only "observed" with insufficient precision and used as data to infer the true value.
 

@@ -1,26 +1,39 @@
 ## Colour-blind friendly palettes, from https://personal.sron.nl/~pault/
 ## palette(colour('bright')())
-cc <- khroma::colour('bright')()
-cc[8] <- '#000000'
-names(cc)[8] <- 'black'
-cc[9] <- '#777777'
-names(cc)[9] <- 'midgrey'
-palette(cc)
-rm(cc)
-bluepurple <- palette()[1]
-red <- palette()[2]
-green <- palette()[3]
-yellow <- palette()[4]
-blue <- palette()[5]
-redpurple <- palette()[6]
-grey <- palette()[7]
-midgrey <- palette()[9]
-darkgrey <- '#555555'
-black <- '#000000'
-scale_colour_discrete <- khroma::scale_colour_bright
+tolpalette <- c(black='black',
+    red='#EE6677',
+    blue='#4477AA',
+    green='#228833',
+    yellow='#CCBB44',
+    purple='#AA3377',
+    cyan='#66CCEE',
+    grey='#BBBBBB',
+    midgrey='#888888')
+palette(tolpalette)
+## names(palette()) <- c('black', 'red', 'blue','green','yellow','purple','cyan','grey','midgrey')
+##
+## mycolourscheme <- str(structure(c('black', '#445566'), missing = NA, class = c("color_scheme", "color_discrete")))
+## cc <- khroma::colour('bright')()
+## cc[8] <- '#000000'
+## names(cc)[8] <- 'black'
+## cc[9] <- '#777777'
+## names(cc)[9] <- 'midgrey'
+## palette(cc)
+## rm(cc)
+## bluepurple <- palette()[1]
+## red <- palette()[2]
+## green <- palette()[3]
+## yellow <- palette()[4]
+## blue <- palette()[5]
+## redpurple <- palette()[6]
+## grey <- palette()[7]
+## midgrey <- palette()[9]
+## darkgrey <- '#555555'
+## black <- '#000000'
+## scale_colour_discrete <- khroma::scale_colour_bright
 
 ## to output in pdf format
-pdff <- function(file = 'Rplot', apaper = 5, portrait = FALSE,
+mypdf <- function(file = 'Rplot', apaper = 5, portrait = FALSE,
                  height = 148 / 25.4, width = 210 / 25.4, asp = NA, ...) {
   if (is.numeric(apaper)) {
     if (portrait) {
@@ -32,14 +45,18 @@ pdff <- function(file = 'Rplot', apaper = 5, portrait = FALSE,
     }
   }
   if (!is.na(asp)) {
-    width <- height * asp
+      if(missing(width)){
+          width <- height * asp
+      }else{
+          height <- width/asp
+      }
   }
   pdf(file = paste0(sub('.pdf$', '', file), '.pdf'), paper = 'special',
       height = height, width = width, ...)
 }
 
 ## to output in svg format
-svgf <- function(filename = 'Rplot', apaper = 5, portrait = FALSE,
+mysvg <- function(file = 'Rplot', apaper = 5, portrait = FALSE,
                  height = 148 / 25.4, width = 210 / 25.4, asp = NA, ...) {
   if (is.numeric(apaper)) {
     if (portrait) {
@@ -51,15 +68,19 @@ svgf <- function(filename = 'Rplot', apaper = 5, portrait = FALSE,
     }
   }
   if (!is.na(asp)) {
-    width <- height * asp
+      if(missing(width)){
+          width <- height * asp
+      }else{
+          height <- width/asp
+      }
   }
-  svg(file = paste0(sub('.svg$', '', file), '.svg'), height = height,
-                 width = width)
+  svg(file = paste0(sub('.svg$', '', file), '.svg'),
+      height = height, width = width, ...)
 }
 
 
 ## to output in png format
-pngf <- function(filename = 'Rplot', res = 300, apaper = 5, portrait = FALSE,
+mypng <- function(file = 'Rplot', res = 300, apaper = 5, portrait = FALSE,
                  height = 148 / 25.4, width = 210 / 25.4, asp = NA, ...) {
   if (is.numeric(apaper)) {
     if (portrait) {
@@ -71,56 +92,145 @@ pngf <- function(filename = 'Rplot', res = 300, apaper = 5, portrait = FALSE,
     }
   }
   if (!is.na(asp)) {
-    ## width <- height*asp
-    height <- width / asp
+      if(missing(width)){
+          width <- height * asp
+      }else{
+          height <- width/asp
+      }
   }
-  png(file = paste0(sub('.png$', '', file), '.png'), height = height,
-                 width = width, units = 'in', res = res)
+  png(file = paste0(sub('.png$', '', file), '.png'),
+      height = height, width = width, units = 'in', res = res, ...)
 }
 
-alpha2hex2 <- function(alpha, col = NULL) {
-  if (!is.character(alpha)) {
-    alpha <- sprintf('%02x', round((1 - alpha) * 255))
+## to output in png format
+myjpg <- function(file = 'Rplot', res = 300, apaper = 5, portrait = FALSE,
+    height = 148 / 25.4, width = 210 / 25.4, asp = NA,
+    quality = 90, ...) {
+  if (is.numeric(apaper)) {
+    if (portrait) {
+      height <- floor(841 / sqrt(2)^(apaper - 1)) / 25.4
+      width <- floor(841 / sqrt(2)^(apaper)) / 25.4
+    } else {
+      width <- floor(841 / sqrt(2)^(apaper - 1)) / 25.4
+      height <- floor(841 / sqrt(2)^(apaper)) / 25.4
+    }
   }
-  if (is.numeric(col)) {
-    col <- palette()[col]
+  if (!is.na(asp)) {
+      if(missing(width)){
+          width <- height * asp
+      }else{
+          height <- width/asp
+      }
   }
-  paste0(col, alpha)
+  jpeg(file = paste0(sub('.jpg$', '', file), '.jpg'),
+      height = height, width = width, units = 'in',
+      res = res, quality = quality, ...)
 }
 
-alpha2hex <- function(col, alpha = NULL) {
-  if (is.null(alpha)) {
-    alpha <- 0
-  }
-  if (!is.character(col)) {
-    col <- palette()[col]
-  }
-  do.call(rgb, c(as.list(col2rgb(col)),
-                list((1 - alpha) * 255, maxColorValue = 255)))
+flexiplot <- function(
+    x, y,
+    xdomain = NULL, ydomain = NULL,
+    xlim = NULL, ylim = NULL,
+    type = 'l',
+    pch = c(1, 0, 2, 5, 6, 3, 4),
+    grid = TRUE,
+    add = FALSE,
+    ...
+){
+    xat <- yat <- NULL
+
+    if(missing('x') && !missing('y')){
+        x <- seq_len(NROW(y))
+    } else if(!missing('x') && missing('y')){
+        y <- seq_len(NROW(x))
+    } else if(missing('x') && missing('y')){
+        stop('Arguments "x" and "y" cannot both be missing')
+    }
+
+    ## if x is character, convert to numeric
+    if(is.character(x)){
+        if(is.null(xdomain)){ xdomain <- unique(x) }
+        ## we assume the user has sorted the vaules in a meaningful order
+        ## because the lexical order may not be correct
+        ## (think of values like 'low', 'medium', 'high')
+        x <- as.numeric(factor(x, levels = xdomain))
+        xat <- seq_along(xdomain)
+    }
+
+    ## if y is character, convert to numeric
+    if(is.character(y)){
+        if(is.null(ydomain)){ ydomain <- unique(y) }
+        ## we assume the user has sorted the vaules in a meaningful order
+        ## because the lexical order may not be correct
+        ## (think of values like 'low', 'medium', 'high')
+        y <- as.numeric(factor(y, levels = ydomain))
+        yat <- seq_along(ydomain)
+    }
+
+    ## Syntax of xlim and ylim that allows
+    ## for the specification of only upper- or lower-bond
+    if(length(xlim) == 2){
+        if(is.null(xlim[1]) || !is.finite(xlim[1])){ xlim[1] <- min(x[is.finite(x)]) }
+        if(is.null(xlim[2]) || !is.finite(xlim[2])){ xlim[2] <- max(x[is.finite(x)]) }
+    }
+    if(length(ylim) == 2){
+        if(is.null(ylim[1]) || !is.finite(ylim[1])){ ylim[1] <- min(y[is.finite(y)]) }
+        if(is.null(ylim[2]) || !is.finite(ylim[2])){ ylim[2] <- max(y[is.finite(y)]) }
+    }
+
+    matplot(x, y, xlim = xlim, ylim = ylim, type = type, pch = pch, axes = F, add = add, ...)
+    if(!add){
+        axis(1, at = xat, labels = xdomain, lwd = 0, ...)
+        axis(2, at = yat, labels = ydomain, lwd = 0, ...)
+        if(grid){
+            graphics::grid(nx = NULL, ny = NULL, lty = 1, col = '#BBBBBB80')
+        }
+    }
 }
 
-tticks <- pretty
-## tticks <- function(x, n=10){
-##     x <- x[!is.na(x) && is.finite(x)]
-##     if(length(x)==0){x <- c(0,1)}
-##     rg <- range(x, na.rm=T)
-##     if(diff(rg)==0){rg <- rg + c(-1,1)}
-##     ext <- diff(rg)
-##     deltas <- sort(c(c(1,2,5) * 10^ceiling(log10(ext/(n*c(1,2,5)))),
-##                 c(1,2,5) * 10^floor(log10(ext/(n*c(1,2,5))))))
-##     ## print(deltas)
-##     ## print(abs(sapply(deltas, function(d){
-##     ##     length((rg[1]%/%d):((rg[2]%/%d) + (rg[2]%%d > 0)))}) -n
-##     ## ))
-##     ##deltas <- c(0.1, 0.2, 0.5, 1) * n^floor(log(ext,base=n))
-##     delta <- deltas[which.min(abs(sapply(deltas, function(d){
-##         diff(rg%/%d) + (rg[2]%%d > 0)}) + 1 - n
-##     ))]
-##     ## delta <- deltas[which.min(abs(sapply(deltas, function(d){
-##     ##     length((rg[1]%/%d):((rg[2]%/%d) + (rg[2]%%d > 0)))}) -n
-##     ## ))]
-##     ((rg[1]%/%delta):((rg[2]%/%delta) + (rg[2]%%delta > 0)))*delta
-## }
+plotquantiles <- function(
+    x, y,
+    xdomain = NULL,
+    alpha.f = 0.25,
+    col = 9,
+    border = NA,
+    ...
+){
+    if(!is.matrix(y) || ncol(y) %% 2 != 0) {
+        stop('"y" must be a matrix with an even number of columns.')
+    }
+    nquant <- ncol(y)
+
+    isfin <- ( (is.numeric(x) & is.finite(x)) | !is.na(x)) &
+        apply(y, 1, function(xx){all(is.finite(xx))})
+    x <- unname(x[isfin])
+    y <- unname(y[isfin, , drop = FALSE])
+
+    ##
+    ## col[!grepl('^#',col)] <- palette()[as.numeric(col[!grepl('^#',col)])]
+    if(is.na(alpha.f)){alpha.f <- 1}
+    col <- adjustcolor(col, alpha.f = alpha.f)
+    ## if(is.na(alpha)){alpha <- ''}
+    ## else if(!is.character(alpha)){alpha <- alpha2hex(alpha)}
+    ## if(!(is.na(col) | nchar(col)>7)){col <- paste0(col, alpha)}
+    ##
+    flexiplot(x = x, y = y, xdomain = xdomain, type = 'n', ...)
+
+    ## if x is character, convert to numeric
+    if(is.character(x)){
+        if(is.null(xdomain)){ xdomain <- unique(x) }
+        ## we assume the user has sorted the vaules in a meaningful order
+        ## because the lexical order may not be correct
+        ## (think of values like 'low', 'medium', 'high')
+        x <- as.numeric(factor(x, levels = xdomain))
+    }
+
+    for(ii in seq_len(nquant/2)) {
+        polygon(x=c(x,rev(x)), y=c(y[,ii], rev(y[, nquant + 1 - ii])),
+            col = col, border = border)
+    }
+}
+
 
 tplot <- function(x, y, xlim = c(NA, NA), ylim = c(NA, NA), asp = NA,
     n = 10, family = '', xticks = NULL, xlabels = TRUE,
@@ -133,8 +243,8 @@ tplot <- function(x, y, xlim = c(NA, NA), ylim = c(NA, NA), asp = NA,
     pch = c(1, 0, 2, 5, 6, 3, 4), lty = 1:4, lwd = 2, alpha = NA,
     border = palette(), border.alpha = NA, xtransf = NULL,
     ytransf = NULL, add = FALSE) {
-    palette(khroma::colour('bright')())
-    scale_colour_discrete <- khroma::scale_colour_bright
+    ## palette(khroma::colour('bright')())
+    ## scale_colour_discrete <- khroma::scale_colour_bright
     ## if (missing(x)) {
     ##     if (missing(y))
     ##         stop("must specify at least one of 'x' and 'y'")
@@ -360,9 +470,9 @@ tplot <- function(x, y, xlim = c(NA, NA), ylim = c(NA, NA), asp = NA,
                       length(xx) == length(yy) + 1 ||
                       length(yy) == length(xx) + 1)) { # not a histogram
                 if (is.na(ialpha)) {
-                    ialpha <- 0
+                    ialpha <- 1
                 }
-                icol <- alpha2hex(icol, ialpha)
+                icol <- adjustcolor(icol, alpha.f = ialpha)
                 ## else if(!is.character(ialpha)){ialpha <- alpha2hex(ialpha)}
                 ## if(!(is.na(icol) | nchar(icol)>7)){icol <- paste0(icol, ialpha)}
                 ##
@@ -381,12 +491,12 @@ tplot <- function(x, y, xlim = c(NA, NA), ylim = c(NA, NA), asp = NA,
                 if (is.na(ialpha)) {
                     ialpha <- 0.5
                 }
-                icol <- alpha2hex(icol, ialpha)
+                icol <- adjustcolor(icol, alpha.f = ialpha)
                 ##
                 if (is.na(iborder.alpha)) {
                     iborder.alpha <- 0.5
                 }
-                iborder <- alpha2hex(iborder, iborder.alpha)
+                iborder <- adjustcolor(iborder, alpha.f = iborder.alpha)
                 ##
                 if (length(yy) == length(xx)) {
                     xx <- c(
@@ -441,9 +551,8 @@ tplot <- function(x, y, xlim = c(NA, NA), ylim = c(NA, NA), asp = NA,
     }
 }
 
-
-tlegend <- function(x, y=NULL, legend, col=palette(), pch=c(1,0,2,5,6,3,4), lty=1:4, lwd=2, alpha=0, cex=1.5, ...){
-    suppressWarnings(col <- mapply(function(i,j)alpha2hex(i,j),col,alpha))
+mylegend <- function(x, y=NULL, legend, col=palette(), pch=c(1,0,2,5,6,3,4), lty=1:4, lwd=2, alpha=1, cex=1.5, ...){
+    suppressWarnings(col <- mapply(function(i,j)adjustcolor(i,j),col,alpha))
     legend(x=x, y=y, legend=legend, col=col, pch=pch, lty=lty, lwd=lwd, bty='n', cex=cex, ...)
 }
 
@@ -480,53 +589,9 @@ fivenumaxis <- function(side, x, col='#555555', type=6){
     matpoints(x=xp, y=yp, pch=18, cex=2, col=col)
 }
 
-plotquantiles <- function(x, y, col=7, alpha=0.75, border=NA, ...){
-    y <- t(y)
-    isfin <- is.finite(x) & apply(y, 2, function(xx){all(is.finite(xx))})
-    x <- x[isfin]
-    y <- y[, isfin]
-    ##
-    ## col[!grepl('^#',col)] <- palette()[as.numeric(col[!grepl('^#',col)])]
-    if(is.na(alpha)){alpha <- 0}
-    col <- alpha2hex(col, alpha)
-    ## if(is.na(alpha)){alpha <- ''}
-    ## else if(!is.character(alpha)){alpha <- alpha2hex(alpha)}
-    ## if(!(is.na(col) | nchar(col)>7)){col <- paste0(col, alpha)}
-    ##
-    tplot(x=x, y=t(y), type = 'p', pch=NA, ...)
-    polygon(x=c(x,rev(x)), y=c(y[1,], rev(y[2,])),
-        col=col, border=border)
-}
+## scatteraxis(): use rug()
 
-scatteraxis <- function(x, side=1, n=128, col='#555555', alpha=0.5, ext=5, pos=NULL, exts=NULL, lwd=0.1, ...){
-    x <- x[!is.na(x) & is.finite(x)]
-    if(is.na(n)|| missing(n)){n <- length(x)}
-    x <- x[round(seq(1, length(x), length.out=n))]
-    if(is.null(pos)){ pos <- par('usr') }
-    if(is.null(exts)){ exts <- diff(pos)[-2]/100}
-    ##
-    if(side==1){
-        xl <- rbind(x, x)
-        yl <- rbind(rep(pos[3],length(x))+2*exts[2],rep(pos[3],length(x))+ext*exts[2])
-    }else if(side==2){
-        yl <- rbind(x, x)
-        xl <- rbind(rep(pos[1],length(x))+2*exts[1],rep(pos[1],length(x))+ext*exts[1])
-    }else if(side==3){
-        xl <- rbind(x, x)
-        yl <- rbind(rep(pos[4],length(x))-2*exts[2],rep(pos[4],length(x))-ext*exts[2])
-    }else if(side==4){
-        yl <- rbind(x, x)
-        xl <- rbind(rep(pos[2],length(x))-2*exts[1],rep(pos[2],length(x))-ext*exts[1])
-    }
-    ##
-    if(sum(!is.na(col))>0 && !grepl('^#', col[!is.na(col)])){col[!is.na(col)] <- palette()[col[!is.na(col)]]}
-    col[!is.na(col)] <- alpha2hex(col[!is.na(col)], alpha)
-    ## if(!is.null(alpha) && !is.character(alpha)){alpha <- alpha2hex2(alpha)}
-    ## col[!is.na(col)] <- paste0(col[!is.na(col)], alpha)
-    matlines(x=xl, y=yl, lty=1, lwd=lwd, col=col, ...)
-}
-
-thist <- function(x, n=NULL, type=6, pretty=FALSE, plot=FALSE, extendbreaks=FALSE, ...){
+myhist <- function(x, n=NULL, type=6, pretty=FALSE, plot=FALSE, extendbreaks=FALSE, ...){
     if(!is.list(x)){x <- list(x)}
     if(!is.list(n)){n <- list(n)}
     out <- list()
@@ -579,16 +644,16 @@ thist <- function(x, n=NULL, type=6, pretty=FALSE, plot=FALSE, extendbreaks=FALS
     }
 }
 
-tquant <- function(x, probs=c(1:3)/4, na.rm=TRUE, names=TRUE, type=6, ...){
+myquantile <- function(x, probs=c(0.055, 0.25, 0.5, 0.75, 0.945), na.rm=TRUE, names=TRUE, type=6, ...){
     quantile(x=x, probs=probs, na.rm=na.rm, names=names, type=type, ...)
 }
 
-tmad <- function(x){mad(x, constant=1, na.rm=TRUE)}
+mymad <- function(x){mad(x, constant=1, na.rm=TRUE)}
 
-tsummary <- function(x){
+mysummary <- function(x){
     x <- cbind(x)
     apply(x, 2, function(xx){
-        c(tquant(xx, c(2.5/100,1/8,2/8,4/8,6/8,7/8,97.5/100)), MAD=mad(xx,constant=1,na.rm=T), IQR=IQR(xx,na.rm=T), mean=mean(xx,na.rm=T), sd=sd(xx,na.rm=T), hr=diff(range(xx,na.rm=T))/2, min=min(xx,na.rm=T), max=max(xx,na.rm=T), NAs=sum(is.na(xx)))
+        c(quantile(xx, c(0.055, 0.25, 0.5, 0.75, 0.945), type=6, na.rm=TRUE), MAD=mad(xx,constant=1,na.rm=T), IQR=IQR(xx,na.rm=T), mean=mean(xx,na.rm=T), sd=sd(xx,na.rm=T), hr=diff(range(xx,na.rm=T))/2, min=min(xx,na.rm=T), max=max(xx,na.rm=T), NAs=sum(is.na(xx)))
     })
 }
 
@@ -603,7 +668,7 @@ powerset <<- function(set){
 gcd <<- function(...){Reduce(function(a, b){if (b == 0) a else Recall(b, a %% b)}, c(...))}
 
 ## Normalize according to row
-tnormalize <- function(x){
+mynormalize <- function(x){
     if(is.null(dim(x)) || is.table(x)){
         x/sum(x,na.rm=T)
     }else{
@@ -612,11 +677,32 @@ tnormalize <- function(x){
 }
 
 ## Table with list of values
-tablev <- function(x, values=NULL, norm=FALSE){
+mytable <- function(x, values=NULL, norm=FALSE){
     if(norm){
-        tnormalize(table(c(x,values))-!(is.null(values)))
+        mynormalize(table(c(x,values))-!(is.null(values)))
     }else{
         table(c(x,values))-!(is.null(values))
         }
+}
+
+mybisect <- function(fn, a, b){
+    if(fn(a) * fn(b) > 0){
+        stop('Cannot use bisection.')
+    } else if(fn(a) > 0){
+        m <- b
+        b <- a
+        a <- m
+    }
+    m <- (a + b)/2
+    while(abs(a - b) > .Machine$double.eps &&
+              abs(fn(m)) > .Machine$double.eps){
+                  if(fn(m) > 0){
+                      b <- m
+                  } else {
+                      a <- m
+                  }
+                  m <- (a + b)/2
+              }
+    list(value = m, objective = fn(m))
 }
 
