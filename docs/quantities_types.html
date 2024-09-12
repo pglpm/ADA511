@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2024-09-11">
+<meta name="dcterms.date" content="2024-09-12">
 
 <title>ADA511 0.2 Foundations of data science and data-driven engineering - 12&nbsp; Quantities and data types</title>
 <style>
@@ -133,7 +133,7 @@ window.Quarto = {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.2</span><br><span class="small grey">2024-09-11</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.2</span><br><span class="small grey">2024-09-12</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -570,10 +570,11 @@ window.Quarto = {
   <li><a href="#discrete-vs-continuous" id="toc-discrete-vs-continuous" class="nav-link" data-scroll-target="#discrete-vs-continuous">Discrete vs continuous</a></li>
   <li><a href="#bounded-vs-unbounded" id="toc-bounded-vs-unbounded" class="nav-link" data-scroll-target="#bounded-vs-unbounded">Bounded vs unbounded</a></li>
   <li><a href="#finite-vs-infinite" id="toc-finite-vs-infinite" class="nav-link" data-scroll-target="#finite-vs-infinite">Finite vs infinite</a></li>
-  <li><a href="#rounded" id="toc-rounded" class="nav-link" data-scroll-target="#rounded">Rounded</a></li>
+  <li><a href="#sec-rounded" id="toc-sec-rounded" class="nav-link" data-scroll-target="#sec-rounded">Rounded</a></li>
   <li><a href="#censored" id="toc-censored" class="nav-link" data-scroll-target="#censored">Censored</a></li>
   </ul></li>
   <li><a href="#sec-true-quantities" id="toc-sec-true-quantities" class="nav-link" data-scroll-target="#sec-true-quantities"><span class="header-section-number">12.4</span> “True” vs “measured” values</a></li>
+  <li><a href="#sec-metadata" id="toc-sec-metadata" class="nav-link" data-scroll-target="#sec-metadata"><span class="header-section-number">12.5</span> Importance of metadata for inference and decision</a></li>
   </ul>
 </nav>
     </div>
@@ -593,7 +594,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2024-09-11</p>
+      <p class="date">2024-09-12</p>
     </div>
   </div>
   
@@ -819,8 +820,8 @@ just because <span style="display:inline-block;"><span class="math inline">\(3-2
 <p>The domain of a discrete quantity can consist of a finite or an infinite number (at least in theory) of possible values. The domain of a continuous quantity always has an infinite number of values. Note that a domain can be infinite and yet bounded: consider the numbers in the range <span style="display:inline-block;"><span class="math inline">\([0,1]\)</span>.</span></p>
 <p>Whether to treat a domain as finite or infinite depends on the quantity, the specific problem, and the computational resources. For example, the intensity of a base colour in a pixel of a particular image might really take on 256 discrete steps between <span style="display:inline-block;"><span class="math inline">\(0\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(1\)</span>:</span> <span class="small"><span class="math inline">\(0, 0.0039215686, 0.0078431373, \dotsc, 1\)</span></span>. But in some situations we can treat this domain as practically infinite, with any possible value between <span style="display:inline-block;"><span class="math inline">\(0\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(1\)</span>.</span></p>
 </section>
-<section id="rounded" class="level3 page-columns page-full">
-<h3 class="anchored" data-anchor-id="rounded">Rounded</h3>
+<section id="sec-rounded" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="sec-rounded">Rounded</h3>
 <p>A continuous interval quantity may be rounded, because of the way it’s measured. In this case the quantity could be considered discrete rather than continuous.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -877,6 +878,55 @@ just because <span style="display:inline-block;"><span class="math inline">\(3-2
 <p>In some circumstances this distinction is unimportant and an agent can use the “measured” value without worries, and consider it as the “true” one. Typically this is the case when the possible discrepancy between measured and true value is enough small to have no consequences. In other circumstances the discrepancy is important: slightly different values might lead to quite different consequences. In such circumstances it is then necessary for the agent to try to <em>infer</em> – using the probability calculus – the true value, using the measured one as “data” or “evidence”. Said otherwise, the agent doesn’t use the measured value directly, but only as an intermediate step to guess the true value. The latter, in turn, can be used for further inferences.</p>
 <p>From the point of view of inference and decision-making, the distinction between “true” and “measured” value doesn’t lead to anything methodologically new. It just means that an agent has to do a chain of inferences instead of just one, using the four rules of inference as usual. This situation often requires the definition of two distinct quantities, the “true” and the “observed”, which can have slightly different domains. For instance, we could have a voltage <span style="display:inline-block;"><span class="math inline">\(V_\text{obs}\)</span></span> measured with rounding to <span style="display:inline-block;"><span class="math inline">\(1\,\mathrm{V}\)</span></span> and therefore with discrete domain <span style="display:inline-block;"><span class="math inline">\(\set{10\,\mathrm{V}, 11\,\mathrm{V}, 12\,\mathrm{V}, \dotsc}\)</span>;</span> but we need the “true” voltage <span style="display:inline-block;"><span class="math inline">\(V_\text{true}\)</span></span> with a precision of at least <span style="display:inline-block;"><span class="math inline">\(0.01\,\mathrm{V}\)</span>,</span> so this latter quantity could have a continuous domain.</p>
 <p>In solving data-science and engineering problems it’s important to make clear whether a particular quantity value can be considered “true” and used as-is, or only “observed” with insufficient precision and used as data to infer the true value.</p>
+</section>
+<section id="sec-metadata" class="level2 page-columns page-full" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="sec-metadata"><span class="header-section-number">12.5</span> Importance of metadata for inference and decision</h2>
+<p>The characteristics of quantities and domains that we have discussed so far are examples of <span class="blue"><strong>metadata</strong></span>. As the name implies, <em>meta</em>data is information that typically <em>cannot</em> be found in the data.</p>
+<p>As a simple example, consider this collection of numerical data values:<br>
+<span class="yellow">8&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;6&nbsp;&nbsp;&nbsp;19&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;5&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;19&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;8&nbsp;&nbsp;&nbsp;12&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;17</span><br>
+and suppose that some machine-learning algorithm has to generate a new number “similar” to the ones above, or guess what a new one could be. Consider the following possible guesses; would they be acceptable?:</p>
+<ul>
+<li><span class="yellow"><strong>13</strong></span>.&nbsp;&nbsp;Note that this number does not appear among the values above. Could it be that it is impossible for some particular reason? For example, this value is omitted from the seat numbers of some airlines or street addresses, because of <a href="https://mathworld.wolfram.com/Triskaidekaphobia.html">triskaidekaphobia</a>.</li>
+</ul>
+<div>
+
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-layout-panel" data-layout-ncol="1">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<p><img src="dice.jpg" class="img-fluid" style="width:50.0%"></p>
+</div>
+</div>
+</div></div><ul>
+<li><p><span class="yellow"><strong>21</strong></span>.&nbsp;&nbsp;This guess would be impossible if the reported values are rolls of a 20-sided die, typical of fantasy roleplay games. But if the values are, say, the ages of some people, then <span class="yellow"><strong>21</strong></span> could be an admissible guess.</p></li>
+<li><p><span class="yellow"><strong>3.5</strong></span>.&nbsp;&nbsp;The reported values are all integers. But they could be <a href="#sec-rounded">rounded</a> values of say, temperature readings or ages. We don’t know whether a more precise, non-rounded guess such as <span class="yellow"><strong>3.5</strong></span> could be acceptable.</p></li>
+<li><p><span class="yellow"><strong>-2</strong></span>.&nbsp;&nbsp;If the reported values are people’s ages or objects’ weights, then a negative value would be impossible. But if the values were temperatures in degrees Celsius, then the guess <span class="yellow"><strong>-2</strong></span> could be acceptable.</p></li>
+</ul>
+<p>The collection of values does <em>not</em> allow us to determine which of the possible scenarios above applies.</p>
+<p><br>
+A simple piece of metadata can actually correspond to an infinite amount of datapoints. Even if we have a collection of one million positive numbers, they still don’t tell us whether negative values are impossible or not. When we are given the information that the domain of the relevant quantity is positive, this effectively corresponds to knowing that all future data – possibly an infinity – will not be negative.</p>
+<p>An AI agent or machine-learning algorithm will therefore make better guesses and better decisions if it is given full metadata, besides “training” data. For this reason metadata are extremely important for inference and decision-making, and an optimal agent should make use of metadata.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercises
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Examine the <a href="https://archive.ics.uci.edu/dataset/2/adult">adult-income dataset</a> at the UC Irvine Machine Learning Repository. This set contains more than 30 000 datapoints.</p>
+<p>Take a look at the quantity <code>native_country</code> (what type of variate is this?).</p>
+<ul>
+<li><p>Do you see the values <code>Norway</code> or <code>Finland</code> or <code>Sweden</code> listed among these values?</p></li>
+<li><p>Does this mean that in the adult USA population there are no people coming from these three countries?</p></li>
+<li><p>Should an AI agent or machine-learning algorithm exclude these three values from its future guesses?</p></li>
+<li><p>What would you do to give the algorithm this metadata information? (In a later chapter we shall see how to do this in a rigorous way.)</p></li>
+</ul>
+</div>
+</div>
 
 
 </section>
