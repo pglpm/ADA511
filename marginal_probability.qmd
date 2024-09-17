@@ -12,7 +12,7 @@ The sentence of interest is "[The next patient will require urgent care]{.midgre
 
 $$U \mo \urge$$
 
-which is equivalent to "[The next patient will require urgent care, and will arrive by ambulance, helicopter, or other means]{.midgrey}", or in symbols
+This sentence is equivalent to "[The next patient will require urgent care, and will arrive by ambulance, helicopter, or other means]{.midgrey}", or in symbols
 
 $$
 U \mo \urge \land
@@ -32,7 +32,7 @@ $$
 $$
 
 
-This last sentence is an `or` of *mutually exclusive* sentences. Its probability is therefore given by the `or` rule without the `and` terms  (we now use the comma "$\and$" for `and`):
+This last sentence is an `or` of *mutually exclusive* sentences. Its probability is therefore given by the `or` rule, with the `and` terms being zero (we shall now use the comma "$\and$" for `and`):
 
 :::{.column-page-right}
 $$
@@ -99,7 +99,7 @@ In the example of the previous section, suppose now that the quantities $\green 
 
 $$\p({\red Y\mo y} \and {\green X\mo x} \| \yI)$$
 
-with the usual meaning. The marginal probability density for $\green X$ is still given by a sum, but  this sum occurs over intervals  of values of $\red Y$, intervals with very small widths; as a consequence the sum will have a very large number of terms. To remind ourselves of this fact, which can be very important in some situations, we use a different notation in terms of integrals:
+with the usual meaning. The marginal probability density for $\green X$ is still given by a sum, but  this sum occurs over intervals  of values of $\red Y$, intervals with very small widths. As a consequence the sum will have a very large number of terms. To remind ourselves of this fact, which can be very important in some situations, we use a different notation in terms of integrals:
 
 $$
 \p({\green X\mo x}\| \yI) = \int_{\red \varUpsilon} \p({\red Y\mo y} \and {\green X\mo x} \| \yI)\, \di{\red y}
@@ -107,15 +107,18 @@ $$
 
 where $\red\varUpsilon$ represents the domain of the quantity $\red Y$.
 
-The fact that integrals appear is in some cases extremely useful, because it allows us to use the theory of integration to calculate marginal probabilities quickly and precisely, instead of having to compute sums of a large numbers of small terms -- a procedure that can be computationally expensive and lead to numerical errors owing to underflow or similar phenomena.
+This is called a [**marginal probability density**]{.blue}.
+
+
+The appearance of integrals is sometimes extremely useful, because it allows us to use the theory of integration to calculate marginal probabilities quickly and precisely, instead of having to compute sums of a large numbers of small terms -- a procedure that can be computationally expensive and lead to numerical errors owing to underflow or similar computation problems.
 
 \
 
 ## Marginal probabilities and scatter plots {#sec-marginal-scatter}
 
-In the previous chapters we have often discussed scatter plots for representing probability distributions of various kinds: discrete, continuous, joint, mixed, and so on.
+In the previous chapters we have often discussed scatter plots ([§@sec-scatter-plot], [§@sec-scatter-joint]) for representing probability distributions of various kinds: discrete, continuous, joint, mixed, and so on.
 
-One more advantage of the scatter plots for a joint distribution is that it can be quickly modified to represent any marginal, again with a scatter plot; whereas the use of a surface plot would require analytical calculations or approximations thereof.
+One more advantage of representing a joint distribution with a scatter plot is that it can be quickly modified to represent any marginal distribution, again with a scatter plot. Whereas the use of a surface plot would require analytical calculations or approximations thereof.
 
 Consider for instance the joint probability density from [§@sec-repr-joint-dens], represented by the formula
 
@@ -127,7 +130,11 @@ $$
 $$
 :::
 
-and suppose we would like to visualize the marginal density for $X$,\ \ $\p(X\mo x \| \yI)$. In order to represent it with a line plot, we would first have to calculate the integral of the formula above over all possible values of $Y$:
+and suppose we would like to visualize the marginal probability density for $X$:
+
+$\p(X\mo x \| \yI)$.
+
+In order to represent this marginal probability density with a line plot, we would first need to calculate the integral of the formula above over $Y$:
 
 :::{.column-page-inset-right}
 $$
@@ -141,9 +148,9 @@ $$
 $$
 :::
 
-But suppose, instead, that we have stored the points used to represent the density as a scatter plot, as in [fig. @fig-scatterXY]. Each of these points is a pair of coordinates $(x,y)$, representing an $X$-value and a $Y$-value. It turns out that *these same points can be used to make a scatter-plot of the marginal density for $X$*, by considering their $x$-coordinates only. Often we use a subsample (unsystematically chosen) of them, so that the resulting one-dimensional scatter plot doesn't become too congested and difficult to read. 
+Now instead suppose that we have stored the points used to represent the joint probability density\ \ $\p(X\mo x \and Y\mo y \| \yI)$\ \ as a scatter plot, as in [fig. @fig-scatterXY]. Each of these points is a pair of coordinates $(x, y)$, representing an $X$-value and a $Y$-value. It turns out that *these same points can be used to make a scatter-plot of the marginal density for $X$*, simply by considering their $x$-coordinates only, that is, by discarding their $y$-coordinates. Often we use a subsample (unsystematically chosen) of them, so that the resulting one-dimensional scatter plot doesn't become too congested and difficult to read.
 
-As an example, here is a scatter plot for the marginal density $\p(X\mo x \| \yI)$ above, obtained by selecting a subset of 400 points from the scatter plot ([fig. @fig-scatterXY]) for $\p(X\mo x \and Y\mo y \| \yI)$; the points are replaced by vertical lines for better visibility:
+As an example, here is a scatter plot for the marginal probability density\ \ $\p(X\mo x \| \yI)$\ \ above, obtained by selecting a subset of 400 points from the scatter plot ([fig. @fig-scatterXY]) for the joint distribution. The points are replaced by vertical lines for better visibility:
 
 ![Scatter-plot representation of the marginal probability density $\p(X\mo x \| \yI)$](scatter_2d_marginalX.png){#fig-scatterXY-marginalX width=100%}
 
@@ -154,15 +161,13 @@ The points for the scatter plot of [fig. @fig-scatterXY] ([§@sec-repr-joint-de
 
 ## Uses and pitfalls of marginal probability distributions {#sec-use-pitfall-marginal}
 
-An agent's probability distribution for a multi-dimensional joint quantity is not easily -- or at all -- visualizable. This shortcoming is even worse because, as discussed in [§@sec-monty-motivation], our intuition often fails us badly in multi-dimensional problems.
+An agent's distribution of degrees of belief for a multi-dimensional joint quantity is not easily -- or at all -- visualizable. This shortcoming is especially bad because, as discussed in [§@sec-monty-motivation], our intuition often fails us horribly in multi-dimensional problems.
 
-Marginal probability distributions for one or two of the component quantities are useful because they offer us a little glimpse of the multi-dimensional "monster". In concrete engineering and data-science problem, when we need to discuss a multi-dimensional distribution it is good practice to visually report at least its one-dimensional marginal distributions.
+Marginal probability distributions for one or two of the component quantities are useful because they offer us a little glimpse of the multi-dimensional "monster" distribution. In concrete engineering and data-science problem, when we need to discuss a multi-dimensional distribution it is good practice to visually report at least its one-dimensional marginal distributions.
 
-In the machine-learning literature, one frequent application of this low-dimensional glimpse is for qualitatively assessing whether two multi-dimensional distributions are similar. Their one-dimensional marginals are visually compared and, if they overlap, one hopes (and some works in the literature even conclude) that the multi-dimensional distributions are somewhat similar as well.
+In the machine-learning literature, this low-dimensional glimpse is often used to qualitatively assess whether two multi-dimensional distributions are similar. Their one-dimensional marginals are visually compared and, if they overlap, one hopes (but some works in the literature even erroneously *conclude*) that the multi-dimensional distributions are somewhat similar as well.
 
-\
-
-Unfortunately marginal distributions can also be quite deceiving:
+Keep in mind that this may very well not be the case. Marginal distributions can also be quite deceiving:
 
 :::{.callout-caution}
 ## {{< fa user-edit >}} Exercise
