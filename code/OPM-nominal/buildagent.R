@@ -4,7 +4,7 @@ buildagent <- function(metadata, data=NULL, kmi=0, kma=20, alphas=NULL, base=2){
     ##
     ## Read metadata from file, if given as file
     if(is.character(metadata)){
-        metadata <- fread(metadata, na.strings='', header=TRUE)
+        metadata <- read.csv(metadata, na.strings='')
     }
     ##
     variates <- metadata[['variate']] # list of variates
@@ -15,7 +15,7 @@ buildagent <- function(metadata, data=NULL, kmi=0, kma=20, alphas=NULL, base=2){
     ##
     ## Load training data, if given as file
     if(is.character(data)){
-        data <- fread(data, na.strings='', header=TRUE)
+        data <- read.csv(data, na.strings='')
     }
     ##
     ## Building a Dirichlet-mixture distribution
@@ -49,13 +49,13 @@ buildagent <- function(metadata, data=NULL, kmi=0, kma=20, alphas=NULL, base=2){
         if(length(setdiff(colnames(data), variates)) > 0){
             message('Discarding data variates not present in metadata')
         }
-        data <- data[,..variates]
+        data <- data[, variates, drop = FALSE]
         ##
         ## fill absolute frequency values from data
         ## datapoints with missing values are discarded
         ## (note to self: for-loop was faster than 'apply')
         for(arow in 1:nrow(data)){
-            datum <- data[arow]
+            datum <- data[arow,]
             if(!any(is.na(datum))){
                 temp <- rbind(as.character(datum))
                 counts[temp] <- counts[temp] + 1
