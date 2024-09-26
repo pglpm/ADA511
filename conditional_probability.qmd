@@ -21,23 +21,37 @@ Such emphasis is important because it also means that the "conditional" probabil
 
 ## Conditional from joint probability: dissimilar quantities {#sec-conditional-joint-dis}
 
-Consider once more the next-patient arrival scenario of [§@sec-repr-joint-prob], with joint quantity $(U,T)$ and an agent's joint probability distribution as in [table @tbl-urgent-arrival]. Suppose that the agent must forecast whether the next patient will require $\urge$ or $\nonu$ care, so it needs to calculate the probability distribution for $U$ (that is, the probabilities for $U\mo\urge$ and $U\mo\nonu$). 
+Consider once more the next-patient arrival scenario of [§@sec-repr-joint-prob], with joint quantity $(U,T)$ and an agent's joint probability distribution as in [table @tbl-urgent-arrival], reproduced here:
+
+
++:------------------------------:+:---------------:+:---------------:+:---------------:+:---------------:+
+|$\P(U\mo u \and T\mo t\|\yi[H])$|                 |**transportation at arrival** $T$                    |
++--------------------------------+-----------------+-----------------+-----------------+-----------------+
+|                                |                 |ambulance        |helicopter       |other            |
++--------------------------------+-----------------+-----------------+-----------------+-----------------+
+|**urgency** $U$                 |urgent           |0.11             |0.04             |0.03             |
++                                +-----------------+-----------------+-----------------+-----------------+
+|                                |non-urgent       |0.17             |0.01             |0.64             |
++--------------------------------+-----------------+-----------------+-----------------+-----------------+
+: Joint probability distribution for transportation and urgency {.sm}
+
+Suppose that the agent must forecast whether the next patient will require $\urge$ or $\nonu$ care, so it needs to calculate the probability distribution for $U$ (that is, the probabilities for $U\mo\urge$ and $U\mo\nonu$). 
 
 In the first exercise of [§@sec-marginal-probs] you found that the marginal probability that the next patient will need urgent care is
 
 $$\P(U\mo\urge \| \yi[H]) = 18\%$$
 
-this is the agent's degree of belief if it has the knowledge encoded in the sentence $\yi[H]$, nothing more and nothing less.
+this is the agent's degree of belief if it has nothing more and nothing less than the knowledge encoded in the sentence $\yi[H]$.
 
-But now let's imagine that the agent *receives a new piece of information*: it is told that the next patient is being transported by helicopter. In other words, the agent now knows that the sentence $T\mo\heli$ is true. The agent's complete knowledge is then encoded in the `and`ed sentence
+But now let's imagine that the agent *receives a new piece of information*: it is told that the next patient is being transported by helicopter. In other words, the agent now knows that the sentence $T\mo\heli$ is true. The agent's complete knowledge is therefore now encoded in the `and`ed sentence
 
 $$T\mo\heli \land \yi[H]$$
 
-which should therefore appear in the conditional. The agent's belief that the next patient requires urgent care is therefore
+and this sentence should appear in the conditional. The agent's belief that the next patient requires urgent care is therefore
 
 $$\P(U\mo\urge \| T\mo\heli \and \yi[H])$$
 
-Calculation of this probability can be done by just one application of the `and`-rule:
+Calculation of this probability can be done by just one application of the `and`-rule, leading to Bayes's theorem ([§@sec-bayes-theorem]):
 
 :::{.column-page-inset-right}
 $$
@@ -58,7 +72,7 @@ $$
 $$
 :::
 
-We do have the joint probability for $U\mo\urge \land T\mo\heli$ that appears in the numerator of the fraction above. The probability in the denominator is just a marginal probability for $T$, and we know how to calculate that too from [§@sec-marginal-probs]. Finally we find
+The agent already has the joint probability for $U\mo\urge \land T\mo\heli$ that appears in the numerator of the fraction above. The probability in the denominator is just a marginal probability for $T$, and we know how to calculate that too from [§@sec-marginal-probs]. Finally we find
 
 $$
 \P(U\mo\urge \| T\mo\heli \and \yi[H])
@@ -97,7 +111,7 @@ $$
 \end{aligned}
 $$
 
-is **not** a probability distribution. Calculate the three probabilities above and check that indeed they do not sum up to one.
+is **not** a probability distribution. Calculate the three probabilities above and check that in fact they do *not* sum up to one.
 :::
 
 :::{.callout-caution}
@@ -119,19 +133,19 @@ is **not** a probability distribution. Calculate the three probabilities above a
 
 ## Conditional from joint probability: similar quantities {#sec-conditional-joint-sim}
 
-In the previous section we examined how knowledge about one quantity of a particular kind can change an agent's degree of belief about a quantity of a different kind, for example "transportation" about "urgency" or vice versa. This change is reflected in the value of the corresponding conditional probability.
+In the previous section we examined how knowledge about one quantity can change an agent's degree of belief about a different quantity, for example "transportation" about "urgency" or vice versa. This belief change is reflected in the value of the corresponding conditional probability.
 
-This kind of change can also occur with quantities of a "similar kind", that is, quantities that represent the same kind of phenomenon and have exactly the same domain. The maths and calculations are identical to those we have explored, but the interpretation and application can be somewhat different.
+This kind of change can also occur with "similar" quantities, that is, quantities that represent the same kind of phenomenon and have exactly the same domain. The maths and calculations are identical to those we have explored, but the interpretation and application can be somewhat different.
 
-As an example, imagine a scenario similar to the next-patient one above, but now consider the *next three patients* to arrive, and their urgency. Define the following three quantities:
+As an example, imagine a scenario similar to the next-patient arrival above, but now consider the *next three patients* to arrive, and their urgency. Define the following three quantities:
 
 $U_1$ : urgency of the next patient\
 $U_2$ : urgency of the second future patient from now\
 $U_3$ : urgency of the third future patient from now\
 
-every one of these quantities has the same domain: $\set{\urge,\nonu}$.
+Each of these quantities has the same domain: $\set{\urge,\nonu}$.
 
-The joint quantity $(U_1, U_2, U_3, U_4)$ has a domain with 23 = 8 possible values:
+The joint quantity $(U_1, U_2, U_3)$ has a domain with $2^3 = 8$ possible values:
 
 - $U_1\mo\urge \and U_2\mo\urge \and U_3\mo\urge$
 - $U_1\mo\urge \and U_2\mo\urge \and U_3\mo\nonu$
@@ -139,7 +153,7 @@ The joint quantity $(U_1, U_2, U_3, U_4)$ has a domain with 23 = 8 possible 
 - $U_1\mo\nonu \and U_2\mo\nonu \and U_3\mo\urge$
 - $U_1\mo\nonu \and U_2\mo\nonu \and U_3\mo\nonu$
 
-Suppose that an agent, with background information $\yI$, has a joint probability distribution for the joint quantity $(U_1, U_2, U_3)$; the distribution is implicitly given as follows:
+Suppose that an agent, with background information $\yI$, has a joint belief distribution for the joint quantity $(U_1, U_2, U_3)$. The distribution is implicitly given as follows:
 <!-- 0 53.6  -->
 <!-- 1 11.4  -->
 <!-- 2 3.6  -->
