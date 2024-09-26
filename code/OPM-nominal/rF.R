@@ -1,14 +1,14 @@
-rF <- function(n=1, agent, predictand=NULL, predictor=NULL){
+rF <- function(n = 1, agent, predictand = NULL, predictor = NULL){
 #### Returns a sample of full-population frequency
 #### Requires 'extraDistr'
     variates <- names(dimnames(agent[['counts']]))
     ##
     ## Select n alpha parameters according to their probabilities given data
     ## length(agent[['counts']]) =: M
-    alphas <- agent[['alphas']]/length(agent[['counts']])
+    alphas <- agent[['alphas']] / length(agent[['counts']])
     ## recycling 'alphas'
-    alphas <- alphas[sample.int(n=length(alphas), size=n, replace=T,
-                                prob=agent[['palphas']])]
+    alphas <- alphas[sample.int(n = length(alphas), size = n, replace = TRUE,
+                                prob = agent[['palphas']])]
     ##
     ##
     ## Selection of predictor values
@@ -33,7 +33,8 @@ rF <- function(n=1, agent, predictand=NULL, predictor=NULL){
         counts <- do.call(`[`, c(list(agent[['counts']]), predictor))
         if(is.null(dim(counts))){
             dim(counts) <- length(counts)
-            dimnames(counts) <- dimnames(agent[['counts']])[-which(names(predictor) %in% variates)]
+            dimnames(counts) <- dimnames(agent[['counts']])[
+                -which(names(predictor) %in% variates)]
         }
     }else{ # no predictor specified
         counts <- agent[['counts']]
@@ -51,7 +52,8 @@ rF <- function(n=1, agent, predictand=NULL, predictor=NULL){
         }
         predictand <- predictand[predictand %in% names(dimnames(counts))]
         ##
-        ipredictand <- which(names(dimnames(counts)) %in% predictand) # predictand-index
+        ## predictand-index
+        ipredictand <- which(names(dimnames(counts)) %in% predictand)
         ## Multiplicative factor for alpha parameters, owing to marginalization
         alphas <- prod(dim(counts)[-ipredictand]) * alphas
         ##
@@ -65,9 +67,9 @@ rF <- function(n=1, agent, predictand=NULL, predictor=NULL){
     ##
     ## Create n joint-frequency distributions
     ##
-    ff <- extraDistr::rdirichlet(n, alpha=outer(alphas, c(counts), `+`))
-    ## ff <- nimble::rdirch(n, alpha=outer(alphas, c(counts), `+`))
-    dim(ff) <- c(n,dim(counts))
-    dimnames(ff) <- c(list(sample=NULL), dimnames(counts))
+    ff <- extraDistr::rdirichlet(n, alpha = outer(alphas, c(counts), `+`))
+    ## ff <- nimble::rdirch(n, alpha = outer(alphas, c(counts), `+`))
+    dim(ff) <- c(n, dim(counts))
+    dimnames(ff) <- c(list(sample = NULL), dimnames(counts))
     ff
 }
