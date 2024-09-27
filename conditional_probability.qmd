@@ -157,11 +157,11 @@ is **not** a probability distribution. Calculate the three probabilities above a
 
 ## Learning about a quantity from instances of *similar* quantities {#sec-conditional-joint-sim}
 
-In the previous section we examined how learning about one quantity can change an agent's degree of belief about a *different* quantity, for example knowledge about "transportation" affects beliefs about "urgency", or vice versa. The agent's learning and consequent belief change are reflected in the value of the corresponding conditional probability.
+In the previous section we examined how learning about one quantity can change an agent's degree of belief about a *different* quantity, for example knowledge about "transportation" affects beliefs about "urgency", or vice versa. The agent's learning and ensuing belief change are reflected in the value of the corresponding conditional probability.
 
-This kind of change can also occur with "similar" quantities, that is, quantities that represent the same kind of phenomenon and have exactly the same domain. The maths and calculations are identical to the ones we explored above, but the interpretation and application can be somewhat different.
+This kind of change can also occur with "similar" quantities, that is, quantities that represent the same kind of phenomenon and have the same domain. The maths and calculations are identical to the ones we explored above, but the interpretation and application can be somewhat different.
 
-As an example, imagine a scenario similar to the next-patient arrival above, but now consider the *next three patients* to arrive, and their urgency. Define the following three quantities:
+As an example, imagine a scenario similar to the next-patient arrival above, but now consider the *next three patients* to arrive and their urgency. Define the following three quantities:
 
 $U_1$ : urgency of the next patient\
 $U_2$ : urgency of the second future patient from now\
@@ -177,18 +177,19 @@ The joint quantity $(U_1, U_2, U_3)$ has a domain with $2^3 = 8$ possible values
 - $U_1\mo\nonu \and U_2\mo\nonu \and U_3\mo\urge$
 - $U_1\mo\nonu \and U_2\mo\nonu \and U_3\mo\nonu$
 
+\
 Suppose that an agent, with background information $\yI$, has a particular joint belief distribution for the joint quantity $(U_1, U_2, U_3)$. For example consider the joint distribution implicitly given as follows:
 <!-- 0 53.6  -->
 <!-- 1 11.4  -->
 <!-- 2 3.6  -->
 <!-- 3 1.4  -->
 
-- If $\urge$ appears 0 times out of 3: probability = $53.6\%$
-- If $\urge$ appears 1 times out of 3: probability = $11.4\%$
-- If $\urge$ appears 2 times out of 3: probability = $3.6\%$
-- If $\urge$ appears 3 times out of 3: probability = $1.4\%$
+- If $\urge$ appears in the probability 0 times out of 3:\ \ probability = $53.6\%$
+- If $\urge$ appears 1 times out of 3:\ \ probability = $11.4\%$
+- If $\urge$ appears 2 times out of 3:\ \ probability = $3.6\%$
+- If $\urge$ appears 3 times out of 3:\ \ probability = $1.4\%$
 
-examples:
+Here are some examples of how the probability values are determined by the description above:
 
 :::{.column-page-inset-right}
 $$
@@ -221,7 +222,7 @@ $$\P(U_2\mo\nonu \and U_3\mo\nonu \|\yI) \ .$$
 <!-- 0.65 -->
 :::
 
-From this joint probability distribution the agent can calculate, among other things, its degree of belief that the *third* patient from now will require urgent care, regardless of the urgency of the preceding two patients. It's the marginal probability
+From this joint probability distribution the agent can calculate, among other things, its degree of belief that the *third* patient will require urgent care, regardless of the urgency of the preceding two patients. It's the marginal probability
 
 $$
 \begin{aligned}
@@ -235,21 +236,28 @@ $$
 \end{aligned}
 $$
 
-where the first term $0.114$ in the sum corresponds to $U_1\mo\nonu\and U_2\mo\nonu\and U_3\mo\urge$, the second term $0.036$ to $U_1\mo\nonu\and U_2\mo\urge\and U_3\mo\urge$, and so on.
+where each index $u_1$ and $u_2$ runs over the values $\set{\urge, \nonu}$. This double sum therefore involves four terms. The first term in the sum corresponds to "$U_1\mo\urge\and U_2\mo\urge\and U_3\mo\urge$" and therefore has probability $0.014$ . The second term corresponds to "$U_1\mo\urge\and U_2\mo\nonu\and U_3\mo\urge$" and therefore has probability $0.036$. And so on.
 
-Therefore the agent, right now, has a $20\%$ degree of belief that the third patient will require urgent care.
+Therefore the agent, with its current knowledge, has a $20\%$ degree of belief that the third patient will require urgent care.
 
 \
 
-Now fast-forward in time, after *two* patients have arrived and have been taken good care of; or maybe they haven't arrived yet, but their urgency condition has been ascertained and communicated to the agent. Suppose that *both were non-urgent cases*, and the agent knows this. The agent needs to forecast whether the next (third) patient will require urgent care.
+Now fast-forward in time, after *two* patients have arrived and have been taken good care of; or maybe they haven't arrived yet, but their urgency conditions have been ascertained and communicated to the agent. Suppose that *both patients were or are non-urgent cases*. The agent now knows this fact. The agent needs to forecast whether the third patient will require urgent care.
 
-It wouldn't be sensible to use\ \ $\P(U_3\mo\urge \|\yI)$,\ \ calculated above, because this degree of belief represents an agent having only the background knowledge $\yI$. Now, instead, the agent has additional information about the first two patients, encoded in this `and`ed sentence:
+The relevant degree of belief is obviously not\ \ $\P(U_3\mo\urge \|\yI)$,\ \ calculated above, because this belief represents an agent knowing only $\yI$. Now, instead, the agent has additional information about the first two patients, encoded in this `and`ed sentence:
 
 $$
 U_1\mo\nonu \and U_2\mo\nonu
 $$
 
 The relevant degree of belief is therefore the *conditional* probability
+
+
+$$
+\P(U_3\mo\urge \| U_1\mo\nonu \and U_2\mo\nonu \and \yI)
+$$
+
+Which we can calculate with the same procedure as in the previous section:
 
 $$
 \begin{aligned}
@@ -269,11 +277,10 @@ $$
 \end{aligned}
 $$
 
-This conditional probability of $17.5\%$ for $U_3\mo\nonu$ is *lower* than the marginal one $20.0\%$ calculated previously. **Observation of two patients has thus affected the agent's degree of belief**.
+This conditional probability $17.5\%$ for $U_3\mo\nonu$ is *lower* than $20.0\%$ calculated previously, which was based only on knowledge $\yI$. **Learning about the two first patients has thus affected the agent's degree of belief about the third**.
 
 \
-
-Let's also check how the agent's belief changes in the case where the first two patients are both urgent. The calculation is completely analogous:
+Let's also check how the agent's belief changes in the case where the first two patients are both *urgent* instead. The calculation is completely analogous:
 
 $$
 \begin{aligned}
@@ -293,21 +300,22 @@ $$
 \end{aligned}
 $$
 
-In this case the conditional probability $28.0\%$ for $U_3\mo\urge$ is *higher* than the marginal one $20.0\%$.
+In this case the conditional probability $28.0\%$ for $U_3\mo\urge$ is *higher* than the $20.0\%$, which was based only on knowledge $\yI$.
 
-One possible intuitive explanation of these probability changes, *in the present scenario*, is that observation of two non-urgent cases makes the agent slightly more confident that "this is a day with few urgent cases"; whereas observation of two urgent cases makes the agent more confident that "this is a day with many urgent cases".
+One possible intuitive explanation of these probability changes, *in the present scenario*, is that observation of two non-urgent cases makes the agent slightly more confident that "this is a day with few urgent cases". Whereas observation of two urgent cases makes the agent more confident that "this is a day with many urgent cases".
 
 
 
 :::{.callout-important}
-## {{< fa exclamation-triangle >}}
-In general we cannot say that the probability of a particular value (such as $\urge$ in the scenario above) will decrease or increase as similar or dissimilar values are observed, nor how much the increase or decrease will be.
+## {{< fa exclamation-triangle >}} The diversity of inference scenarios
+In general we cannot say that the probability of a particular value (such as $\urge$ in the scenario above) will decrease or increase as similar or dissimilar values are observed. Nor can we say how much the increase or decrease will be.
 
-In a different situation the probability of $\urge$ could actually **increase** as more and more $\nonu$ cases are observed. Imagine, for instance, a scenario where the agent initially knows that there are 10 urgent and 90 non-urgent cases ahead. Having observed 90 non-urgent cases, the agent will give a much higher probability -- 100% -- that the next case will be an urgent one.
+In a different situation the probability of $\urge$ could actually **increase** as more and more $\nonu$ cases are observed. Imagine, for instance, a scenario where the agent initially knows that there are 10 urgent and 90 non-urgent cases ahead (maybe these 100 patients have already been gathered in a room). Having observed 90 non-urgent cases, the agent will give a much higher, in fact 100%, probability that the next case will be an urgent one. Can you see intuitively why this conditional degree of belief must be 100%?
 
-The differences among such scenarios are reflected in differences of the joint probabilities, from which the conditional probabilities are calculated.
+The differences among scenarios are reflected in differences in joint probabilities, from which the conditional probabilities are calculated. One particular joint probability can correspond to a scenario where observation of a value *increases* the degree of belief in subsequent instances of that value. Another particular joint probability can instead correspond to a scenario where observation of a value *decreases* the degree of belief in subsequent instances of that value.
 
-**All** these situations are correctly handled with the four fundamental rules of inference and the formula for conditional probability derived from them.
+
+**All** these situations are, in any case, correctly handled with the four fundamental rules of inference and the formula for conditional probability derived from them!
 :::
 
 
@@ -318,20 +326,20 @@ a. Using the same joint distribution above, calculate
 
     $$\P(U_1\mo\urge \| U_2\mo\nonu \and U_3\mo\nonu \and \yI)$$
 	
-	that is, the probability that the next patient will require urgent care *given that the agent knows the second and third patients will not-require urgent care*.
+	that is, the probability that the *first* patient will require urgent care *given that the agent knows the second and third patients will not require urgent care*.
 	
-	- Why is the value obtained different from\ \ $\P(U_1\mo\urge \|\yI)$ ?
+	- Why is the value you obtained different from\ \ $\P(U_1\mo\urge \|\yI)$ ?
 	
-	- Describe a scenario in which the calculation above makes sense (and patients 2 and 3 still arrive after patient 1).
+	- Describe a scenario in which the conditional probability above makes sense, and patients 2 and 3 still arrive after patient 1. That is, a scenario where the agent learns that patients 2 and 3 are non-urgent, but still doesn't know the condition of patient 1.
 
 \
 
-b. Do an analysis completely analogous to the previous, three-patient one, but with different background information $\yJ$ that gives a joint probability distribution for $(U_1, U_2, U_3)$ as follows:
+b. Do an analysis completely analogous to the one above, but with different background information $\yJ$ corresponding to the following joint probability distribution for $(U_1, U_2, U_3)$:
 
-    • If $\urge$ appears 0 times out of 3: probability = $0\%$\
-    • If $\urge$ appears 1 times out of 3: probability = $24.5\%$\
-    • If $\urge$ appears 2 times out of 3: probability = $7.8\%$\
-    • If $\urge$ appears 3 times out of 3: probability = $3.1\%$
+    • If $\urge$ appears 0 times out of 3:\ \ probability = $0\%$\
+    • If $\urge$ appears 1 times out of 3:\ \ probability = $24.5\%$\
+    • If $\urge$ appears 2 times out of 3:\ \ probability = $7.8\%$\
+    • If $\urge$ appears 3 times out of 3:\ \ probability = $3.1\%$
 
     1. Calculate
 
@@ -344,7 +352,7 @@ b. Do an analysis completely analogous to the previous, three-patient one, but w
         <!-- 100% -->
         and compare them.
 
-    2. Explain why this particular change in degree of belief occurs, in this situation.
+    2. Find a scenario for which this particular change in degree of belief makes sense.
 
 <!-- ##      i1 i2 i3        p   num   den -->
 <!-- ## [1,]  0  0  1 1.000000 0.245 0.245 -->
@@ -354,32 +362,31 @@ b. Do an analysis completely analogous to the previous, three-patient one, but w
 :::
 
 
-## General case: conditional from joint {#sec-conditional-joint-general}
+## Learning in the general case {#sec-conditional-joint-general}
 
 Take the time to review the two sections above, focusing on the application and meaning of the two scenarios and calculations, and noting the similarities and differences:
 
-- [{{< fa equals >}} The calculations were completely analogous; in particular, the conditional probability was obtained as the quotient of a joint probability and a marginal one.]{.green}
+- [{{< fa equals >}} The calculations were completely analogous. In particular, the conditional probability was obtained as the quotient of a joint probability and a marginal one.]{.green}
 
-- [{{< fa not-equal >}} In the first (next-patient) scenario, information about one aspect of the situation changed the agent's belief about another aspect; the two aspects were somewhat different (transportation and urgency). Whereas in the second (three-patient) scenario, information about analogous occurrences of an aspect of the situation changed the agent's belief about a further occurrence.]{.yellow}
+- [{{< fa not-equal >}} In the first (urgency & transportation) scenario, information about one aspect of the situation changed the agent's belief about another aspect. The two aspects were different (transportation and urgency). Whereas in the second (three-patient) scenario, information about analogous occurrences of an aspect of the situation changed the agent's belief about a further occurrence.]{.yellow}
 
 \
-
 A third scenario is also possible, which combines the two above. Consider the case with three patients, where each patient can require $\urge$ care or not, and can be transported by $\ambu$, $\heli$, or $\othe$ means. To describe this situation, introduce three pairs of quantities, which together form the joint quantity
 
 $$
 (U_1, T_1, \ U_2, T_2, \ U_3, T_3)
 $$
 
-whose meaning should now be obvious. This joint quantity has $(2\cdot 3)^3 = 216$ possible values, corresponding to all urgency & transportation combinations for the three patients.
+whose symbols should be obvious. This joint quantity has $(2\cdot 3)^3 = 216$ possible values, corresponding to all urgency & transportation combinations for the three patients.
 
-Given the joint probability distribution for this joint quantity, it is possible to calculate all kinds of conditional probabilities, which reflect the knowledge that the agent may have acquired. For instance, suppose the agent has observed that
+Given the joint probability distribution for this joint quantity, it is possible to calculate all kinds of conditional probabilities, and therefore consider all the possible ways the agent may learn new information. For instance, suppose the agent learns this:
 
 - the first two patients have not required urgent care
 - the first patient was transported by ambulance
 - the second patient was transported by other means
 - the third patient is arriving by ambulance
 
-and needs to infer whether the third patient will require urgent care. The required probability is 
+and with this learned knowledge, the agent needs to infer whether the third patient will require urgent care. The required conditional probability is
 
 :::{.column-page-right}
 $$
@@ -409,11 +416,13 @@ and is calculated in a way completely analogous to the ones already seen.
 
 \
 
-All three kinds of inference scenarios frequently occur in data science and engineering. In machine learning, the second scenario is connected to "unsupervised learning"; the third, mixed one to "supervised learning". As you just saw, the probability calculus "sees" all of the them as analogous: information about something changes the agent's belief about something else. And the handling of all three cases is perfectly covered by the four fundamental rules of inference.
+All three kinds of inference scenarios that we have discussed occur in data science and engineering. In machine learning, the second scenario is connected to "unsupervised learning"; the third, mixed scenario to "supervised learning". As you just saw, the probability calculus "sees" all of these scenarios as analogous: information about something changes the agent's belief about something else. And the handling of all three cases is perfectly covered by the four fundamental rules of inference.
 
-\
+So let's write down the general formula for all these cases of learning.
 
-Let's now consider a more generic case of a joint quantity with component quantities $\green X$ and $\red Y$, whose joint probability distribution is given. The two quantities could be complicated joint quantities themselves. The conditional probability for $\red Y$, given that $\green X$ has some specific value $\green x^*$, is then
+Let's consider a more generic case of a joint quantity with component quantities $\green X$ and $\red Y$. Their joint probability distribution is given. Each of these two quantities could be a complicated joint quantity by itself.
+
+The conditional probability for $\red Y\mo y$, given that the agent has learned that $\green X$ has some specific value $\green x^*$, is then
 
 $$
 \P({\red Y\mo y}\| {\green X\mo x^*}\and\yI) =
@@ -424,15 +433,15 @@ $$
 }
 $$ {#eq-conditional-joint}
 
-for all possible values $\red y$.
+where the index $\red \upsilon$ runs over all possible values in the domain of $\red Y$.
 
 \
 
-## Conditional from conditional probability {#sec-conditional-conditional}
+## Conditional probabilities as initial information {#sec-conditional-conditional}
 
-As emphasized in [§@sec-inference-origin], probabilities are either obtained from other probabilities, or taken as given probabilities, maybe determined by symmetry requirements. This is also true when we want to calculate conditional probabilities.
+<!-- As emphasized in [§@sec-inference-origin], probabilities are either obtained from other probabilities, or taken as given probabilities, maybe determined by symmetry requirements. This is also true when we want to calculate conditional probabilities. -->
 
-Up to now we have calculated conditional probabilities starting from the joint distribution as given, using the derived formula ([@eq-conditional-joint]). In some situations, however, an agent may have **given conditional probabilities** together with **given marginal probabilities**.
+Up to now we have calculated conditional probabilities, using the derived formula ([@eq-conditional-joint]), starting from the joint probability distribution, which we considered to be given. In some situations, however, an agent may initially possess not a joint probability distribution but  **conditional probabilities** together with **marginal probabilities**.
 
 As an example let's consider a variation of our next-patient scenario one more time. The agent has background information $\yi[S]$ that provides the following set of probabilities:
 
@@ -452,7 +461,7 @@ As an example let's consider a variation of our next-patient scenario one more t
 ::::{.column-margin}
 :::{.callout-important}
 ## {{< fa exclamation-triangle >}}
-[This table has **two** probability distributions: on the first row, one conditional on $U\mo\urge$; on the second row, one conditional on $U\mo\nonu$.  Check that the probabilities on each row indeed sum up to one.]{.small}
+[This table has **two** probability distributions: on the first row, one conditional on $U\mo\urge$; on the second row, one conditional on $U\mo\nonu$.  Check that the probabilities on each row indeed sum up to 1.]{.small}
 :::
 ::::
 
@@ -468,7 +477,7 @@ $$ {#eq-U-marg}
 
 \
 
-With this background information, the agent can also compute all joint probabilities simply using the `and`-rule. For instance
+With this background information, the agent can also compute all joint probabilities simply using the `and`-rule. For instance, the joint probability for $U\mo\urge \and T\mo\heli$ is
 
 $$
 \begin{aligned}
@@ -482,9 +491,9 @@ P(U\mo\urge \| \yi[S])
 \end{aligned}
 $$
 
-:::{.column-margin}
-Note that the joint probabilities are slightly different compared with those from the previous background information $\yi[H]$.
-:::
+<!-- :::{.column-margin} -->
+<!-- Note that the joint probabilities are slightly different compared with those from the previous background information $\yi[H]$. -->
+<!-- ::: -->
 
 And from the joint probabilities, the marginal ones for transportation $T$ can also be calculated. For instance
 
@@ -508,8 +517,8 @@ P(U\mo u \| \yi[S])
 $$
 
 
-
-Suppose that the agent knows that the next patient is being transported by $\heli$, and needs to forecast whether $\urge$ care will be needed. This inference is the conditional probability\ \ $\P(U\mo\urge \| T\mo\heli \and \yi[S])$, which can also be rewritten in terms of the set of probabilities initially given:
+\
+Now suppose that the agent learns that the next patient is being transported by $\heli$, and needs to forecast whether $\urge$ care will be needed. This inference is the conditional probability\ \ $\P(U\mo\urge \| T\mo\heli \and \yi[S])$, which can also be rewritten in terms of the conditional probabilities given initially:
 
 $$
 \begin{aligned}
@@ -535,17 +544,19 @@ P(U\mo u \| \yi[S])
 \end{aligned}
 $$
 
-This calculation has been slightly more involved than the one in [§@sec-conditional-joint-dis] because the joint probabilities were not directly available. Our calculation involved the steps\ \ " $T\|U \longrightarrow T\land U \longrightarrow U\|T$ ".
+This calculation was slightly more involved than the one in [§@sec-conditional-joint-dis], because in the present case the joint probabilities were not directly available. Our calculation involved the steps\ \ $T\|U \enspace\longrightarrow\enspace T\land U \enspace\longrightarrow\enspace U\|T$ .
+
+\
+In this same scenario, note that if the agent were instead interested, say, in forecasting the transportation means knowing that the next patient requires urgent care, then the relevant degree of belief\ \ $\P(T\mo\dotso \| U\mo\urge \and \yi[S])$ would be immediately available and no calculations would be needed.
+
 
 \
 
-If the agent were instead interested, say, in forecasting the transportation means knowing that the next patient requires urgent care, then the relevant degree of belief\ \ $\P(T\mo\dotso \| U\mo\urge \and \yi[S])$ would be immediately available and no calculations would be needed.
+Let's find the general formula for this case, where the agent's background information is represented by conditional probabilities instead of joint probabilities.
 
-## General case: conditional from conditional {#sec-conditional-conditional-general}
+Consider a joint quantity with component quantities $\green X$ and $\red Y$. The conditional probabilities\ \ $\P({\green X\mo\dotso} \| {\red Y\mo\dotso} \and \yI)$\ \ and\ \ $\P({\red Y\mo\dotso} \| \yI)$\ \ are encoded in the agent from the start.
 
-The example from the previous section can be easily generalized. Consider a joint quantity with component quantities $\green X$ and $\red Y$. The probabilities\ \ $\P({\green X\mo\dotso} \| {\red Y\mo\dotso} \and \yI)$\ \ and\ \ $\P({\red Y\mo\dotso} \| \yI)$\ \ are given.
-
-The conditional probability for $\red Y$, given that $\green X$ has some specific value $\green x^*$, is then
+The conditional probability for $\red Y \mo y$, given that the agent has learned that $\green X \mo x^*$, is then
 
 $$
 \P({\red Y\mo y}\| {\green X\mo x^*}\and\yI) =
@@ -559,11 +570,9 @@ $$
 }
 $$ {#eq-conditional-bayes}
 
-for all possible values $\red y$.
-
 In the above formula we recognize [**Bayes's theorem**]{.blue} from [§@sec-bayes-theorem].
 
-This formula is often exaggeratedly emphasized in the literature; some texts even present it as an "axiom" to be used in situations such as the present one. But we see that it is simply a by-product of the four fundamental rules of inference in a specific situation. An AI agent who knows the four fundamental inference rules, and doesn't know what "Bayes's theorem" is, will nevertheless arrive at this very formula.
+This formula is often exaggeratedly emphasized in the literature; some texts even present it as an "axiom" to be used in situations such as the present one. But we see that this formula is simply a by-product of the four fundamental rules of inference in a specific situation. An AI agent who knows the four fundamental inference rules, and doesn't know what "Bayes's theorem" is, will nevertheless arrive at this very formula.
 
 
 ## Conditional densities {#sec-conditional-dens}
@@ -606,7 +615,7 @@ where $\red\varUpsilon$ is the domain of $\red Y$.
 
 ## Graphical representation of conditional probability distributions and densities {#sec-repr-conditional}
 
-Conditional probability distributions and densities can be plotted in all the ways discussed in chapters [-@sec-prob-joint] and [-@sec-prob-marginal]. If we have two quantities $A$ and $B$, often we want to compare the different conditional probability distributions for $A$ given different values of $B$:
+Conditional probability distributions and densities can be plotted in all the ways discussed in chapters [-@sec-prob-joint] and [-@sec-prob-marginal]. If we have two quantities $A$ and $B$, often we want to compare the different conditional probability distributions for $A$, conditional on different values of $B$:
 
 - $\P(A\mo\dotso \| B\mo\cat{one-value} \and \yI)$,
 - $\P(A\mo\dotso \| B\mo\cat{another-value} \and \yI)$,
@@ -615,7 +624,6 @@ Conditional probability distributions and densities can be plotted in all the wa
 and so on. This can be achieved by representing them by overlapping line plots, or side-by-side scatter plots, or similar ways.
 
 \
-
 In [§@sec-marginal-scatter] we saw that if we have the scatter plot for a joint probability *density*, then from its points we can often obtain a scatter plot for its marginal densities. Unfortunately no similar advantage exists for the conditional densities that can be obtained from a joint density. In theory, a conditional density for $Y$, given that a quantity $X$ has value in some small interval $\delta$ around $x$, could be obtained by only considering scatter-plot points having $X$ coordinate in a small interval between $x-\delta/2$ and $x+\delta/2$. But the number of such points is usually too small and the resulting scatter plot could be very misleading.
 
 \
