@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2024-09-28">
+
+<title>ADA511 0.2 Foundations of data science and data-driven engineering - 39&nbsp; Decisions: limitations of present-day machine-learning algorithms</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./utilities_evaluation.html" rel="next">
+<link href="./example_opm2.html" rel="prev">
+<link href="./favicon.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="ada511styles.css">
+</head>
+
+<body class="nav-sidebar docked slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span id="sec-ML-utility-limitation" class="quarto-section-identifier"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title"><span class="midgrey">Decisions: limitations of present-day machine-learning algorithms</span></span></span></h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">ADA511 <span class="small grey">0.2</span><br><span class="small grey">2024-09-28</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dear student<br> and aspiring data engineer</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text"><span class="lightblue"><strong>An invitation</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title"><span class="lightblue">Accept or discard?</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title"><span class="lightblue">Framework</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./basic_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title"><span class="lightblue">Basic decision problems</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-1-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title"><span class="midgrey">First connection with machine learning</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title"><span class="green">What is an inference?</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sentences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title"><span class="green">Sentences</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./truth_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><span class="green">Truth inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title"><span class="green">Probability inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./derived_rules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><span class="green">Shortcut rules</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./monty.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title"><span class="green">Monty Hall and related inference problems</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-2-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><span class="midgrey">Second connection with machine learning</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title"><span class="yellow">Quantities and data types</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types_multi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title"><span class="yellow">Joint quantities and complex data types</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title"><span class="green">Probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./joint_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><span class="green">Joint probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./marginal_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><span class="green">Marginal probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conditional_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probability and learning</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conditional_summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="green">Learning and conditional probability: a summary</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./information.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="green">Information, relevance, independence, association</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-3-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title"><span class="midgrey">Third connection with machine learning</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./populations_variates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title"><span class="yellow">Populations and variates</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title"><span class="yellow">Statistics</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./subpopulations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><span class="yellow">Subpopulations and conditional frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./samples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title"><span class="yellow">Infinite populations and samples</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text"><span class="midgrey"><strong>Machine learning</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine_learning_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Introduction to machine learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./decision_trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Decision trees</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural_networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Neural networks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference III</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./beyond-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="midgrey">Beyond machine learning</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exchangeable_probabilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title"><span class="green">Exchangeable beliefs</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference_from_freqs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="green">Inferences from frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference_about_freqs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title"><span class="green">Inference about frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary_formulae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title"><span class="green">Final inference formulae</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text"><span class="red"><strong>A prototype Optimal Predictor Machine</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dirichlet-mixture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title"><span class="red">The Dirichlet-mixture belief distribution</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title"><span class="red">Code design</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./prototype_code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title"><span class="red">Prototype code and workflow</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./example_opm1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title"><span class="red">Example application: adult-income task</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+ <span class="menu-text"><span class="blue"><strong>Decision-making</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title"><span class="blue">Utilities</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./making_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title"><span class="blue">Making decisions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./example_opm2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title"><span class="red">The prototype Optimal Predictor Machine makes decisions</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">
+ <span class="menu-text"><span class="midgrey"><strong>Further connections with present-day machine-learning</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./limitations_ML.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title"><span class="midgrey">Decisions: limitations of present-day machine-learning algorithms</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utilities_evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title"><span class="midgrey">Evaluation practices and utilities</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">
+ <span class="menu-text"><span class="lightblue"><strong>Conclusion</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./whither.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="lightblue">What next?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="lightblue">References</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./thanks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="lightblue">Thanks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-decision-everywhere" id="toc-sec-decision-everywhere" class="nav-link active" data-scroll-target="#sec-decision-everywhere"><span class="header-section-number">39.1</span> The omnipresence of decision-making in data science and machine learning</a></li>
+  <li><a href="#sec-where-prob-util" id="toc-sec-where-prob-util" class="nav-link" data-scroll-target="#sec-where-prob-util"><span class="header-section-number">39.2</span> Where are the probabilities and the utilities? How are they calculated?</a></li>
+  <li><a href="#sec-limit-class" id="toc-sec-limit-class" class="nav-link" data-scroll-target="#sec-limit-class"><span class="header-section-number">39.3</span> Limitations of machine-learning classifiers (and estimators)</a>
+  <ul class="collapse">
+  <li><a href="#unknowns-vs-decisions" id="toc-unknowns-vs-decisions" class="nav-link" data-scroll-target="#unknowns-vs-decisions">Unknowns vs decisions</a></li>
+  <li><a href="#a-typical-decision-making-problem-in-medicine" id="toc-a-typical-decision-making-problem-in-medicine" class="nav-link" data-scroll-target="#a-typical-decision-making-problem-in-medicine">A typical decision-making problem in medicine</a></li>
+  <li><a href="#sub-optimality-of-a-typical-machine-learning-algorithm" id="toc-sub-optimality-of-a-typical-machine-learning-algorithm" class="nav-link" data-scroll-target="#sub-optimality-of-a-typical-machine-learning-algorithm">Sub-optimality of a typical machine-learning algorithm</a></li>
+  <li><a href="#output-scores-or-weights-are-not-probabilities" id="toc-output-scores-or-weights-are-not-probabilities" class="nav-link" data-scroll-target="#output-scores-or-weights-are-not-probabilities">Output scores or weights are <em>not</em> probabilities!</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span id="sec-ML-utility-limitation" class="quarto-section-identifier"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title"><span class="midgrey">Decisions: limitations of present-day machine-learning algorithms</span></span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2024-09-28</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="hidden">
+<p><span class="math display">\[
+\DeclarePairedDelimiters{\set}{\{}{\}}
+\DeclareMathOperator*{\argmax}{argmax}
+\]</span></p>
+</div>
+<div class="hidden">
+<p><span class="math display">\[
+\DeclarePairedDelimiters{\abs}{\lvert}{\rvert}
+\]</span></p>
+</div>
+<section id="sec-decision-everywhere" class="level2 page-columns page-full" data-number="39.1">
+<h2 data-number="39.1" class="anchored" data-anchor-id="sec-decision-everywhere"><span class="header-section-number">39.1</span> The omnipresence of decision-making in data science and machine learning</h2>
+<p>Many machine-learning textbooks say that</p>
+<blockquote class="blockquote">
+<p>in supervised learning the algorithm learns a functional relationship between some kind of input and some kind of output</p>
+</blockquote>
+<p>Such statement is misleading, because it suggests that there is a functional relationship from input to output, or from predictor to predictand – a functional relationship that’s only waiting to be discovered and “learned”. But as we discussed in <a href="machine_learning_overview.html" class="quarto-xref">chapter&nbsp;&nbsp;<span>24</span></a>, in many important tasks and applications this is actually not true: <strong>there isn’t any functional relationship between input and output at all</strong>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Even if any possible “noise” were removed, there would still <em>not</em> be any functional relationship between the denoised predictor and predictand (<a href="steven-seagal-emotion-chart.jpg" class="external">here is an example from image classification</a>).</p>
+<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;This is one more reason why we use the more general terms “predictor” &amp; “predictand”, rather that “input” &amp; “output”.</p></div><p>In many important tasks there’s only a <em>statistical</em> relationship between predictands and predictors. “Statistical” means that whenever a predictor has value <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x\)</span>,</span> the predictand value may turn out to be <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y'\)</span></span> in some units, but also <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{34,136,51}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y''\)</span></span> in some other units, and so on. As a simple example, consider the <a href="https://www.ssb.no/befolkning/folketall/statistikk/befolkning/artikler/slik-ser-befolkningen-i-norge-ut">Norwegian population in 2022</a>. If our predictand is <span style="display:inline-block;"><span class="math inline">\(\mathit{sex}\)</span></span> and we take as predictor that a person’s <span style="display:inline-block;"><span class="math inline">\(\mathit{age}\)</span></span> is between <span style="display:inline-block;"><span class="math inline">\(85\)</span>–</span><span style="display:inline-block;"><span class="math inline">\(89\)</span></span> years, then a proportion <span style="display:inline-block;"><span class="math inline">\(43 542/(43 542 + 28 220) \approx 61\%\)</span></span> of those persons have <span style="display:inline-block;"><span class="math inline">\(\mathit{sex}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;female;}\)</span>,</span> and the remaining <span style="display:inline-block;"><span class="math inline">\(39\%\)</span></span> proportion has <span style="display:inline-block;"><span class="math inline">\(\mathit{sex}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;male;}\)</span>.</span> This doesn’t mean that, say, <span style="display:inline-block;"><span class="math inline">\({\small\verb;female;}\)</span></span> is the “true” output, and <span style="display:inline-block;"><span class="math inline">\({\small\verb;male;}\)</span></span> is just the effect of noise, or vice versa. That would be nonsense.</p>
+<p>Even in tasks where there actually is a functional relation from predictors to predictands, the agent typically doesn’t know what is the function’s output for particular predictor values, because no such values have been observed in the training data. It must interpolate or extrapolate what it has learned. Also in this case there are several possibilities to choose from.</p>
+<p>A decision-making step also appears in tasks where the agent must <em>generate</em> a new unit. Obviously there are many candidates for generation, which agree with what was observed in the training data. If the agent generates <em>one</em> unit, then it must internally have chosen among the possible candidates.</p>
+</section>
+<section id="sec-where-prob-util" class="level2" data-number="39.2">
+<h2 data-number="39.2" class="anchored" data-anchor-id="sec-where-prob-util"><span class="header-section-number">39.2</span> Where are the probabilities and the utilities? How are they calculated?</h2>
+<p>The remarks above have a very important consequence. If a machine-learning algorithm outputs just <em>one</em> predictand value (or generates one unit), among the possible ones that are consistent with the predictor, then it means that <strong>the algorithm is internally choosing one of the possibilities</strong>.</p>
+<p>Such a choice is obviously a decision-making problem. We know that the optimal, logically consistent choice must be determined by Decision Theory, and its determination requires:</p>
+<ul>
+<li><p><span class="midgrey"><i class="fa-solid fa-circle-info" aria-label="circle-info"></i>&nbsp;&nbsp;Some kind of background knowledge</span></p></li>
+<li><p><span class="green"><i class="fa-solid fa-scale-unbalanced-flip" aria-label="scale-unbalanced-flip"></i>&nbsp;&nbsp;the probabilities of the possible predictand values</span></p></li>
+<li><p><span class="yellow"><i class="fa-solid fa-arrows-split-up-and-left" aria-label="arrows-split-up-and-left"></i>&nbsp;&nbsp;a list of possible decisions</span></p></li>
+<li><p><span class="blue"><i class="fa-solid fa-sack-dollar" aria-label="sack-dollar"></i>&nbsp;&nbsp;the utilities of the decisions, depending on the predictand’s true value</span></p></li>
+</ul>
+<p>The algorithm internally must – at least approximately – be calculating probabilities and maximizing expected utilities. In principle its internal workings should be susceptible to an explanation or interpretation from this point of view.</p>
+<p>For some, or maybe many, machine-learning algorithms such an interpretation is not readily available, and is or can be a very interesting area of research, leading to improvements or to completely new algorithms.</p>
+<p>Available interpretations of machine-learning algorithms are mostly from the point of view of Probability Theory; unfortunately very little from the point of view of Decision Theory. For this reason we now discuss some limitations of present-day algorithms from the decision-theoretic viewpoint.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-rocket" aria-label="rocket"></i> For the extra curious
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The book <a href="https://hvl.instructure.com/courses/28605/modules"><em>Machine Learning</em></a> and Part&nbsp;V of the book <a href="https://hvl.instructure.com/courses/28605/modules"><em>Information Theory, Inference, and Learning Algorithms</em></a> discuss interpretations of several machine-learning algorithms from the point of view of Probability Theory, and in few cases also of Decision Theory.</p>
+</div>
+</div>
+</section>
+<section id="sec-limit-class" class="level2" data-number="39.3">
+<h2 data-number="39.3" class="anchored" data-anchor-id="sec-limit-class"><span class="header-section-number">39.3</span> Limitations of machine-learning classifiers (and estimators)</h2>
+<section id="unknowns-vs-decisions" class="level3">
+<h3 class="anchored" data-anchor-id="unknowns-vs-decisions">Unknowns vs decisions</h3>
+<p>Decision Theory makes a distinction between what is <em>unknown</em> to an agent (“outcomes”), and what the agent has to <em>choose</em> (“decisions”). This distinction is common in everyday problems. We may wonder whether it will rain in the next hour. The point of our wonder, however, is not (except in some situations) the rain phenomenon per se, but its implications about what clothes or shoes we should wear, or about staying indoors or going out, or about going on foot or by car, and so on.</p>
+<p>An important reason for this distinction is that the set of possible decisions often does <strong>not</strong> have a correspondence with the set of unknown possibilities. In fact, the two sets often have different numbers of elements. You can think of many situations in which you are unsure whether some event will happen or not, and you have <em>three</em> plans: one if you are almost sure the event will happen, one if you are almost sure the event will not happen, and a third “safe” plan if you are about 50%/50% uncertain. The “safe” plan typically has consequences that are neither too bad or too good, so that losses and gains are kept to a minimum. This example also shows why the probabilities of the outcomes are important.</p>
+<p><br>
+</p>
+<p>Many present-day machine-learning algorithms are quite limited in this respect:</p>
+<ul>
+<li>their output is typically one of the unknown values, not one of the decisions</li>
+<li>they don’t give the probabilities of the unknown values</li>
+</ul>
+<p>This limitation may not be important in some tasks, for instance when you are classifying some images as “cat” or “dog” for the purpose of a photo album. But it is extremely important and impairing in serious applications, such as clinical ones. Let’s illustrate this with a simple example.</p>
+</section>
+<section id="a-typical-decision-making-problem-in-medicine" class="level3">
+<h3 class="anchored" data-anchor-id="a-typical-decision-making-problem-in-medicine">A typical decision-making problem in medicine</h3>
+<p>A clinician may be uncertain about the presence or absence of some medical condition, let’s say a disease. This uncertainty cannot be fully removed. The clinician’s task is <strong>not simply to guess about the disease, but to choose among different available treatments</strong>. Imagine you may have broken a bone, and the clinician simply tells you: “I guess it’s broken, though I’m not fully sure. Goodbye!”.</p>
+<p>Two crucial points about treatment choice are these:</p>
+<ul>
+<li>there may be <em>more than two</em> possible treatments, even if the uncertainty is binary (disease present vs absent)</li>
+<li>which treatment is optimal depends on the <em>probability</em> that the disease is present, not on a simple “yes/no guess”</li>
+</ul>
+<p>Neglecting both points can lead to disastrous consequences.</p>
+<p>For example, suppose the clinician has three treatments available: <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}A}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}B}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span>.</span> They have different efficacies against the disease, if it is present; and different damaging side-effects for the patient, if the disease is not present. Suppose that efficacy and damage can be measured together as decrease in life expectancy for the patient. The effects are as follows:</p>
+<div class="columns">
+<div class="column" style="width:25%;">
+
+</div><div class="column" style="width:50%;">
+<div id="tbl-treatments" class="sm quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-treatments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;39.1: Change in life expectancy depending on treatment and medical condition
+</figcaption>
+<div aria-describedby="tbl-treatments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table-sm small table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td colspan="2" style="text-align: right;"><span class="math inline">\(\mathit{\color[RGB]{238,102,119}disease}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: right;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;yes;}}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;no;}}\)</span></td>
+</tr>
+<tr class="odd">
+<td rowspan="3" style="text-align: center;"><span class="blue">treatment</span></td>
+<td style="text-align: center;"><span class="math inline">\({\color[RGB]{204,187,68}A}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{204,187,68}-4\,\mathrm{yr}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{204,187,68}0\,\mathrm{yr}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\({\color[RGB]{204,187,68}B}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{204,187,68}-1\,\mathrm{yr}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{204,187,68}-1\,\mathrm{yr}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{204,187,68}0\,\mathrm{yr}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\color[RGB]{204,187,68}-4\,\mathrm{yr}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div><div class="column" style="width:25%;">
+
+</div>
+</div>
+<ul>
+<li><p>treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}A}\)</span></span> is mild (it could actually be a no-treatment option): under it, the patient is expected to live four years shorter if the disease is present, but the life expectancy is unaltered if the disease is not present</p></li>
+<li><p>treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}B}\)</span></span> is intermediate: under it, the patient is expected to live only one year shorter if the disease is present, but also if the disease is not present, owing to the damage caused by this treatment</p></li>
+<li><p>treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span></span> is intensive: under it, the patient is expected not to lose extra years if the disease is present, but will lose four years if the disease is not present, owing to the heavy damage caused by this treatment.</p></li>
+</ul>
+<p>Which of the treatments above should the clinician choose? We now know how the clinician should make the optimal decision, but let’s explore the possible consequences of not making it, in three different scenarios. In each scenario, the clinician has prescribed several clinical tests (the predictors) for the patient, and obtained their results.</p>
+<section id="scenario-1-1090" class="level4">
+<h4 class="anchored" data-anchor-id="scenario-1-1090">Scenario 1: 10%/90%</h4>
+<p>Given the results of the clinical tests, the clinician knows that the patient is typical of a subpopulation of patients where <span class="green">10%</span> have the disease, and <span class="green">90%</span> don’t. The present patient could be one among the 10%, or one of among the 90%.</p>
+<ul>
+<li><p>If the clinician always chooses treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}A}\)</span></span> for this subpopulation, including the present patient, then these patients’ lives will be shortened in total by</p>
+<p><span class="math display">\[
+{\color[RGB]{204,187,68}-4\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}10} +
+{\color[RGB]{204,187,68}0\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}90}
+= \boldsymbol{-40\,\mathrm{yr}}
+\]</span></p></li>
+<li><p>If the clinician always chooses treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}B}\)</span></span> for this subpopulation, including the present patient, then these patients’ lives will be shortened in total by</p>
+<p><span class="math display">\[
+{\color[RGB]{204,187,68}-1\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}10} +
+{\color[RGB]{204,187,68}-1\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}90}
+= \boldsymbol{-100\,\mathrm{yr}}
+\]</span></p></li>
+<li><p>If the clinician always chooses treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span>,</span> then the lives will be shortened in total by</p>
+<p><span class="math display">\[
+{\color[RGB]{204,187,68}0\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}10} +
+{\color[RGB]{204,187,68}-4\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}90}
+= \boldsymbol{-360\,\mathrm{yr}}
+\]</span></p></li>
+</ul>
+<p>Clearly the best decision is treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}A}\)</span>.</span> It is possible that, unfortunately, the present patient’s life will be shortened; but this treatment was the patient’s and clinician’s best bet.</p>
+<p>In this scenario, a clinician that doesn’t choose the optimal treatment is on average taking away from each patient between 7 months and 3 years of life more than was necessary or unavoidable.</p>
+</section>
+<section id="scenario-2-5050" class="level4">
+<h4 class="anchored" data-anchor-id="scenario-2-5050">Scenario 2: 50%/50%</h4>
+<p>Given the results of the clinical tests, the clinician knows that the patient is typical of a subpopulation of patients where <span class="green">50%</span> have the disease, and <span class="green">50%</span> don’t. In this case the present patient could be one of the first 50%, or one of the other 50%.</p>
+<p>Calculations similar to those of scenario&nbsp;1 leads to these results:</p>
+<ul>
+<li><p>Treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}A}\)</span></span></p>
+<p><span class="math display">\[
+{\color[RGB]{204,187,68}-4\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}50} +
+{\color[RGB]{204,187,68}0\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}50}
+= \boldsymbol{-200\,\mathrm{yr}}
+\]</span></p></li>
+<li><p>Treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}B}\)</span>:</span></p>
+<p><span class="math display">\[
+{\color[RGB]{204,187,68}-1\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}50} +
+{\color[RGB]{204,187,68}-1\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}50}
+= \boldsymbol{-100\,\mathrm{yr}}
+\]</span></p></li>
+<li><p>Treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span>:</span></p>
+<p><span class="math display">\[
+{\color[RGB]{204,187,68}0\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}50} +
+{\color[RGB]{204,187,68}-4\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}50}
+= \boldsymbol{-200\,\mathrm{yr}}
+\]</span></p></li>
+</ul>
+<p>The best decision is treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}B}\)</span>.</span></p>
+<p>In this scenario, a clinician who chooses treatments <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}A}\)</span></span> or <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span></span> for patients having the same predictors as the present patient is on average taking away one extra year of life from each patient.</p>
+</section>
+<section id="scenario-3-9010" class="level4">
+<h4 class="anchored" data-anchor-id="scenario-3-9010">Scenario 3: 90%/10%</h4>
+<p>In this scenario <span class="green">90%</span> of patients in the subpopulation with the observed predictors have the disease, and <span class="green">10%</span> don’t. The present patient could belong to either group.</p>
+<ul>
+<li><p>Treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}A}\)</span></span></p>
+<p><span class="math display">\[
+{\color[RGB]{204,187,68}-4\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}90} +
+{\color[RGB]{204,187,68}0\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}10}
+= \boldsymbol{-360\,\mathrm{yr}}
+\]</span></p></li>
+<li><p>Treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}B}\)</span>:</span></p>
+<p><span class="math display">\[
+{\color[RGB]{204,187,68}-1\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}90} +
+{\color[RGB]{204,187,68}-1\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}10}
+= \boldsymbol{-100\,\mathrm{yr}}
+\]</span></p></li>
+<li><p>Treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span>:</span></p>
+<p><span class="math display">\[
+{\color[RGB]{204,187,68}0\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}90} +
+{\color[RGB]{204,187,68}-4\,\mathrm{yr}}\cdot{\color[RGB]{34,136,51}10}
+= \boldsymbol{-40\,\mathrm{yr}}
+\]</span></p></li>
+</ul>
+<p>Treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span></span> is the best decision in this scenario, for reasons complementary to those of scenario&nbsp;1.</p>
+<p>In this scenario, like in the first, a clinician that doesn’t choose the optimal treatment is on average taking away, from each patient, between 7 months and 3 years of life more than was necessary or unavoidable.</p>
+<p><br>
+</p>
+<p>In each scenario, note that <em>any</em> decision strategy different from “sticking to the optimal decision” leads to suboptimal results – that is, lives shortened more than what was unavoidable. In scenario&nbsp;1, for instance, a decision strategy such as “<span class="midgrey">choose treatment <span class="math inline">\({\color[RGB]{204,187,68}A}\)</span> most of the time, and treatment <span class="math inline">\({\color[RGB]{204,187,68}B}\)</span> from time to time</span>” leads to an additional life shortening of several months. This is clear from the following graph, which shows the average reduction in life expectancy for each treatment, depending on the percentage of patients with the disease:</p>
+<p><img src="utilities_treatments.png" class="img-fluid" style="width:100.0%"></p>
+<p>Consider the vertical line corresponding to probability 0.1. Any strategy that mixes treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}A}\)</span></span> with any of the other two will only reduce the life expectancy. This is true for any other probability values and their corresponding optimal treatments.</p>
+<p>From the plot we can see that treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}A}\)</span></span> is optimal if the probability that the disease is present is below <span style="display:inline-block;"><span class="math inline">\(25\%\)</span>,</span> treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span></span> is optimal if the probability is above <span style="display:inline-block;"><span class="math inline">\(75\%\)</span>,</span> and treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}B}\)</span></span> for intermediate probabilities.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="red">Although the intuitive reasoning above has somewhat been phrased in terms of frequency, it’s the <em>probability</em> – the clinician’s degree of belief – that counts.</span> Try to reason about this point through the following exercise:</p>
+<p>Consider a clinician uncertain with 50% probability that the present patient belongs to a 10%/90% frequency subpopulation, and with 50% that the patient belongs to a 90%/10% frequency subpopulation. And unfortunately this uncertainty cannot be removed by further clinical tests. Which treatment should this clinician choose? why?</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-book" aria-label="book"></i> Study reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Chapter&nbsp;1 of <a href="https://hvl.instructure.com/courses/28605/modules"><em>Medical Decision Making</em></a></p></li>
+<li><p>Skim through chapter&nbsp;6 of <a href="https://hvl.instructure.com/courses/28605/modules"><em>Medical Decision Making</em></a></p></li>
+<li><p>§§&nbsp;1.5–1.6 of <a href="https://hvl.instructure.com/courses/28605/modules"><em>Making Decisions</em></a></p></li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="sub-optimality-of-a-typical-machine-learning-algorithm" class="level3">
+<h3 class="anchored" data-anchor-id="sub-optimality-of-a-typical-machine-learning-algorithm">Sub-optimality of a typical machine-learning algorithm</h3>
+<p>The clinical example above shows that there isn’t any one-to-one connection between decisions and unknowns. We cannot say, for instance, that treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span></span> “corresponds” to the presence of the disease, because the best treatment is actually <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}B}\)</span>,</span> not <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span>,</span> if the probability for <span style="display:inline-block;"><span class="math inline">\(\mathit{\color[RGB]{238,102,119}disease}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;yes;}}\)</span></span> is above 50% but below 75%.</p>
+<p>Now imagine that the clinician inputs the patient’s predictors into a neural network, trained to give an output about the presence or absence of the disease. The neural network outputs <code>yes</code>, but it’s known that the neural network can err. Which treatment should the clinician choose?</p>
+<ul>
+<li><p>Does the output <code>yes</code> mean that the probability for <span style="display:inline-block;"><span class="math inline">\(\mathit{\color[RGB]{238,102,119}disease}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{238,102,119}{\small\verb;yes;}}\)</span></span> was above 50%? Then the clinician doesn’t know whether it’s above or below 75%, and can’t make the optimal choice between <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}B}\)</span>.</span> At best the clinician can unsystematically alternate between these two treatments, but as we saw above this mixture is sub-optimal.</p></li>
+<li><p>Is the output <code>yes</code> produced with a particular probability? But what is this probability? The output could be <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{238,102,119}{\small\verb;yes;}}\)</span></span> even if the probability were less than 50% or 25%. Then neither in this case can the clinician make the optimal choice between all three treatments. And a mixture of all three is again sub-optimal.</p></li>
+</ul>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Could the clinician deduce an approximate probability by looking at the statistics (confusion matrix) of the neural network on some test set?</p>
+<p>Explore and maybe even implement this possibility.</p>
+</div>
+</div>
+</section>
+<section id="output-scores-or-weights-are-not-probabilities" class="level3">
+<h3 class="anchored" data-anchor-id="output-scores-or-weights-are-not-probabilities">Output scores or weights are <em>not</em> probabilities!</h3>
+<p>Some machine-learning algorithms are capable of giving continuous “scores” or “weights” between 0 and 1, instead of a simple answer such as “yes” or “no”. But unfortunately, typically <strong>such scores are not probabilities or frequencies</strong>, even if there may be some association between them and the probability or frequency.</p>
+<p>A real-life example of this mismatch is evident in the plot below (see “for the extra curious” below for references). It shows the 0–1 output score given by a random forest in a binary-classification task on a test set, versus the actual frequency of the corresponding class:</p>
+<p><img src="mismatch_freq_weight.png" class="img-fluid" style="width:100.0%"></p>
+<p>Clearly the output score is different from the frequency; if they were the same the graphs would be straight lines with ±45° inclination.</p>
+<p>Imagine what would happen if the clinician from our example above <em>mistook</em> the output score for a probability:</p>
+<ul>
+<li><p><span class="yellow"><i class="fa-regular fa-face-grin-beam-sweat" aria-label="face-grin-beam-sweat"></i></span>&nbsp;&nbsp;Output score in the <span class="midgrey">range <span class="math inline">\(0\)</span>–<span class="math inline">\(0.25\)</span></span>: the clinician would choose treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}A}\)</span>.</span> Luckily the upper boundary of this score range approximately corresponds to a frequency of <span style="display:inline-block;"><span class="math inline">\(25\%\)</span>,</span> so in this case the clinician would be choosing the optimal treatment.</p></li>
+<li><p><span class="yellow"><i class="fa-regular fa-face-grin-beam-sweat" aria-label="face-grin-beam-sweat"></i></span>&nbsp;&nbsp;Output score in the <span class="midgrey">range <span class="math inline">\(0.25\)</span>–<span class="math inline">\(0.5\)</span></span>: the clinician would choose treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}B}\)</span>.</span> Luckily the upper boundary of this score range approximately corresponds to a frequency of <span style="display:inline-block;"><span class="math inline">\(75\%\)</span></span> (note the mismatch), so in this case the clinician would be choosing the optimal treatment.</p></li>
+<li><p><span class="red"><i class="fa-regular fa-frown" aria-label="frown"></i></span>&nbsp;&nbsp;Output score in the <span class="midgrey">range <span class="math inline">\(0.5\)</span>–<span class="math inline">\(0.75\)</span></span>: the clinician would choose treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}B}\)</span>.</span> But the corresponding frequency is approximately between <span style="display:inline-block;"><span class="math inline">\(75\%\)</span>–</span><span style="display:inline-block;"><span class="math inline">\(90\%\)</span>,</span> so the optimal treatment is actually <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span>.</span> As calculated in Scenario&nbsp;3 above, the clinician would be then be shortening the patient’s life by 7 months more than was unavoidable.</p></li>
+<li><p><span class="yellow"><i class="fa-regular fa-face-grin-beam-sweat" aria-label="face-grin-beam-sweat"></i></span>&nbsp;&nbsp;Output score in the <span class="midgrey">range <span class="math inline">\(0.75\)</span>–<span class="math inline">\(1\)</span></span>: the clinician would choose treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span>.</span> Luckily this corresponds to an approximate frequency range <span style="display:inline-block;"><span class="math inline">\(90\%\)</span>–</span><span style="display:inline-block;"><span class="math inline">\(92\%\)</span>,</span> where treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}C}\)</span></span> is indeed optimal.</p></li>
+</ul>
+<p>Note that we cannot say “the suboptimal treatment is chosen one out of four times”, because in this example we don’t know how many patients end up having a score in the <span class="midgrey"><span class="math inline">\(0.5\)</span>–<span class="math inline">\(0.75\)</span></span> range. In a concrete case it could be that 90% of the patients end up in this range, which would mean that the misuse of the output score would lead to a suboptimal treatment in 90% of cases.</p>
+<p><br>
+</p>
+<p>Another real example of the difference between weights or scores and probabilities is shown in the plot below, obtained by applying a neural network to the same binary-classification task on a test set. The <em>x</em>-axis shows the internal output-layer weight that the neural network assign to one class (more precisely, the diagonal where the two output-layer weights have equal values). The <em>y</em>-axis shows the frequency of that class. Typically a <a href="https://mathworld.wolfram.com/SigmoidFunction.html">“softmax” or sigmoid function</a> is applied to the output-layer weights, in order to obtain positive, normalized scores that are often miscalled “probabilities”. The softmax in the present case is shown as the <span class="midgrey">dashed grey line</span>.</p>
+<p><img src="mismatch_freq_weight_NN.png" class="img-fluid" style="width:100.0%"></p>
+<p>We can observe an even worse mismatch that for the random forest. For instance, if the softmax is between <span style="display:inline-block;"><span class="math inline">\(0\)</span>–</span><span style="display:inline-block;"><span class="math inline">\(0.25\)</span>,</span> then the output-layer weight must have been less than approximately <span style="display:inline-block;"><span class="math inline">\(-0.5\)</span>,</span> which in turn means that the actual frequency could be anywhere between <span style="display:inline-block;"><span class="math inline">\(0\%\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(50\%\)</span>.</span> For a softmax between <span style="display:inline-block;"><span class="math inline">\(0.75\)</span>–</span><span style="display:inline-block;"><span class="math inline">\(1\)</span>,</span> the actual frequency could be anywhere between <span style="display:inline-block;"><span class="math inline">\(50\%\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(92\%\)</span>.</span></p>
+<p>In both plots above, notice how the probability for each class can never be higher than around <span style="display:inline-block;"><span class="math inline">\(92\%\)</span>,</span> yet the weights or scores go up to <span style="display:inline-block;"><span class="math inline">\(1\)</span>.</span></p>
+<div class="callout callout-style-default callout-important no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i> Don’t use misleading terminology
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Please don’t call the score or weight output of a machine-learning algorithm a “probability” or “frequency”, unless you’ve first made sure that it actually is a probability or frequency. Just because some numbers are positive and sum up to one doesn’t mean that they are a probability or frequency distribution.</p>
+<p>Using this kind of mistaken terminology shows downright scientific incompetence, and its consequences, as you can see from the medical examples above, are borderline scientific malpractice.</p>
+</div>
+</div>
+<p><br>
+</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-rocket" aria-label="rocket"></i> For the extra curious
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://doi.org/10.31219/osf.io/vct9y"><em>Don’t guess what’s true: choose what’s optimal. A probability transducer for machine-learning classifiers</em></a></p>
+</div>
+</div>
+
+
+</section>
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./example_opm2.html" class="pagination-link  aria-label=" &lt;span="" prototype="" optimal="" predictor="" machine="" makes="" decisions]{.red}&lt;="" span&gt;"="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title"><span class="red">The prototype Optimal Predictor Machine makes decisions</span></span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./utilities_evaluation.html" class="pagination-link" aria-label="<span class='chapter-number'>40</span>&nbsp; <span class='chapter-title'>[Evaluation practices and utilities]{.midgrey}</span>">
+        <span class="nav-page-text"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title"><span class="midgrey">Evaluation practices and utilities</span></span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

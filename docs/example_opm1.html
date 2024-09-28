@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2024-09-05">
+
+<title>ADA511 0.2 Foundations of data science and data-driven engineering - 35&nbsp; Example application: adult-income task</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./utilities.html" rel="next">
+<link href="./prototype_code.html" rel="prev">
+<link href="./favicon.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="ada511styles.css">
+</head>
+
+<body class="nav-sidebar docked slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span id="sec-example-opm1" class="quarto-section-identifier"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title"><span class="red">Example application: adult-income task</span></span></span></h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">ADA511 <span class="small grey">0.2</span><br><span class="small grey">2024-09-05</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dear student<br> and aspiring data engineer</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text"><span class="lightblue"><strong>An invitation</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title"><span class="lightblue">Accept or discard?</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title"><span class="lightblue">Framework</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./basic_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title"><span class="lightblue">Basic decision problems</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-1-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title"><span class="midgrey">First connection with machine learning</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title"><span class="green">What is an inference?</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sentences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title"><span class="green">Sentences</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./truth_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><span class="green">Truth inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title"><span class="green">Probability inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./derived_rules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><span class="green">Shortcut rules</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./monty.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title"><span class="green">Monty Hall and related inference problems</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-2-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><span class="midgrey">Second connection with machine learning</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title"><span class="yellow">Quantities and data types</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types_multi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title"><span class="yellow">Joint quantities and complex data types</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title"><span class="green">Probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./joint_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><span class="green">Joint probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./marginal_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><span class="green">Marginal probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conditional_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probability and learning</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conditional_summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="green">Learning and conditional probability: a summary</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./information.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="green">Information, relevance, independence, association</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-3-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title"><span class="midgrey">Third connection with machine learning</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./populations_variates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title"><span class="yellow">Populations and variates</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title"><span class="yellow">Statistics</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./subpopulations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><span class="yellow">Subpopulations and conditional frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./samples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title"><span class="yellow">Infinite populations and samples</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text"><span class="midgrey"><strong>Machine learning</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine_learning_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Introduction to machine learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./decision_trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Decision trees</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural_networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Neural networks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference III</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./beyond-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="midgrey">Beyond machine learning</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exchangeable_probabilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title"><span class="green">Exchangeable beliefs</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference_from_freqs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="green">Inferences from frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference_about_freqs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title"><span class="green">Inference about frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary_formulae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title"><span class="green">Final inference formulae</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text"><span class="red"><strong>A prototype Optimal Predictor Machine</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dirichlet-mixture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title"><span class="red">The Dirichlet-mixture belief distribution</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title"><span class="red">Code design</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./prototype_code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title"><span class="red">Prototype code and workflow</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./example_opm1.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title"><span class="red">Example application: adult-income task</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+ <span class="menu-text"><span class="blue"><strong>Decision-making</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title"><span class="blue">Utilities</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./making_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title"><span class="blue">Making decisions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./example_opm2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title"><span class="red">The prototype Optimal Predictor Machine makes decisions</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">
+ <span class="menu-text"><span class="midgrey"><strong>Further connections with present-day machine-learning</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./limitations_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title"><span class="midgrey">Decisions: limitations of present-day machine-learning algorithms</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utilities_evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title"><span class="midgrey">Evaluation practices and utilities</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true">
+ <span class="menu-text"><span class="lightblue"><strong>Conclusion</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./whither.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="lightblue">What next?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="lightblue">References</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./thanks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="lightblue">Thanks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#define-the-task" id="toc-define-the-task" class="nav-link active" data-scroll-target="#define-the-task"><span class="header-section-number">35.1</span> Define the task</a></li>
+  <li><a href="#collect-prepare-background-info" id="toc-collect-prepare-background-info" class="nav-link" data-scroll-target="#collect-prepare-background-info"><span class="header-section-number">35.2</span> Collect &amp; prepare background info</a>
+  <ul class="collapse">
+  <li><a href="#variates-and-domains" id="toc-variates-and-domains" class="nav-link" data-scroll-target="#variates-and-domains">Variates and domains</a></li>
+  <li><a href="#agents-parameters-k_textmi-k_textma" id="toc-agents-parameters-k_textmi-k_textma" class="nav-link" data-scroll-target="#agents-parameters-k_textmi-k_textma">Agent’s parameters <span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span></a></li>
+  </ul></li>
+  <li><a href="#collect-prepare-training-data" id="toc-collect-prepare-training-data" class="nav-link" data-scroll-target="#collect-prepare-training-data"><span class="header-section-number">35.3</span> Collect &amp; prepare training data</a></li>
+  <li><a href="#prepare-opm-agent" id="toc-prepare-opm-agent" class="nav-link" data-scroll-target="#prepare-opm-agent"><span class="header-section-number">35.4</span> Prepare OPM agent</a></li>
+  <li><a href="#application-and-exploration" id="toc-application-and-exploration" class="nav-link" data-scroll-target="#application-and-exploration"><span class="header-section-number">35.5</span> Application and exploration</a>
+  <ul class="collapse">
+  <li><a href="#application-only-predictands" id="toc-application-only-predictands" class="nav-link" data-scroll-target="#application-only-predictands">Application: only predictands</a></li>
+  <li><a href="#application-specifying-predictors" id="toc-application-specifying-predictors" class="nav-link" data-scroll-target="#application-specifying-predictors">Application: specifying predictors</a></li>
+  <li><a href="#the-rf-function" id="toc-the-rf-function" class="nav-link" data-scroll-target="#the-rf-function">The <code>rF()</code> function</a></li>
+  <li><a href="#exploring-the-population-properties-mutual-information" id="toc-exploring-the-population-properties-mutual-information" class="nav-link" data-scroll-target="#exploring-the-population-properties-mutual-information">Exploring the population properties: mutual information</a></li>
+  </ul></li>
+  <li><a href="#example-application-to-new-data" id="toc-example-application-to-new-data" class="nav-link" data-scroll-target="#example-application-to-new-data"><span class="header-section-number">35.6</span> Example application to new data</a></li>
+  <li><a href="#sec-compare-opm" id="toc-sec-compare-opm" class="nav-link" data-scroll-target="#sec-compare-opm"><span class="header-section-number">35.7</span> Comparison</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span id="sec-example-opm1" class="quarto-section-identifier"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title"><span class="red">Example application: adult-income task</span></span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2024-09-05</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="hidden">
+<p><span class="math display">\[
+\DeclarePairedDelimiters{\set}{\{}{\}}
+\DeclareMathOperator*{\argmax}{argmax}
+\]</span></p>
+</div>
+<div class="hidden">
+
+</div>
+<div class="hidden">
+
+</div>
+<p>[You can find a Jupyther notebook associated with the present chapter: <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/example_opm1.ipynb"><code>example_opm1.ipynb</code></a>, but note that it’s less annotated and partly unmaintained.</p>
+<p>Let’s illustrate the example workflow described in <a href="prototype_code.html#sec-opm-workflow" class="quarto-xref">§&nbsp;<span>34.2</span></a> with a toy, but not too simplistic, example, based on the <a href="https://archive.ics.uci.edu/dataset/2/adult">adult-income dataset</a>.</p>
+<p>All code functions and data files are in the directory<br>
+<a href="https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal">https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal</a></p>
+<p>We start loading the R libraries and functions needed at several stages. You need to have installed<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> the packages <a href="https://cran.r-project.org/package=data.table"><em>data.table</em></a>, <a href="https://cran.r-project.org/package=extraDistr"><em>extraDistr</em></a>, <a href="https://cran.r-project.org/package=foreach"><em>foreach</em></a>, <a href="https://cran.r-project.org/package=khroma"><em>khroma</em></a>. Make sure you have saved all source files and data files in the same directory.</p>
+<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;This is done with the <a href="https://rdrr.io/r/utils/install.packages.html"><code>install.packages()</code> function</a>.</p></div><div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'data.table'</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'extraDistr'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'foreach'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'khroma'</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'tplotfunctions.R'</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'guessmetadata.R'</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'buildagent.R'</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'infer.R'</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'decide.R'</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'mutualinfo.R'</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'rF.R'</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'plotFsamples1D.R'</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repr.plot.width=</span><span class="dv">6</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">repr.plot.height=</span><span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br>
+</p>
+<section id="define-the-task" class="level2" data-number="35.1">
+<h2 data-number="35.1" class="anchored" data-anchor-id="define-the-task"><span class="header-section-number">35.1</span> Define the task</h2>
+<p>The main task is to infer whether a USA citizen earns less (≤) or more (&gt;) than USD 50 000/year, given a set of characteristics of that citizen. In view of later workflow stages, let’s note a couple of known and unknown facts to delimit this task in a more precise manner:</p>
+<ul>
+<li><p>Given the flexibility of the agent we shall use, we can generalize the task: to infer any subset of the set of characteristics, given any other subset. In other words, we can choose the predictand and predictor variates for any new citizen. Later on we shall also extend the task to making a concrete decision, based on utilities relevant to that citizen.</p>
+<p>This flexibility is also convenient because no explanation is given as to <em>what purpose</em> the income should be guessed.</p></li>
+<li><p>The training data come from a 1994&nbsp;census, and our agent will use an exchangeable belief distribution about the population. The value of the USD and the economic situation of the country changes from year to year, as well as the informational relationships between economic and demographic factors. For this reason the agent should be used to draw inferences about at most one or two years around 1994. Beyond such time range the exchangeability assumption is too dubious and risky.</p></li>
+<li><p>The <a href="https://www.macrotrends.net/countries/USA/united-states/population">USA population in 1994 was around 260 000 000</a>, and we shall use around 11 000 training data. The population size can therefore be considered approximately infinite.</p></li>
+</ul>
+<p><br>
+</p>
+</section>
+<section id="collect-prepare-background-info" class="level2" data-number="35.2">
+<h2 data-number="35.2" class="anchored" data-anchor-id="collect-prepare-background-info"><span class="header-section-number">35.2</span> Collect &amp; prepare background info</h2>
+<section id="variates-and-domains" class="level3">
+<h3 class="anchored" data-anchor-id="variates-and-domains">Variates and domains</h3>
+<p>The variates to be used must be of nominal type, because our agent’s background beliefs (represented by the Dirichlet-mixture distribution) are only appropriate for nominal variates. In this toy example we simply discard all original non-nominal variates. These included some, such as age, that would surely be relevant for this task. As a different approach, we could have coarsened each non-nominal variate into three or four range values, so that treating it as nominal would have been an acceptable approximation.</p>
+<p>First, create a preliminary metadata file by running the function <code>guessmetadata()</code> on the training data <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/train-income_data_example.csv"><code>train-income_data_example.csv</code></a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">guessmetadata</span>(<span class="at">data=</span><span class="st">'train-income_data_example.csv'</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">file=</span><span class="st">'preliminary.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Inspect the resulting file <code>preliminary.csv</code> and check whether you can alter it to add additional background information.</p>
+<p>As an example, note that domain of the <span style="display:inline-block;"><span class="math inline">\(\mathit{native\_country}\)</span></span> variate does not include <span style="display:inline-block;"><span class="math inline">\({\small\verb;Norway;}\)</span></span> or <span style="display:inline-block;"><span class="math inline">\({\small\verb;Netherlands;}\)</span>.</span> Yet it’s extremely likely that there were some native Norwegian or Dutch USA citizens in 1994; maybe too few to have been sampled into the training data. Let’s add these two values to the list of domain values, and increase the domain size of <span style="display:inline-block;"><span class="math inline">\(\mathit{native\_country}\)</span></span> from 40 to 42. The resulting, updated metadata file has already been saved as <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/meta_income_data_example.csv"><code>meta_income_data_example.csv</code></a>.</p>
+</section>
+<section id="agents-parameters-k_textmi-k_textma" class="level3">
+<h3 class="anchored" data-anchor-id="agents-parameters-k_textmi-k_textma">Agent’s parameters <span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span></h3>
+<p>How many data should the agent learn in order to appreciably change its initial beliefs about the variates above, for the USA 1994 population? Let’s put an upper bound at around 1 000 000 (that’s roughly 0.5% of the whole population) with <span style="display:inline-block;"><span class="math inline">\(k_{\text{ma}}=20\)</span>,</span> and a lower bound at 1 with <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}=0\)</span>;</span> these are the default values. We shall see later what the agent suggests might be a reasonable amount of training data.</p>
+<p><br>
+</p>
+</section>
+</section>
+<section id="collect-prepare-training-data" class="level2" data-number="35.3">
+<h2 data-number="35.3" class="anchored" data-anchor-id="collect-prepare-training-data"><span class="header-section-number">35.3</span> Collect &amp; prepare training data</h2>
+<p>The 11 306 training data have been prepared by including only nominal variates, and discarding datapoints with partially missing data (although the function <code>buildagent()</code> discards such incomplete datapoints automatically). The resulting file is <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/test-income_data_example.csv"><code>test-income_data_example.csv</code></a>.</p>
+<p><br>
+</p>
+</section>
+<section id="prepare-opm-agent" class="level2" data-number="35.4">
+<h2 data-number="35.4" class="anchored" data-anchor-id="prepare-opm-agent"><span class="header-section-number">35.4</span> Prepare OPM agent</h2>
+<p>For the sake of this example we shall prepare two agents with the same background information:</p>
+<ul>
+<li><p><code>opm10</code>, trained with 10 training datapoints</p></li>
+<li><p><code>opmall</code>, trained with all 11 306 training datapoints</p></li>
+</ul>
+<p>Prepare and train each with the <code>buildagent()</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## temporarily load all training data</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>traindata <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">'train-income_data_example.csv'</span>, <span class="at">header=</span><span class="cn">TRUE</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="do">## feed first 10 datapoints to an agent</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>opm10 <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(<span class="at">metadata=</span><span class="st">'meta_income_data_example.csv'</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data=</span>traindata[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="do">## delete training data for memory efficiency</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(traindata)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>opmall <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(<span class="at">metadata=</span><span class="st">'meta_income_data_example.csv'</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data=</span><span class="st">'train-income_data_example.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br>
+</p>
+<p>We can peek into the internal structure of these “agent objects” with <code>str()</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(opmall)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 4
+ $ counts   : num [1:7, 1:16, 1:7, 1:14, 1:6, 1:5, 1:2, 1:42, 1:2] 0 0 0 0 0 0 0 0 0 0 ...
+  ..- attr(*, "dimnames")=List of 9
+  .. ..$ workclass     : chr [1:7] "Federal-gov" "Local-gov" "Private" "Self-emp-inc" ...
+  .. ..$ education     : chr [1:16] "10th" "11th" "12th" "1st-4th" ...
+  .. ..$ marital_status: chr [1:7] "Divorced" "Married-AF-spouse" "Married-civ-spouse" "Married-spouse-absent" ...
+  .. ..$ occupation    : chr [1:14] "Adm-clerical" "Armed-Forces" "Craft-repair" "Exec-managerial" ...
+  .. ..$ relationship  : chr [1:6] "Husband" "Not-in-family" "Other-relative" "Own-child" ...
+  .. ..$ race          : chr [1:5] "Amer-Indian-Eskimo" "Asian-Pac-Islander" "Black" "Other" ...
+  .. ..$ sex           : chr [1:2] "Female" "Male"
+  .. ..$ native_country: chr [1:42] "Cambodia" "Canada" "China" "Columbia" ...
+  .. ..$ income        : chr [1:2] "&lt;=50K" "&gt;50K"
+ $ alphas   : num [1:21] 1 2 4 8 16 32 64 128 256 512 ...
+ $ auxalphas: num [1:21] -160706 -157643 -154588 -151547 -148530 ...
+ $ palphas  : num [1:21] 0 0 0 0 0 0 0 0 0 0 ...
+ - attr(*, "class")= chr [1:2] "agent" "list"</code></pre>
+</div>
+</div>
+<p>this shows that each agent is encoded as a list of four objects:</p>
+<ul>
+<li>the array <code>counts</code>, containing the counts <span class="math inline">\(\color[RGB]{34,136,51}\# z\)</span></li>
+<li>the vector <code>alphas</code>, containing the values of <span class="math inline">\(2^k\)</span></li>
+<li>the vector <code>auxalphas</code>, containing the (logarithm of) the multiplicative factors (<a href="code_design.html#sec-code-computations" class="quarto-xref">§&nbsp;<span>33.2</span></a>)</li>
+<li>the vector <code>palphas</code>, containing the updated probabilities about the required amount of training data</li>
+</ul>
+<p>The agent has internally guessed how many training data should be necessary to affect its prior beliefs. We can peek at its guess by plotting the <code>alphas</code> parameters against the <code>palphas</code> probabilities:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tplot</span>(<span class="at">x=</span>opmall<span class="sc">$</span>alphas, <span class="at">y=</span>opmall<span class="sc">$</span>palphas, <span class="at">type=</span><span class="st">'b'</span>,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10000</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab=</span><span class="st">'required number of training data'</span>, <span class="at">ylab=</span><span class="st">'probability'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The most probable amount seems to be of the order of magnitude of 2000 units.</p>
+<p>Note that you can see the complete list of variates and their domains by simply calling <code>dimnames(opmall$counts)</code> (or any relevant agent-object name instead of <code>opmall</code>). Here is the beginning of the list:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">dimnames</span>(opmall<span class="sc">$</span>counts))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$workclass
+[1] "Federal-gov"      "Local-gov"        "Private"          "Self-emp-inc"    
+[5] "Self-emp-not-inc" "State-gov"        "Without-pay"     
+
+$education
+ [1] "10th"         "11th"         "12th"         "1st-4th"      "5th-6th"     
+ [6] "7th-8th"      "9th"          "Assoc-acdm"   "Assoc-voc"    "Bachelors"   
+[11] "Doctorate"    "HS-grad"      "Masters"      "Preschool"    "Prof-school" 
+[16] "Some-college"
+
+$marital_status
+[1] "Divorced"              "Married-AF-spouse"     "Married-civ-spouse"   
+[4] "Married-spouse-absent" "Never-married"         "Separated"            
+[7] "Widowed"              
+
+$occupation
+ [1] "Adm-clerical"      "Armed-Forces"      "Craft-repair"      "Exec-managerial"  
+ [5] "Farming-fishing"   "Handlers-cleaners" "Machine-op-inspct" "Other-service"    
+ [9] "Priv-house-serv"   "Prof-specialty"    "Protective-serv"   "Sales"            
+[13] "Tech-support"      "Transport-moving" 
+
+$relationship
+[1] "Husband"        "Not-in-family"  "Other-relative" "Own-child"     
+[5] "Unmarried"      "Wife"          
+
+$race
+[1] "Amer-Indian-Eskimo" "Asian-Pac-Islander" "Black"              "Other"             
+[5] "White"             </code></pre>
+</div>
+</div>
+<p><br>
+</p>
+</section>
+<section id="application-and-exploration" class="level2 page-columns page-full" data-number="35.5">
+<h2 data-number="35.5" class="anchored" data-anchor-id="application-and-exploration"><span class="header-section-number">35.5</span> Application and exploration</h2>
+<section id="application-only-predictands" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="application-only-predictands">Application: only predictands</h3>
+<p>Our two agents are ready to be applied to new instances.</p>
+<p>Before applying them, let’s check some of their inferences, and see if we find anything unconvincing about them. If we find something unconvincing, it means that the background information we provided to the agent doesn’t match the one in our intuition. Then there are two or three possibilities: our intuition is misleading us and need correcting; or we need to go back to stage <span class="blue"><em>Collect &amp; prepare background info</em></span> and correct the background information given to the agent; or a combination of these two possibilities.</p>
+<p>We ask the <code>opm10</code> agent to forecast the <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span></span> of the next unit, using the <code>infer()</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">infer</span>(<span class="at">agent=</span>opm10, <span class="at">predictand=</span><span class="st">'income'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>income
+   &lt;=50K     &gt;50K 
+0.506288 0.493712 </code></pre>
+</div>
+</div>
+<p>This agent gives a slightly larger probability to the <span style="display:inline-block;"><span class="math inline">\({\small\verb;&lt;=50K;}\)</span></span> case. Using the function <code>plotFsamples1D()</code> we can also inspect the <code>opm10</code>-agent’s belief about the frequency distribution of <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span></span> for the full population. This belief is represented by a generalized scatter plot of 200 representative frequency distributions, represented as the <span class="grey">grey lines</span>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opm10,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">n=</span><span class="dv">200</span>, <span class="co"># number of example frequency distributions</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictand=</span><span class="st">'income'</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="co"># y-axis range</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">main=</span><span class="st">'opm10'</span>) <span class="co"># plot title</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>where the <span class="blue">blue line</span> is the probability distribution previously calculated with the <code>infer()</code> function.</p>
+<p>This plot expresses the <code>opm10</code>-agent’s belief that future training data might lead to even higher probabilities for <span style="display:inline-block;"><span class="math inline">\({\small\verb;&lt;=50K;}\)</span>.</span> But note that the agent is not excluding the possibility of lower probabilities.</p>
+<p>Let’s visualize the beliefs of the <code>opmall</code>-agent, trained with the full training dataset:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opmall, <span class="at">n=</span><span class="dv">200</span>, <span class="at">predictand=</span><span class="st">'income'</span>,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opmall'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The probability that the next unit has <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&lt;=50;}\)</span></span> is now above 70%. Also note that the <code>opmall</code>-agent doesn’t believe that this probability would change appreciably if more training data were provided.</p>
+<p><br>
+</p>
+<p>We can perform a similar exploration for any other variate. Let’s take the <span style="display:inline-block;"><span class="math inline">\(\mathit{race}\)</span></span> variate for example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opm10, <span class="at">n=</span><span class="dv">200</span>, <span class="at">predictand=</span><span class="st">'race'</span>,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opm10'</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">cex.axis=</span><span class="fl">0.75</span>) <span class="co"># smaller axis-font size</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Note again how the little-trained <code>opm10</code>-agent has practically uniform beliefs. But it’s also expressing the fact that future training data will probably increase the probability of <span style="display:inline-block;"><span class="math inline">\(\mathit{race}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;White;}\)</span>.</span></p>
+<p>This is corroborated by the fully-trained agent:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opmall, <span class="at">n=</span><span class="dv">200</span>, <span class="at">predictand=</span><span class="st">'race'</span>,</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opmall'</span>, <span class="at">cex.axis=</span><span class="fl">0.75</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><br>
+</p>
+<p>These checks are satisfying, but it’s good to examine their agreement or disagreement with our intuition. Examine the last plot for example. The <code>opmall</code> agent has very firm beliefs (no spread in the <span class="grey">grey lines</span>) about the full-population distribution of <span style="display:inline-block;"><span class="math inline">\(\mathit{race}\)</span>.</span> Do you think its beliefs are too firm, after 11 000 datapoints? would you like the agent to be more “open-minded”? In that case you should go back to the <span class="blue"><em>Collect &amp; prepare background info</em></span> stage, and for example modify the parameters <span style="display:inline-block;"><span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span>,</span> then re-check. Or you could even try an agent with a different initial belief distribution.</p>
+<p>In making this kind of considerations it’s important to keep in mind what we learned and observed in previous chapters:</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="blue"><strong>Our goal: optimality, not “success”</strong></span></p>
+<p>Remember (<a href="framework.html#sec-optimality" class="quarto-xref">§&nbsp;<span>2.3</span></a> and <a href="probability_inference.html#sec-probability-def" class="quarto-xref">§&nbsp;<span>8.1</span></a>) that a probability represents the <em>rational</em> degree of belief that an agent should have <em>given the particular information available</em>. We can’t judge a probability from the value it assigns to something we later learn to be true – because according to the information available it could be more rational (and optimal) to consider that something implausible (recall the example in <a href="probability_inference.html#sec-probability-def" class="quarto-xref">§&nbsp;<span>8.1</span></a> of an object falling from the sky as we cross the street).</p>
+<p>From this point of view we should be wary of comparing the probability of something with our a-posteriori knowledge about it.</p>
+<p><br>
+</p>
+<p><span class="blue"><strong>The data cannot speak for themselves</strong></span></p>
+<p>We could build an agent that remains more “open-minded” (more spread in the <span class="grey">grey lines</span>), having received <em>exactly the same</em> training data. This “open-mindedness” therefore cannot be determined by the training data. Once more this shows that data <em>cannot</em> “speak for themselves” (<a href="beyond-ML.html#sec-underlying-distribution" class="quarto-xref">§&nbsp;<span>27.4</span></a>).</p>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><img src="neverknowsbest.jpg" class="img-fluid" style="width:100.0%"></p>
+</div></div><p><br>
+</p>
+</section>
+<section id="application-specifying-predictors" class="level3">
+<h3 class="anchored" data-anchor-id="application-specifying-predictors">Application: specifying predictors</h3>
+<p>Let’s now draw inferences by specifying some predictors.</p>
+<p>We ask the <code>opm10</code> agent to forecast the <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span></span> of a new unit, given that the unit is known to have <span style="display:inline-block;"><span class="math inline">\(\mathit{occupation}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Exec-managerial;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathit{sex}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;Male;}\)</span></span> (two predictor variates). What would you expect?</p>
+<p>The <code>opm10</code>-agent’s belief about the unit – as well as about the <em>full subpopulation</em> (<a href="subpopulations.html#sec-subpopulations" class="quarto-xref">§&nbsp;<span>22.1</span></a>) of units having those predictors – is shown in the following plot:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opm10, <span class="at">n=</span><span class="dv">200</span>,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictand=</span><span class="st">'income'</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">occupation=</span><span class="st">'Exec-managerial'</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">sex=</span><span class="st">'Male'</span>),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opm10'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Note how the <code>opm10</code>-agent still slightly higher probability to <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&lt;=50;}\)</span>,</span> but at the same time it is quite uncertain about the subpopulation frequencies; more than if the predictor had not been specified. That is, according to this little-trained agent there could be large variety of possibilities <em>within this specific subpopulation</em>.</p>
+<p>The <code>opmall</code>-agent’s beliefs are shown below:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent=</span>opmall, <span class="at">n=</span><span class="dv">200</span>,</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictand=</span><span class="st">'income'</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">occupation=</span><span class="st">'Exec-managerial'</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">sex=</span><span class="st">'Male'</span>),</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">main=</span><span class="st">'opmall'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>it believes with around 55% probability that such a unit would have higher, <span style="display:inline-block;"><span class="math inline">\({\small\verb;&gt;50K;}\)</span></span> income. The representative subpopulation-frequency distributions in grey indicate that this belief is unlikely to be changed by new training data.</p>
+<p><br>
+</p>
+<p>Let’s now see an example of our agent’s versatility by switching predictands and predictors. We tell the <code>opmall</code>-agent that the new unit has <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&gt;50;}\)</span>,</span> and ask it to infer the joint variate <span style="display:inline-block;"><span class="math inline">\((\mathit{occupation} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathit{sex})\)</span>;</span> let’s present the results in rounded percentages:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'occupation'</span>, <span class="st">'sex'</span>),</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">income=</span><span class="st">'&gt;50K'</span>))</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(result <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>) <span class="co"># round to one decimal</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   sex
+occupation          Female Male
+  Adm-clerical         3.1  4.1
+  Armed-Forces         1.0  1.0
+  Craft-repair         1.1  9.4
+  Exec-managerial      3.6 16.0
+  Farming-fishing      1.0  2.1
+  Handlers-cleaners    1.0  1.6
+  Machine-op-inspct    1.1  3.1
+  Other-service        1.6  1.8
+  Priv-house-serv      1.0  1.0
+  Prof-specialty       4.8 14.7
+  Protective-serv      1.0  3.2
+  Sales                1.8 10.1
+  Tech-support         1.5  3.4
+  Transport-moving     1.1  3.7</code></pre>
+</div>
+</div>
+<p>It returns a 14 × 2 table of joint probabilities. The most probable combinations are <span style="display:inline-block;"><span class="math inline">\(({\small\verb;Exec-managerial;}, {\small\verb;Male;})\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(({\small\verb;Prof-specialty;}, {\small\verb;Male;})\)</span>.</span></p>
+</section>
+<section id="the-rf-function" class="level3">
+<h3 class="anchored" data-anchor-id="the-rf-function">The <code>rF()</code> function</h3>
+<p>This function generates <strong>full-population</strong> frequency distributions (even for subpopulations) that are probable according to the data. It is used internally by <code>plotFsamples1D()</code>, which plots the generated frequency distributions as <span class="grey">grey lines</span>.</p>
+<p>Let’s see, as an example, three samples of how the full-population frequency distribution for <span style="display:inline-block;"><span class="math inline">\(\mathit{sex} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathit{income}\)</span></span> (jointly) could be:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">rF</span>(<span class="at">n=</span><span class="dv">3</span>, <span class="co"># number of samples</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">agent=</span>opmall, </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'sex'</span>, <span class="st">'income'</span>))</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="do">## name the samples</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">dimnames</span>(result)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">samples=</span><span class="fu">paste0</span>(<span class="st">'#'</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>))</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="do">## permute &amp; print so that samples are the last array dimension</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">aperm</span>(result) <span class="sc">*</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>, , sample = #1
+
+       sex
+income    Female    Male
+  &lt;=50K 28.55817 42.4471
+  &gt;50K   6.94756 22.0472
+
+, , sample = #2
+
+       sex
+income   Female    Male
+  &lt;=50K 28.1616 43.4549
+  &gt;50K   7.0687 21.3148
+
+, , sample = #3
+
+       sex
+income   Female    Male
+  &lt;=50K 28.1144 42.9568
+  &gt;50K   6.9224 22.0065</code></pre>
+</div>
+</div>
+<p>These possible full-population frequency distributions can be used to assess how much the probabilities we find could change, if we collected a much, much larger amount of training data. Here is an example:</p>
+<p>We generate 1000 frequency distributions for <span style="display:inline-block;"><span class="math inline">\((\mathit{occupation} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathit{sex})\)</span></span> given <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&gt;50K;}\)</span>,</span> and then take the standard deviations of the samples as a rough measure of how much the probabilities we calculated a couple of cells above could change:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>freqsamples <span class="ot">&lt;-</span> <span class="fu">rF</span>(<span class="at">n=</span><span class="dv">1000</span>,</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">agent=</span>opmall,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'occupation'</span>, <span class="st">'sex'</span>),</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">predictor=</span><span class="fu">list</span>(<span class="at">income=</span><span class="st">'&gt;50K'</span>))</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>variability <span class="ot">&lt;-</span> <span class="fu">apply</span>(freqsamples,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">c</span>(<span class="st">'occupation'</span>,<span class="st">'sex'</span>), <span class="co"># which dimensions to apply</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                     sd) <span class="co"># function to apply to those dimensions</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(variability <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>) <span class="co"># round to two decimals</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   sex
+occupation          Female Male
+  Adm-clerical        0.27 0.31
+  Armed-Forces        0.16 0.16
+  Craft-repair        0.16 0.47
+  Exec-managerial     0.32 0.61
+  Farming-fishing     0.16 0.23
+  Handlers-cleaners   0.16 0.20
+  Machine-op-inspct   0.17 0.29
+  Other-service       0.21 0.22
+  Priv-house-serv     0.16 0.16
+  Prof-specialty      0.35 0.59
+  Protective-serv     0.16 0.27
+  Sales               0.23 0.50
+  Tech-support        0.20 0.30
+  Transport-moving    0.17 0.30</code></pre>
+</div>
+</div>
+<p>the agent believes (at around 68%) that the current probability wouldn’t change more than about ±0.5%.</p>
+<p><br>
+</p>
+<p>The inferences above were partially meant as checks, but we see that we can actually ask our agent a wide variety of questions about the full population, and do all sorts of association studies.</p>
+<div class="callout callout-style-default callout-important no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i> No “test” or “validation” datasets used or needed
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The tests and explorations above were done without any “validation” or “test” datasets. This is because our agent is capable of calculating and showing its beliefs about the <em>full population</em> – and therefore about future data.</p>
+<p>The need for validation or test datasets with common machine-learning algorithms arise from the fact that full-population beliefs are hidden or, more commonly, not computed at all, in order to gain speed. The application of the trained machine-learning algorithm to a validation dataset is an approximate way of extracting such beliefs.</p>
+</div>
+</div>
+<p><br>
+</p>
+</section>
+<section id="exploring-the-population-properties-mutual-information" class="level3">
+<h3 class="anchored" data-anchor-id="exploring-the-population-properties-mutual-information">Exploring the population properties: mutual information</h3>
+<p>In <a href="information.html#sec-entropy-mutualinfo" class="quarto-xref">§&nbsp;<span>18.5</span></a> we introduced <span class="blue"><em>mutual information</em></span> as the information-theoretic measure of mutual relevance and association of two quantities or variates. For the present task, the <code>opmall</code>-agent can tell us the mutual information between any two sets of variates of our choice, with the function <code>mutualinfo()</code>.</p>
+<p>For instance, let’s calculate the mutual information between <span style="display:inline-block;"><span class="math inline">\(\mathit{occupation}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(\mathit{marital\_status}\)</span>.</span></p>
+<p>First we need the joint probability distribution for both variates, which the agent can calculate with <code>infer()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall,</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'occupation'</span>, <span class="st">'marital_status'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This distribution is then used in the formula for the mutual information, implemented in <code>mutualinfo()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mutualinfo</span>(<span class="at">probs=</span>probs,</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">A=</span><span class="st">'occupation'</span>, <span class="at">B=</span><span class="st">'marital_status'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0827823</code></pre>
+</div>
+</div>
+<p>It is a very low association: knowing either variate decreases the effective number of possible values of the other only <span style="display:inline-block;"><span class="math inline">\(2^{0.0827823\,\mathit{Sh}} \approx 1.06\)</span></span> times.</p>
+<p>Now let’s consider a scenario where, in order to save resources, we can use <em>only one</em> variate to infer the income. Which of the other variates should we prefer? We can calculate the mutual information between each of them, in turn, and <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span>:</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="do">## list of all variates</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>variates <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">dimnames</span>(opmall<span class="sc">$</span>counts))</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="do">## list of all variates except 'income'</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>predictors <span class="ot">&lt;-</span> variates[variates <span class="sc">!=</span> <span class="st">'income'</span>]</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="do">## prepare vector to contain the mutual information</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>relevances <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">length</span>(predictors))</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(relevances) <span class="ot">&lt;-</span> predictors</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="do">## calculate, for each variate,</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="do">## the joint probability distribution 'probs'</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="do">## and then mutual information 'relevance' (in shannons)</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="do">## between 'income' and that variate</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(var <span class="cf">in</span> predictors){</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall, <span class="at">predictand=</span><span class="fu">c</span>(<span class="st">'income'</span>,var))</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    relevances[var] <span class="ot">&lt;-</span> <span class="fu">mutualinfo</span>(<span class="at">probs=</span>probs, <span class="at">A=</span><span class="st">'income'</span>, <span class="at">B=</span>var)</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="do">## output the mutual informations in decreasing order</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(relevances, <span class="at">decreasing=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>marital_status   relationship      education     occupation      workclass 
+    0.10074130     0.09046621     0.06332052     0.05506897     0.03002995 
+native_country            sex           race 
+    0.01925227     0.01456655     0.00870089 </code></pre>
+</div>
+</div>
+<p>If we had to choose <em>only one</em> variate to infer the outcome, on average it would be best to use <span style="display:inline-block;"><span class="math inline">\(\mathit{marital\_status}\)</span>.</span> Our last choice should be <span style="display:inline-block;"><span class="math inline">\(\mathit{race}\)</span>.</span></p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Now consider the scenario where we must <em>exclude one variate</em> from the eight predictors, or, equivalently, we can only use seven variates as predictors. Which variate should we exclude?</p>
+<p>Prepare a script similar to the one above: it calculates the mutual information between <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span></span> and the other predictors but with one omitted, omitting each of the eight in turn.</p>
+<p><span class="small midgrey"><em>Warning: this computation might require 10 or more minutes to complete.</em></span></p>
+<ul>
+<li><p>Which single variate should not be omitted from the predictors? which single variate could be dropped?</p></li>
+<li><p>Do you obtain the same relevance ranking as in the “use-one-variate-only” scenario above?</p></li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="example-application-to-new-data" class="level2" data-number="35.6">
+<h2 data-number="35.6" class="anchored" data-anchor-id="example-application-to-new-data"><span class="header-section-number">35.6</span> Example application to new data</h2>
+<p>Let’s apply the <code>opmall</code>-agent to a test dataset with 33 914 new units. For each new unit, the agent:</p>
+<ul>
+<li>calculates the probability of <span class="math inline">\(\mathit{income}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\small\verb;&lt;=50;}\)</span>, via the function <code>infer()</code>, using as predictors all variates except <span class="math inline">\(\mathit{income}\)</span></li>
+<li>chooses one of the two values <span class="math inline">\(\set{{\small\verb;&lt;=50K;}, {\small\verb;&gt;50K;}}\)</span>, via the function <code>decide()</code> trying to maximizing utilities corresponding to the accuracy metric</li>
+</ul>
+<p>The function <code>decide()</code> will be described in more detail in chapters&nbsp;<a href="making_decisions.html" class="quarto-xref"><span>37</span></a> and&nbsp;<a href="example_opm2.html" class="quarto-xref"><span>38</span></a>.</p>
+<p>At the end we plot a histogram of the probabilities calculated for the new units, to check for instance for how many of the agent was sure (beliefs around 0% or 100%) or unsure (beliefs around 50%). We also report the final utility/accuracy per unit, and the time needed for the computation:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Load test data</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>testdata <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">'test-income_data_example.csv'</span>, <span class="at">header=</span><span class="cn">TRUE</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>ntest <span class="ot">&lt;-</span> <span class="fu">nrow</span>(testdata) <span class="co"># size of test dataset</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Let's time the calculation</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>stopwatch <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>testprobs <span class="ot">&lt;-</span> <span class="fu">numeric</span>(ntest) <span class="co"># prepare vector of probabilities</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>testhits <span class="ot">&lt;-</span> <span class="fu">numeric</span>(ntest) <span class="co"># prepare vector of hits</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>ntest){</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>    <span class="do">## calculate probabilities given all variates except 'income'</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>    probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent=</span>opmall, <span class="at">predictor=</span>testdata[i, <span class="sc">!</span><span class="st">'income'</span>])</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>    <span class="do">## store the probability for &lt;=50K</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>    testprobs[i] <span class="ot">&lt;-</span> probs[<span class="st">'&lt;=50K'</span>]</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>    <span class="do">## decide on one value</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>    chosenvalue <span class="ot">&lt;-</span> <span class="fu">decide</span>(<span class="at">probs=</span>probs)<span class="sc">$</span>optimal</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>    <span class="do">## check if decision == true_value, and store result</span></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>    testhits[i] <span class="ot">&lt;-</span> (chosenvalue <span class="sc">==</span> testdata[i, <span class="st">'income'</span>])</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a><span class="do">## Print total time required</span></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">Sys.time</span>() <span class="sc">-</span> stopwatch)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time difference of 10.3357 secs</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Histogram and average accuracy (rounded to one decimal)</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">thist</span>(testprobs, <span class="at">n=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="at">length.out=</span><span class="dv">10</span>), <span class="at">plot=</span><span class="cn">TRUE</span>,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab=</span><span class="st">'P(income = "&lt;=50K")'</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylab=</span><span class="st">'frequency density in test set'</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">main=</span><span class="fu">paste0</span>(<span class="st">'accuracy: '</span>, <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span><span class="fu">mean</span>(testhits), <span class="dv">1</span>), <span class="st">'%'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="example_opm1_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><br>
+</p>
+</section>
+<section id="sec-compare-opm" class="level2" data-number="35.7">
+<h2 data-number="35.7" class="anchored" data-anchor-id="sec-compare-opm"><span class="header-section-number">35.7</span> Comparison</h2>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Now try to use a popular machine-learning algorithm for the same task, using the same training data, and compare it with the prototype optimal predictor machine. Examine the differences. For example:</p>
+<ul>
+<li><p>Can you inform the algorithm that <span style="display:inline-block;"><span class="math inline">\(\mathit{native\_country}\)</span></span> has two additional values <span style="display:inline-block;"><span class="math inline">\({\small\verb;Norway;}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\small\verb;Netherlands;}\)</span></span> not present in the training data? How?</p></li>
+<li><p>Can you flexibly use the algorithm to specify any predictors and any predictands on the fly?</p></li>
+<li><p>Does the algorithm inform you of how the inferences could change if more training data were available?</p></li>
+<li><p>Which accuracy does the algorithm achieve on the test set?</p></li>
+</ul>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./prototype_code.html" class="pagination-link  aria-label=" &lt;span="" code="" and="" workflow]{.red}&lt;="" span&gt;"="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title"><span class="red">Prototype code and workflow</span></span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./utilities.html" class="pagination-link" aria-label="<span class='chapter-number'>36</span>&nbsp; <span class='chapter-title'>[Utilities]{.blue}</span>">
+        <span class="nav-page-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title"><span class="blue">Utilities</span></span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
