@@ -110,9 +110,9 @@ This is the domain of [**Information Theory**]{.blue}, which would require a cou
 ::::{.column-margin}
 ::: {.callout-tip}
 ## {{< fa rocket >}} For the extra curious
-- [*Information Theory, Inference, and Learning Algorithms*](https://hvl.instructure.com/courses/25074/modules/items/660092)
+- [*Information Theory, Inference, and Learning Algorithms*](https://hvl.instructure.com/courses/28605/modules)
 
-- [*Elements of Information Theory*](https://hvl.instructure.com/courses/25074/modules/items/703785)
+- [*Elements of Information Theory*](https://hvl.instructure.com/courses/28605/modules)
 :::
 ::::
 
@@ -278,39 +278,38 @@ Before presenting them, let's briefly present the mother of them all:
 
 ### Shannon entropy
 
-An agent with background knowledge $\yI$ has a belief distribution $\P(Y\|\yI)$ about the (finite) quantity $Y$. The agent's uncertainty about the value of 
+Consider an agent with background knowledge $\yI$ and a belief distribution $\P(Y\|\yI)$ about the finite quantity $Y$. The agent's uncertainty about the value of 
 $Y$ can be quantified by the [**Shannon entropy**]{.blue}:
 
 $$
-\HH(Y \| \yI) \defd -\sum_y \P(Y\mo y \| \yI)\, \log_2 \P(Y\mo y \| \yI)
+\HH(Y \| \yI) \defd -\sum_y \P(Y\mo y \| \yI)\, \log_2 \P(Y\mo y \| \yI)\;\mathrm{Sh}
 $$
 
-whose unit is the *shannon* (symbol $\mathrm{Sh}$) when the logarithm is in base 2, as above.
+whose unit is the *shannon* (symbol $\mathrm{Sh}$) when the logarithm is in base 2, as above.^[With the logarithm is in base 10, the unit is the *hartley* ($\mathrm{Hart}$); with the natural logarithm, the unit is the *natural unit of information* ($\mathrm{nat}$). $1\,\mathrm{Sh} \approx 0.301\,\mathrm{Hart} \approx 0.693\,\mathrm{nat}$.]
 
 Shannon entropy lies at the foundation of the whole fields of Information Theory and Communication Theory, and would require a lengthy discussion. Let's just mention some of its properties and meanings:
 
-- It also quantifies the information *gained* by the agent, if it acquires knowledge about the value of $Y$.
+- It also quantifies the information that would be *gained* by the agent, if it learned the value of $Y$.
 
 - It is always positive or zero.
 
 - It is zero if, and only if, the agent knows the value of $Y$, that is, if the probability distribution for $Y$ gives 100% to one value and 0% to all others.
 
-- Its maximum possible value is $\log_2 N$, where $N$ is the number of possible values of $Y$. This maximum is attained by the uniform distribution for $Y$.
+- Its maximum possible value is $\log_2 N\;\mathrm{Sh}$, where $N$ is the number of possible values of $Y$. This maximum is attained by the uniform belief distribution about $Y$.
 
-- The value (in shannons) of the Shannon entropy can be interpreted as the number of binary digits that we lack for correctly identifying the value of $Y$, if the possible values were listed as integers in binary format. Alternatively, a Shannon entropy equal to\ \ $h\,\mathrm{Sh}$\ \ is equivalent to being fully uncertain among $2^h$ possible alternatives.
+- The value in shannons of the Shannon entropy can be interpreted as the number of binary digits that we lack for correctly identifying the value of $Y$, if the possible values were listed as integers in binary format. Alternatively, a Shannon entropy equal to\ \ $h\,\mathrm{Sh}$\ \ is equivalent to being equally uncertain among $2^h$ possible alternatives.
 
 :::{.column-margin}
 ![](shannon.png){width=100%}
 Plot of the Shannon entropy for a binary quantity $Y\in\set{1,2}$, for different distributions $\P(Y\mo 1\| \yI)$
 :::
- 
-\
 
-Here are the two most useful measures of "relevance" or "importance", both based on the Shannon entropy:
+\
+Here are two useful measures of "informativeness" or "relevance" or "importance" of a quantity about another quantity. Both are based on the Shannon entropy:
 
 ### Conditional entropy
 
-The [**conditional entropy**]{.blue}^[or "equivocation" according to ISO standard] of a quantity $Y$ given a quantity $X$ and additional knowledge $\yI$, is defined as
+The [**conditional entropy**]{.blue}^[or "equivocation" according to ISO standard.] of a quantity $Y$ conditional on a quantity $X$ and additional knowledge $\yI$, is defined as
 
 :::{.column-page-inset-right}
 $$
@@ -318,47 +317,45 @@ $$
 -\sum_x \sum_y 
 \P( X\mo x \| \yI)\cdot
 \P(Y\mo y \| X\mo x \and \yI)\, 
-\log_2 \P(Y\mo y \| X\mo x \and \yI)
+\log_2 \P(Y\mo y \| X\mo x \and \yI)\;\mathrm{Sh}
 $$
 :::
-
-and, as defined above, is measured in *shannons* (symbol $\mathrm{Sh}$).
 
 It satisfies the three requirements above: 
 
 Context-dependence
-: Different additional knowledge $\yI$, corresponding to different contexts, leads to different probabilities.
+: Different background knowledge $\yI$, corresponding to different contexts, leads to different probabilities and therefore to different values of the conditional entropy.
 
 Non-additivity
-: if the quantity $X$ can be split into two component quantities, it can be proved that the conditional entropy given them jointly is more than the sum of the conditional entropies given them individually.
+: If the quantity $X$ can be split into two component quantities, then the conditional entropy conditional on them jointly is more than the sum of the conditional entropies conditional on them individually.
 
-Probablitiy-awareness
-: the probability distribution for $X$ explicitly appears in its definition.
+Probability-awareness
+: The probability distribution for $X$ appears explicitly in the definition of the conditional entropy.
 
-It has additional, remarkable properties:
+The conditional entropy has additional, remarkable properties:
 
-- If knowledge of $Y$ is completely determined by that of $X$, that is, if $Y$ is a function of $X$, then the conditional entropy $\HH(Y \| X\and \yI)$ is zero. Vice versa, if the conditional entropy is zero, then $Y$ must be a function of $X$.
+- If knowledge of $Y$ is completely determined by that of $X$, that is, if $Y$ is a function of $X$, then the conditional entropy $\HH(Y \| X\and \yI)$ is zero. Vice versa, if the conditional entropy is zero, then $Y$ is a function of $X$.
 
 - If knowledge of $X$ is irrelevant, in the sense of [§@sec-indep-quantities], to knowledge of $Y$, then the conditional entropy $\HH(Y \| X\and \yI)$ takes on its maximal value, determined by the marginal probability for $Y$. Vice versa, if the conditional entropy takes on its maximal value, then $X$ is irrelevant to $Y$.
 
-- The value (in shannons) of the conditional entropy has the same meaning as for the Shannon entropy: if the conditional entropy amounts to $h\,\mathrm{Sh}$, then after knowing $X$ our uncertainty about $Y$ is the same as if we were fully uncertain among $2^h$ possible alternatives.
+- The value in shannons of the conditional entropy has the same meaning as for the Shannon entropy: if the conditional entropy amounts to $h\,\mathrm{Sh}$, then after learning $X$ an agent's uncertainty about $Y$ is the same as if the agent were equally uncertain among $2^h$ possible alternatives.
 
-For instance, in the case of [table @tbl-distr-entropy], the conditional entropy has the following values in the three scenarios:
+For instance, in the case of an agent with belief distribution of [table @tbl-distr-entropy], the conditional entropy has the following values in the three scenarios:
 
-1. $\HH(Y \| X\and \yI_1) = 0.01\,\mathrm{Sh}$ , almost zero; indeed $Y$ can almost be considered a function of $X$ in this case.
+1. $\HH(Y \| X\and \yI_1) = 0.01\,\mathrm{Sh}$ , almost zero. Indeed $Y$ can almost be considered a function of $X$ in this case.
 
-2. $\HH(Y \| X\and \yI_2) = 0.99\,\mathrm{Sh}$ , almost 1; indeed in this case we are approximately uncertain between two values of $Y$.
+2. $\HH(Y \| X\and \yI_2) = 0.99\,\mathrm{Sh}$ , almost 1. Indeed in this case the agent is approximately uncertain between two values of $Y$.
 
-3. $\HH(Y \| X\and \yI_3) = 0.5\,\mathrm{Sh}$ ; indeed this case is intermediate between the previous two.
+3. $\HH(Y \| X\and \yI_3) = 0.5\,\mathrm{Sh}$ . Indeed this case is intermediate between the previous two.
 
 
 ### Mutual information
 
-Suppose that, according to background knowledge $\yI$, for any value of $X$ there's a 100% probability that $Y$ has one and the same value, say $Y\mo 1$. The conditional entropy $\HH(Y \| X\and \yI)$ is then zero. In this case it is true that $Y$ is formally a function of $X$. But it is also true that we could perfectly predict $Y$ without any knowledge of $X$. The observed value of $X$ didn't really help us in forecasting $Y$; in other words, $X$ is not relevant for inference about $Y$.^[There's no contradiction with the second "remarkable property" previously discussed: in this case the maximal value that the conditional entropy can take is zero.]
+Suppose that, according to background knowledge $\yI$, for *any* value of $X$ there's a 100% probability that $Y$ has one and the same value, say $Y\mo 1$. The conditional entropy $\HH(Y \| X\and \yI)$ is then zero. In this case it is true that $Y$ is formally a function of $X$. But it is also true that we could perfectly predict $Y$ without any knowledge of $X$. Learning the value of $X$ doesn't really help an agent in forecasting $Y$. In other words, $X$ is not relevant for inference about $Y$.^[There's no contradiction with the second remarkable property previously discussed: in this case the maximal value that the conditional entropy can take is zero.]
 
-If we are interested in quantifying how much our knowledge about $X$ "helped" in inferring $Y$, we can subtract the conditional entropy for $Y$ given $X$ from the maximum value it would have if $X$ were unavailable.
+If we are interested in quantifying how much learning $X$ "helped" in inferring $Y$, we can subtract the conditional entropy for $Y$ conditional on $X$ from the maximum value it would have if $X$ were not learned.
 
-This is the [**mutual information**]{.blue}^[or "mean transinformation content" according to ISO standard] of a quantity $Y$ given a quantity $X$ and additional knowledge $\yI$. It is defined as
+This is the definition of [**mutual information**]{.blue}^[or "mean transinformation content" according to ISO standard.] between a quantity $Y$ and a quantity $X$, given background knowledge $\yI$. It is defined as
 
 :::{.column-page-inset-right}
 $$
@@ -368,58 +365,71 @@ $$
 \log_2 \frac{\P(Y\mo y \and X\mo x \| \yI)}{
 \P(Y\mo y \| \yI)\cdot
 \P(X\mo x \| \yI)
-}
+} \;\mathrm{Sh}
 $$
 :::
 
-and, as defined above, is also measured in *shannons*. It also satisfies the three requirements -- *context-dependece*, *non-additivity*, *probability-awareness* -- for a measure of "importance" Its properties are somehow complementary to those of the conditional entropy:
+It also satisfies the three requirements -- *context-dependece*, *non-additivity*, *probability-awareness* -- for a measure of "informativeness" or "importance". Its properties are somehow complementary to those of the conditional entropy:
 
-- If $Y$ and $X$ are independent, in the sense of [§@sec-indep-quantities], then their mutual information is zero. Vice versa, if it is zero, then $Y$ and $X$ are independent.
+- **If $Y$ and $X$ are informationally independent**, in the sense of [§@sec-indep-quantities], **then their mutual information is zero**. Vice versa, if their mutual information is zero, then these quantities are informationally independent.
 
-- If knowledge of $Y$ is completely determined by that of $X$, that is, if $Y$ is a function of $X$, then their mutual information attains its maximal value (which could be zero). Vice versa, if the mutual information attains its maximal value, then $Y$ must be a function of $X$.
+- If knowledge of $Y$ is completely determined by that of $X$, that is, if $Y$ is a function of $X$, then their mutual information attains its maximal value (which could be zero). Vice versa, if their mutual information attains its maximal value, then $Y$ is a function of $X$.
 
-- If the mutual information between $Y$ and $X$ amounts to $h\,\mathrm{Sh}$, then knowledge of $X$  *reduces, on average, $2^h$-fold times* the possibilities regarding the value of $Y$.
+- If the mutual information between $Y$ and $X$ amounts to $h\,\mathrm{Sh}$, then learning $X$  *reduces, on average, $2^h$-fold times* the possibilities regarding the value of $Y$.
 
-- It is symmetric in the roles of $X$ and $Y$, that is, $\HH(Y : X\| \yI) = \HH(X : Y\| \yI)$.
+- Mutual information is symmetric in the roles of $X$ and $Y$, that is, $\HH(Y : X\| \yI) = \HH(X : Y\| \yI)$.
 
-In the case of [table @tbl-distr-entropy], the mutual information has the following values in the three scenarios:
+In the case of an agent with belief distribution as in [table @tbl-distr-entropy], the mutual information has the following values in the three scenarios:
 
-1. $\HH(Y : X\| \yI_1) = 1.61\,\mathrm{Sh}$ , almost equal to the maximal value achievable in this scenario ($1.62\,\mathrm{Sh}$); indeed $Y$ can almost be considered a function of $X$ in this case. Since $2^{1.61}\approx 2.1$, knowledge of $X$ roughly halves the number of possible values of $Y$.
+1. $\HH(Y : X\| \yI_1) = 1.61\,\mathrm{Sh}$ , almost equal to the maximal value achievable in this scenario ($1.62\,\mathrm{Sh}$). Indeed $Y$ can almost be considered a function of $X$ in this case. Since $2^{1.61}\approx 2.1$, learning $X$ roughly halves the number of possible values of $Y$.
 
-2. $\HH(Y : X\| \yI_2) = 0.81\,\mathrm{Sh}$ ; this means that knowledge of $X$ reduces by $2^{0.81}\approx 1.8$ or almost 2 times the number of possible values of $Y$.
+2. $\HH(Y : X\| \yI_2) = 0.81\,\mathrm{Sh}$ ; this means that learning $X$ reduces by $2^{0.81}\approx 1.8$ or almost 2 times the number of possible values of $Y$.
 
-3. $\HH(Y : X\| \yI_3) = 1.5\,\mathrm{Sh}$ ; knowledge of $X$ reduces by $2^{1.5} \approx 2.8$ or almost 3 times the number of possible values of $Y$.
+3. $\HH(Y : X\| \yI_3) = 1.5\,\mathrm{Sh}$ ; learning $X$ reduces by $2^{1.5} \approx 2.8$ or almost 3 times the number of possible values of $Y$.
 
 ### Uses
 
+Let's emphasize that Shannon entropy, conditional entropy, and mutual information are not just fancy theoretical ways of quantifying uncertainty and informativeness. Their numerical values have concrete technological importance; for instance they determine the maximal communication speed of a communication channel. See references on the margin for concrete applications.
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+- [*Information Theory, Inference, and Learning Algorithms*](https://hvl.instructure.com/courses/28605/modules)
+
+- [*Probability and Information Theory, with Applications to Radar*](https://hvl.instructure.com/courses/28605/modules)
+:::
+::::
+
+\
 Whether to use the conditional entropy $\HH(Y \| X\and \yI)$ or the mutual information $\HH(Y : X\| \yI)$ depends on the question we are asking.
 
-Conditional entropy is the right choice if we want to quantify how much $Y$ can be considered as a function of $X$ -- including the special case of a constant function. It is also the right choice if we want to know how many binary-search iterations it would take to find $Y$, on average, once $X$ is known.
+Conditional entropy is the right choice if we want to quantify to what degree $Y$ can be considered a function of $X$ -- including the special case of a constant function. It is also the right choice if we want to know how many binary-search iterations it would take to find $Y$, on average, once $X$ is learned.
 
-Mutual information is the right choice if we want to quantify how much the knowledge of $X$ helps, on average, on finding $Y$, or equivalently how many additional binary-search iterations it would take to find $Y$, if $X$ were not known. This therefore includes quantifying "correlation" or "association".
+Mutual information is the right choice if we want to quantify how much learning $X$ helps, on average, for inferring $Y$. Or equivalently how many *additional* binary-search iterations it would take to find $Y$, if $X$ were not known. Mutual information is therefore useful for quantifying "correlation" or "association" of two quantities.
+
+
+If we simply want to rank the relative importance of alternative quantities $X_1$, $X_2$, etc. in inferring $Y$, then conditional entropy and mutual information are equivalent in the sense that they yield the same ranking, since they basically differ by a zero point that would be constant in this scenario.
+
 
 :::{.callout-important}
-## {{< fa exclamation-triangle >}}
-The widely used [Pearson correlation coefficient](https://mathworld.wolfram.com/CorrelationCoefficient.html) is actually a very poor measure of correlation or association; it is more a measure of "linearity" than correlation. It can be very dangerous to rely on in data-science and machine-learning problems, where we can expect non-linearity and peculiar associations in wide dimensions. It is widely used not because it's good, but because of intellectual inertia.
+## {{< fa exclamation-triangle >}} Mutual information is superior to the correlation coefficient
+The [Pearson correlation coefficient](https://mathworld.wolfram.com/CorrelationCoefficient.html) is actually a very poor measure of correlation or association. It is more a measure of "linearity" than correlation. It can be very dangerous to rely on in data-science problems, where we can expect non-linearity and peculiar associations in large-dimensional data. The Pearson correlation coefficient is widely used not because it's good, but because of (1) computational easiness, (2) intellectual inertia.
 :::
-
-
-If we simply want to rank the relative importance of alternative quantities $X_1$, $X_2$, etc. in inferring $Y$, then the two measures are equivalent and yield the same ranking, since they basically differ by a common zero point.
 
 ::: {.callout-warning}
 ## {{< fa book >}} Study reading
-- Chapter 8 of [*Information Theory, Inference, and Learning Algorithms*](https://hvl.instructure.com/courses/25074/modules/items/660092)
+- Chapter 8 of [*Information Theory, Inference, and Learning Algorithms*](https://hvl.instructure.com/courses/28605/modules)
 
-- §12.4 of [*Artificial Intelligence*](https://hvl.instructure.com/courses/25074/modules/items/660089)
+- §12.4 of [*Artificial Intelligence*](https://hvl.instructure.com/courses/28605/modules)
 :::
 
 
 ## Utility Theory to quantify relevance and importance {#sec-utility-importance}
 
-The entropy-based measures discussed in the previous section originate from, have deep connections with, the problem of repeated communication or signal transmission. They do not require anything else beside joint probabilities. In a general decision problem -- where an agent has probabilities *and utilities* -- another approach is required, however.
+The entropy-based measures discussed in the previous section originate from, and have deep connections with, the problem of repeated communication or signal transmission. They do not require anything else beside joint probabilities.
 
-Questions such as "What happens if I discard quantity $X$ in my inference?" or "If I have to choose between quantity $U$ and quantity $V$ to condition my inference, which one should I choose?" are actually *decision-making problems*. They must therefore be solved using Decision Theory (this is an example of the recursive capabilities of Decision Theory, discussed in [§@sec-decision-theory]).
+In a general decision problem -- where an agent has probabilities *and utilities* -- another approach may be required, however.
 
-The application of decision theory in these situations if often intuitively understandable. For example, if we need to rank the importance of quantities $U$ and $V$, we can calculate how much the expected utility would decrease if we discarded the one or the other.
+Consider questions like "What happens if I discard quantity $X$ in this inference?" or "If I have to choose between learning either quantity $U$ or quantity $V$, which one should I [choose?".]{.m}\ \ Such questions are *decision-making problems*. They must therefore be solved using Decision Theory (this is an example of the recursive capabilities of Decision Theory, discussed in [§@sec-decision-theory]). The application of decision theory in these situations if often intuitively understandable. For example, if we need to rank the importance of quantities $U$ and $V$, we can calculate how much the expected utility would decrease if we discarded the one or the other.
 
-We'll come back to these questions toward the end of the course.
+We'll come back to these questions in chapters [-@sec-ML-utility-limitation] and [-@sec-eval-decision].
