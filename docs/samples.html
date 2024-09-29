@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2024-09-28">
+<meta name="dcterms.date" content="2024-09-29">
 
 <title>ADA511 0.2 Foundations of data science and data-driven engineering - 23&nbsp; Infinite populations and samples</title>
 <style>
@@ -167,7 +167,7 @@ window.Quarto = {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.2</span><br><span class="small grey">2024-09-28</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.2</span><br><span class="small grey">2024-09-29</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -618,7 +618,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2024-09-28</p>
+      <p class="date">2024-09-29</p>
     </div>
   </div>
   
@@ -1057,9 +1057,9 @@ Table&nbsp;23.2: Four-bit population
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>We imagine to have a population of 1 000 000 units. These units have continuous interval variates <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> each with an approximately standard Gaussian frequency distribution. These variates are not actual part of the population definition, however. Rather, an agent only has access to, or maybe it’s only interested in, the ratio of these two variates <span style="display:inline-block;"><span class="math inline">\(T \coloneqq X/Y\)</span>.</span></p>
-<p>The agent is in particular interested in the <em>mean</em> of the variate <span style="display:inline-block;"><span class="math inline">\(T\)</span></span> in the full population, but has only access to the values of <span style="display:inline-block;"><span class="math inline">\(T\)</span></span> in a sample. How does the mean calculated from a sample of increasing size compare with the actual mean of the full population? For comparison, we also study the <em>median</em> of the full population and of the samples.</p>
-<p>First let’s create the values of the variates <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> and construct <span style="display:inline-block;"><span class="math inline">\(T\)</span></span> from them:</p>
+<p>We imagine to have a population of 1 000 000 units. These units have continuous interval variates <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> each with an approximately standard Gaussian frequency distribution. These variates are not actual part of the population definition, however. Rather, an agent only has access to, or maybe it’s only interested in, the ratio of these two variates <span style="display:inline-block;"><span class="math inline">\(Z \coloneqq X/Y\)</span>.</span></p>
+<p>The agent is in particular interested in the <em>mean</em> of the variate <span style="display:inline-block;"><span class="math inline">\(Z\)</span></span> in the full population, but has only access to the values of <span style="display:inline-block;"><span class="math inline">\(Z\)</span></span> in a sample. How does the mean calculated from a sample of increasing size compare with the actual mean of the full population? For comparison, we also study the <em>median</em> of the full population and of the samples.</p>
+<p>First let’s create the values of the variates <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(Y\)</span>,</span> and construct <span style="display:inline-block;"><span class="math inline">\(Z\)</span></span> from them:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Load custom plot functions</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/tplotfunctions.R'</span>)</span>
@@ -1070,16 +1070,16 @@ Table&nbsp;23.2: Four-bit population
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N) <span class="co"># variate invisible to agent</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N) <span class="co"># variate invisible to agent</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>T <span class="ot">&lt;-</span> X<span class="sc">/</span>Y <span class="co"># variate considered by agent</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">&lt;-</span> X <span class="sc">/</span> Y <span class="co"># variate considered by agent</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="do">## mean and median of T in the full population</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>popmean <span class="ot">&lt;-</span> <span class="fu">mean</span>(T)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="do">## mean and median of Z in the full population</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>popmean <span class="ot">&lt;-</span> <span class="fu">mean</span>(Z)</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">'</span><span class="sc">\n</span><span class="st">The full-population mean is'</span>, popmean, <span class="st">'(unknown to the agent)</span><span class="sc">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 The full-population mean is -8.04481 (unknown to the agent)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>popmedian <span class="ot">&lt;-</span> <span class="fu">median</span>(T)</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>popmedian <span class="ot">&lt;-</span> <span class="fu">median</span>(Z)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">'</span><span class="sc">\n</span><span class="st">The full-population median is'</span>, popmedian, <span class="st">'(unknown to the agent)</span><span class="sc">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1089,27 +1089,29 @@ The full-population median is 0.00188701 (unknown to the agent)</code></pre>
 <p>Now we imagine that the agent accumulates samples from the population, starting from 100, increasing by 100 units, until half of the population has been sampled. At each sample increase the agent calculates the sample mean. We plot how the sample mean changes with the sample size. We also plot indicate the full-population mean, which the agent doesn’t know and is trying to guess:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">## sizes of successive samples</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>samplesizes <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">100</span>, N<span class="sc">/</span><span class="dv">2</span>, <span class="at">by=</span><span class="dv">100</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>samplesizes <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">100</span>, <span class="at">to =</span> N <span class="sc">/</span> <span class="dv">2</span>, <span class="at">by =</span> <span class="dv">100</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="do">## empty vectors to contain the means and medians of the increasing samples</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>samplemeans <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">length</span>(samplesizes))</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>samplemedians <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">length</span>(samplesizes))</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="do">## loop through the increasing samples, calculate mean for each</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(sample <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(samplesizes)){</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    samplemeans[sample] <span class="ot">&lt;-</span> <span class="fu">mean</span>(T[<span class="dv">1</span><span class="sc">:</span>samplesizes[sample]])</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    samplemedians[sample] <span class="ot">&lt;-</span> <span class="fu">median</span>(T[<span class="dv">1</span><span class="sc">:</span>samplesizes[sample]])</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(sample <span class="cf">in</span> <span class="fu">seq_along</span>(samplesizes)){</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    samplemeans[sample] <span class="ot">&lt;-</span> <span class="fu">mean</span>(Z[<span class="dv">1</span><span class="sc">:</span>samplesizes[sample]])</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    samplemedians[sample] <span class="ot">&lt;-</span> <span class="fu">median</span>(Z[<span class="dv">1</span><span class="sc">:</span>samplesizes[sample]])</span>
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="do">## plot how sample means change with sample size, and the actual population mean</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>commonmax <span class="ot">&lt;-</span> <span class="fl">1.01</span><span class="sc">*</span><span class="fu">max</span>(<span class="fu">abs</span>(<span class="fu">c</span>(popmean,popmedian,samplemeans,samplemedians)))</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="fu">myflexiplot</span>(<span class="at">x=</span>samplesizes, <span class="at">y=</span>samplemeans,</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab=</span><span class="st">'sample size'</span>, <span class="at">ylab=</span><span class="st">'sample mean'</span>,</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">col=</span><span class="dv">2</span>, <span class="at">lwd=</span><span class="dv">4</span>,</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span>commonmax,commonmax))</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span>popmean, <span class="at">lty=</span><span class="dv">2</span>, <span class="at">lwd=</span><span class="dv">3</span>, <span class="at">col=</span><span class="dv">7</span>)</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">y=</span>popmean, <span class="at">x=</span><span class="fu">max</span>(samplesizes), <span class="at">labels=</span><span class="st">'population mean (unknown to agent)'</span>, <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="at">col=</span><span class="dv">7</span>, <span class="at">cex=</span><span class="fl">1.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>commonmax <span class="ot">&lt;-</span> <span class="fl">1.01</span> <span class="sc">*</span> <span class="fu">max</span>(<span class="fu">abs</span>(<span class="fu">c</span>(popmean, popmedian, samplemeans, samplemedians)))</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="fu">myflexiplot</span>(<span class="at">x =</span> samplesizes, <span class="at">y =</span> samplemeans,</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> <span class="st">'sample size'</span>, <span class="at">ylab =</span> <span class="st">'sample mean'</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">col =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">4</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span>commonmax, commonmax))</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> popmean, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="dv">7</span>)</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">y =</span> popmean, <span class="at">x =</span> <span class="fu">max</span>(samplesizes),</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="st">'population mean (unknown to agent)'</span>,</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">adj =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="at">col =</span> <span class="dv">7</span>, <span class="at">cex =</span> <span class="fl">1.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1118,12 +1120,14 @@ The full-population median is 0.00188701 (unknown to the agent)</code></pre>
 </div>
 </div>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## plot how sample medians change with sample size, and the actual population median</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">myflexiplot</span>(<span class="at">x=</span>samplesizes, <span class="at">y=</span>samplemedians,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab=</span><span class="st">'sample size'</span>, <span class="at">ylab=</span><span class="st">'sample median'</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">col=</span><span class="dv">3</span>, <span class="at">lwd=</span><span class="dv">4</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span>commonmax,commonmax))</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span>popmedian, <span class="at">lty=</span><span class="dv">2</span>, <span class="at">lwd=</span><span class="dv">3</span>, <span class="at">col=</span><span class="dv">7</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">y=</span>popmedian, <span class="at">x=</span><span class="fu">max</span>(samplesizes), <span class="at">labels=</span><span class="st">'population median (unknown to agent)'</span>, <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>), <span class="at">col=</span><span class="dv">7</span>, <span class="at">cex=</span><span class="fl">1.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">myflexiplot</span>(<span class="at">x =</span> samplesizes, <span class="at">y =</span> samplemedians,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> <span class="st">'sample size'</span>, <span class="at">ylab =</span> <span class="st">'sample median'</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">col =</span> <span class="dv">3</span>, <span class="at">lwd =</span> <span class="dv">4</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span>commonmax, commonmax))</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> popmedian, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="dv">7</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">y =</span> popmedian, <span class="at">x =</span> <span class="fu">max</span>(samplesizes),</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="st">'population median (unknown to agent)'</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">adj =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="at">col =</span> <span class="dv">7</span>, <span class="at">cex =</span> <span class="fl">1.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1136,7 +1140,7 @@ The full-population median is 0.00188701 (unknown to the agent)</code></pre>
 <p><br>
 </p>
 <ul>
-<li>Now try a similar exercise but for the standard deviation of <span class="math inline">\(T\)</span></li>
+<li>Now try a similar exercise but for the standard deviation of <span class="math inline">\(Z\)</span></li>
 </ul>
 </div>
 </div>

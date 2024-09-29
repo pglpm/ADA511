@@ -199,11 +199,11 @@ For some populations, the mean and standard deviation calculated in a sample can
 :::{.callout-caution}
 ## {{< fa user-edit >}} Guided exercise
 
-We imagine to have a population of 1 000 000 units. These units have continuous interval variates $X$ and $Y$, each with an approximately standard Gaussian frequency distribution. These variates are not actual part of the population definition, however. Rather, an agent only has access to, or maybe it's only interested in, the ratio of these two variates $T \defd X/Y$.
+We imagine to have a population of 1 000 000 units. These units have continuous interval variates $X$ and $Y$, each with an approximately standard Gaussian frequency distribution. These variates are not actual part of the population definition, however. Rather, an agent only has access to, or maybe it's only interested in, the ratio of these two variates $Z \defd X/Y$.
 
-The agent is in particular interested in the *mean* of the variate $T$ in the full population, but has only access to the values of $T$ in a sample. How does the mean calculated from a sample of increasing size compare with the actual mean of the full population? For comparison, we also study the *median* of the full population and of the samples.
+The agent is in particular interested in the *mean* of the variate $Z$ in the full population, but has only access to the values of $Z$ in a sample. How does the mean calculated from a sample of increasing size compare with the actual mean of the full population? For comparison, we also study the *median* of the full population and of the samples.
 
-First let's create the values of the variates $X$ and $Y$, and construct $T$ from them:
+First let's create the values of the variates $X$ and $Y$, and construct $Z$ from them:
 
 ```{r}
 ## Load custom plot functions
@@ -215,13 +215,13 @@ N <- 1000000 # population size
 X <- rnorm(N) # variate invisible to agent
 Y <- rnorm(N) # variate invisible to agent
 
-T <- X/Y # variate considered by agent
+Z <- X / Y # variate considered by agent
 
-## mean and median of T in the full population
-popmean <- mean(T)
+## mean and median of Z in the full population
+popmean <- mean(Z)
 cat('\nThe full-population mean is', popmean, '(unknown to the agent)\n')
 
-popmedian <- median(T)
+popmedian <- median(Z)
 cat('\nThe full-population median is', popmedian, '(unknown to the agent)\n')
 ```
 
@@ -229,41 +229,45 @@ Now we imagine that the agent accumulates samples from the population, starting 
 
 ```{r}
 ## sizes of successive samples
-samplesizes <- seq(100, N/2, by=100)
+samplesizes <- seq(from = 100, to = N / 2, by = 100)
 
 ## empty vectors to contain the means and medians of the increasing samples
 samplemeans <- numeric(length(samplesizes))
 samplemedians <- numeric(length(samplesizes))
 
 ## loop through the increasing samples, calculate mean for each
-for(sample in 1:length(samplesizes)){
-    samplemeans[sample] <- mean(T[1:samplesizes[sample]])
-    samplemedians[sample] <- median(T[1:samplesizes[sample]])
+for(sample in seq_along(samplesizes)){
+    samplemeans[sample] <- mean(Z[1:samplesizes[sample]])
+    samplemedians[sample] <- median(Z[1:samplesizes[sample]])
 
 }
 
 ## plot how sample means change with sample size, and the actual population mean
-commonmax <- 1.01*max(abs(c(popmean,popmedian,samplemeans,samplemedians)))
-myflexiplot(x=samplesizes, y=samplemeans,
-      xlab='sample size', ylab='sample mean',
-      col=2, lwd=4,
-      ylim=c(-commonmax,commonmax))
-abline(h=popmean, lty=2, lwd=3, col=7)
-text(y=popmean, x=max(samplesizes), labels='population mean (unknown to agent)', adj=c(1,1), col=7, cex=1.2)
+commonmax <- 1.01 * max(abs(c(popmean, popmedian, samplemeans, samplemedians)))
+myflexiplot(x = samplesizes, y = samplemeans,
+      xlab = 'sample size', ylab = 'sample mean',
+      col = 2, lwd = 4,
+      ylim = c(-commonmax, commonmax))
+abline(h = popmean, lty = 2, lwd = 3, col = 7)
+text(y = popmean, x = max(samplesizes),
+    labels = 'population mean (unknown to agent)',
+    adj = c(1, 1), col = 7, cex = 1.2)
 
 ## plot how sample medians change with sample size, and the actual population median
-myflexiplot(x=samplesizes, y=samplemedians,
-      xlab='sample size', ylab='sample median',
-      col=3, lwd=4,
-      ylim=c(-commonmax,commonmax))
-abline(h=popmedian, lty=2, lwd=3, col=7)
-text(y=popmedian, x=max(samplesizes), labels='population median (unknown to agent)', adj=c(1,1), col=7, cex=1.2)
+myflexiplot(x = samplesizes, y = samplemedians,
+      xlab = 'sample size', ylab = 'sample median',
+      col = 3, lwd = 4,
+      ylim = c(-commonmax, commonmax))
+abline(h = popmedian, lty = 2, lwd = 3, col = 7)
+text(y = popmedian, x = max(samplesizes),
+    labels = 'population median (unknown to agent)',
+    adj = c(1, 1), col = 7, cex = 1.2)
 ```
 
 Test this again with several pseudorandom seeds.
 
 \
 
-- Now try a similar exercise but for the standard deviation of $T$
+- Now try a similar exercise but for the standard deviation of $Z$
 
 :::
