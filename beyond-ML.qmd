@@ -5,11 +5,11 @@
 
 ## Machine learning from a bird's-eye view {#sec-ML-birds-eye}
 
-The last few chapters gave a brief introduction to and overview of popular machine-learning methods, their terminology, and the points of view that they typically adopt. Now let's try to look at them keeping in mind our main goal in this course: [exploring new methods, understanding their foundations, and thinking out of the box](index.html).
+The last few chapters gave a brief introduction to and overview of popular machine-learning methods, their terminology, and the points of view that they typically adopt. Now let's try to look at them keeping in mind our main goal in this course: [exploring new inference methods, understanding their foundations, and thinking out of the box](index.html).
 
-In this and the next few chapters we shall focus on the question: [*to what purpose do we use machine-learning algorithms?*]{.yellow}. After answering this question, we shall try to achieve that purpose in the optimal way, according to what our fundamental theory tells us we should do, without considering "machine learning". But we shall keep an eye on where our optimal solution seems to be similar or dissimilar to machine-learning methods.
+In this and the next few chapters we shall focus on the following question: [*to what purpose do we use machine-learning algorithms?*]{.yellow}. After answering this question and clarifying what the purpose is, we shall try to achieve it in an *optimal way*, according to the methods and concepts we studied in the initial part of the course. Remember that they are guaranteed to give the optimal solution ([chapter @sec-framework]). But we shall keep an eye open to see where our optimal methods seem to be similar or dissimilar to machine-learning methods.
 
-Then, in the last chapters, we shall examine where the optimal solution and machine-learning methods converge and diverge, try to understand what machine-learning methods do from the point of view of the optimal solution, and think of ways to improve them.
+Thereafetr, in the last chapters, we shall examine where the optimal solution and machine-learning methods converge and diverge, try to understand what machine-learning methods do from the point of view of our optimal solution, and think of ways to improve them.
 
 ## A task-oriented categorization of some machine-learning problems {#sec-cat-problems}
 
@@ -19,18 +19,16 @@ For our goal, the common machine-learning categorization and terminology discuss
 
 - {{< fa bullseye >}}\ \ They focus on procedures rather than on purposes.
 
-The important questions for us, in fact, are: [*What do we wish to infer or choose?*]{.blue} and [*From which kind of information?*]{.green} These questions define the problem we want to solve. The procedure may then be chosen depending on the theory, resources and technologies, other contingent factors, and so on.
+The important questions for us, in fact, are: [*What do we wish to infer or choose?*]{.blue} and [*From which kind of information?*]{.green} These questions define the problem we want to solve. <!-- The procedure may then be chosen depending on the theory, resources and technologies, other contingent factors, and so on. -->
 
 <!-- It's somewhat like saying that the difference between car and aeroplane is that the latter has wings. Sure -- but *why?* The focus on wings misses the essential difference between these two means of transportation: they operate through different material media and exploit different kinds of physics; that's why the second has wings. -->
 
-Let's introduce a different categorization that tries to focus on the purpose or task, on the types of desired information and of available information, rather than on the procedure.
+Let's introduce a different categorization of the kind of tasks that we want to accomplish; a categorization that tries to focus on the purpose or task, and on the types of desired information and of available information, rather than on the procedure.
 
 
-
-The categorization below, of the types of *task* that machine-learning algorithms try to solve, is informal. It only provides a starting point from which to examine a new task. Many tasks will fall in between categories: every data-engineering or data-science problem is unique.
+The categorization below <!-- , of the types of *task* that machine-learning algorithms try to solve, --> is informal. It only provides a starting point from which to examine a new kind of task we may face. Many tasks will fall in between categories: every data-engineering or data-science problem is unique.
 
 \
-
 We *exclude* from the start all tasks that require an agent to continuously and actively interact with its environment for acquiring information, making choices, getting feedback, and so on. Clearly these tasks are the domain of Decision Theory in its most complex form, with ramified decisions, *strategies*, and possibly the interaction with other decision-making agents. To explore and analyse this kind of tasks is beyond the purpose of this course.
 
 ::::{.column-margin}
@@ -45,8 +43,7 @@ We *exclude* from the start all tasks that require an agent to continuously and 
 ::::
 
 \
-
-We focus on tasks where multiple "instances" with similar characteristics are involved, and the agent has some task related to a "new instance", possibly to be repeated an indefinite number of times. According to the conceptual framework developed in part [Data II]{.yellow}, we can view these "instances" as *units* of a practically infinite population. The "characteristics" that the agent guesses or observed are *variates* common to all these units.
+We focus on tasks where multiple "instances" with similar characteristics are involved, and the agent has some question related to a "new instance".<!-- , possibly to be repeated an indefinite number of times. --> According to the conceptual framework developed in part [Data II]{.yellow}, we can view these "instances" as *units* of a practically infinite population. The "characteristics" that the agent has observed or must guess are *variates* common to all these units.
 
 :::{.column-margin}
 Remember that you can adopt any terminology you like. If you prefer "instance" and "characteristics" or some other words to "unit" and "variate", then use them. What's important is that you understand the ideas and methods behind these words
@@ -57,16 +54,16 @@ Remember that you can adopt any terminology you like. If you prefer "instance" a
 
 A first distinction can be made between
 
-- [{{< fa sign-out-alt >}} {{< fa cube >}}\ \ tasks where an agent must itself *generate* a new unit]{.yellow}
+- [{{< fa sign-out-alt >}} {{< fa cube >}}\ \ Tasks where an agent must itself *generate* a new unit]{.yellow}
 
-- [{{< fa cube >}} {{< fa question >}}\ \ tasks where a new unit is given to an agent, who must *guess* some of its variates]{.green}
+- [{{< fa cube >}} {{< fa question >}}\ \ Tasks where a new unit is given to an agent, who must *guess* some of its variates]{.green}
 
 An example of the first type of task is image generation: an algorithm is given a collection of images and is asked to generate a new image based on them.
 
 We shall see that these two types of task are actually quite close to each other, from the point of view of Decision Theory and Probability Theory.
 
 :::{.small .midgrey}
-The terms "discriminative" and "generative" are sometimes associated in machine learning with the two types of task. This association, however, is quite loose, because some tasks typically called "generative" actually belong to the first type. We shall therefore avoid these or other terms. It's enough to keep in mind the distinction between the two types of task above.
+The terms "discriminative" and "generative" are sometimes associated in machine learning with the two types of task. This association, however, is quite loose, because some tasks typically called "generative" actually belong to the first type. We shall therefore avoid these terms. It's enough to keep in mind the distinction between the two types of task above.
 :::
 
 
@@ -74,27 +71,27 @@ The terms "discriminative" and "generative" are sometimes associated in machine 
 
 Focusing on the second type of task (a new unit is given to the agent), we can further divide it into two subtypes:
 
-- [{{< fa regular star >}}\ \ the agent must guess *all* variates of the new unit]{.purple}
+- [{{< fa regular star >}}\ \ The agent must guess *all* variates of the new unit]{.purple}
 
-- [{{< fa star-half-alt >}}\ \ the agent must guess *some* variates of the new unit, but can observe other variates of the new unit]{.red}
+- [{{< fa star-half-alt >}}\ \ The agent must guess *some* variates of the new unit, but can observe other variates of the new unit]{.red}
 
-An example of the first subtype of task is the "urgent vs non-urgent" problem of [§@sec-conditional-joint-sim]: having observed incoming patients, some of which where urgent and some non-urgent, the agent must guess whether the next incoming patient will be urgent or not. No other kinds of information (transport, patient characteristics, and so on) are available for any patient.
+An example of the first subtype of task is the "urgent vs non-urgent" problem of [§@sec-conditional-joint-sim]: having observed incoming patients, some of which where urgent and some non-urgent, the agent must guess whether the next incoming patient will be urgent or not. No other kinds of information (transport, patient characteristics, or others) are available.
 
-We shall call [**predictands**]{.blue}^[literally "what has to be predicted] the variates that the agent must guess in a new unit, and [**predictors**]{.blue} those that the agent can observe.^[In machine learning and other fields, the terms "dependent variable", "class" or "label" (for nominal variates) are often used for "predictand"; and the terms "independent variable" or "features" are often used for "predictor".] The first subtype above can be viewed as a special case of the second where all variates are predictands, and there are no predictors.
+We shall call [**predictands**]{.blue}^[literally "what has to be predicted"] the variates that the agent must guess in a new unit, and [**predictors**]{.blue} those that the agent can observe.^[In machine learning and other fields, the terms "dependent variable", "class" or "label" (for nominal variates) are often used for "predictand"; and the terms "independent variable" or "features" are often used for "predictor".] The first subtype above can be viewed as a special case of the second where all variates are predictands, and there are no predictors.
 
 :::{.small .midgrey}
-The terms "unsupervised learning" and "supervised learning" are sometimes associated in machine learning with these two subtypes of task. But also in this case the association is loose and can be misleading. "Clustering" tasks, for example, are usually called "unsupervised" but they are examples of the second subtype above, where the agent has some predictors.
+The terms "unsupervised learning" and "supervised learning" are sometimes associated in machine learning with these two subtypes of task. But the association is loose and can be misleading. "Clustering" tasks, for example, are usually called "unsupervised" but they are examples of the second subtype above, where the agent has some predictors.
 :::
 
 ### Information available in previous units
 
 Finally we can further divide the second subtype above into two or three subsubtypes, depending on the information available to the agent about *previous units*:
 
-- [{{< fa star-half-alt >}} {{< fa star-half-alt >}}\ \ all predictors and predictands of previous units are known to the agent]{.blue}
+- [{{< fa star-half-alt >}} {{< fa star-half-alt >}}\ \ All predictors and predictands of previous units are known to the agent]{.blue}
 
-- [{{< fa star-half >}} {{< fa star-half >}}\ \ all predictors of previous units, but not the predictands, are known to the agent]{.lightblue}
+- [{{< fa star-half >}} {{< fa star-half >}}\ \ All predictors of previous units, but not the predictands, are known to the agent]{.lightblue}
 
-- [{{< fa regular star-half >}} {{< fa regular star-half >}}\ \ all predictands of previous units, but not the predictors, are known to the agent]{.midgrey}
+- [{{< fa regular star-half >}} {{< fa regular star-half >}}\ \ All predictands of previous units, but not the predictors, are known to the agent]{.midgrey}
 
 \
 
@@ -112,13 +109,13 @@ In the example just given, the image is the predictor, the character-label is th
 
 \
 
-A slight modification of the example above gives us a task of the second subsubtype. A different agent is given the images above, but without labels:
+A slight modification of the example above gives us a task of the second subsubtype. A different agent is given the images above, *but without labels*:
 
 ![](saitama_images_nolabels.png){width=100%}
 
-and must then guess some kind of "label" or "group" for the new image above -- and possibly even for the images already given. The kind of "group" requested depends on the specific problem.
+and must then guess some kind of "label" or "group" for the new image above; and possibly also for the images already given. The kind of "group" requested depends on the specific problem.
 
-In the new example above, the image is still the predictor, and the label or group is the predictand.
+In this example the image is the predictor, and the label or group is the predictand. The difference from the previous example is that the agent doesn't have the predictand values of previous units.
 
 :::{.small .midgrey}
 The term "supervised learning" typically refer to the first subsubtype above.
@@ -133,17 +130,34 @@ The types, subtypes, subsubtypes above are obviously not mutually exclusive or c
 
 ## Flexible categorization using probability theory {#sec-categ-probtheory}
 
-We have been speaking about the agent's "guessing" the values of some variates. Guessing means that there's a state of uncertainty; the agent can't just say something like "the value is $42$". Uncertainty means that the most honest thing that the agent can do is to express degrees of belief about each of the possible values. Probability theory must enter the scene.
+We have been speaking about the agent's guessing the values of some variates. "Guessing" means that there's a state of *uncertainty*: the agent can't simply say something like "the value of the label is `Saitama`", because that could be false. Uncertainty means that the most honest thing that the agent can do is to express *degrees of belief* about each of the possible values. Probability theory enters the scene.
 
-But it also turns out that the categorization above into subtypes and subsubtypes of task can actually be presented in a more straightforward and flexible way using probability-theory notation.
+In fact it turns out that the categorization above into subtypes and subsubtypes of tasks can be presented in a more straightforward and flexible way using probability-theory notation.
 
 ### Notation
 
-First let's introduce some symbol conventions to be used in the next chapters. We shall denote with $\bZ$ all variates that are of interest to the agent: those to be guessed and those that may be known. The variates to be guessed in a new unit (the predictands) will be collectively denoted with $\bY$. The variates that can be observed in a new unit (the predictors) will be collectively denoted with $\bX$. Therefore we have $\bZ = (\bY \and \bX)$. In cases where there are no predictors, $\bX$ is empty and we have $\bZ = \bY$.
+First let's introduce some symbol conventions to be used in the next chapters.
 
-$\bZ_i$, $\bY_i$, $\bX_i$ denote all variates, the predictands, and the predictors for unit [#$i$.]{.m}\ \ As usual we number from $i=1$ to $i=N$ the units that serve for learning, and $i=N+1$ is the new unit of interest to the agent.
+- We shall denote with $\bZ$ all variates that are of interest to the agent: those to be guessed as well as those that may be already known.
+- The variates to be guessed in a new unit (the predictands) will be collectively denoted with $\bY$.
+- The variates that can be observed in a new unit (the predictors) will be collectively denoted with $\bX$. In cases where there are no predictors, $\bX$ is empty.
 
-Recall ([§@sec-basic-elements-inference]) that in probability notation $\P({\red\boldsymbol{\therefore}}\|{\green\boldsymbol{\because}} \and \yI)$, the [proposal]{.red} contains what the agent's belief is about, and the [conditional]{.green} contains what's supposed to be known to the agent, together with the background [information $\yI$.]{.m}
+Therefore we have $\bZ = (\bY \and \bX)$. In cases where there are no predictors we have $\bZ = \bY$.
+
+- $\bZ_i$\ \ denote all variates for unit [#$i$.]{.m}
+- $\bY_i$\ \ denote all predictands for unit [#$i$.]{.m}
+- $\bX_i$\ \ denote all predictors for unit [#$i$.]{.m}
+
+As usual we number from\ \ $i=1$\ \ to\ \ $i=N$\ \ the units that serve for learning, and\ \ $i=N+1$\ \ is the *new* unit of interest to the agent.
+
+Recall ([§@sec-basic-elements-inference]) that in probability notation 
+
+$$\P(\text{\red\small[proposal]}\|\text{\green\small[conditional]} \and \yI)$$ 
+
+the [proposal]{.red} contains what the agent's belief is about, and the [conditional]{.green} contains what's supposed to be known to the agent, together with the background [information $\yI$.]{.m}
+
+\
+Finally let's see how to express different typologies of tasks in probability notation.
 
 \
 
@@ -166,9 +180,9 @@ for all possible values $\red z$ in the domain of $\bZ$. The specific values $\g
 
 \
 
-### [{{< fa star-half-alt >}}]{.red}\ \ The agent must guess *some* variates of the new unit, but can observe other variates of the new unit
+### [{{< fa star-half-alt >}}]{.red}\ \ The agent must guess *some* variates of the new unit, having observed other variates of the new unit
 
-This kind of guess is represented by a probability distribution having
+This kind of guess is represented by the probability distribution
 
 $$
 \P(\red
@@ -183,7 +197,7 @@ $$
 
 for all possible values $\red y$ in the domain of the predictands $\bY$. The value $\green x$ of the predictors $\bX$ for the new unit is known to the agent.
 
-The remaining information contained in the conditional depends on the subsubtype of task previously discussed:
+The remaining information "$\dotsb$" contained in the conditional depends on the subsubtype of task:
 
 \
 
@@ -208,7 +222,7 @@ X_{1}\mo x_{1}
 \black \and \yI)
 $$
 
-for all possible $\red y$. All information about predictands and predictors for previous units appear in the conditional.
+for all possible $\red y$. All information about predictands $\bY$ and predictors $\bX$ for previous units appears in the conditional.
 
 In the example with image classification, a pictorial representation of this probability would be
 
@@ -235,7 +249,7 @@ X_{1}\mo x_{1}
 \black \and \yI)
 $$
 
-for all possible $\red y$. All information about predictors for the previous units, but not that about their predictands, appear in the conditional.
+for all possible $\red y$. All information about predictors $\bX$ for the previous units, but *not* that about their predictands $\bY$, appears in the conditional.
 
 \
 
@@ -291,9 +305,9 @@ $$
 
 ### [{{< fa sign-out-alt >}} {{< fa cube >}}]{.yellow}\ \ Tasks where an agent must itself *generate* a new unit
 
-Our first categorical division mentioned the task of generating a new unit, given previous examples. In this kind of task there are possible alternatives that the agent could generate. How should one alternative be chosen? A moment's thought shows that the *probabilities* for the alternatives should enter the choice.
+Our very first categorization included the task of generating a new unit, given previous examples. In this kind of task there are possible alternatives that the agent could generate. How should one alternative be chosen? A moment's thought shows that the *probabilities* for the possible alternatives should enter the choice.
 
-Suppose, as a very simple example, that a unit-generating agent has been shown, in an unsystematic order, 30 copies of the symbol [{{< fa regular circle-up >}}]{.green} and 10 copies of the symbol [{{< fa regular circle-down >}}]{.yellow}, and is asked to generate a new symbol out of these examples. Intuitively we expect it to generate [{{< fa regular circle-up >}}]{.green}, but cannot and don't want to exclude the possibility that it could generate [{{< fa regular circle-down >}}]{.yellow}. These two generation possibilities should simply have different probabilities and, in the long run, appear with different frequencies.
+Suppose, as a very simple example, that a generative agent has been shown, in an unsystematic order, 30 copies of the symbol [{{< fa regular circle-up >}}]{.green} and 10 copies of the symbol [{{< fa regular circle-down >}}]{.yellow}, and is asked to generate a new symbol out of these examples. Intuitively we expect that it will generate [{{< fa regular circle-up >}}]{.green}, but we cannot and don't want to exclude the possibility that it will generate [{{< fa regular circle-down >}}]{.yellow}. These two generation possibilities should simply have different probabilities and, in the long run, appear with different frequencies.
 
 Also in this kind of task, therefore, we have the probability distribution
 
@@ -308,32 +322,36 @@ Z_{1}\mo z_{1}
 \black \and \yI)
 $$
 
-the difference from before is that the sentence $\red Z_{N+1}\mo z$ represents not the hypothesis that a *given* new unit has value $\red z$, but the possibility of *generating* a new unit with that value. In other words, the symbol "$\mo$" here means "*must be set to...*" rather than "*would be observed to be...*"; remember the discussion and warnings in [§@sec-sentence-notation]?
+the difference from before is that the sentence $\red Z_{N+1}\mo z$ represents not the hypothesis that a *given* new unit has value $\red z$, but the possibility of *generating* a new unit with that value. In other words, the symbol "$\mo$" here means "*must be set to...*" rather than "*would be observed to be...*". Remember the discussion and warnings in [§@sec-sentence-notation]?
 
 \
 
-The general conclusion is that 
+Our general conclusion is this:
 
 :::{.callout-note style="font-size:120%"}
-##
+##  
 ::::{style="font-size:120%"}
-probability distribution such as those discussed above must intrinsically enter all types of machine-learning algorithms.
+Probability distribution such as those discussed above should intrinsically enter all types of machine-learning algorithms.
 ::::
 :::
 
+This is the condition for machine-learning algorithms to be optimal and self-consistent. The less an algorithm satisfies that condition, the less optimal and less consistent it is.
+
+\
+
 ## The underlying distribution {#sec-underlying-distribution}
 
-A remarkable feature of all the probabilities discussed in the above task categorization, even of those for "hybrid" types of task, is that they can all be calculated from *one* and the same probability distribution. We briefly discussed and used this feature in [chapter @sec-learning].
+A remarkable feature of all the probabilities discussed in the above task categorization is that they can all be calculated from *one* and the same probability distribution. We briefly discussed and used this feature in [chapter @sec-learning].
 
-A conditional probability such as $\P({\red\boldsymbol{\therefore}}\|{\green\boldsymbol{\because}} \and \yI)$ can always be written, by the `and`-rule, as the ratio of two probabilities:
+A conditional probability such as $\P(\se{\red A}\|\se{\green B} \and \yI)$ can always be written, by the `and`-rule, as the ratio of two probabilities:
 
 $$
-\P({\red\boldsymbol{\therefore}}\|{\green\boldsymbol{\because}} \and \yI)
+\P(\se{\red A}\|\se{\green B} \and \yI)
 =
 \frac{
-\P({\red\boldsymbol{\therefore}}\and {\green\boldsymbol{\because}} \| \yI)
+\P(\se{\red A}\and \se{\green B} \| \yI)
 }{
-\P({\green\boldsymbol{\because}} \| \yI)
+\P(\se{\green B} \| \yI)
 }
 $$
 
@@ -454,18 +472,18 @@ $$
 
 \
 
-We also know the marginalization rule ([chapter @sec-marginal-probs]): any quantity $\yellow A$ with values $\yellow a$ can be introduced into the proposal of a probability via the `or`-rule:
+We also know the marginalization rule ([chapter @sec-marginal-probs]): any quantity $\yellow C$ with values $\yellow c$ can be introduced into the proposal of a probability via the `or`-rule:
 
 $$
 \P( {\green\boldsymbol{\dotsb}} \| \yI) =
-\sum_{\yellow a}\P({\yellow A\mo a} \and  {\green\boldsymbol{\dotsb}} \| \yI)
+\sum_{\yellow c}\P({\yellow C\mo c} \and  {\green\boldsymbol{\dotsb}} \| \yI)
 $$
 
-Using the marginalization rule we find these final expressions for the probabilities of tasks of various types:
+Using the marginalization rule we find these final expressions for the probabilities of some machine-learning tasks discussed so far:
 
 ::::{.column-page-right}
 :::{.callout-note}
-##
+##  
 
 - [{{< fa regular star >}}]{.purple} Guess all variates:
 
@@ -693,9 +711,9 @@ X_{1}\mo x_{1}
 }
 $$
 
-Stop for a moment and contemplate some of the consequences of this remarkable fact
+Stop for a moment and contemplate some of the consequences of this remarkable fact:
 
-- [{{< fa arrows-spin >}}\ \ *An agent that can perform one of the tasks above also can, in principle, perform all other tasks.*]{.blue}
+- [{{< fa arrows-spin >}}\ \ *An agent that can perform one of the tasks above can, in principle, also perform all other tasks.*]{.blue}
 
     This is why a perfect agent, working with probability, in principle does not have to worry about "supervised", "unsupervised", "missing data", "imputation", and similar situations. This also shows what was briefly mentioned before: all these task typologies are much closer to one another than it might look like from the perspective of current machine-learning methods.
 	
@@ -705,15 +723,15 @@ The acronym [*OPM*]{.green} ![](opm_fist2.png){height=2em} can stand for [*Optim
 
 - [{{< fa microchip >}}\ \ *The probability distribution above encodes the agent's background knowledge and assumptions; different agents differ only in the values of that distribution.*]{.blue}
 
-    If two agents yield different probability values in the same task, with the same variates and same training data, the difference must come from the joint probability distribution above. And, since the data given to the agents are exactly the same, the difference is in the agents' background [information $\yI$.]{.m}
+    If two agents yield different probability values in the same task, with the same variates and same training data, the difference must come from the joint probability distribution above. And, since the data given to the two agents are exactly the same, the difference must lie in the agents' background [information $\yI$.]{.m}
 
 - [{{< fa user-secret >}}\ \ *Data cannot "speak for themselves"*]{.blue}
 
-    For exactly the same data, we can choose two different distributions above , and therefore get different results. The data alone cannot determine the result: specific background information and assumptions, whether acknowledged or not, always affect the result.
+    Given some data, we can choose two different joint distributions for these data, and therefore get different results in our inferences and tasks. This means that the data alone cannot determine the result: specific background information and assumptions, whether acknowledged or not, always affect the result.
 
-The qualification "in principle" in the first consequence is important. Some of the sums that enter the formulae above are computationally extremely expensive and, with current technologies and maths techniques, cannot be performed within a reasonable time. But *new technologies and new maths discoveries could make these calculations suddenly possible*, this is why a data engineer cannot simply brush them aside and forget them.
+The qualification "in principle" in the first consequence is important. Some of the sums that enter the formulae above are computationally extremely expensive and, with current technologies and maths techniques, cannot be performed within a reasonable time. But *new technologies and new maths discoveries could make these calculations  possible*. This is why a data engineer cannot simply brush them aside and forget them.
 
-As regards the third consequence, we shall see that there are states of knowledge which actually do converge to the same results, as the number of training data increases.
+As regards the third consequence, we shall see that there are different states of knowledge which can converge to the same results, as the number of training data increases.
 
 
 
@@ -751,19 +769,18 @@ Our goal in building an "Optimal Predictor Machine" is now clear: we must find a
 
 - *encode* the distribution in a computationally useful way
 
-The "encode" undertaking sounds quite challenging, because the number $N$ of units can in principle be infinite; we have an infinite probability distribution.
+The "encode" goal sounds quite challenging, because the number $N$ of units can in principle be infinite; we have an infinite probability distribution.
 
-In the next [Inference III] part we shall see that partially solving the "assign" undertaking actually makes the "encode" one feasible.
+In the next [Inference III]{.green} part we shall see that partially solving the "assign" goal actually makes the "encode" goal feasible.
 
 \
+One question arises if we now look at machine-learning methods from our Probability Theory perspective. Some machine-learning methods, including many popular ones, don't give us probabilities about values. They return *one* definite value. How do we reconcile this with the probabilistic point of view above? We shall answer this question in full in the last chapters; but a short, intuitive answer can already be given now.
 
-One question arise if we look at machine-learning methods. Some, and not the most popular, of these methods don't give us probabilities about values: they return *one* definite value. How do we reconcile this with the probabilistic point of view above? We shall answer this question in full in the last chapters, but a short answer can be already given now, as it's very intuitive.
-
-If there are several possible correct answers to a given guess, but a machine-learning algorithm is giving us only one answer, then the algorithm must be internally *choosing* one of them. In other words, it's internally doing decision-making. We know from chapters [@sec-framework] and [@sec-basic-decisions] that this process should obey Decision Theory and therefore *must* involve
+If there are several possible correct answers to a given guess, but a machine-learning algorithm gives us only one answer, then the algorithm must have internally *chosen* one of them. In other words, the machine-learning algorithm is internally doing decision-making. We know from chapters [@sec-framework] and [@sec-basic-decisions] that this process should obey Decision Theory and therefore *must* involve:
 
 - [{{< fa scale-unbalanced-flip >}}\ \ the probabilities of the possible correct answers]{.green}
 
-- [{{< fa sack-dollar >}}\ \ the utilities of the possible choices of answer]{.blue}
+- [{{< fa sack-dollar >}}\ \ the utilities of the possible answer choices]{.blue}
 
-Non-probabilistic machine-learning algorithms must therefore be approximations of an Optimal Predictor Machine that, after computing probabilities, selects one unique answer by using utilities.
+Non-probabilistic machine-learning algorithms must therefore be approximations of an Optimal Predictor Machine that, after computing probabilities, selects one particular answer by using utilities.
 
