@@ -402,7 +402,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./beyond-ML.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="midgrey">Beyond machine learning</span></span></span></a>
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="green">Beyond machine learning</span></span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -606,9 +606,9 @@ window.Quarto = {
 <section id="sec-recap-before-exchang" class="level2 page-columns page-full" data-number="28.1">
 <h2 data-number="28.1" class="anchored" data-anchor-id="sec-recap-before-exchang"><span class="header-section-number">28.1</span> Recap</h2>
 <p>In the chapters of part <span class="green">Inference&nbsp;I</span> we had an overview of how an agent can draw inferences and make predictions of the most general kind, expressed by general sentences, using the four fundamental rules of inference.</p>
-<p>Then, in part <span class="green">Inference&nbsp;II</span>, we successively narrowed our focus on more and more specialized kinds of inference, typical of engineering and data-science problems and machine-learning algorithms. First, inferences about measurements and observations; then, inferences about multiple instances of similar measurements and observations. The idea was that that an agent can arrive at sharper degrees of belief – that is, learn – by using information about “similar instances”.</p>
+<p>Then, in part <span class="green">Inference&nbsp;II</span>, we successively narrowed our focus on more and more specialized kinds of inference, typical of engineering and data-science problems and of machine-learning algorithms. First we considered inferences about measurements and observations, then inferences about multiple instances of similar measurements and observations. The idea was that an agent can arrive at sharper degrees of belief – that is, it can <em>learn</em> – by using information about “similar instances”.</p>
 <p>For these purposes we introduced a specialized language about quantities and data types in part <span class="yellow">Data&nbsp;I</span>, and about “populations” of similar “units” in part <span class="yellow">Data&nbsp;II</span>.</p>
-<p>In the <span class="red">Machine&nbsp;learning</span> part we took an overview of current machine-learning methods, and then focused on several types of “multi-instance” tasks that popular machine-learning algorithm, such as deep networks and random forests, purport to solve. We found a remarkable result: a perfect agent – one that operates according to Probability Theory – can in principle perform <em>any and all</em> of those tasks by using the joint probability distribution</p>
+<p>In the <span class="red">Machine&nbsp;learning</span> part we took an overview of current machine-learning methods, and then focused on several types of tasks that popular machine-learning algorithms, such as deep networks and random forests, purport to solve. We found a remarkable result: a perfect agent – one that operates according to Probability Theory – can in principle perform <em>any and all</em> of those tasks by using the joint probability distribution</p>
 <p><span class="math display">\[
 \mathrm{P}(\color[RGB]{68,119,170}
 Y_{N+1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{N+1}
@@ -620,8 +620,8 @@ Y_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0
 X_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x_{1}
 \color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 \]</span></p>
-<p>in some calculations involving sums and divisions. This distribution must be specified for all possible values of <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}x_{1}, \dotsc, x_{N+1}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}y_{1}, \dotsc, y_{N+1}\)</span>,</span> and <span style="display:inline-block;"><span class="math inline">\(N\)</span>.</span></p>
-<p>For example, the task (“supervised learning”) of predicting some variates (predictands) for a new unit, from knowledge of the other variates (predictors) for the same units, and of all variates for <span style="display:inline-block;"><span class="math inline">\(N\)</span></span> other units, is given by</p>
+<p>The agent only needs to do some calculations with this joint distribution, involving sums and divisions. This distribution must be specified for all possible values of <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}x_{1}, \dotsc, x_{N+1}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{68,119,170}y_{1}, \dotsc, y_{N+1}\)</span>,</span> and <span style="display:inline-block;"><span class="math inline">\(N\)</span>.</span></p>
+<p>Take “supervised learning” for example, that is, the task of predicting some variates (predictands) for a new unit, from knowledge of other variates (predictors) for the same unit and of all variates for <span style="display:inline-block;"><span class="math inline">\(N\)</span></span> other units. Solving this task corresponds to calculating</p>
 <div class="column-page-inset-right">
 <p><span class="math display">\[
 \begin{aligned}
@@ -660,15 +660,14 @@ X_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0
 \]</span></p>
 </div>
 <p><br>
-</p>
-<p>Our problem now is to (1) choose such a distribution according to reasonable assumptions and background information, (2) encode it in a computationally feasible way.</p>
-<p>For these two purposes we shall now narrow our focus further, upon inferences satisfying a property that greatly simplifies the calculations, and that is reasonable in some contexts. Luckily such contexts are typical of many “supervised” and “unsupervised” machine-learning applications.</p>
+To build an AI agent that deals with these kinds of task we must: (1) choose a joint distribution according to reasonable assumptions and background information, (2) encode it in a computationally feasible way.</p>
+<p>In order to reach these two goals we shall now narrow our focus further, upon inferences satisfying a condition that greatly simplifies the calculations, and that is also reasonable in many real inference problems – and it is moreover typical of many “supervised” and “unsupervised” machine-learning applications.</p>
 <p><br>
 </p>
 </section>
 <section id="sec-excheable-beliefs" class="level2 page-columns page-full" data-number="28.2">
 <h2 data-number="28.2" class="anchored" data-anchor-id="sec-excheable-beliefs"><span class="header-section-number">28.2</span> States of knowledge with symmetries</h2>
-<p>An agent’s degrees of belief about a particular population may satisfy a special symmetry called <span class="blue"><strong>exchangeability</strong></span>. This symmetry can be understood from different points of view. We start from one of these viewpoints, and then make connections with alternative ones.</p>
+<p>An agent’s degrees of belief about a particular population may satisfy a special symmetry called <span class="blue"><strong>exchangeability</strong></span>. This symmetry can be understood from different points of view. Let’s start from one of these viewpoints, and then make connections with alternative ones.</p>
 <p>Take again two populations briefly mentioned in <a href="populations_variates.html#sec-collections" class="quarto-xref">§&nbsp;<span>20.1</span></a>:</p>
 <ul>
 <li><dl>
@@ -693,8 +692,7 @@ A collection of 1000 similar-sized rocks gathered from a specific, large crater 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><img src="mars_crater2.jpg" class="img-fluid" style="width:50.0%"></p>
 </div></div><p><br>
-</p>
-<p>Suppose that, in each of these populations, you (the agent) don’t know the variate value for unit <span class="midgrey">#735</span>, and for some reason would like to infer it. You are given the variate values for 100 other units, which you can use to improve your inference. Now consider this question:</p>
+Suppose that, in each of these populations, you (the agent) don’t know the variate value for unit <span class="midgrey">#735</span>, and for some reason would like to infer it. You are given the variate values for 100 other units, which you can use to improve your inference. Now consider this question:</p>
 <blockquote class="blockquote">
 <p><span class="blue"><em>How much does the relative order of the 100 known units and the unknown unit matter to you, for drawing your inference?</em></span></p>
 </blockquote>
@@ -1396,8 +1394,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./beyond-ML.html" class="pagination-link  aria-label=" &lt;span="" machine="" learning]{.midgrey}&lt;="" span&gt;"="">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="midgrey">Beyond machine learning</span></span></span>
+      <a href="./beyond-ML.html" class="pagination-link  aria-label=" &lt;span="" machine="" learning]{.green}&lt;="" span&gt;"="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="green">Beyond machine learning</span></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
