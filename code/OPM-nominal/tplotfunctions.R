@@ -136,6 +136,10 @@ myflexiplot <- function(
     grid = TRUE,
     add = FALSE,
     lwd = 1,
+    family = 'Palatino',
+    mgp = c(1.5, 0.5, 0),
+    oma = c(0.5, 0.5, 0.5, 0.5),
+    mar = c(3, 2.5, 1, 1),
     ...
 ){
     xat <- yat <- NULL
@@ -178,7 +182,8 @@ myflexiplot <- function(
         if(is.null(ylim[1]) || !is.finite(ylim[1])){ ylim[1] <- min(y[is.finite(y)]) }
         if(is.null(ylim[2]) || !is.finite(ylim[2])){ ylim[2] <- max(y[is.finite(y)]) }
     }
-
+    
+    par(family = family, mgp = mgp, oma = oma, mar = mar)
     graphics::matplot(x, y, xlim = xlim, ylim = ylim, type = type, pch = pch, axes = F, add = add, lwd = lwd, ...)
     if(!add){
         graphics::axis(1, at = xat, labels = xdomain, lwd = 0, ...)
@@ -216,7 +221,7 @@ myplotquantiles <- function(
     ## else if(!is.character(alpha)){alpha <- alpha2hex(alpha)}
     ## if(!(is.na(col) | nchar(col)>7)){col <- paste0(col, alpha)}
     ##
-    flexiplot(x = x, y = y, xdomain = xdomain, type = 'n', ...)
+    myflexiplot(x = x, y = y, xdomain = xdomain, type = 'n', ...)
 
     ## if x is character, convert to numeric
     if(is.character(x)){
@@ -593,7 +598,8 @@ myfivenumaxis <- function(side, x, col='#555555', type=6){
 
 ## scatteraxis(): use rug()
 
-myhist <- function(x, n=NULL, type=6, pretty=FALSE, plot=FALSE, extendbreaks=FALSE, ...){
+myhist <- function(x, n=NULL, type=6, pretty=FALSE, plot=FALSE,
+    extendbreaks=FALSE, ylim=c(0,NA), ...){
     if(!is.list(x)){x <- list(x)}
     if(!is.list(n)){n <- list(n)}
     out <- list()
@@ -637,10 +643,10 @@ myhist <- function(x, n=NULL, type=6, pretty=FALSE, plot=FALSE, extendbreaks=FAL
         out <- c(out,list(nextout))
     }
     if(plot){
-        tplot(x=lapply(out,function(xx){
+        mytplot(x=lapply(out,function(xx){
             if(length(xx$breaks)==1){xx$mids}else{xx$breaks}
         } ),
-              y=lapply(out,function(xx)xx$density),ylim=c(0,NA),type='h', ...)
+              y=lapply(out,function(xx)xx$density),ylim=ylim,type='h', ...)
     }else{
         if(length(out)==1){unlist(out,recursive=F)}else{out}
     }
@@ -708,3 +714,6 @@ mybisect <- function(fn, a, b){
     list(value = m, objective = fn(m))
 }
 
+myread.csv <- function(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, comment.char = "", na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE, ...){
+    read.csv(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, comment.char = "", na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE, ...)
+}
