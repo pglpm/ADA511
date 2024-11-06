@@ -22,10 +22,8 @@ All code functions and data files are in the directory\
 We start loading the R libraries and functions needed at several stages. You need to have installed^[This is done with the [`install.packages()` function](https://rdrr.io/r/utils/install.packages.html).] the packages [*data.table*](https://cran.r-project.org/package=data.table), [*extraDistr*](https://cran.r-project.org/package=extraDistr), [*foreach*](https://cran.r-project.org/package=foreach), [*khroma*](https://cran.r-project.org/package=khroma). Make sure you have saved all source files and data files in the same directory.
 
 ```{r}
-library('data.table')
 library('extraDistr')
 library('foreach')
-library('khroma')
 
 source('tplotfunctions.R')
 source('guessmetadata.R')
@@ -36,7 +34,7 @@ source('mutualinfo.R')
 source('rF.R')
 source('plotFsamples1D.R')
 
-options(repr.plot.width=6*sqrt(2), repr.plot.height=6)
+options(repr.plot.width = 6 * sqrt(2), repr.plot.height = 6)
 ```
 
 
@@ -65,8 +63,8 @@ The variates to be used must be of nominal type, because our agent's background 
 First, create a preliminary metadata file by running the function `guessmetadata()` on the training data [`train-income_data_example.csv`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/train-income_data_example.csv):
 
 ```{r}
-guessmetadata(data='train-income_data_example.csv',
-              file='preliminary.csv')
+guessmetadata(data = 'train-income_data_example.csv',
+              file = 'preliminary.csv')
 ```
 
 Inspect the resulting file `preliminary.csv` and check whether you can alter it to add additional background information.
@@ -75,7 +73,7 @@ As an example, note that domain of the $\mathit{native\_country}$ variate does n
 
 ### Agent's parameters $\amin, \amax$
 
-How many data should the agent learn in order to appreciably change its initial beliefs about the variates above, for the USA 1994 population? Let's put an upper bound at around 1 000 000 (that's roughly 0.5% of the whole population) with $\amax=20$, and a lower bound at 1 with $\amin=0$; these are the default values. We shall see later what the agent suggests might be a reasonable amount of training data.
+How many data should the agent learn in order to appreciably change its initial beliefs about the variates above, for the USA 1994 population? Let's put an upper bound at around 1 000 000 (that's roughly 0.5% of the whole population) with $\amax = 20$, and a lower bound at 1 with $\amin = 0$; these are the default values. We shall see later what the agent suggests might be a reasonable amount of training data.
 
 \
 
@@ -97,18 +95,19 @@ Prepare and train each with the `buildagent()` function:
 
 ```{r}
 ## temporarily load all training data
-traindata <- fread('train-income_data_example.csv', header=TRUE)
+traindata <- read.csv('train-income_data_example.csv', header = TRUE,
+    na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE)
 
 ## feed first 10 datapoints to an agent
-opm10 <- buildagent(metadata='meta_income_data_example.csv',
-                    data=traindata[1:10])
+opm10 <- buildagent(metadata = 'meta_income_data_example.csv',
+                    data = traindata[1:10, ])
 
 ## delete training data for memory efficiency
 rm(traindata)
 
 
-opmall <- buildagent(metadata='meta_income_data_example.csv',
-                     data='train-income_data_example.csv')
+opmall <- buildagent(metadata = 'meta_income_data_example.csv',
+                     data = 'train-income_data_example.csv')
 ```
 
 \
@@ -129,9 +128,9 @@ this shows that each agent is encoded as a list of four objects:
 The agent has internally guessed how many training data should be necessary to affect its prior beliefs. We can peek at its guess by plotting the `alphas` parameters against the `palphas` probabilities:
 
 ```{r}
-tplot(x=opmall$alphas, y=opmall$palphas, type='b',
-      xlim=c(0, 10000), ylim=c(0, NA),
-      xlab='required number of training data', ylab='probability')
+mytplot(x = opmall$alphas, y = opmall$palphas, type = 'b',
+      xlim = c(0, 10000), ylim = c(0, NA),
+      xlab = 'required number of training data', ylab = 'probability')
 ```
 
 The most probable amount seems to be of the order of magnitude of 2000 units.
@@ -155,17 +154,17 @@ Before applying them, let's check some of their inferences, and see if we find a
 We ask the `opm10` agent to forecast the $\mathit{income}$ of the next unit, using the `infer()` function:
 
 ```{r}
-infer(agent=opm10, predictand='income')
+infer(agent = opm10, predictand = 'income')
 ```
 
 This agent gives a slightly larger probability to the $\cat{<=50K}$ case. Using the function `plotFsamples1D()` we can also inspect the `opm10`-agent's belief about the frequency distribution of $\mathit{income}$ for the full population. This belief is represented by a generalized scatter plot of 200 representative frequency distributions, represented as the [grey lines]{.grey}:
 
 ```{r}
-plotFsamples1D(agent=opm10,
-               n=200, # number of example frequency distributions
-               predictand='income',
-               ylim=c(0,1), # y-axis range
-               main='opm10') # plot title
+plotFsamples1D(agent = opm10,
+               n = 200, # number of example frequency distributions
+               predictand = 'income',
+               ylim = c(0,1), # y-axis range
+               main = 'opm10') # plot title
 ```
 
 where the [blue line]{.blue} is the probability distribution previously calculated with the `infer()` function.
@@ -176,8 +175,8 @@ This plot expresses the `opm10`-agent's belief that future training data might l
 Let's visualize the beliefs of the `opmall`-agent, trained with the full training dataset:
 
 ```{r}
-plotFsamples1D(agent=opmall, n=200, predictand='income',
-               ylim=c(0,1), main='opmall')
+plotFsamples1D(agent = opmall, n = 200, predictand = 'income',
+               ylim = c(0,1), main = 'opmall')
 ```
 
 The probability that the next unit has $\mathit{income}\mo\cat{<=50}$ is now above 70%. Also note that the `opmall`-agent doesn't believe that this probability would change appreciably if more training data were provided.
@@ -188,9 +187,9 @@ We can perform a similar exploration for any other variate. Let's take the $\mat
 
 
 ```{r}
-plotFsamples1D(agent=opm10, n=200, predictand='race',
-               ylim=c(0,1), main='opm10',
-               cex.axis=0.75) # smaller axis-font size
+plotFsamples1D(agent = opm10, n = 200, predictand = 'race',
+               ylim = c(0,1), main = 'opm10',
+               cex.axis = 0.75) # smaller axis-font size
 ```
 
 Note again how the little-trained `opm10`-agent has practically uniform beliefs. But it's also expressing the fact that future training data will probably increase the probability of $\mathit{race}\mo\cat{White}$.
@@ -199,8 +198,8 @@ This is corroborated by the fully-trained agent:
 
 
 ```{r}
-plotFsamples1D(agent=opmall, n=200, predictand='race',
-               ylim=c(0,1), main='opmall', cex.axis=0.75)
+plotFsamples1D(agent = opmall, n = 200, predictand = 'race',
+               ylim = c(0,1), main = 'opmall', cex.axis = 0.75)
 ```
 
 \
@@ -242,11 +241,11 @@ We ask the `opm10` agent to forecast the $\mathit{income}$ of a new unit, given 
 The `opm10`-agent's belief about the unit -- as well as about the *full subpopulation* ([§@sec-subpopulations]) of units having those predictors -- is shown in the following plot:
 
 ```{r}
-plotFsamples1D(agent=opm10, n=200,
-               predictand='income',
-               predictor=list(occupation='Exec-managerial',
-                              sex='Male'),
-               ylim=c(0,1), main='opm10')
+plotFsamples1D(agent = opm10, n = 200,
+               predictand = 'income',
+               predictor = list(occupation = 'Exec-managerial',
+                              sex = 'Male'),
+               ylim = c(0,1), main = 'opm10')
 ```
 
 Note how the `opm10`-agent still slightly higher probability to $\mathit{income}\mo\cat{<=50}$, but at the same time it is quite uncertain about the subpopulation frequencies; more than if the predictor had not been specified. That is, according to this little-trained agent there could be large variety of possibilities *within this specific subpopulation*.
@@ -254,11 +253,11 @@ Note how the `opm10`-agent still slightly higher probability to $\mathit{income}
 The `opmall`-agent's beliefs are shown below:
 
 ```{r}
-plotFsamples1D(agent=opmall, n=200,
-               predictand='income',
-               predictor=list(occupation='Exec-managerial',
-                              sex='Male'),
-               ylim=c(0,1), main='opmall')
+plotFsamples1D(agent = opmall, n = 200,
+               predictand = 'income',
+               predictor = list(occupation = 'Exec-managerial',
+                              sex = 'Male'),
+               ylim = c(0,1), main = 'opmall')
 ```
 
 it believes with around 55% probability that such a unit would have higher, $\cat{>50K}$ income. The representative subpopulation-frequency distributions in grey indicate that this belief is unlikely to be changed by new training data.
@@ -268,9 +267,9 @@ it believes with around 55% probability that such a unit would have higher, $\ca
 Let's now see an example of our agent's versatility by switching predictands and predictors. We tell the `opmall`-agent that the new unit has $\mathit{income}\mo\cat{>50}$, and ask it to infer the joint variate $(\mathit{occupation} \and \mathit{sex})$; let's present the results in rounded percentages:
 
 ```{r}
-result <- infer(agent=opmall,
-                predictand=c('occupation', 'sex'),
-                predictor=list(income='>50K'))
+result <- infer(agent = opmall,
+                predictand = c('occupation', 'sex'),
+                predictor = list(income = '>50K'))
 
 round(result * 100, 1) # round to one decimal
 ```
@@ -284,12 +283,12 @@ This function generates **full-population** frequency distributions (even for su
 Let's see, as an example, three samples of how the full-population frequency distribution for $\mathit{sex} \and \mathit{income}$ (jointly) could be:
 
 ```{r}
-result <- rF(n=3, # number of samples
-             agent=opmall, 
-             predictand=c('sex', 'income'))
+result <- rF(n = 3, # number of samples
+             agent = opmall, 
+             predictand = c('sex', 'income'))
 
 ## name the samples
-dimnames(result)[1] <- list(samples=paste0('#',1:3))
+dimnames(result)[1] <- list(samples = paste0('#',1:3))
 
 ## permute & print so that samples are the last array dimension
 print(aperm(result) * 100)
@@ -301,10 +300,10 @@ These possible full-population frequency distributions can be used to assess how
 We generate 1000 frequency distributions for $(\mathit{occupation} \and \mathit{sex})$ given $\mathit{income}\mo\cat{>50K}$, and then take the standard deviations of the samples as a rough measure of how much the probabilities we calculated a couple of cells above could change:
 
 ```{r}
-freqsamples <- rF(n=1000,
-                  agent=opmall,
-                  predictand=c('occupation', 'sex'),
-                  predictor=list(income='>50K'))
+freqsamples <- rF(n = 1000,
+                  agent = opmall,
+                  predictand = c('occupation', 'sex'),
+                  predictor = list(income = '>50K'))
 
 variability <- apply(freqsamples,
                      c('occupation','sex'), # which dimensions to apply
@@ -342,15 +341,15 @@ For instance, let's calculate the mutual information between $\mathit{occupation
 First we need the joint probability distribution for both variates, which the agent can calculate with `infer()`:
 
 ```{r}
-probs <- infer(agent=opmall,
-               predictand=c('occupation', 'marital_status'))
+probs <- infer(agent = opmall,
+               predictand = c('occupation', 'marital_status'))
 ```
 
 This distribution is then used in the formula for the mutual information, implemented in `mutualinfo()`:
 
 ```{r}
-mutualinfo(probs=probs,
-           A='occupation', B='marital_status')
+mutualinfo(probs = probs,
+           A = 'occupation', B = 'marital_status')
 ```
 
 It is a very low association: knowing either variate decreases the effective number of possible values of the other only $2^{0.0827823\,\mathit{Sh}} \approx 1.06$ times.
@@ -373,12 +372,12 @@ names(relevances) <- predictors
 ## and then mutual information 'relevance' (in shannons)
 ## between 'income' and that variate
 for(var in predictors){
-    probs <- infer(agent=opmall, predictand=c('income',var))
-    relevances[var] <- mutualinfo(probs=probs, A='income', B=var)
+    probs <- infer(agent = opmall, predictand = c('income',var))
+    relevances[var] <- mutualinfo(probs = probs, A = 'income', B = var)
 }
 
 ## output the mutual informations in decreasing order
-sort(relevances, decreasing=TRUE)
+sort(relevances, decreasing = TRUE)
 ```
 
 If we had to choose *only one* variate to infer the outcome, on average it would be best to use $\mathit{marital\_status}$. Our last choice should be $\mathit{race}$.
@@ -413,7 +412,9 @@ At the end we plot a histogram of the probabilities calculated for the new units
 
 ```{r}
 ## Load test data
-testdata <- fread('test-income_data_example.csv', header=TRUE)
+testdata <- read.csv('test-income_data_example.csv', header = TRUE,
+    na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE)
+
 ntest <- nrow(testdata) # size of test dataset
 
 ## Let's time the calculation
@@ -424,13 +425,14 @@ testhits <- numeric(ntest) # prepare vector of hits
 for(i in 1:ntest){
     
     ## calculate probabilities given all variates except 'income'
-    probs <- infer(agent=opmall, predictor=testdata[i, !'income'])
+    probs <- infer(agent = opmall,
+        predictor = testdata[i, colnames(testdata) != 'income'])
 
     ## store the probability for <=50K
     testprobs[i] <- probs['<=50K']
 
     ## decide on one value
-    chosenvalue <- decide(probs=probs)$optimal
+    chosenvalue <- decide(probs = probs)$optimal
 
     ## check if decision == true_value, and store result
     testhits[i] <- (chosenvalue == testdata[i, 'income'])
@@ -440,10 +442,10 @@ for(i in 1:ntest){
 print(Sys.time() - stopwatch)
 
 ## Histogram and average accuracy (rounded to one decimal)
-thist(testprobs, n=seq(0,1,length.out=10), plot=TRUE,
-      xlab='P(income = "<=50K")',
-      ylab='frequency density in test set',
-      main=paste0('accuracy: ', round(100*mean(testhits), 1), '%'))
+myhist(testprobs, n = seq(0,1,length.out = 10), plot = TRUE,
+      xlab = 'P(income = "<=50K")',
+      ylab = 'frequency density in test set',
+      main = paste0('accuracy: ', round(100*mean(testhits), 1), '%'))
 ```
 
 \

@@ -16,10 +16,8 @@ It is straightforward to implement decision-making in our prototype Optimal Pred
 Load the necessary libraries and functions, including the `decide()` function, and train the agent as we did previously:
 
 ```{r}
-library('data.table')
 library('extraDistr')
 library('foreach')
-library('khroma')
 
 source('tplotfunctions.R')
 source('guessmetadata.R')
@@ -30,10 +28,10 @@ source('mutualinfo.R')
 source('rF.R')
 source('plotFsamples1D.R')
 
-options(repr.plot.width=6*sqrt(2), repr.plot.height=6)
+options(repr.plot.width = 6*sqrt(2), repr.plot.height = 6)
 
-opmall <- buildagent(metadata='meta_income_data_example.csv',
-                     data='train-income_data_example.csv')
+opmall <- buildagent(metadata = 'meta_income_data_example.csv',
+                     data = 'train-income_data_example.csv')
 ```
 
 ## Decision matrix
@@ -41,7 +39,12 @@ opmall <- buildagent(metadata='meta_income_data_example.csv',
 We use the targeted-advertisement scenario of [§@sec-max-exp-util-example], with the following utility matrix for the three ad-types:
 
 ```{r}
-adutilities <- matrix(c(-1,3, 2,2, 3,-1), nrow=3, byrow=TRUE, dimnames=list(ad_type=c('A','B','C'), income=c('<=50K', '>50K')))
+adutilities <- matrix(
+    c(-1, 3,
+        2, 2,
+        3,-1),
+    nrow = 3, byrow = TRUE,
+    dimnames = list(ad_type = c('A','B','C'), income = c('<=50K', '>50K')))
 
 print(adutilities)
 ```
@@ -53,14 +56,14 @@ First let's apply the principle of maximal expected utility step-by-step.
 Consider the example from [§@sec-max-exp-util-example]. The agent calculates the probabilities for the predictand `income` from the given predictor values:
 
 ```{r}
-userpredictors <- list(workclass='Private', education='Bachelors',
-                       marital_status='Never-married',
-                       occupation='Prof-specialty',
-                       relationship='Not-in-family', race='White',
-                       sex='Female', native_country='United-States')
+userpredictors <- list(workclass = 'Private', education = 'Bachelors',
+                       marital_status = 'Never-married',
+                       occupation = 'Prof-specialty',
+                       relationship = 'Not-in-family', race = 'White',
+                       sex = 'Female', native_country = 'United-States')
 
-probs <- infer(agent=opmall, predictand='income',
-               predictor=userpredictors)
+probs <- infer(agent = opmall, predictand = 'income',
+               predictor = userpredictors)
 
 print(probs)
 ```
@@ -81,7 +84,7 @@ The [function `decide()`](https://github.com/pglpm/ADA511/blob/master/code/OPM-n
 - `optimal`: one decision unsystematically chosen among the optimal ones (if more than one)
 
 ```{r}
-optimalad <- decide(utils=adutilities, probs=probs)
+optimalad <- decide(utils = adutilities, probs = probs)
 
 print(optimalad)
 ```
@@ -93,7 +96,9 @@ Finally let's apply our prototype agent to a test set, as a demonstration, and s
 Load the test dataset; `M` is the number of test data:
 
 ```{r}
-testdata <- fread('test-income_data_example.csv', header=TRUE)
+testdata <- read.csv('test-income_data_example.csv', header = TRUE,
+    na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE)
+
 M <- nrow(testdata)
 ```
 
@@ -104,11 +109,11 @@ confusionmatrix <- adutilities * 0L
 
 ## Use a for-loop for clarity
 for(i in 1:M){
-    userpredictors <- testdata[i, !'income']
-    probs <- infer(agent=opmall, predictand='income',
-                   predictor=userpredictors)
-    decision <- decide(utils=adutilities, probs=probs)$optimal
-    trueincome <- testdata[i]$income
+    userpredictors <- testdata[i, colnames(testdata) != 'income']
+    probs <- infer(agent = opmall, predictand = 'income',
+                   predictor = userpredictors)
+    decision <- decide(utils = adutilities, probs = probs)$optimal
+    trueincome <- testdata[i, 'income']
 
     confusionmatrix[decision, trueincome] <- confusionmatrix[decision, trueincome] + 1L
 }
@@ -130,7 +135,7 @@ Note that:
 
 - This yield is higher than what would be obtained by just choosing the neutral ad-type `B` for all test units (the average yield would be exactly `2`).
 
-- This yield is also higher than would be obtained by always choosing ad-type `C`, targeting the majority of units, which have `income='<=50K'`. This strategy would yield `2.00737`.
+- This yield is also higher than would be obtained by always choosing ad-type `C`, targeting the majority of units, which have `income = '<=50K'`. This strategy would yield `2.00737`.
 
 
 :::{.callout-caution}

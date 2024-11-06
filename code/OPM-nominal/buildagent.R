@@ -1,10 +1,17 @@
-buildagent <- function(metadata, data=NULL, kmi=0, kma=20, alphas=NULL, base=2){
+buildagent <- function(
+    metadata,
+    data = NULL,
+    kmi = 0,
+    kma = 20,
+    alphas = NULL,
+    base = 2
+){
 #### Builds "agent" object encoding background & learned knowledge
-#### Requires 'data.table'
     ##
     ## Read metadata from file, if given as file
     if(is.character(metadata)){
-        metadata <- read.csv(metadata, na.strings='')
+        metadata <- read.csv(metadata,
+            na.strings='', stringsAsFactors = FALSE, tryLogical = FALSE)
     }
     ##
     variates <- metadata[['variate']] # list of variates
@@ -15,14 +22,15 @@ buildagent <- function(metadata, data=NULL, kmi=0, kma=20, alphas=NULL, base=2){
     ##
     ## Load training data, if given as file
     if(is.character(data)){
-        data <- read.csv(data, na.strings='')
+        data <- read.csv(data,
+            na.strings='', stringsAsFactors = FALSE, tryLogical = FALSE)
     }
     ##
     ## Building a Dirichlet-mixture distribution
     ## with concentration parameters alpha:=(2^k)
     if(is.null(alphas)){
         alphas <- base^(kmi:kma)
-    }else if(is.logical(alphas) && alphas){
+    }else if(isTRUE(alphas)){
         alphas <- sqrt(M) # other alternative with just one k
     }
     ## Possibility of adding a p(k) weight in the Dirichlet-mixture distribution

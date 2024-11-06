@@ -1,4 +1,7 @@
-decide <- function(probs = NULL, utils = NULL){
+decide <- function(
+    probs = NULL,
+    utils = NULL
+){
 #### Makes a decision depending on probabilities and utilities
 #### Decisions correspond to ROWS of the utilities array
     ##

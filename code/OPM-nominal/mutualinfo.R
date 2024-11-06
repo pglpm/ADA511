@@ -1,4 +1,9 @@
-mutualinfo <- function(probs, A, B, base=2){
+mutualinfo <- function(
+    probs,
+    A,
+    B,
+    base = 2
+){
 #### Returns the mutual information between two sets of variates A, B
     ## load list of variates
     variates <- names(dimnames(probs))

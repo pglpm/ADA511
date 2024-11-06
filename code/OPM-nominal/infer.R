@@ -1,4 +1,8 @@
-infer <- function(agent, predictand = NULL, predictor = NULL){
+infer <- function(
+    agent,
+    predictand = NULL,
+    predictor = NULL
+){
 #### Calculates conditional or unconditional probability for new unit
     variates <- names(dimnames(agent[['counts']]))
     ##
