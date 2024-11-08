@@ -666,14 +666,14 @@ mysummary <- function(x){
 }
 
 ## Function to build powerset
-powerset <<- function(set){
+mypowerset <- function(set){
   n <- length(set)
   masks <- 2^(1:n-1)
   lapply( 1:2^n-1, function(u) set[ bitwAnd(u, masks) != 0 ] )
 }
 
 ## Greatest common denominator
-gcd <<- function(...){Reduce(function(a, b){if (b == 0) a else Recall(b, a %% b)}, c(...))}
+mygcd <- function(...){Reduce(function(a, b){if (b == 0) a else Recall(b, a %% b)}, c(...))}
 
 ## Normalize according to row
 mynormalize <- function(x){
