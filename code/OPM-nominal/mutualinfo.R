@@ -1,10 +1,13 @@
 mutualinfo <- function(
-    probs,
+    agent,
     A,
     B,
     base = 2
 ){
 #### Returns the mutual information between two sets of variates A, B
+    ## calculate the joint probability of variates A and B
+    probs <- infer(agent = agent, predictand = c(A, B))
+
     ## load list of variates
     variates <- names(dimnames(probs))
     ## Sanity checks of input arguments

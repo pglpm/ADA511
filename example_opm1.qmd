@@ -69,7 +69,7 @@ guessmetadata(data = 'train-income_data_example.csv',
 
 Inspect the resulting file `preliminary.csv` and check whether you can alter it to add additional background information.
 
-As an example, note that domain of the $\mathit{native\_country}$ variate does not include $\cat{Norway}$ or $\cat{Netherlands}$. Yet it's extremely likely that there were some native Norwegian or Dutch USA citizens in 1994; maybe too few to have been sampled into the training data. Let's add these two values to the list of domain values, and increase the domain size of $\mathit{native\_country}$ from 40 to 42. The resulting, updated metadata file has already been saved as [`meta_income_data_example.csv`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/meta_income_data_example.csv).
+As an example, note that domain of the $\mathit{native\_country}$ variate does not include $\cat{Norway}$ or $\cat{Sweden}$. Yet it's extremely likely that there were some native Norwegian or Swedish people in the USA in 1994; maybe too few to have been sampled into the training data. Let's add these two values to the list of domain values, and increase the domain size of $\mathit{native\_country}$ from 40 to 42. The resulting, updated metadata file has already been saved as [`meta_income_data_example.csv`](https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/meta_income_data_example.csv).
 
 ### Agent's parameters $\amin, \amax$
 
@@ -338,17 +338,8 @@ In [§@sec-entropy-mutualinfo] we introduced [*mutual information*]{.blue} as th
 
 For instance, let's calculate the mutual information between $\mathit{occupation}$ and $\mathit{marital\_status}$.
 
-First we need the joint probability distribution for both variates, which the agent can calculate with `infer()`:
-
 ```{r}
-probs <- infer(agent = opmall,
-               predictand = c('occupation', 'marital_status'))
-```
-
-This distribution is then used in the formula for the mutual information, implemented in `mutualinfo()`:
-
-```{r}
-mutualinfo(probs = probs,
+mutualinfo(agent = opmall,
            A = 'occupation', B = 'marital_status')
 ```
 
@@ -372,8 +363,7 @@ names(relevances) <- predictors
 ## and then mutual information 'relevance' (in shannons)
 ## between 'income' and that variate
 for(var in predictors){
-    probs <- infer(agent = opmall, predictand = c('income',var))
-    relevances[var] <- mutualinfo(probs = probs, A = 'income', B = var)
+    relevances[var] <- mutualinfo(agent = opmall, A = 'income', B = var)
 }
 
 ## output the mutual informations in decreasing order
