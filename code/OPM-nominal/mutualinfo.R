@@ -23,8 +23,8 @@ mutualinfo <- function(
         stop('A and B have variates in common.')
     }
     ## Calculate marginal joint probability for (A,B) if necessary
-    probs <- apply(probs, c(A, B), sum)
-    probs <- probs / sum(probs)
+    ## probs <- apply(probs, c(A, B), sum)
+    ## probs <- probs / sum(probs)
     sum(probs * (log2(probs) - log2(outer(
                                    apply(probs, A, sum),
                                    apply(probs, B, sum),
