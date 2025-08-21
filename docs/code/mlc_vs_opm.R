@@ -4,7 +4,7 @@ hitsvsgain <- function(
     chooseAtrueB, # utility gain if A chosen, and B is true
     chooseBtrueB, # utility gain if B chosen, and B is true
     chooseBtrueA, # utility gain if B chosen, and A is true
-    probsA = 0.5, # probability of A being true
+    probsA = 0.5 # probability of A being true
 ){
     ## Recycle & shuffle the given probabilities for the number of trials
     probsArepeated <- sample(probsA, ntrials, replace = TRUE)
