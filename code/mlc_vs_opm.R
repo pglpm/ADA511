@@ -27,18 +27,18 @@ hitsvsgain <- function(
         ## Output of the MLC, based on the current probability
         if(probabilityA > 0.5){
             mlcchoice <- 'A'
-        }else if(probabilityA < 0.5){
+        } else if(probabilityA < 0.5){
             mlcchoice <- 'B'
-        }else{
+        } else {
             mlcchoice <- sample(c('A', 'B'), 1) # A or B with 50%/50% prob.
         }
 
         ## Output of the OPM, based on the current probability
         if(threshold1 * probabilityA > threshold2){
             opmchoice <- 'A'
-        }else if(threshold1 * probabilityA < threshold2){
+        } else if(threshold1 * probabilityA < threshold2){
             opmchoice <- 'B'
-        }else{
+        } else {
             opmchoice <- sample(c('A', 'B'), 1) # A or B with 50%/50% prob.
         }
 
@@ -50,13 +50,13 @@ hitsvsgain <- function(
             mlchits <- mlchits + 1 # one success
             if(trueitem == 'A'){
                 mlcgain <- mlcgain + chooseAtrueA
-            }else{
+            } else {
                 mlcgain <- mlcgain + chooseBtrueB
             }
-        }else{
+        } else {
             if(trueitem == 'B'){
                 mlcgain <- mlcgain + chooseAtrueB
-            }else{
+            } else {
                 mlcgain <- mlcgain + chooseBtrueA
             }
         }
@@ -66,13 +66,13 @@ hitsvsgain <- function(
             opmhits <- opmhits + 1 # one success
             if(trueitem == 'A'){
                 opmgain <- opmgain + chooseAtrueA
-            }else{
+            } else {
                 opmgain <- opmgain + chooseBtrueB
             }
-        }else{
+        } else {
             if(trueitem == 'B'){
                 opmgain <- opmgain + chooseAtrueB
-            }else{
+            } else {
                 opmgain <- opmgain + chooseBtrueA
             }
         }
