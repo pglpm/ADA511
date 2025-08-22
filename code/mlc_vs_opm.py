@@ -6,9 +6,6 @@ def hitsvsgain(ntrials, chooseAtrueA, chooseAtrueB, chooseBtrueB, chooseBtrueA, 
     ## Recycle & shuffle the given probabilities for the number of trials
     probsArepeated = random.choices(probsA, k=ntrials)
     
-    ## "Magic" parameter used in making the optimal decision
-    threshold = (chooseBtrueB - chooseAtrueB) / (chooseAtrueA - chooseAtrueB + chooseBtrueB - chooseBtrueA)
-    
     ## Initialize total "hits" and gains
     ## 'mlc' refers to the Machine-Learning Classifier
     ## 'opm' refers to the Optimal Predictor Machine
@@ -29,9 +26,10 @@ def hitsvsgain(ntrials, chooseAtrueA, chooseAtrueB, chooseBtrueB, chooseBtrueA, 
             mlcchoice = random.choice(['A', 'B']) # A or B with 50%/50% prob.
         
         ## Output of the OPM, based on the current probability
-        if probabilityA > threshold:
+        ## try to understand where this inequality comes from
+        if (chooseAtrueA - chooseAtrueB + chooseBtrueB - chooseBtrueA) * probabilityA > (chooseBtrueB - chooseAtrueB):
             opmchoice = 'A'
-        elif probabilityA < threshold:
+        elif (chooseAtrueA - chooseAtrueB + chooseBtrueB - chooseBtrueA) * probabilityA < (chooseBtrueB - chooseAtrueB):
             opmchoice = 'B'
         else:
             opmchoice = random.choice(['A', 'B']) # A or B with 50%/50% prob.

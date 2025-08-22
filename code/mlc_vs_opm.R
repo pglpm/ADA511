@@ -9,10 +9,6 @@ hitsvsgain <- function(
     ## Recycle & shuffle the given probabilities for the number of trials
     probsArepeated <- sample(probsA, ntrials, replace = TRUE)
 
-    ## "Magic" parameter used in making the optimal decision
-    threshold1 <- chooseAtrueA - chooseAtrueB + chooseBtrueB - chooseBtrueA
-    threshold2 <- chooseBtrueB - chooseAtrueB
-
     ## Initialize total "hits" and gains
     ## 'mlc' refers to the Machine-Learning Classifier
     ## 'opm' refers to the Optimal Predictor Machine
@@ -33,10 +29,17 @@ hitsvsgain <- function(
             mlcchoice <- sample(c('A', 'B'), 1) # A or B with 50%/50% prob.
         }
 
-        ## Output of the OPM, based on the current probability
-        if(threshold1 * probabilityA > threshold2){
+        ## Output of the OPM, based on the current probability and utilities
+        ## try to understand where this inequality comes from
+        if(
+        (chooseAtrueA - chooseAtrueB + chooseBtrueB - chooseBtrueA) * probabilityA >
+            (chooseBtrueB - chooseAtrueB)
+        ){
             opmchoice <- 'A'
-        } else if(threshold1 * probabilityA < threshold2){
+        } else if(
+        (chooseAtrueA - chooseAtrueB + chooseBtrueB - chooseBtrueA) * probabilityA <
+            (chooseBtrueB - chooseAtrueB)
+        ){
             opmchoice <- 'B'
         } else {
             opmchoice <- sample(c('A', 'B'), 1) # A or B with 50%/50% prob.
