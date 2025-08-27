@@ -29,10 +29,11 @@ hitsvsgain <- function(
             mlcchoice <- sample(c('A', 'B'), 1) # A or B with 50%/50% prob.
         }
 
-        ## Output of the OPM, based on the current probability and utilities
-        ## try to understand where this inequality comes from
+        ## OPM output, based on the current probability and utilities
+        ## for you: try to understand where this inequality comes from
         if(
-        (chooseAtrueA - chooseAtrueB + chooseBtrueB - chooseBtrueA) * probabilityA >
+        (chooseAtrueA - chooseAtrueB + chooseBtrueB - chooseBtrueA) *
+            probabilityA >
             (chooseBtrueB - chooseAtrueB)
         ){
             opmchoice <- 'A'
@@ -46,17 +47,20 @@ hitsvsgain <- function(
         }
 
         ## Correct answer for the current trial
-        trueitem <- sample(c('A', 'B'), 1, prob = c(probabilityA, 1 - probabilityA))
+        trueitem <- sample(c('A', 'B'), 1,
+            prob = c(probabilityA, 1 - probabilityA))
 
         ## MLC: add one "hit" if correct guess, and add gain/loss
         if(mlcchoice == trueitem){
             mlchits <- mlchits + 1 # one success
+
             if(trueitem == 'A'){
                 mlcgain <- mlcgain + chooseAtrueA
             } else {
                 mlcgain <- mlcgain + chooseBtrueB
             }
-        } else {
+
+        } else { # incorrect guess
             if(trueitem == 'B'){
                 mlcgain <- mlcgain + chooseAtrueB
             } else {
@@ -67,12 +71,14 @@ hitsvsgain <- function(
         ## OPM: add one "hit" if correct guess, and add gain/loss
         if(opmchoice == trueitem){
             opmhits <- opmhits + 1 # one success
+
             if(trueitem == 'A'){
                 opmgain <- opmgain + chooseAtrueA
             } else {
                 opmgain <- opmgain + chooseBtrueB
             }
-        } else {
+
+        } else { # incorrect guess
             if(trueitem == 'B'){
                 opmgain <- opmgain + chooseAtrueB
             } else {
@@ -90,5 +96,5 @@ hitsvsgain <- function(
     cat('\nOptimal Predictor Machine:   successes', opmhits, '(',
         signif(opmhits / ntrials * 100, 3), '%)',
         '| total gain', opmgain)
-    cat('\n\n')
+    cat('\n')
 }
