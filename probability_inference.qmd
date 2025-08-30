@@ -71,15 +71,15 @@ These points listed above are not just a matter of principle. They have importan
 
 In these notes we shall consistently use the term "probability" in the sense explained above. But beware that this term is used in many different and incompatible senses, depending on whom you're speaking with or which literature you're reading.
 
-Some people use this term in the sense of "frequency": the number of times something happened in a series of repetitions. But a frequency is an objective, measurable quantity; it doesn't depend on the knowledge of an agent. To us is not useful, because it doesn't quantify the belief or certainty of an agent. Suppose a coin is tossed 100 times, and it comes up heads 80 times. The frequency of heads is 80/100. Now suppose that an agent *that does not know anything about the 100 tosses* is asked to predict whether the next toss will be heads or tails. What should the agent's degree of belief or of certainty be? Obviously it should be 50%/50%. If we were to program the agent so that it has a degree of belief of 80% for heads *in situations where nothing is know about previous tosses* (because that's the situation our agent was in), then such an agent would on average lose big time in dealing with new coins.
+Some people use this term in the sense of "frequency": the number of times something happened in a series of repetitions. But a frequency is an objective, measurable quantity; it doesn't depend on the knowledge of an agent. So it is not useful in building an AI that can reason about uncertainty, because it doesn't quantify the belief or certainty of an agent. Suppose a coin is tossed 100 times, and it comes up heads 80 times. The frequency of heads is 80/100. Now suppose that an agent *who has no knowledge about the 100 tosses and their outcomes* is asked to predict whether a toss of the same coin will be heads or tails. What should the agent's degree of belief or of certainty be? Obviously it should be 50%/50%. If we were to program the agent so that it has a degree of belief of 80% for heads *in situations where nothing is know about previous tosses* (because that's the situation our agent was in), then such an agent would on average make poor inferences and decisions in dealing with new coins.
 
-But frequency is *data*, and if a frequency is known, then obviously an agent should take it into account in quantifying its credibility. If an agent *knows* that the coin came up heads 80 times in 100, then it is reasonable that the agent's degree of belief for the next toss should be around 80% for heads. And we shall see that this is indeed what happens.
+But frequency is *data*, and if a frequency *is* known, then obviously an agent should take it into account in quantifying a credibility. If an agent *knows* that the coin came up heads 80 times in 100, then it is reasonable that the agent's degree of belief for the next toss should be around 80% for heads. And we shall see that this is indeed what happens.
 
-So the distinction between "frequency" and "probability" is crucial. Frequencies do not enable us to quantify an agent's beliefs in situations where data are missing.
+So the distinction between "frequency" and "probability" is crucial. Frequencies do not enable us to quantify an agent's beliefs in situations where data are missing. But an agent's beliefs will automatically come close to frequencies -- when doing so is reasonable.
 \
 \
 
-Some people use "probability" in the sense of the number of *a-priori* successes over the number of possibilities. For instance, if you roll a die, and the die comes up {{< fa dice-three >}}, then this result was 1 among six possible results. This is fine, but this definition does not allow us to capture the difference between an agent who has seen the outcome of the roll was {{< fa dice-three >}}, and an agent who has *not* seen the outcome of the roll. We expect the two agents to behave differently. If we programmed the agent to have a degree of belief of 1/6 *even after seeing the outcome of a die roll*, we would have programmed an agent incapable of using new data (seeing the outcome). Would you be happy if a clinician made some medical tests, and then ignored the results of the tests, behaving as if they were still unknown?
+Some people use "probability" in the sense of the number of *a-priori* successes over the number of possibilities. For instance, if you roll a die, and the die comes up {{< fa dice-three >}}, then this result was 1 among six possible results. This is fine, but this definition does not allow us to capture the difference between an agent who has seen that the outcome of the roll was {{< fa dice-three >}}, and an agent who has *not* seen that outcome. We expect the two agents to behave differently, because they have different knowledge. If we programmed the agent to have a degree of belief of 1/6 *even after seeing the outcome of a die roll*, we would have programmed an agent incapable of using new data. Would you be happy if a clinician made some medical tests, and then *ignored* the results of the tests, behaving as if they were still unknown?
 \
 \
 
@@ -204,7 +204,7 @@ It is amazing that **ALL** inference is nothing else but a repeated application 
 \
 The fundamental inference rules are used in the same way as their truth-inference counterpart of [§@truth-inference-rules]: Each equality can be rewritten in different ways according to the usual rules of algebra. The left and right side of the equality thus obtained can replace each other in a proof.
 
-## Solution of the uncertain-inference example
+## Solution of the uncertain-inference example {#sec-solution-first-probinference}
 
 Armed with the fundamental rules of inference, let's solve our earlier inference problem. As usual, we first analyse it and represent it in terms of atomic sentences; we find what are its proposal and conditional; and we find which initial inferences are given in the problem.
 
@@ -321,9 +321,9 @@ So the probability that the component didn't pass the heating test is $55\%$.
 :::
 
 
-## How the inference rules are used
+## Use and implementation of the inference rules
 
-In the solution above you noticed that the equations of the fundamental rules are not only used to obtain some of the probabilities appearing in them from the remaining probabilities.
+In the [solution above](#sec-solution-first-probinference) you noticed that the equations of the fundamental rules are not only used to obtain some of the probabilities appearing in them from the remaining probabilities.
 
 The rules represent, first of all, [*constraints of logical consistency*]{.blue}^[The technical term is [**coherence**]{.blue}.] among probabilities. For instance, if we have probabilities\ \ $\P(\yY\|\yX\land \yZ)=0.1$,\ \ $\P(\yX\|\yZ)=0.7$,\ \ and $\P(\yX\land \yY\|\yZ)=0.2$,\ \ then there's an inconsistency somewhere, because these values violate the and-rule:\ \ $0.2 \ne 0.1 \cdot 0.7$.\ \ In this case we must find the inconsistency and solve it. However, since probabilities are quantified by real numbers, it's possible and acceptable to have slight discrepancies within numerical round-off errors.
 
@@ -341,6 +341,8 @@ $$
 ## {{< fa user-edit >}} Exercise
 Try to prove the two constraints above.
 :::
+
+
 
 
 

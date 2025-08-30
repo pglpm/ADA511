@@ -38,7 +38,8 @@ hitsvsgain <- function(
         ){
             opmchoice <- 'A'
         } else if(
-        (chooseAtrueA - chooseAtrueB + chooseBtrueB - chooseBtrueA) * probabilityA <
+        (chooseAtrueA - chooseAtrueB + chooseBtrueB - chooseBtrueA) *
+            probabilityA <
             (chooseBtrueB - chooseAtrueB)
         ){
             opmchoice <- 'B'
