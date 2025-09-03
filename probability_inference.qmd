@@ -141,7 +141,7 @@ Finally, here are *the fundamental rules of all inference*. They are encoded by 
 
 ::::: {.column-page-right}
 :::: {.callout-note style="text-align:center;font-size:125%"}
-## [**{{< fa landmark >}} THE FUNDAMENTAL LAWS OF INFERENCE {{< fa landmark >}}**]{style="font-size:150%"}
+## [**{{< fa landmark >}}\ \ THE FUNDAMENTAL LAWS OF INFERENCE\ \ {{< fa landmark >}}**]{style="font-size:150%"}
 
 :::{style="font-size:165%"}
 $\boldsymbol{\lnot}$ "Not" rule
@@ -172,13 +172,16 @@ Truth rule
 = 1
 $$
 :::
-::::
+\
+\
 
-:::: {.callout-note}
-## **How to use the rules**:
+::: {style="text-align:left;font-size:100%"}
+**How to use the rules**:\
 Each equality can be rewritten in different ways according to the usual rules of algebra. Then the resulting left side can be replaced by the right side, and vice versa. The numerical values of starting inferences can be replaced in the corresponding expressions.
+:::
 ::::
 :::::
+
 
 It is amazing that **ALL** inference is nothing else but a repeated application of these four rules -- maybe billions of times or more. All machine-learning algorithms are just applications or approximations of these rules. Methods that you may have heard about in statistics are just specific applications of these rules. Truth inferences are also special applications of these rules. Most of this course is just a study of how to apply these rules to particular kinds of problems.
 
@@ -258,7 +261,7 @@ $$ {#eq-start-inf-c}
 
 Note the interesting situation above: we are not given the numerical values of these two probabilities; we are only told that they are equal. This is an example of application of the *principle of indifference*, which we'll discuss more in detail later.
 
-### Arriving at the target inference
+### Finding the target inference
 
 Also in this case there is no unique way of applying the rules to reach our target inference, but *all paths will lead to the same result*. Let's try to proceed backwards:
 
@@ -333,18 +336,16 @@ $$\P(\lnot\ys \lor \lnot\yh \| \yf \land \yJ)
 - \P(\lnot\ys \| \yf \land \yJ) \,,
 $$
 
-we used the or-rule rewritten as follows:
+we used the or-rule rewritten, by simple algebra, as follows:
 
 $$
 \P(\yX \| \yZ)
 = \P(\yX {\red\lor} \yY \| \yZ)
 - \P(\yY \| \yZ)
-+ \P(\yX \land \yY \| \yZ)
++ \P(\yX \land \yY \| \yZ) \,.
 $$
 
-by simple algebraic manipulation.
-
-The rules in fact represent, first of all, [*constraints of logical consistency*]{.blue}^[The technical term is [**coherence**]{.blue}.] among probabilities. For instance, if we have probabilities
+The four rules in fact represent, first of all, [*constraints of logical consistency*]{.blue} (the precise technical term is [**coherence**]{.blue}) among probabilities. For instance, if we have probabilities
 
 $$\begin{aligned}
 \P(\yY\|\yX\land \yZ) &= 0.1
@@ -374,18 +375,30 @@ $$
 ## {{< fa user-edit >}} Exercise
 - Try to prove the two constraints above from the four fundamental rules.
 
-- Translate the two constraints above verbally. Do they make intuitive sense? (For example, the first constraint says, very roughly speaking, that our belief in *two* things can't be stronger than the belief in either one of the two things alone.)
+- Translate the two constraints above verbally. Do they make intuitive sense? (For example, the first constraint says, very roughly speaking, that our belief in *two* things can't be stronger than our belief in either one of the two things alone.)
 :::
 
 \
 
-In following the step-wise solution you may have been asking yourself "OK, why this step now, and not some other step?". This is a very intelligent question. You essentially noticed the *lack of an algorithm*. Compare this situation with the [solution of a basic decision problem](#sec-make-decision): there we had a clear sequence of steps to do: writing down some tables, do some element-wise multiplications and then some sums, and finally find the largest of a list of numbers.
+In following the step-wise solution you may have been asking yourself after some steps: "OK, why this peculiar step now, and not some other step?". This is a very intelligent question. You essentially noticed the *lack of an algorithm*. Compare this situation with the [solution of a basic decision problem](#sec-make-decision): there we had a clear sequence of steps to do: writing down some tables, do some element-wise multiplications and then some sums, and finally find the largest of a list of numbers.
 
-Is there an algorithmic way of drawing inferences, that is, of calculating some target probabilities given some initial ones?
-
-If our inference problem involves a *finite* number of sentences, then the answer is *yes*, but with some caveats.
+Is there an algorithmic way of drawing inferences, that is, of calculating some target probabilities given some initial ones? If our inference problem involves a *finite* number of sentences, then the answer is *yes*, but with some caveats.
 
 Given a set of initial probabilities, and a target probability whose value we want to find, there is an algorithm that yields **the minimum and the maximum possible values** of the target probability. Specifically it can yield the following results (note that some are particular instances of others):
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+The complete proof that inference problems can be solved this way seems to have been given first by Hailperin:
+
+- (1965): [*Best Possible Inequalities for the Probability of a Logical Function of Events*](references.html),
+
+- (1996): [*Sentential Probability Logic: Origins, Development, Current Status, and Technical Applications*](references.html),
+
+although particular cases were explored already by Boole.
+
+:::
+::::
 
 [{{< fa right-from-bracket >}}\ \ \ *No values*]{.blue}
 : This means that the initial probabilities have inconsistent values; that is, they violate some of the four rules, as in the "$0.2 \ne 0.1 \cdot 0.7$" example above.
@@ -407,23 +420,13 @@ Given a set of initial probabilities, and a target probability whose value we wa
 \
 \
 
-::::{.column-margin}
-::: {.callout-tip}
-## {{< fa rocket >}} For the extra curious
-The complete proof that inference problems can be solved this way seems to have been given first by Hailperin:
-
-- (1965): [*Best Possible Inequalities for the Probability of a Logical Function of Events*](references.html),
-
-- (1996): [*Sentential Probability Logic: Origins, Development, Current Status, and Technical Applications*](references.html),
-
-although particular cases were explored already by Boole.
-
-:::
-::::
-
 This algorithm is not mathematically difficult, but it is somewhat involved. It boils down to:\ (1) writing the sentences in the initial and target probabilities in [*disjunctive normal form*](https://mathworld.wolfram.com/DisjunctiveNormalForm.html);\ (2) rewriting the initial and target probabilities as sum of probabilities of basic conjunctions;\ (3) solving two [*linear-fractional optimization*](https://reference.wolfram.com/language/ref/LinearFractionalOptimization.html) problems (for which there are algorithms available).
 
-Obviously the algorithm becomes more expensive, the larger the number of sentences in the inference problem. Unfortunately the way the algorithm above works cannot be represented as a sequence of "logical" steps showing consecutive applications of the rules, as shown in the step-wise solution above. Later on in this course we shall focus on specific kinds of inferences for which other, less opaque inference algorithms are available.
+<!-- You can find an implementation of the algorithm above in the [R function `findP()`](https://github.com/pglpm/ADA511/blob/master/code/findP.R). This -->
+<!-- function takes as first argument the probability we want to find, and as remaining arguments the values of the given probabilities. -->
+
+
+Obviously the algorithm becomes more expensive, the larger the number of sentences in the inference problem. In inference problems involving continuous quantities, such as energy, such an algorithm cannot be applied in practice. Also, the way the algorithm above works cannot be represented as a sequence of "logical" steps with consecutive applications of the rules, as shown in the step-wise solution above. Later on in this course we shall focus on specific kinds of inferences for which other, less opaque inference algorithms are available.
 
 ## Consequences of not following the rules
 

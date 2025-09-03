@@ -47,9 +47,22 @@ findP <- function(x, ...) {
     }
     F[nn] <- 1
     ##
+    ##
     Tp <- substitute(alist(...))
     for(i in 2:nn) {
         j <- i - 1
+        left <- Tp[[i]][[2]]
+        right <- Tp[[i]][[3]]
+        if(!(class(right) == 'numeric')) {
+            if(
+            (length(left[[2]]) == 1 ||
+                 !(deparse(left[[2]][[1]]) == '~')) &&
+                (length(right[[2]]) == 1 ||
+                     !(deparse(right[[2]][[1]]) == '~'))
+            ){
+
+            }
+        }
         coeff <- eval(Tp[[i]][[3]])
         ##
         if(length(Tp[[i]][[2]][[2]]) == 1 ||
