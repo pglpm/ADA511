@@ -53,38 +53,69 @@ findP <- function(x, ...) {
         j <- i - 1
         left <- Tp[[i]][[2]]
         right <- Tp[[i]][[3]]
-        if(!(class(right) == 'numeric')) {
-            if(
-            (length(left[[2]]) == 1 ||
-                 !(deparse(left[[2]][[1]]) == '~')) &&
-                (length(right[[2]]) == 1 ||
-                     !(deparse(right[[2]][[1]]) == '~'))
-            ){
-
-            }
-        }
-        coeff <- eval(Tp[[i]][[3]])
         ##
-        if(length(Tp[[i]][[2]][[2]]) == 1 ||
-            !(deparse(Tp[[i]][[2]][[2]][[1]]) == '~')) {
-            Esupp <- Tp[[i]][[2]][[2]]
+        if(!is.numeric(try(eval(right), silent = TRUE))) {
+            ## equality between two probabilities
+            if(length(right) == 2) {
+                temp <- right
+                right <- substitute(a * 1)
+                right[[2]] <- temp
+            }
+            if(!(deparse(right[[1]]) %in% c('*', '/'))) {
+                stop('invalid right side in argument ', i)
+            }
+            coeff <- eval(right[[1]])(1, right[[3]])
+            right <- right[[2]]
+            ##
+            Esuppl <- left[[2]]
+            Esuppr <- right[[2]]
+            if(
+            !(length(Esuppl) == 1 ||
+                 !(deparse(Esuppl[[1]]) == '~')) ||
+                !(length(Esuppr) == 1 ||
+                     !(deparse(Esuppr[[1]]) == '~'))
+            ) {
+                ## both probabilities have conditional
+                if(!(Esuppl[[3]] == Esuppr[[3]])) {
+                    stop('invalid conditionals in argument ', i)
+                }
+                Esuppl[[1]] <- `&&`
+                Esuppr[[1]] <- `&&`
+            }
+            ##
             E[j, ] <- c(
                 1L * apply(combos, 1, function(zz){
-                    eval(Esupp, as.list(zz))
-                }) - coeff,
+                    eval(Esuppl, as.list(zz))
+                }) - coeff * apply(combos, 1, function(zz){
+                    eval(Esuppr, as.list(zz))
+                }),
                 extraE)
         } else {
-            Esupp <- Tp[[i]][[2]][[2]]
-            Esupp[[1]] <- `&&`
-            Econd <- Esupp[[3]]
-            E[j, ] <- c(
-                1L * apply(combos, 1, function(zz){
-                eval(Esupp, as.list(zz))
-                }) -
-                    coeff * apply(combos, 1, function(zz){
-                    eval(Econd, as.list(zz))
-                    }),
-                extraE)
+            ## right side is numeric
+            coeff <- eval(right)
+            ##
+            Esupp <- left[[2]]
+            if(length(Esupp) == 1 ||
+                   !(deparse(Esupp[[1]]) == '~')) {
+                ## no conditional
+                E[j, ] <- c(
+                    1L * apply(combos, 1, function(zz){
+                        eval(Esupp, as.list(zz))
+                    }) - coeff,
+                    extraE)
+            } else {
+                ## conditional
+                Esupp[[1]] <- `&&`
+                Econd <- Esupp[[3]]
+                E[j, ] <- c(
+                    1L * apply(combos, 1, function(zz){
+                        eval(Esupp, as.list(zz))
+                    }) -
+                        coeff * apply(combos, 1, function(zz){
+                            eval(Econd, as.list(zz))
+                        }),
+                    extraE)
+            }
         }
     }
     ##
