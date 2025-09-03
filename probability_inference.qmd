@@ -422,11 +422,48 @@ although particular cases were explored already by Boole.
 
 This algorithm is not mathematically difficult, but it is somewhat involved. It boils down to:\ (1) writing the sentences in the initial and target probabilities in [*disjunctive normal form*](https://mathworld.wolfram.com/DisjunctiveNormalForm.html);\ (2) rewriting the initial and target probabilities as sum of probabilities of basic conjunctions;\ (3) solving two [*linear-fractional optimization*](https://reference.wolfram.com/language/ref/LinearFractionalOptimization.html) problems (for which there are algorithms available).
 
-<!-- You can find an implementation of the algorithm above in the [R function `findP()`](https://github.com/pglpm/ADA511/blob/master/code/findP.R). This -->
-<!-- function takes as first argument the probability we want to find, and as remaining arguments the values of the given probabilities. -->
+You can find an implementation of the algorithm above in the [R function `findP()`](https://github.com/pglpm/ADA511/blob/master/code/findP.R), which requires the `lpSolve` R package. This function takes as first argument the probability we want to find, and as remaining arguments the values of the given probabilities, or equalities among probabilities. We must use the following notation:
 
+- $\lnot$\ \ becomes\ \ `!`
+- $\land$\ \ becomes\ \ `&`
+- $\lor$\ \ becomes\ \ `|`
+- $=$\ \ becomes\ \ `==`
+- conditional bar $\|$\ \ becomes\ \ `~`
+
+The output are the minimum and maximum possible values of the target probability, or `NA` if the starting probabilities are inconsistent.
+
+We can apply this function in the example above about the electronic component:
+
+```{r}
+library('lpSolve')
+source('code/findP.R') # load the function
+
+findP(
+    ## target probability:
+    P(!h ~ f & J),
+    ## initial probabilities:
+    P(!h | !s ~ f & J) == 1,
+    P(!h & !s ~ f & J) == 0.1,
+    P(h ~ f & J) == P(s ~ f & J)
+)
+```
 
 Obviously the algorithm becomes more expensive, the larger the number of sentences in the inference problem. In inference problems involving continuous quantities, such as energy, such an algorithm cannot be applied in practice. Also, the way the algorithm above works cannot be represented as a sequence of "logical" steps with consecutive applications of the rules, as shown in the step-wise solution above. Later on in this course we shall focus on specific kinds of inferences for which other, less opaque inference algorithms are available.
+
+:::{.callout-caution}
+## {{< fa user-edit >}} Exercises
+- Play with the function `findP()`: test it in other inference problems, find problems where there is no solution and others where the `min` and `max` values are different.
+
+- Consider the following inference:
+```{r}
+findP(
+    P(hypothesis ~ evidence1 & evidence2 & I), # target
+    P(hypothesis ~ evidence1 & I) == 0.1,
+    P(hypothesis ~ evidence2 & I) == 0.9
+)
+```
+    What does the result tells us about "combining evidence" to prove a hypothesis?
+:::
 
 ## Consequences of not following the rules
 

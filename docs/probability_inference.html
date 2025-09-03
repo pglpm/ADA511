@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -1037,7 +1072,62 @@ The target probability is completely determined by the initial ones. This occurr
 </dd>
 </dl>
 <p>This algorithm is not mathematically difficult, but it is somewhat involved. It boils down to:&nbsp;(1)&nbsp;writing the sentences in the initial and target probabilities in <a href="https://mathworld.wolfram.com/DisjunctiveNormalForm.html"><em>disjunctive normal form</em></a>;&nbsp;(2)&nbsp;rewriting the initial and target probabilities as sum of probabilities of basic conjunctions;&nbsp;(3)&nbsp;solving two <a href="https://reference.wolfram.com/language/ref/LinearFractionalOptimization.html"><em>linear-fractional optimization</em></a> problems (for which there are algorithms available).</p>
+<p>You can find an implementation of the algorithm above in the <a href="https://github.com/pglpm/ADA511/blob/master/code/findP.R">R function <code>findP()</code></a>, which requires the <code>lpSolve</code> R package. This function takes as first argument the probability we want to find, and as remaining arguments the values of the given probabilities, or equalities among probabilities. We must use the following notation:</p>
+<ul>
+<li><span class="math inline">\(\lnot\)</span>&nbsp;&nbsp;becomes&nbsp;&nbsp;<code>!</code></li>
+<li><span class="math inline">\(\land\)</span>&nbsp;&nbsp;becomes&nbsp;&nbsp;<code>&amp;</code></li>
+<li><span class="math inline">\(\lor\)</span>&nbsp;&nbsp;becomes&nbsp;&nbsp;<code>|</code></li>
+<li><span class="math inline">\(=\)</span>&nbsp;&nbsp;becomes&nbsp;&nbsp;<code>==</code></li>
+<li>conditional bar <span class="math inline">\(\nonscript\:\vert\nonscript\:\mathopen{}\)</span>&nbsp;&nbsp;becomes&nbsp;&nbsp;<code>~</code></li>
+</ul>
+<p>The output are the minimum and maximum possible values of the target probability, or <code>NA</code> if the starting probabilities are inconsistent.</p>
+<p>We can apply this function in the example above about the electronic component:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'lpSolve'</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/findP.R'</span>) <span class="co"># load the function</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">findP</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="do">## target probability:</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">P</span>(<span class="sc">!</span>h <span class="sc">~</span> f <span class="sc">&amp;</span> J),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="do">## initial probabilities:</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">P</span>(<span class="sc">!</span>h <span class="sc">|</span> <span class="sc">!</span>s <span class="sc">~</span> f <span class="sc">&amp;</span> J) <span class="sc">==</span> <span class="dv">1</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">P</span>(<span class="sc">!</span>h <span class="sc">&amp;</span> <span class="sc">!</span>s <span class="sc">~</span> f <span class="sc">&amp;</span> J) <span class="sc">==</span> <span class="fl">0.1</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">P</span>(h <span class="sc">~</span> f <span class="sc">&amp;</span> J) <span class="sc">==</span> <span class="fu">P</span>(s <span class="sc">~</span> f <span class="sc">&amp;</span> J)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> min  max 
+0.55 0.55 </code></pre>
+</div>
+</div>
 <p>Obviously the algorithm becomes more expensive, the larger the number of sentences in the inference problem. In inference problems involving continuous quantities, such as energy, such an algorithm cannot be applied in practice. Also, the way the algorithm above works cannot be represented as a sequence of “logical” steps with consecutive applications of the rules, as shown in the step-wise solution above. Later on in this course we shall focus on specific kinds of inferences for which other, less opaque inference algorithms are available.</p>
+<div class="callout callout-style-default callout-caution no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-user-edit" aria-label="user-edit"></i> Exercises
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Play with the function <code>findP()</code>: test it in other inference problems, find problems where there is no solution and others where the <code>min</code> and <code>max</code> values are different.</p></li>
+<li><p>Consider the following inference:</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">findP</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">P</span>(hypothesis <span class="sc">~</span> evidence1 <span class="sc">&amp;</span> evidence2 <span class="sc">&amp;</span> I), <span class="co"># target</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">P</span>(hypothesis <span class="sc">~</span> evidence1 <span class="sc">&amp;</span> I) <span class="sc">==</span> <span class="fl">0.1</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">P</span>(hypothesis <span class="sc">~</span> evidence2 <span class="sc">&amp;</span> I) <span class="sc">==</span> <span class="fl">0.9</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>min max 
+  0   1 </code></pre>
+</div>
+</div>
+<pre><code>What does the result tells us about "combining evidence" to prove a hypothesis?</code></pre>
+</div>
+</div>
 </section>
 <section id="consequences-of-not-following-the-rules" class="level2 page-columns page-full" data-number="8.7">
 <h2 data-number="8.7" class="anchored" data-anchor-id="consequences-of-not-following-the-rules"><span class="header-section-number">8.7</span> Consequences of not following the rules</h2>
