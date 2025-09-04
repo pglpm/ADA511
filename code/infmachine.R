@@ -1,6 +1,25 @@
 source('findP.R')
 
 findP(
+    p(x),
+    p(!x) == 0.5
+)
+## min max 
+## 0.5 0.5
+
+findP(
+    p(x ~ I),
+    p(!x ~ I) == 0.5
+)
+
+findP(
+    p(x || y ~ I),
+    p(x ~ I) == 0.3,
+    p(y ~ I) == 0.5,
+    p(x & y ~ I) == 0.1
+)
+
+findP(
     p(x ~ a & b),
     p(x ~ a) == 0.5,
     p(x ~ b) == 0.3
@@ -23,6 +42,21 @@ findP(
 )
 ##  min max 
 ##  0.5 0.5 
+
+findP(
+    P(x ~ !x & I),
+    P(x ~ I) == 1
+)
+## min max 
+##  NA  NA 
+
+findP(
+    P(x ~ y & I),
+    P(x ~ I) == 1
+)
+## min max 
+##   1   1 
+
 
 findP(
     p(c1 ~ y1 & h2),

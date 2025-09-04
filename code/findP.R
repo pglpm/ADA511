@@ -1,6 +1,6 @@
 findP <- function(x, ...) {
     ## number of constraints
-    nn <- length(substitute(alist(...)))
+    nc <- length(substitute(alist(...)))
     ## find atomic sentences and prepare truth table for DNF
     tvals <- c(FALSE, TRUE)
     atoms <- sort(all.vars(as.formula(substitute(~ alist(x, ...)))))
@@ -14,24 +14,22 @@ findP <- function(x, ...) {
     ## print(combos) # for debugging
 
 ### Target probability
-    Tp <- substitute(x)
+    Tsupp <- substitute(x)[[2]]
     ##
-    if(length(Tp[[2]]) == 1 ||
-           !(deparse(Tp[[2]][[1]]) == '~')) {
+    if(length(Tsupp) < 3 || !(deparse(Tsupp[[1]]) == '~')){
         ## it doesn't have a conditional
         extraE <- NULL
-        Tsupp <- Tp[[2]]
         EqA <- 1L * apply(combos, 1, function(zz){
             eval(Tsupp, as.list(zz))
         })
-        E <- matrix(1, nn + na, na)
-        F <- numeric(nn + na)
-        E[nn + (1:na), ] <- diag(na)
-        D <- c(rep('==', nn), rep('>=', na))
+        E <- matrix(1, nc + na, na)
+        F <- numeric(nc + na)
+        F[1] <- 1
+        E[nc + (1:na), ] <- diag(na)
+        D <- c(rep('==', nc), rep('>=', na))
     } else {
         ## it does have a conditional
         extraE <- 0
-        Tsupp <- Tp[[2]]
         Tsupp[[1]] <- `&&`
         Tcond <- Tsupp[[3]]
         EqA <- c(
@@ -39,25 +37,26 @@ findP <- function(x, ...) {
                 eval(Tsupp, as.list(zz))
             }),
             0)
-        E <- matrix(1, nn + na + 2, na + 1)
-        F <- numeric(nn + na + 2)
-        E[nn, na + 1] <- -1
-        E[nn + 1, ] <- c(
+        E <- matrix(1, nc + na + 2, na + 1)
+        F <- numeric(nc + na + 2)
+        E[1, na + 1] <- -1
+        E[nc + 1, ] <- c(
             1L * apply(combos, 1, function(zz){
                 eval(Tcond, as.list(zz))
             }),
             0)
-        E[nn + 1 + (1:(na+1)), ] <- diag(na + 1)
-        F[nn + 1] <- 1
-        D <- c(rep('==', nn + 1), rep('>=', na + 1))
+        F[nc + 1] <- 1
+        E[nc + 1 + (1:(na+1)), ] <- diag(na + 1)
+        D <- c(rep('==', nc + 1), rep('>=', na + 1))
     }
-    F[nn] <- 1
 
 ### Constraint probabilities, analysed one at a time
     Tp <- substitute(alist(...))
 
-    for(i in 2:nn) {
-        j <- i - 1
+    for(i in seq_len(nc)[-1]) {
+        if(length(Tp[[i]]) < 3 || !(deparse(Tp[[i]][[1]]) == '==')){
+            stop('argument ', i, ' is not an equality')
+        }
         left <- Tp[[i]][[2]]
         right <- Tp[[i]][[3]]
 
@@ -77,10 +76,8 @@ findP <- function(x, ...) {
             Esuppl <- left[[2]]
             Esuppr <- right[[2]]
             if(
-            !(length(Esuppl) == 1 ||
-                 !(deparse(Esuppl[[1]]) == '~')) ||
-                !(length(Esuppr) == 1 ||
-                     !(deparse(Esuppr[[1]]) == '~'))
+                !(length(Esuppl) < 3 || !(deparse(Esuppl[[1]]) == '~')) ||
+                !(length(Esuppr) < 3 || !(deparse(Esuppr[[1]]) == '~'))
             ) {
                 ## both probabilities have conditional
                 ## we use the rule of cond. prob.
@@ -91,7 +88,7 @@ findP <- function(x, ...) {
                 Esuppr[[1]] <- `&&`
             }
 
-            E[j, ] <- c(
+            E[i, ] <- c(
                 1L * apply(combos, 1, function(zz){
                     eval(Esuppl, as.list(zz))
                 }) - coeff * apply(combos, 1, function(zz){
@@ -103,10 +100,9 @@ findP <- function(x, ...) {
             coeff <- eval(right)
 
             Esupp <- left[[2]]
-            if(length(Esupp) == 1 ||
-                   !(deparse(Esupp[[1]]) == '~')) {
+            if(length(Esupp) < 3 || !(deparse(Esupp[[1]]) == '~')) {
                 ## probability has no conditional
-                E[j, ] <- c(
+                E[i, ] <- c(
                     1L * apply(combos, 1, function(zz){
                         eval(Esupp, as.list(zz))
                     }) - coeff,
@@ -115,7 +111,7 @@ findP <- function(x, ...) {
                 ## probability has conditional
                 Esupp[[1]] <- `&&`
                 Econd <- Esupp[[3]]
-                E[j, ] <- c(
+                E[i, ] <- c(
                     1L * apply(combos, 1, function(zz){
                         eval(Esupp, as.list(zz))
                     }) -
@@ -136,6 +132,12 @@ findP <- function(x, ...) {
         const.dir = D,
         const.rhs = F
     )
+    ## ## for debugging
+    ## print(minp$constraints)
+    ## str(minp$solution)
+    ## str(minp$objval)
+    ## str(minp$status)
+    
     ## Find maximum value
     maxp <- lpSolve::lp(
         direction = 'max',
@@ -144,6 +146,14 @@ findP <- function(x, ...) {
         const.dir = D,
         const.rhs = F
     )
+    ## ## for debugging
+    ## print(maxp$constraints)
+    ## str(maxp$solution)
+    ## str(maxp$objval)
+    ## str(maxp$status)
 
-    c(min = minp$objval, max = maxp$objval)
+    c(
+        min = if(minp$status == 0){minp$objval}else{NA},
+        max = if(maxp$status == 0){maxp$objval}else{NA}
+    )
 }
