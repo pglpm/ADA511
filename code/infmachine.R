@@ -11,6 +11,8 @@ findP(
     p(x ~ I),
     p(!x ~ I) == 0.5
 )
+## min max 
+## 0.5 0.5
 
 findP(
     p(x || y ~ I),
@@ -18,6 +20,8 @@ findP(
     p(y ~ I) == 0.5,
     p(x & y ~ I) == 0.1
 )
+## min max 
+## 0.7 0.7 
 
 findP(
     p(x ~ a & b),

@@ -12,9 +12,16 @@ findP <- function(x, ...) {
     ## total number of conjunctions
     na <- 2L^length(atoms)
     ## print(combos) # for debugging
+    Psyms <- c('P', 'p', 'Pr', 'pr', 'T', 't')
 
 ### Target probability
-    Tsupp <- substitute(x)[[2]]
+    Tsupp <- substitute(x)
+    if(
+        !(length(Tsupp) == 2) || !(deparse(Tsupp[[1]]) %in% Psyms)
+    ) {
+        stop('invalid first argument')
+    }
+    Tsupp <- Tsupp[[2]]
     ##
     if(length(Tsupp) < 3 || !(deparse(Tsupp[[1]]) == '~')){
         ## it doesn't have a conditional
@@ -58,16 +65,38 @@ findP <- function(x, ...) {
             stop('argument ', i, ' is not an equality')
         }
         left <- Tp[[i]][[2]]
+        if(
+            !(length(left) == 2) || !(deparse(left[[1]]) %in% Psyms)
+        ) {
+            stop('invalid left side in argument ', i)
+        }
         right <- Tp[[i]][[3]]
 
         if(!is.numeric(try(eval(right), silent = TRUE))) {
             ## constraint is equality between two probabilities
+            if(
+                length(right) < 2 || length(right) > 3
+            ) {
+                stop('invalid right side in argument ', i)
+            }
+
             if(length(right) == 2) {
+                ## right side is a probability
+                if(
+                    !(deparse(right[[1]]) %in% Psyms)
+                ) {
+                    stop('invalid right side in argument ', i)
+                }
                 temp <- right
                 right <- substitute(a * 1)
                 right[[2]] <- temp
             }
-            if(!(deparse(right[[1]]) %in% c('*', '/'))) {
+
+            if(
+                !(deparse(right[[1]]) %in% c('*', '/')) ||
+                    !(length(right[[2]]) == 2) ||
+                     !(deparse(right[[2]][[1]]) %in% Psyms)
+            ) {
                 stop('invalid right side in argument ', i)
             }
             coeff <- eval(right[[1]])(1, right[[3]])
