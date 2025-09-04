@@ -137,7 +137,7 @@ findP <- function(x, ...) {
     ## str(minp$solution)
     ## str(minp$objval)
     ## str(minp$status)
-    
+
     ## Find maximum value
     maxp <- lpSolve::lp(
         direction = 'max',
