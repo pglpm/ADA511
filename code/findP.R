@@ -13,6 +13,7 @@ findP <- function(x, ...) {
     na <- 2L^length(atoms)
     ## print(combos) # for debugging
     Psyms <- c('P', 'p', 'Pr', 'pr', 'T', 't')
+    Esyms <- c('==', '<=', '>=', '<', '>')
 
 ### Target probability
     Tsupp <- substitute(x)
@@ -46,7 +47,9 @@ findP <- function(x, ...) {
             0)
         E <- matrix(1, nc + na + 2, na + 1)
         F <- numeric(nc + na + 2)
+        ## first constraint has the form sum_i x_i - t = 0
         E[1, na + 1] <- -1
+        ## last constraint involves the conditional of target prob.
         E[nc + 1, ] <- c(
             1L * apply(combos, 1, function(zz){
                 eval(Tcond, as.list(zz))
@@ -61,9 +64,11 @@ findP <- function(x, ...) {
     Tp <- substitute(alist(...))
 
     for(i in seq_len(nc)[-1]) {
-        if(length(Tp[[i]]) < 3 || !(deparse(Tp[[i]][[1]]) == '==')){
-            stop('argument ', i, ' is not an equality')
+        if(length(Tp[[i]]) < 3 || !(deparse(Tp[[i]][[1]]) %in% Esyms)){
+            stop('argument ', i, ' is not an (in)equality')
         }
+        D[i] <- deparse(Tp[[i]][[1]]) # sign of (in)equality
+
         left <- Tp[[i]][[2]]
         if(
             !(length(left) == 2) || !(deparse(left[[1]]) %in% Psyms)
@@ -127,6 +132,9 @@ findP <- function(x, ...) {
         } else {
             ## constraint is numeric
             coeff <- eval(right)
+            if(coeff < 0) {
+                stop('negative coefficient in argument ', i)
+            }
 
             Esupp <- left[[2]]
             if(length(Esupp) < 3 || !(deparse(Esupp[[1]]) == '~')) {
