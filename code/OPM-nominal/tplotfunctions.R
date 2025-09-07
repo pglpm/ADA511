@@ -717,3 +717,17 @@ mybisect <- function(fn, a, b){
 myread.csv <- function(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, comment.char = "", na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE, ...){
     read.csv(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, comment.char = "", na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE, ...)
 }
+
+
+mystr2bin <- function(x) {paste(as.integer(rev(intToBits(strtoi(x)))), collapse = "")}
+
+mydec2bin <- function(x) {
+    hex <- sprintf('%A', 1+x)
+    digits <- gsub('^.*?\\.([^P]+)P.*', '\\1', hex)
+    len <- nchar(digits)
+    paste(c('0.', sapply(1:len, function(i){
+        paste(as.integer(rev(intToBits(strtoi(
+            paste0('0X', substring(digits, i, i))
+        ))[1:4])), collapse = '')
+    })), collapse = '')
+}
