@@ -33,7 +33,7 @@ palette(tolpalette)
 ## scale_colour_discrete <- khroma::scale_colour_bright
 
 ## to output in pdf format
-mypdf <- function(file = 'Rplot', apaper = 5, portrait = FALSE,
+tpdf <- function(file = 'Rplot', apaper = 5, portrait = FALSE,
                  height = 148 / 25.4, width = 210 / 25.4, asp = NA, ...) {
   if (is.numeric(apaper)) {
     if (portrait) {
@@ -56,7 +56,7 @@ mypdf <- function(file = 'Rplot', apaper = 5, portrait = FALSE,
 }
 
 ## to output in svg format
-mysvg <- function(file = 'Rplot', apaper = 5, portrait = FALSE,
+tsvg <- function(file = 'Rplot', apaper = 5, portrait = FALSE,
                  height = 148 / 25.4, width = 210 / 25.4, asp = NA, ...) {
   if (is.numeric(apaper)) {
     if (portrait) {
@@ -80,7 +80,7 @@ mysvg <- function(file = 'Rplot', apaper = 5, portrait = FALSE,
 
 
 ## to output in png format
-mypng <- function(file = 'Rplot', res = 300, apaper = 5, portrait = FALSE,
+tpng <- function(file = 'Rplot', res = 300, apaper = 5, portrait = FALSE,
                  height = 148 / 25.4, width = 210 / 25.4, asp = NA, ...) {
   if (is.numeric(apaper)) {
     if (portrait) {
@@ -103,7 +103,7 @@ mypng <- function(file = 'Rplot', res = 300, apaper = 5, portrait = FALSE,
 }
 
 ## to output in png format
-myjpg <- function(file = 'Rplot', res = 300, apaper = 5, portrait = FALSE,
+tjpg <- function(file = 'Rplot', res = 300, apaper = 5, portrait = FALSE,
     height = 148 / 25.4, width = 210 / 25.4, asp = NA,
     quality = 90, ...) {
   if (is.numeric(apaper)) {
@@ -127,7 +127,7 @@ myjpg <- function(file = 'Rplot', res = 300, apaper = 5, portrait = FALSE,
       res = res, quality = quality, ...)
 }
 
-myflexiplot <- function(
+tflexiplot <- function(
     x, y,
     xdomain = NULL, ydomain = NULL,
     xlim = NULL, ylim = NULL,
@@ -194,7 +194,7 @@ myflexiplot <- function(
     }
 }
 
-myplotquantiles <- function(
+tplotquantiles <- function(
     x, y,
     xdomain = NULL,
     alpha.f = 0.25,
@@ -221,7 +221,7 @@ myplotquantiles <- function(
     ## else if(!is.character(alpha)){alpha <- alpha2hex(alpha)}
     ## if(!(is.na(col) | nchar(col)>7)){col <- paste0(col, alpha)}
     ##
-    myflexiplot(x = x, y = y, xdomain = xdomain, type = 'n', ...)
+    tflexiplot(x = x, y = y, xdomain = xdomain, type = 'n', ...)
 
     ## if x is character, convert to numeric
     if(is.character(x)){
@@ -239,7 +239,7 @@ myplotquantiles <- function(
 }
 
 
-mytplot <- function(x, y, xlim = c(NA, NA), ylim = c(NA, NA), asp = NA,
+tplot <- function(x, y, xlim = c(NA, NA), ylim = c(NA, NA), asp = NA,
     n = 10, family = '', xticks = NULL, xlabels = TRUE,
     yticks = NULL, ylabels = TRUE, cex = 1.5, ly = NULL,
     lx = NULL, mar = NULL, lty.axis = 1, lwd.axis = 0,
@@ -558,12 +558,12 @@ mytplot <- function(x, y, xlim = c(NA, NA), ylim = c(NA, NA), asp = NA,
     }
 }
 
-mylegend <- function(x, y=NULL, legend, col=palette(), pch=c(1,0,2,5,6,3,4), lty=1:4, lwd=2, alpha=1, cex=1.5, ...){
+tlegend <- function(x, y=NULL, legend, col=palette(), pch=c(1,0,2,5,6,3,4), lty=1:4, lwd=2, alpha=1, cex=1.5, ...){
     suppressWarnings(col <- mapply(function(i,j)adjustcolor(i,j),col,alpha))
     legend(x=x, y=y, legend=legend, col=col, pch=pch, lty=lty, lwd=lwd, bty='n', cex=cex, ...)
 }
 
-myfivenumaxis <- function(side, x, col='#555555', type=6){
+tfivenumaxis <- function(side, x, col='#555555', type=6){
     x <- x[!is.na(x) && is.finite(x)]
     if(length(x)==0){x <- c(0,1)}
     if(diff(range(x))==0){x <- range(x) + c(-1,1)}
@@ -598,7 +598,7 @@ myfivenumaxis <- function(side, x, col='#555555', type=6){
 
 ## scatteraxis(): use rug()
 
-myhist <- function(x, n=NULL, type=6, pretty=FALSE, plot=FALSE,
+thist <- function(x, n=NULL, type=6, pretty=FALSE, plot=FALSE,
     extendbreaks=FALSE, ylim=c(0,NA), ...){
     if(!is.list(x)){x <- list(x)}
     if(!is.list(n)){n <- list(n)}
@@ -643,7 +643,7 @@ myhist <- function(x, n=NULL, type=6, pretty=FALSE, plot=FALSE,
         out <- c(out,list(nextout))
     }
     if(plot){
-        mytplot(x=lapply(out,function(xx){
+        tplot(x=lapply(out,function(xx){
             if(length(xx$breaks)==1){xx$mids}else{xx$breaks}
         } ),
               y=lapply(out,function(xx)xx$density),ylim=ylim,type='h', ...)
@@ -652,82 +652,19 @@ myhist <- function(x, n=NULL, type=6, pretty=FALSE, plot=FALSE,
     }
 }
 
-myquantile <- function(x, probs=c(0.055, 0.25, 0.5, 0.75, 0.945), na.rm=TRUE, names=TRUE, type=6, ...){
+tquantile <- function(x, probs=c(0.055, 0.25, 0.5, 0.75, 0.945), na.rm=TRUE, names=TRUE, type=6, ...){
     quantile(x=x, probs=probs, na.rm=na.rm, names=names, type=type, ...)
 }
 
-mymad <- function(x){mad(x, constant=1, na.rm=TRUE)}
+tmad <- function(x){mad(x, constant=1, na.rm=TRUE)}
 
-mysummary <- function(x){
+tsummary <- function(x){
     x <- cbind(x)
     apply(x, 2, function(xx){
         c(quantile(xx, c(0.055, 0.25, 0.5, 0.75, 0.945), type=6, na.rm=TRUE), MAD=mad(xx,constant=1,na.rm=T), IQR=IQR(xx,na.rm=T), mean=mean(xx,na.rm=T), sd=sd(xx,na.rm=T), hr=diff(range(xx,na.rm=T))/2, min=min(xx,na.rm=T), max=max(xx,na.rm=T), NAs=sum(is.na(xx)))
     })
 }
 
-## Function to build powerset
-mypowerset <- function(set){
-  n <- length(set)
-  masks <- 2^(1:n-1)
-  lapply( 1:2^n-1, function(u) set[ bitwAnd(u, masks) != 0 ] )
-}
-
-## Greatest common denominator
-mygcd <- function(...){Reduce(function(a, b){if (b == 0) a else Recall(b, a %% b)}, c(...))}
-
-## Normalize according to row
-mynormalize <- function(x){
-    if(is.null(dim(x)) || is.table(x)){
-        x/sum(x,na.rm=T)
-    }else{
-        aperm(aperm(x)/c(aperm(cbind(colSums(x,na.rm=T)))))
-    }
-}
-
-## Table with list of values
-mytable <- function(x, values=NULL, norm=FALSE){
-    if(norm){
-        mynormalize(table(c(x,values))-!(is.null(values)))
-    }else{
-        table(c(x,values))-!(is.null(values))
-        }
-}
-
-mybisect <- function(fn, a, b){
-    if(fn(a) * fn(b) > 0){
-        stop('Cannot use bisection.')
-    } else if(fn(a) > 0){
-        m <- b
-        b <- a
-        a <- m
-    }
-    m <- (a + b)/2
-    while(abs(a - b) > .Machine$double.eps &&
-              abs(fn(m)) > .Machine$double.eps){
-                  if(fn(m) > 0){
-                      b <- m
-                  } else {
-                      a <- m
-                  }
-                  m <- (a + b)/2
-              }
-    list(value = m, objective = fn(m))
-}
-
-myread.csv <- function(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, comment.char = "", na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE, ...){
+tread.csv <- function(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, comment.char = "", na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE, ...){
     read.csv(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, comment.char = "", na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE, ...)
-}
-
-
-mystr2bin <- function(x) {paste(as.integer(rev(intToBits(strtoi(x)))), collapse = "")}
-
-mydec2bin <- function(x) {
-    hex <- sprintf('%A', 1+x)
-    digits <- gsub('^.*?\\.([^P]+)P.*', '\\1', hex)
-    len <- nchar(digits)
-    paste(c('0.', sapply(1:len, function(i){
-        paste(as.integer(rev(intToBits(strtoi(
-            paste0('0X', substring(digits, i, i))
-        ))[1:4])), collapse = '')
-    })), collapse = '')
 }

@@ -25,16 +25,16 @@ plotFsamples1D <- function(
         }
     }
     ##
-    mytplot(y=t(samples), x=1:ncol(samples), type='b',
+    tplot(y=t(samples), x=1:ncol(samples), type='b',
       xticks=1:ncol(samples), xlabels=dimnames(samples)[[2]],
       xlab=bquote(italic(.(names(dimnames(samples))[2]))),
       ylab='probability',
-      lty=1, lwd=1, pch=16, col=7, alpha=0.25, cex=0.75, ...
+      lty=1, lwd=1, pch=16, col=7, alpha=0.25, ...
       )
     if(probability){
         fmean <- infer(agent=agent, predictand=predictand, predictor=predictor)
-        mytplot(y=fmean, x=1:ncol(samples), type='b',
-              lty=1, lwd=4, pch=18, col=1, alpha=0.75, cex=1, add = TRUE
+        tplot(y=fmean, x=1:ncol(samples), type='b',
+              lty=1, lwd=4, pch=18, col=1, alpha=0.75, add = TRUE
               )
     }
     if(!is.null(file)){

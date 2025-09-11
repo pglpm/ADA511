@@ -23,9 +23,9 @@ We start loading the R libraries and functions needed at several stages. You nee
 
 ```{r}
 library('extraDistr')
-library('foreach')
 
 source('tplotfunctions.R')
+source('util_datacheck.R')
 source('guessmetadata.R')
 source('buildagent.R')
 source('infer.R')
@@ -95,8 +95,7 @@ Prepare and train each with the `buildagent()` function:
 
 ```{r}
 ## temporarily load all training data
-traindata <- read.csv('train-income_data_example.csv', header = TRUE,
-    na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE)
+traindata <- tread.csv('train-income_data_example.csv')
 
 ## feed first 10 datapoints to an agent
 opm10 <- buildagent(metadata = 'meta_income_data_example.csv',
@@ -128,7 +127,7 @@ this shows that each agent is encoded as a list of four objects:
 The agent has internally guessed how many training data should be necessary to affect its prior beliefs. We can peek at its guess by plotting the `alphas` parameters against the `palphas` probabilities:
 
 ```{r}
-mytplot(x = opmall$alphas, y = opmall$palphas, type = 'b',
+tplot(x = opmall$alphas, y = opmall$palphas, type = 'b',
       xlim = c(0, 10000), ylim = c(0, NA),
       xlab = 'required number of training data', ylab = 'probability')
 ```
@@ -400,8 +399,7 @@ At the end we plot a histogram of the probabilities calculated for the new units
 
 ```{r}
 ## Load test data
-testdata <- read.csv('test-income_data_example.csv', header = TRUE,
-    na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE)
+testdata <- tread.csv('test-income_data_example.csv')
 
 ntest <- nrow(testdata) # size of test dataset
 
@@ -430,7 +428,7 @@ for(i in 1:ntest){
 print(Sys.time() - stopwatch)
 
 ## Histogram and average accuracy (rounded to one decimal)
-myhist(testprobs, n = seq(0,1,length.out = 10), plot = TRUE,
+thist(testprobs, n = seq(0,1,length.out = 10), plot = TRUE,
       xlab = 'P(income = "<=50K")',
       ylab = 'frequency density in test set',
       main = paste0('accuracy: ', round(100*mean(testhits), 1), '%'))
