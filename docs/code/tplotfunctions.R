@@ -127,7 +127,7 @@ tjpg <- function(file = 'Rplot', res = 300, apaper = 5, portrait = FALSE,
       res = res, quality = quality, ...)
 }
 
-tflexiplot <- function(
+flexiplot <- function(
     x, y,
     type = 'l',
     lty = c(1, 2, 4, 3, 6, 5),
@@ -266,7 +266,7 @@ tplotquantiles <- function(
     ## else if(!is.character(alpha)){alpha <- alpha2hex(alpha)}
     ## if(!(is.na(col) | nchar(col)>7)){col <- paste0(col, alpha)}
     ##
-    tflexiplot(x = x, y = y, xdomain = xdomain, type = 'n', ...)
+    flexiplot(x = x, y = y, xdomain = xdomain, type = 'n', ...)
 
     ## if x is character, convert to numeric
     if(is.character(x)){
