@@ -129,29 +129,67 @@ tjpg <- function(file = 'Rplot', res = 300, apaper = 5, portrait = FALSE,
 
 tflexiplot <- function(
     x, y,
-    xdomain = NULL, ydomain = NULL,
-    xlim = NULL, ylim = NULL,
     type = 'l',
-    pch = c(1, 0, 2, 5, 6, 3, 4),
-    grid = TRUE,
+    lty = c(1, 2, 4, 3, 6, 5),
+    lwd = 2,
+    pch = c(1, 2, 0, 5, 6, 3), #, 4,
+    col = palette(),
+    xlab = NULL, ylab = NULL,
+    xlim = NULL, ylim = NULL,
     add = FALSE,
-    lwd = 1,
-    family = 'Palatino',
-    mgp = c(1.5, 0.5, 0),
-    oma = c(0.5, 0.5, 0.5, 0.5),
-    mar = c(3, 2.5, 1, 1),
+    xdomain = NULL, ydomain = NULL,
+    alpha.f = 1,
+    xjitter = NULL,
+    yjitter = NULL,
+    ## c( ## Tol's colour-blind-safe scheme
+    ##     '#4477AA',
+    ##     '#EE6677',
+    ##     '#228833',
+    ##     '#CCBB44',
+    ##     '#66CCEE',
+    ##     '#AA3377' #, '#BBBBBB'
+    ## ),
+    grid = TRUE,
+    cex.main = 1,
     ...
 ){
     xat <- yat <- NULL
 
     if(missing('x') && !missing('y')){
-        x <- seq_len(NROW(y))
+        x <- numeric(NROW(y))
+        if(is.null(ylab)){ ylab <- deparse1(substitute(y)) }
+        if(is.null(yjitter)){ yjitter <- FALSE }
+        if(is.null(xdomain) && is.null(xlim)){
+            xat <- 0
+            xdomain <- NA
+            if(!is.null(xjitter)){
+                xlim <- c(-0.04, 0.04)
+            }
+            if(is.null(xlab)){ xlab <- NA }
+        }
     } else if(!missing('x') && missing('y')){
-        y <- seq_len(NROW(x))
-    } else if(missing('x') && missing('y')){
+        y <- numeric(NROW(x))
+        if(is.null(xlab)){ xlab <- deparse1(substitute(x)) }
+        if(is.null(xjitter)){ xjitter <- FALSE }
+        if(is.null(ydomain) && is.null(ylim)){
+            yat <- 0
+            ydomain <- NA
+            if(!is.null(yjitter)){
+                ylim <- c(-0.04, 0.04)
+            }
+            if(is.null(ylab)){ ylab <- NA }
+        }
+    } else if(!missing('x') && !missing('y')){
+        if(is.null(xlab)){ xlab <- deparse1(substitute(x)) }
+        if(is.null(ylab)){ ylab <- deparse1(substitute(y)) }
+    } else {
         stop('Arguments "x" and "y" cannot both be missing')
     }
 
+    if(is.character(x) && is.character(y)) {
+        if(is.null(xjitter)){xjitter <- TRUE}
+        if(is.null(yjitter)){yjitter <- TRUE}
+    }
     ## if x is character, convert to numeric
     if(is.character(x)){
         if(is.null(xdomain)){ xdomain <- unique(x) }
@@ -161,6 +199,7 @@ tflexiplot <- function(
         x <- as.numeric(factor(x, levels = xdomain))
         xat <- seq_along(xdomain)
     }
+    if(isTRUE(xjitter)){x <- jitter(x)}
 
     ## if y is character, convert to numeric
     if(is.character(y)){
@@ -171,9 +210,10 @@ tflexiplot <- function(
         y <- as.numeric(factor(y, levels = ydomain))
         yat <- seq_along(ydomain)
     }
+    if(isTRUE(yjitter)){y <- jitter(y)}
 
     ## Syntax of xlim and ylim that allows
-    ## for the specification of only upper- or lower-bond
+    ## for the specification of only upper- or lower-bound
     if(length(xlim) == 2){
         if(is.null(xlim[1]) || !is.finite(xlim[1])){ xlim[1] <- min(x[is.finite(x)]) }
         if(is.null(xlim[2]) || !is.finite(xlim[2])){ xlim[2] <- max(x[is.finite(x)]) }
@@ -183,11 +223,16 @@ tflexiplot <- function(
         if(is.null(ylim[2]) || !is.finite(ylim[2])){ ylim[2] <- max(y[is.finite(y)]) }
     }
 
-    par(family = family, mgp = mgp, oma = oma, mar = mar)
-    graphics::matplot(x, y, xlim = xlim, ylim = ylim, type = type, pch = pch, axes = F, add = add, lwd = lwd, ...)
+    if(is.na(alpha.f)){alpha.f <- 1}
+    col <- adjustcolor(col, alpha.f = alpha.f)
+
+    graphics::matplot(x, y, xlim = xlim, ylim = ylim, type = type, axes = F,
+        col = col, lty = lty, lwd = lwd, pch = pch, cex.main = cex.main, add = add, xlab = xlab, ylab = ylab, ...)
     if(!add){
-        graphics::axis(1, at = xat, labels = xdomain, lwd = 0, ...)
-        graphics::axis(2, at = yat, labels = ydomain, lwd = 0, ...)
+        graphics::axis(1, at = xat, labels = xdomain, tick = !grid,
+            col = 'black', lwd = 1, lty = 1, ...)
+        graphics::axis(2, at = yat, labels = ydomain, tick = !grid,
+            col = 'black', lwd = 1, lty = 1, ...)
         if(grid){
             graphics::grid(nx = NULL, ny = NULL, lty = 1, col = '#BBBBBB80')
         }
@@ -221,7 +266,7 @@ tplotquantiles <- function(
     ## else if(!is.character(alpha)){alpha <- alpha2hex(alpha)}
     ## if(!(is.na(col) | nchar(col)>7)){col <- paste0(col, alpha)}
     ##
-    myflexiplot(x = x, y = y, xdomain = xdomain, type = 'n', ...)
+    tflexiplot(x = x, y = y, xdomain = xdomain, type = 'n', ...)
 
     ## if x is character, convert to numeric
     if(is.character(x)){

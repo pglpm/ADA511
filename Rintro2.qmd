@@ -1,0 +1,79 @@
+# [Working with R, II]{.lightblue} {.unnumbered}
+{{< include macros.qmd >}}
+
+R has a wide range of basic plotting functions, and in addition to them there are many plotting libraries. Here we shall see examples of how to create the kinds of plot discussed in [chapter @sec-prob-distribs], using basic R functions and custom functions used in these notes.
+
+```{r}
+#| echo: false
+knitr::opts_knit$set(root.dir = "code/")
+```
+
+## Plotting pairs of values in R {#sec-R-plotting-pair}
+
+A very simple kind of plot is the one where we plot a sequence of values against another sequence *of the same length*, interpreting the first as x-axis and the second as y-axis. This can be done with the base R function [`plot()`](https://stat.ethz.ch/R-manual/R-patched/library/base/html/plot.html). Here we consider sequences `a` and `b`, with six values each:
+
+```{r}
+a <- c(1, 2, 3, 4, 5, 6)
+b <- c(0.05, 0.3, 0.4, 0.2, 0.03, 0.02)
+
+plot(x = a, y = b)
+```
+
+You notice that the names of the variables appear automatically on the axes, and the pairs of points are represented by small, empty circles. If we want to join the points with `l`ines we can use the `type = 'l'` argument; with `type = 'b'` we get both circles and lines. The `l`ine `w`i`d`th is controlled by the `lwd =` argument, and the `l`ine `ty`pe (solid, dashed, dotted, and so on) by the `lty =` argument. The colour by `col =`. We can also change the axes' labels with `xlab =` and `ylab =`, and the ranges of the two axes with `xlim =` and `ylim =`. Let's see two examples:
+
+```{r}
+
+plot(x = a, y = b,
+    type = 'l',
+    lwd = 1, lty = 1, col = 1,
+    xlab = 'quantity A', ylab = 'quantity B',
+    xlim = c(-3, 7), ylim = c(-1, 1))
+
+plot(x = a, y = b,
+    type = 'b',
+    lwd = 3, lty = 2, col = 2,
+    xlab = 'quantity A', ylab = 'quantity B',
+    xlim = c(0.5, 6.5), ylim = c(0, 0.5))
+```
+
+Note that the sum of `b` values is 1:
+
+```{r}
+sum(b)
+```
+
+so `b` could be a discrete probability distribution for the quantity `a`.
+
+### A custom plot function
+
+If the quantity `a` is non-numeric, for instance a sequence of character strings, then we must first somehow convert it to numbers in order to use `plot()`, otherwise we get an error.
+
+In these notes we use the custom function `tflexiplot()`, which takes care of such conversions internally. We can load it from the file [`tplotfunctions.R`](https://github.com/pglpm/ADA511/blob/master/code/tplotfunctions.R), which you should have already downloaded:
+
+```{r}
+source('tplotfunctions.R')
+```
+
+Consider a quantity `animal` that could be one of six possible animals, and  the distribution of probability over them, assigned to a variable `prob`. With `tflexiplot()` we can plot the probability distribution as follows:
+
+```{r}
+animal <- c('cat', 'dog', 'chicken', 'cow', 'pig', 'horse')
+prob <- c(0.05, 0.3, 0.4, 0.2, 0.03, 0.02)
+
+tflexiplot(x = animal, y = prob, type = 'b', ylim = c(0, NA))
+```
+
+Note how the animal names appear in the x-axis, in the order specified. The range specification `ylim = c(0, NA)` (not available for `plot()`) says that the lower range should be $0$, and the upper range should be the maximum available among the y-axis values.
+\
+
+Suppose we need to plot two different probability distributions (or two different sets of y-values more generally), stored in the variables `prob1` and `prob2`, for the same x-values, as in the last plot of [§.@sec-discr-prob-distr]. We can do this by binding them together into an array with two columns with the [`cbind()`](https://stat.ethz.ch/R-manual/R-patched/library/base/html/cbind.html) function, and then giving this array as the `y =` argument:
+
+```{r}
+prob1 <- c(0.05, 0.3, 0.4, 0.2, 0.03, 0.02)
+prob2 <- c(0.2, 0.6, 0.05, 0.04, 0.01, 0.1)
+
+tflexiplot(x = animal, y = cbind(prob1, prob2),
+    type = 'b', ylim = c(0, NA),
+    ylab = 'two probability distributions')
+```
+
