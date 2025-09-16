@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-09-15">
+<meta name="dcterms.date" content="2025-09-16">
 
 <title>8&nbsp; Probability inference – ADA511 0.3</title>
 <style>
@@ -169,7 +169,7 @@ window.Quarto = {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.3</span><br><span class="small grey">2025-09-15</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.3</span><br><span class="small grey">2025-09-16</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -617,8 +617,9 @@ window.Quarto = {
   <li><a href="#finding-the-target-inference" id="toc-finding-the-target-inference" class="nav-link" data-scroll-target="#finding-the-target-inference">Finding the target inference</a></li>
   </ul></li>
   <li><a href="#sec-algorithm-rules" id="toc-sec-algorithm-rules" class="nav-link" data-scroll-target="#sec-algorithm-rules"><span class="header-section-number">8.6</span> Use and implementation of the inference rules</a></li>
-  <li><a href="#consequences-of-not-following-the-rules" id="toc-consequences-of-not-following-the-rules" class="nav-link" data-scroll-target="#consequences-of-not-following-the-rules"><span class="header-section-number">8.7</span> Consequences of not following the rules</a></li>
-  <li><a href="#remarks-on-terminology-and-notation" id="toc-remarks-on-terminology-and-notation" class="nav-link" data-scroll-target="#remarks-on-terminology-and-notation"><span class="header-section-number">8.8</span> Remarks on terminology and notation</a>
+  <li><a href="#an-implementation-in-r" id="toc-an-implementation-in-r" class="nav-link" data-scroll-target="#an-implementation-in-r"><span class="header-section-number">8.7</span> An implementation in R</a></li>
+  <li><a href="#consequences-of-not-following-the-rules" id="toc-consequences-of-not-following-the-rules" class="nav-link" data-scroll-target="#consequences-of-not-following-the-rules"><span class="header-section-number">8.8</span> Consequences of not following the rules</a></li>
+  <li><a href="#remarks-on-terminology-and-notation" id="toc-remarks-on-terminology-and-notation" class="nav-link" data-scroll-target="#remarks-on-terminology-and-notation"><span class="header-section-number">8.9</span> Remarks on terminology and notation</a>
   <ul class="collapse">
   <li><a href="#sec-likelihood" id="toc-sec-likelihood" class="nav-link" data-scroll-target="#sec-likelihood">Likelihood</a></li>
   <li><a href="#omitting-background-information" id="toc-omitting-background-information" class="nav-link" data-scroll-target="#omitting-background-information">Omitting background information</a></li>
@@ -643,7 +644,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-09-15</p>
+      <p class="date">2025-09-16</p>
     </div>
   </div>
   
@@ -730,7 +731,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>In everyday language, “<a href="https://dictionary.cambridge.org/dictionary/english/likelihood">likelihood</a>” is synonym with “probability”. In technical writings about probability or statistics, however, “likelihood” means something different and is <em>not</em> a synonym of “probability”, as we explain below (<a href="#sec-likelihood" class="quarto-xref">§&nbsp;<span>8.8.1</span></a>).</p>
+<p>In everyday language, “<a href="https://dictionary.cambridge.org/dictionary/english/likelihood">likelihood</a>” is synonym with “probability”. In technical writings about probability or statistics, however, “likelihood” means something different and is <em>not</em> a synonym of “probability”, as we explain below (<a href="#sec-likelihood" class="quarto-xref">§&nbsp;<span>8.9.1</span></a>).</p>
 </div>
 </div>
 </section>
@@ -1078,7 +1079,11 @@ The target probability is completely determined by the initial ones. This occurr
 </dd>
 </dl>
 <p>This algorithm is not mathematically difficult, but it is somewhat involved. It boils down to:&nbsp;(1)&nbsp;writing the sentences in the initial and target probabilities in <a href="https://mathworld.wolfram.com/DisjunctiveNormalForm.html"><em>disjunctive normal form</em></a>;&nbsp;(2)&nbsp;rewriting the initial and target probabilities as sum of probabilities of basic conjunctions;&nbsp;(3)&nbsp;solving two <em>linear-fractional optimization</em> problems, equivalent to <a href="https://mathworld.wolfram.com/LinearProgramming.html"><em>linear optimization</em></a> oens (for which there are algorithms available).</p>
-<p>You can find an implementation of the algorithm above in the <a href="https://github.com/pglpm/ADA511/blob/master/code/findP.R">R function <code>findP()</code></a>, which requires the <a href="https://cran.r-project.org/package=lpSolve"><strong>lpSolve</strong></a> R package. This function takes as first argument the probability we want to find, and as remaining arguments the values of the given probabilities, or equalities among probabilities. We must use the following notation:</p>
+</section>
+<section id="an-implementation-in-r" class="level2" data-number="8.7">
+<h2 data-number="8.7" class="anchored" data-anchor-id="an-implementation-in-r"><span class="header-section-number">8.7</span> An implementation in R</h2>
+<p>The algorithm described in the previous section is implemented in the <a href="https://github.com/pglpm/ADA511/blob/master/code/findP.R">R function <code>findP()</code></a>; it requires the <a href="https://cran.r-project.org/package=lpSolve"><strong>lpSolve</strong></a> R package, which we installed in the <a href="Rintro1.html">R introduction</a>.</p>
+<p>The <code>findP()</code> function takes as first argument the probability we want to find, and as remaining arguments the values of the given probabilities, or equalities among probabilities. We must use the following notation:</p>
 <ul>
 <li><span class="math inline">\(\lnot\)</span>&nbsp;&nbsp;becomes&nbsp;&nbsp;<code>!</code></li>
 <li><span class="math inline">\(\land\)</span>&nbsp;&nbsp;becomes&nbsp;&nbsp;<code>&amp;</code>&nbsp;or equivalently&nbsp;<code>&amp;&amp;</code></li>
@@ -1089,17 +1094,18 @@ The target probability is completely determined by the initial ones. This occurr
 <p>The output are the minimum and maximum possible values of the target probability, or <code>NA</code> if the starting probabilities are inconsistent.</p>
 <p>We can apply this function in the example above about the electronic component:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'lpSolve'</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'code/findP.R'</span>) <span class="co"># load the function</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">findP</span>(</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="do">## target probability:</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">P</span>(<span class="sc">!</span>h <span class="sc">~</span> f <span class="sc">&amp;</span> J),</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="do">## initial probabilities:</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">P</span>(<span class="sc">!</span>h <span class="sc">||</span> <span class="sc">!</span>s <span class="sc">~</span> f <span class="sc">&amp;</span> J) <span class="sc">==</span> <span class="dv">1</span>,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">P</span>(<span class="sc">!</span>h <span class="sc">&amp;</span> <span class="sc">!</span>s <span class="sc">~</span> f <span class="sc">&amp;</span> J) <span class="sc">==</span> <span class="fl">0.1</span>,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">P</span>(h <span class="sc">~</span> f <span class="sc">&amp;</span> J) <span class="sc">==</span> <span class="fu">P</span>(s <span class="sc">~</span> f <span class="sc">&amp;</span> J)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'lpSolve'</span>) <span class="do">## load the library</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'findP.R'</span>) <span class="do">## load the function</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">findP</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="do">## target probability:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">P</span>(<span class="sc">!</span>h <span class="sc">~</span> f <span class="sc">&amp;</span> J),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="do">## initial probabilities:</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">P</span>(<span class="sc">!</span>h <span class="sc">||</span> <span class="sc">!</span>s <span class="sc">~</span> f <span class="sc">&amp;</span> J) <span class="sc">==</span> <span class="dv">1</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">P</span>(<span class="sc">!</span>h <span class="sc">&amp;</span> <span class="sc">!</span>s <span class="sc">~</span> f <span class="sc">&amp;</span> J) <span class="sc">==</span> <span class="fl">0.1</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">P</span>(h <span class="sc">~</span> f <span class="sc">&amp;</span> J) <span class="sc">==</span> <span class="fu">P</span>(s <span class="sc">~</span> f <span class="sc">&amp;</span> J)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> min  max 
 0.55 0.55 </code></pre>
@@ -1135,8 +1141,8 @@ Exercise&nbsp;8.4
 </div>
 </div>
 </section>
-<section id="consequences-of-not-following-the-rules" class="level2 page-columns page-full" data-number="8.7">
-<h2 data-number="8.7" class="anchored" data-anchor-id="consequences-of-not-following-the-rules"><span class="header-section-number">8.7</span> Consequences of not following the rules</h2>
+<section id="consequences-of-not-following-the-rules" class="level2 page-columns page-full" data-number="8.8">
+<h2 data-number="8.8" class="anchored" data-anchor-id="consequences-of-not-following-the-rules"><span class="header-section-number">8.8</span> Consequences of not following the rules</h2>
 <p>The fundamental rules of inference guarantee that the agent’s uncertain reasoning is self-consistent, and that it follows logic when there’s no uncertainty. Breaking the rules means that the resulting inference has some logical or irrational inconsistencies.</p>
 <p>There are many examples of inconsistencies that appear when the rules are broken. Imagine for instance an agent that gives an 80% probability that it rains<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> in the next hour; and it also gives a 90% probability that it rains <em>and</em> that the average wind is above 3⋅m/s in the next hour. This is clearly unreasonable, because the raining scenario alone would be true with wind above 3 m/s <em>and also</em> below 3⋅m/s – therefore it should be <em>more</em> probable than the scenario where the wind is above 3 m/s. And indeed the two given probabilities break the <code>and</code>-rule, showing that they are unreasonable or illogical.</p>
 <div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;to be precise, let’s say “it rains above 1 mm”</p></div></div><div id="cau-unique5" class="callout callout-style-default callout-caution callout-titled">
@@ -1169,8 +1175,8 @@ Exercise&nbsp;8.5
 </div>
 </div>
 </section>
-<section id="remarks-on-terminology-and-notation" class="level2 page-columns page-full" data-number="8.8">
-<h2 data-number="8.8" class="anchored" data-anchor-id="remarks-on-terminology-and-notation"><span class="header-section-number">8.8</span> Remarks on terminology and notation</h2>
+<section id="remarks-on-terminology-and-notation" class="level2 page-columns page-full" data-number="8.9">
+<h2 data-number="8.9" class="anchored" data-anchor-id="remarks-on-terminology-and-notation"><span class="header-section-number">8.9</span> Remarks on terminology and notation</h2>
 <section id="sec-likelihood" class="level3">
 <h3 class="anchored" data-anchor-id="sec-likelihood">Likelihood</h3>
 <p>In everyday language, “likely” is often a synonym of “probable”, and “likelihood” of “probability”. But in technical writings about probability, inference, and decision-making, “likelihood” has a very different meaning. Beware of this important difference in definitions:</p>
