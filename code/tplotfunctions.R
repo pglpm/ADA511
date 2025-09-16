@@ -182,7 +182,7 @@ tflexiplot <- function(
         if(is.null(ylim[1]) || !is.finite(ylim[1])){ ylim[1] <- min(y[is.finite(y)]) }
         if(is.null(ylim[2]) || !is.finite(ylim[2])){ ylim[2] <- max(y[is.finite(y)]) }
     }
-    
+
     par(family = family, mgp = mgp, oma = oma, mar = mar)
     graphics::matplot(x, y, xlim = xlim, ylim = ylim, type = type, pch = pch, axes = F, add = add, lwd = lwd, ...)
     if(!add){
@@ -652,82 +652,6 @@ thist <- function(x, n=NULL, type=6, pretty=FALSE, plot=FALSE,
     }
 }
 
-tquantile <- function(x, probs=c(0.055, 0.25, 0.5, 0.75, 0.945), na.rm=TRUE, names=TRUE, type=6, ...){
-    quantile(x=x, probs=probs, na.rm=na.rm, names=names, type=type, ...)
-}
-
-tmad <- function(x){mad(x, constant=1, na.rm=TRUE)}
-
-tsummary <- function(x){
-    x <- cbind(x)
-    apply(x, 2, function(xx){
-        c(quantile(xx, c(0.055, 0.25, 0.5, 0.75, 0.945), type=6, na.rm=TRUE), MAD=mad(xx,constant=1,na.rm=T), IQR=IQR(xx,na.rm=T), mean=mean(xx,na.rm=T), sd=sd(xx,na.rm=T), hr=diff(range(xx,na.rm=T))/2, min=min(xx,na.rm=T), max=max(xx,na.rm=T), NAs=sum(is.na(xx)))
-    })
-}
-
-## Function to build powerset
-tpowerset <- function(set){
-  n <- length(set)
-  masks <- 2^(1:n-1)
-  lapply( 1:2^n-1, function(u) set[ bitwAnd(u, masks) != 0 ] )
-}
-
-## Greatest common denominator
-tgcd <- function(...){Reduce(function(a, b){if (b == 0) a else Recall(b, a %% b)}, c(...))}
-
-## Normalize according to row
-tnormalize <- function(x){
-    if(is.null(dim(x)) || is.table(x)){
-        x/sum(x,na.rm=T)
-    }else{
-        aperm(aperm(x)/c(aperm(cbind(colSums(x,na.rm=T)))))
-    }
-}
-
-## Table with list of values
-ttable <- function(x, values=NULL, norm=FALSE){
-    if(norm){
-        mynormalize(table(c(x,values))-!(is.null(values)))
-    }else{
-        table(c(x,values))-!(is.null(values))
-        }
-}
-
-tbisect <- function(fn, a, b){
-    if(fn(a) * fn(b) > 0){
-        stop('Cannot use bisection.')
-    } else if(fn(a) > 0){
-        m <- b
-        b <- a
-        a <- m
-    }
-    m <- (a + b)/2
-    while(abs(a - b) > .Machine$double.eps &&
-              abs(fn(m)) > .Machine$double.eps){
-                  if(fn(m) > 0){
-                      b <- m
-                  } else {
-                      a <- m
-                  }
-                  m <- (a + b)/2
-              }
-    list(value = m, objective = fn(m))
-}
-
 tread.csv <- function(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, comment.char = "", na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE, ...){
     read.csv(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, comment.char = "", na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE, ...)
-}
-
-
-tstr2bin <- function(x) {paste(as.integer(rev(intToBits(strtoi(x)))), collapse = "")}
-
-tdec2bin <- function(x) {
-    hex <- sprintf('%A', 1+x)
-    digits <- gsub('^.*?\\.([^P]+)P.*', '\\1', hex)
-    len <- nchar(digits)
-    paste(c('0.', sapply(1:len, function(i){
-        paste(as.integer(rev(intToBits(strtoi(
-            paste0('0X', substring(digits, i, i))
-        ))[1:4])), collapse = '')
-    })), collapse = '')
 }
