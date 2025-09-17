@@ -39,6 +39,15 @@ UT <- list(
 
 Easy! You clearly understand how this could be generalized to three or more quantities with discrete domains. In fact, we could also use this representation for just one quantity. Each domain does not need to consist in character string; it could also be numeric. We can use any quantity names we like, but if they contain special characters such as spaces, hyphens `-`, and some others, then we must write them within back-ticks `` `...` ``, for instance `` `farm-animal` ``.
 
+The individual domains stored in `UT` can be accessed by using the `$` operator followed by the quantity's name, as illustrated in this example:
+
+```{r}
+UT$U
+
+UT$T
+```
+\
+
 Once we have the variable `UT` containing name and domain of each quantity, we can also get the domain for the joint quantity by using the R function
 [`expand.grid()`](https://stat.ethz.ch/R-manual/R-patched/library/base/html/expand.grid.html) with `UT` as argument. We must also add the argument `stringsAsFactors = FALSE` owing to how we treat some quantities in these notes; we won't explain its meaning or reason.
 
@@ -54,9 +63,13 @@ The resulting object `UTdomain` is a so-called [`data.frame`](https://stat.ethz.
 UTdomain
 ```
 
-It has a column for each quantity, and each row shows a combination of values for those quantities. The numbers you see in front of each row are simply printed as reference.
+It has a column for each quantity, and each row shows a combination of values for those quantities. The numbers you see in front of each row are simply printed as reference. The total number of joint values, equal to the number of rows, can be obtained with the [`nrow()`](https://stat.ethz.ch/R-manual/R-patched/library/base/html/nrow.html) function:
 
-We can access any joint value, say the 3rd one, by using square brackets, as follows; note the comma:
+```{r}
+nrow(UTdomain)
+```
+
+We can access any joint value, say the 3rd one, by using square brackets as follows; note the comma:
 
 ```{r}
 UTdomain[3, ]
@@ -118,35 +131,97 @@ Here is how the `UTtable` object looks like:
 UTtable
 ```
 
-It's very neat to read!
+Very neat to read.
 
 \
 
 
-## Sampling from discrete probability distributions {#sec-R-sample-joint}
+## Sampling from discrete joint probability distributions in R {#sec-R-sample-joint}
 
-Our next task is to graphically represent the probability distribution of a joint quantity (for the case of two quantities). Here we focus on scatter-plots representations.
+Our next task is to graphically represent the probability distribution of a joint quantity (for the case of two quantities). Here we focus on [scatter-plots representations](joint_probability.html#scatter-plots-and-similar].
 
+As usual, in order to represent a probability distribution as a scatterplot we first need to generate some sample points from it.
 
-In the previous [R interlude](Rintro2.html) we saw how to generate sample points from some special probability densities by using the built-in R functions `r...()`. For example `rnorm()` allows us to generate sample points from a Gaussian, or "normal", distribution.
+The easiest way to do this in the case of a joint quantity is to numerically index its possible values, for instance with integers, and then to draw samples of these indices instead. We can then retrieve the quantity values corresponding to the sampled indices. The sampling is done again with the `sample()' function.
 
-How can we generate sample points from a discrete probability distribution? Consider a previous example, where we had a quantity `animal` with a domain having six possible values, and a probability distribution `prob1` over them:
-```{r}
-animal <- c('cat', 'dog', 'chicken', 'cow', 'pig', 'horse')
-prob1 <- c(0.05, 0.3, 0.4, 0.2, 0.03, 0.02)
-```
+All this procedure is more easily explained by a concrete example. Let's generate 100 samples from the joint domain of the quantity $(U, T)$, and then print the first ten:
 
-To generate samples of this quantity according to that probability distribution we can use the built-in [`sample()`](https://stat.ethz.ch/R-manual/R-patched/library/base/html/sample.html) function. The domain is given as the `x =` argument, the number of samples as the `size =` argument, and the probability distribution as the `prob =` argument. We must also specify the argument `replace = TRUE`, to allow for sampling of the same value more than once. Let's generate 100 samples from the distribution above:
 
 ```{r}
-samples1 <- sample(x = animal, size = 100, prob = prob1, replace = TRUE)
+indexsamples <- sample(nrow(UTdomain), size = 100, prob = UTtable, replace = TRUE)
+
+## print first ten
+indexsamples[1:10]
+
 ```
 
-Let's read the first 10 samples:
+When we printed the `UTdomain` object in the previous section, an indexing from 1 to 6 had already been done for us.
+
+We can now prepare a sequence of 100 samples of joint values, using the index samples:
 
 ```{r}
-samples1[1:10]
+UTsamples <- UTdomain[indexsamples, ]
 ```
 
-Note that `'chicken'` and `'dog'` appears more frequently; indeed these values have the highest probabilities.
+Note the syntax within the square brackets: we are saying to take the rows -- possibly with repetitions -- listed in `indexsamples`; the comma followed by nothing means to leave the columns as they are. Check the first ten rows of `UTsamples`:
 
+```{r}
+UTsamples[1:10, ]
+```
+
+note how the most probable value, $(\texttt{non-urgent}, \texttt{other})$ appears more often. You may also notice the curious indexing on the left, done automatically by R: the number after the period `.` tells us the numbers of new repetitions of that value. For instance `6.2` tells that that's the 3rd time the 6th value appears in the list.
+
+
+## Plotting joint probability distributions in R {#sec-R-plot-joint}
+
+We can finally generate a scatterplot with the sample points just generated. It's easily done with the `flexiplot()` function discussed in our [previous R interlude](Rintro2.html). We extract the $U$-values by using the `$U` operator, and give them as y-axis values. Similarly for the $T$-values, using `$T`, as x-axis values. It's important to use the `xjitter = TRUE` and `yitter = TRUE` arguments.
+
+```{r}
+## load the function
+source('tplotfunctions.R')
+
+flexiplot(
+    x = UTsamples$T,
+    y = UTsamples$U,
+    xjitter = TRUE,
+    yjitter = TRUE,
+    xlab = 'T', ylab = 'U'
+)
+```
+
+You notice that the ordering of the $U$- and $T$-values on the axes does not match the one we chose initially. To adjust that, we can explicitly specify the `xdomain =` and `ydomain =` arguments:
+
+```{r}
+## load the function
+source('tplotfunctions.R')
+
+flexiplot(
+    x = UTsamples$T,
+    y = UTsamples$U,
+    xjitter = TRUE,
+    yjitter = TRUE,
+    xlab = 'T', ylab = 'U',
+    xdomain = UT$T,
+    ydomain = UT$U
+)
+```
+
+\
+
+The same procedure can be used to draw the scatterplot of a joint probability density. As an example, let's first generate 10 000 sample points for the joint quantity $(X, Y)$, where both $X$ and $Y$ are continuous, and store them in a `data.frame`. Don't pay too much attention to how the points are generated, as this is a very special case. We then show the first ten samples:
+
+```{r}
+XYsamples <- data.frame(X = rnorm(n = 10000), Y = rcauchy(n = 10000))
+
+XYsamples[1:10, ]
+```
+
+Now we draw the scatter plot with the points above. With continuous quantities we don't need to use the `...jitter = ` arguments. It is often useful to state the x- and y-ranges of the plot explicitly with `xlim =` and `ylim =`; note that this means that some sample points may be outside the plot:
+
+```{r}
+flexiplot(
+    x = XYsamples$X, y = XYsamples$Y,
+    type = 'p', pch = '.',
+    xlim = c(-4, 4), ylim = c(-4, 4)
+)
+```

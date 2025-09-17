@@ -129,7 +129,7 @@ tjpg <- function(file = 'Rplot', res = 300, apaper = 5, portrait = FALSE,
 
 flexiplot <- function(
     x, y,
-    type = 'l',
+    type = NULL,
     lty = c(1, 2, 4, 3, 6, 5),
     lwd = 2,
     pch = c(1, 2, 0, 5, 6, 3), #, 4,
@@ -163,12 +163,11 @@ flexiplot <- function(
         if(is.null(xdomain) && is.null(xlim)){
             xat <- seq_len(NCOL(y))
             xdomain <- NA
-            xaxp <- c(range(xat), max(length(xat) - 1, 1))
             ## if(!is.null(xjitter)){
             ##     xlim <- range(x) + c(-0.04, 0.04)
             ## }
             if(is.null(xlab)){ xlab <- NA }
-            if(missing('type')){ type <- 'p' }
+            if(is.null(type)){ type <- 'p' }
         }
     } else if(!missing('x') && missing('y')){
         y <- x
@@ -178,12 +177,11 @@ flexiplot <- function(
         if(is.null(ydomain) && is.null(ylim)){
             yat <- seq_len(NCOL(x))
             ydomain <- NA
-            yaxp <- c(range(yat), max(length(yat) - 1, 1))
             ## if(!is.null(yjitter)){
             ##     ylim <- range(y) + c(-0.04, 0.04)
             ## }
             if(is.null(ylab)){ ylab <- NA }
-            if(missing('type')){ type <- 'p' }
+            if(is.null(type)){ type <- 'p' }
         }
     } else if(!missing('x') && !missing('y')){
         if(is.null(xlab)){ xlab <- deparse1(substitute(x)) }
@@ -195,12 +193,12 @@ flexiplot <- function(
     if(NROW(y) == 1 && NCOL(y) == NCOL(x)){
         y <- rep(y, each = NROW(x))
         dim(y) <- dim(x)
-        if(missing('type')){ type <- 'p' }
+        if(is.null(type)){ type <- 'p' }
     }
     if(NROW(x) == 1 && NCOL(x) == NCOL(y)){
         x <- rep(x, each = NROW(y))
         dim(x) <- dim(y)
-        if(missing('type')){ type <- 'p' }
+        if(is.null(type)){ type <- 'p' }
     }
 
     if(is.character(x) && is.character(y)) {
@@ -218,8 +216,13 @@ flexiplot <- function(
         dim(x) <- .
         xat <- seq_along(xdomain)
         xaxp <- c(range(xat), length(xat) - 1)
+        if(is.null(type)){ type <- 'p' }
     }
-    if(isTRUE(xjitter)){x <- jitter(x, factor = 5/3)}
+    if(isTRUE(xjitter)){
+        xaxp <- c(range(xat) + c(-0.5, 0.5), length(xat))
+        ## xaxp <- c(range(xat), length(xat) - 1)
+        x <- jitter(x, factor = 5/3)
+    }
 
     ## if y is character, convert to numeric
     if(is.character(y)){
@@ -232,8 +235,13 @@ flexiplot <- function(
         dim(y) <- .
         yat <- seq_along(ydomain)
         yaxp <- c(range(yat), length(yat) - 1)
+        if(is.null(type)){ type <- 'p' }
     }
-    if(isTRUE(yjitter)){y <- jitter(y, factor = 5/3)}
+    if(isTRUE(yjitter)){
+        yaxp <- c(range(yat) + c(-0.5, 0.5), length(yat))
+        ## yaxp <- c(range(yat), length(yat) - 1)
+        y <- jitter(y, factor = 5/3)
+    }
 
     ## Syntax of xlim and ylim that allows
     ## for the specification of only upper- or lower-bound
@@ -245,6 +253,8 @@ flexiplot <- function(
         if(is.null(ylim[1]) || !is.finite(ylim[1])){ ylim[1] <- min(y[is.finite(y)]) }
         if(is.null(ylim[2]) || !is.finite(ylim[2])){ ylim[2] <- max(y[is.finite(y)]) }
     }
+
+    if(is.null(type)){ type <- 'l' }
 
     if(is.na(alpha.f)){alpha.f <- 1}
     col <- adjustcolor(col, alpha.f = alpha.f)
