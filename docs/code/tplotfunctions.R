@@ -153,37 +153,54 @@ flexiplot <- function(
     cex.main = 1,
     ...
 ){
-    xat <- yat <- NULL
+    xat <- yat <- xaxp <- yaxp <- NULL
 
     if(missing('x') && !missing('y')){
-        x <- numeric(NROW(y))
+        x <- y
+        x[] <- rep(seq_len(NCOL(y)), each = NROW(y))
         if(is.null(ylab)){ ylab <- deparse1(substitute(y)) }
         if(is.null(yjitter)){ yjitter <- FALSE }
         if(is.null(xdomain) && is.null(xlim)){
-            xat <- 0
+            xat <- seq_len(NCOL(y))
             xdomain <- NA
-            if(!is.null(xjitter)){
-                xlim <- c(-0.04, 0.04)
-            }
+            xaxp <- c(range(xat), max(length(xat) - 1, 1))
+            ## if(!is.null(xjitter)){
+            ##     xlim <- range(x) + c(-0.04, 0.04)
+            ## }
             if(is.null(xlab)){ xlab <- NA }
+            if(missing('type')){ type <- 'p' }
         }
     } else if(!missing('x') && missing('y')){
-        y <- numeric(NROW(x))
+        y <- x
+        y[] <- rep(seq_len(NCOL(x)), each = NROW(x))
         if(is.null(xlab)){ xlab <- deparse1(substitute(x)) }
         if(is.null(xjitter)){ xjitter <- FALSE }
         if(is.null(ydomain) && is.null(ylim)){
-            yat <- 0
+            yat <- seq_len(NCOL(x))
             ydomain <- NA
-            if(!is.null(yjitter)){
-                ylim <- c(-0.04, 0.04)
-            }
+            yaxp <- c(range(yat), max(length(yat) - 1, 1))
+            ## if(!is.null(yjitter)){
+            ##     ylim <- range(y) + c(-0.04, 0.04)
+            ## }
             if(is.null(ylab)){ ylab <- NA }
+            if(missing('type')){ type <- 'p' }
         }
     } else if(!missing('x') && !missing('y')){
         if(is.null(xlab)){ xlab <- deparse1(substitute(x)) }
         if(is.null(ylab)){ ylab <- deparse1(substitute(y)) }
     } else {
         stop('Arguments "x" and "y" cannot both be missing')
+    }
+
+    if(NROW(y) == 1 && NCOL(y) == NCOL(x)){
+        y <- rep(y, each = NROW(x))
+        dim(y) <- dim(x)
+        if(missing('type')){ type <- 'p' }
+    }
+    if(NROW(x) == 1 && NCOL(x) == NCOL(y)){
+        x <- rep(x, each = NROW(y))
+        dim(x) <- dim(y)
+        if(missing('type')){ type <- 'p' }
     }
 
     if(is.character(x) && is.character(y)) {
@@ -196,10 +213,13 @@ flexiplot <- function(
         ## we assume the user has sorted the vaules in a meaningful order
         ## because the lexical order may not be correct
         ## (think of values like 'low', 'medium', 'high')
+        . <- dim(x)
         x <- as.numeric(factor(x, levels = xdomain))
+        dim(x) <- .
         xat <- seq_along(xdomain)
+        xaxp <- c(range(xat), length(xat) - 1)
     }
-    if(isTRUE(xjitter)){x <- jitter(x)}
+    if(isTRUE(xjitter)){x <- jitter(x, factor = 5/3)}
 
     ## if y is character, convert to numeric
     if(is.character(y)){
@@ -207,10 +227,13 @@ flexiplot <- function(
         ## we assume the user has sorted the vaules in a meaningful order
         ## because the lexical order may not be correct
         ## (think of values like 'low', 'medium', 'high')
+        . <- dim(y)
         y <- as.numeric(factor(y, levels = ydomain))
+        dim(y) <- .
         yat <- seq_along(ydomain)
+        yaxp <- c(range(yat), length(yat) - 1)
     }
-    if(isTRUE(yjitter)){y <- jitter(y)}
+    if(isTRUE(yjitter)){y <- jitter(y, factor = 5/3)}
 
     ## Syntax of xlim and ylim that allows
     ## for the specification of only upper- or lower-bound
@@ -225,8 +248,7 @@ flexiplot <- function(
 
     if(is.na(alpha.f)){alpha.f <- 1}
     col <- adjustcolor(col, alpha.f = alpha.f)
-
-    graphics::matplot(x, y, xlim = xlim, ylim = ylim, type = type, axes = F,
+    graphics::matplot(x, y, xlim = xlim, ylim = ylim, type = type, axes = FALSE,
         col = col, lty = lty, lwd = lwd, pch = pch, cex.main = cex.main, add = add, xlab = xlab, ylab = ylab, ...)
     if(!add){
         graphics::axis(1, at = xat, labels = xdomain, tick = !grid,
@@ -234,6 +256,8 @@ flexiplot <- function(
         graphics::axis(2, at = yat, labels = ydomain, tick = !grid,
             col = 'black', lwd = 1, lty = 1, ...)
         if(grid){
+            if(exists('xaxp')){ par(xaxp = xaxp) }
+            if(exists('yaxp')){ par(yaxp = yaxp) }
             graphics::grid(nx = NULL, ny = NULL, lty = 1, col = '#BBBBBB80')
         }
     }

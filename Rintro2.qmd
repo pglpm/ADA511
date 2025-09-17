@@ -139,37 +139,70 @@ R has built-in functions for many common probability densities; they all have th
 
 What if we want to represent a probability density as a scatter plot, as was done in [§@sec-represent-dens]?
 
-First of all we need to generate points that reflect the probability density. R has built-in functions to generate points for many common densities; they have the form `r...()` corresponding to the `d...()` one. For instance, to generate 100 points from a Gaussian density we can use `rnorm()` with arguments `n =` for the number of points, and `mean =`, `sd =` for the mean and standard deviation. Packages like [**extraDistr**](https://cran.r-project.org/package=extraDistr) also provide point generators.
+First of all we need to generate sample points that reflect the probability density. R has built-in functions to generate sample points for many common densities; they have the form `r...()` corresponding to the `d...()` one. For instance, to generate 100 points from a Gaussian density we can use `rnorm()` with arguments `n =` for the number of points, and `mean =`, `sd =` for the mean and standard deviation. Packages like [**extraDistr**](https://cran.r-project.org/package=extraDistr) also provide point generators.
 
-How many points should we generate? The answer is heavily context- and problem-dependent. Too few points, say a dozen, may not give any clear idea of the density. Too many, say thousands, may end up producing a compact blob where no density differences are discernible. It also depends on the structure of the probability density itself. Around a 100 points or so may be a good starting point. But if you need to explore regions of the domain where the probability density is low, then you'll need more points.
+How many sample points should we generate? The answer is heavily context- and problem-dependent. Too few points, say a dozen, may not give any clear idea of the density. Too many, say thousands, may end up producing a compact blob where no density differences are discernible. It also depends on the structure of the probability density itself. Around a 100 sample points or so may be a good starting point. But if you need to explore regions of the domain where the probability density is low, then you'll need more points.
 
-Let's generate 200 points for the Gaussian density of the previous example, storing them in the `points` variable:
+Let's generate 100 sample points for the Gaussian density of the previous example, storing them in the `samples` variable:
 
 ```{r}
-points <- rnorm(n = 200, mean = 5, sd = 3)
+samples <- rnorm(n = 100, mean = 5, sd = 3)
 ```
 
 Then we need to display these points in a graph.
 
-R has the built-in function [`rug()`](https://stat.ethz.ch/R-manual/R-patched/library/graphics/html/rug.html) to display the points as thin vertical lines on the x-axis. The argument `ticksize =` specifies the length of these lines: `1` means the whole plot's height, `0.5` half the plot's height, and so on. You can also choose colour and line type and width with the usual `col =`, `lty =`, `lwd =` arguments.
+R has the built-in function [`rug()`](https://stat.ethz.ch/R-manual/R-patched/library/graphics/html/rug.html) to display the sample points as thin vertical lines on the x-axis. The argument `ticksize =` specifies the length of these lines: `1` means the whole plot's height, `0.5` half the plot's height, and so on. You can also choose colour and line type and width with the usual `col =`, `lty =`, `lwd =` arguments.
 
-Let's use this function to add to the previous plot the points we just generated (we also redraw the plot):
+Let's use this function to add to the previous plot the sample points we just generated (we also redraw the plot):
 
 ```{r}
 ## Redraw the plot
 flexiplot(x = x, y = p, ylim = c(0, NA), ylab = 'p(x | I)')
 
-rug(points, ticksize = 0.25, col = 2)
+rug(samples, ticksize = 0.25, col = 2)
 ```
 
+Our custom function `flexiplot()` can also draw 1D scatter plots. In the present example, we simply need to give it the sample points as the `x =` argument alone:
 
 ```{r}
-## Redraw the plot
-flexiplot(x = points, type = 'p', xlim = c(-7, 10), pch = '|')
-rug(points, ticksize = 0.5)
+flexiplot(x = samples)
+```
 
-flexiplot(x = rnorm(n = 10000, mean = 5, sd = 3), type = 'p', pch = '.', xlim = c(-7, 10), yjitter = TRUE)
+You notice that the density around $X\mo 5$ is not very clear; there are too many overlapping circles. We can use small bars instead, with the argument `pch = '|'`:
 
+```{r}
+flexiplot(x = samples, pch = '|')
+```
+
+Still another alternative is to generate many sample points and represent them as a cloud of dots, which also extends in the y-direction. This is done by using the arguments `pch = '.'` and `yjitter = TRUE`. Let's first generate 10 000 sample points and then plot them this way:
+
+```{r}
+## generate new sample points
+samples <- rnorm(n = 10000, mean = 5, sd = 3)
+
+flexiplot(x = samples, pch = '.', yjitter = TRUE)
+```
+
+\
+
+Finally, let's suppose we want two visualize and compare two different probability densities for $X$: the Gaussian distribution from before, and a [Cauchy distribution](https://mathworld.wolfram.com/CauchyDistribution.html). We can do this by generating sample points for both, and then plot them together with `flexiplot()` as discussed above.
+
+First let's generate 10 000 samples from the Cauchy distribution. In R this is done with the function [`rcauchy()`](https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Cauchy.html), with arguments `n =`, `location =`, and `scale =`. The location and scale determine where the centre of the distribution is located, and how wide it is; we can for instance choose a location equal to $5$, as for the Gaussian, and scale equal to $1$:
+
+```{r}
+samplescauchy <- rcauchy(n = 10000, location = 5, scale = 1)
+```
+
+Now we plot them together, displaying only the range from $X\mo -10$ to $X\mo 10$. We add labels for the two distributions as `y =` arguments. For both `x =` and `y =` argument we use `cbind()`. Let's also add some nicer x- and y-labels:
+
+```{r}
+flexiplot(
+    x = cbind(samples, samplescauchy),
+    y = cbind('Gaussian', 'Cauchy'),
+    pch = '.', yjitter = TRUE,
+    xlab = 'x', ylab = 'densities',
+    xlim = c(-10, 10)
+)
 ```
 
 

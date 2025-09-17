@@ -806,22 +806,22 @@ window.Quarto = {
 <section id="sec-R-1Dscatter" class="level2">
 <h2 class="anchored" data-anchor-id="sec-R-1Dscatter">1D scatter plots in R</h2>
 <p>What if we want to represent a probability density as a scatter plot, as was done in <a href="probability_distributions.html#sec-represent-dens" class="quarto-xref">§&nbsp;<span>Representation of probability densities</span></a>?</p>
-<p>First of all we need to generate points that reflect the probability density. R has built-in functions to generate points for many common densities; they have the form <code>r...()</code> corresponding to the <code>d...()</code> one. For instance, to generate 100 points from a Gaussian density we can use <code>rnorm()</code> with arguments <code>n =</code> for the number of points, and <code>mean =</code>, <code>sd =</code> for the mean and standard deviation. Packages like <a href="https://cran.r-project.org/package=extraDistr"><strong>extraDistr</strong></a> also provide point generators.</p>
-<p>How many points should we generate? The answer is heavily context- and problem-dependent. Too few points, say a dozen, may not give any clear idea of the density. Too many, say thousands, may end up producing a compact blob where no density differences are discernible. It also depends on the structure of the probability density itself. Around a 100 points or so may be a good starting point. But if you need to explore regions of the domain where the probability density is low, then you’ll need more points.</p>
-<p>Let’s generate 200 points for the Gaussian density of the previous example, storing them in the <code>points</code> variable:</p>
+<p>First of all we need to generate sample points that reflect the probability density. R has built-in functions to generate sample points for many common densities; they have the form <code>r...()</code> corresponding to the <code>d...()</code> one. For instance, to generate 100 points from a Gaussian density we can use <code>rnorm()</code> with arguments <code>n =</code> for the number of points, and <code>mean =</code>, <code>sd =</code> for the mean and standard deviation. Packages like <a href="https://cran.r-project.org/package=extraDistr"><strong>extraDistr</strong></a> also provide point generators.</p>
+<p>How many sample points should we generate? The answer is heavily context- and problem-dependent. Too few points, say a dozen, may not give any clear idea of the density. Too many, say thousands, may end up producing a compact blob where no density differences are discernible. It also depends on the structure of the probability density itself. Around a 100 sample points or so may be a good starting point. But if you need to explore regions of the domain where the probability density is low, then you’ll need more points.</p>
+<p>Let’s generate 100 sample points for the Gaussian density of the previous example, storing them in the <code>samples</code> variable:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>points <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">200</span>, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">100</span>, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Then we need to display these points in a graph.</p>
-<p>R has the built-in function <a href="https://stat.ethz.ch/R-manual/R-patched/library/graphics/html/rug.html"><code>rug()</code></a> to display the points as thin vertical lines on the x-axis. The argument <code>ticksize =</code> specifies the length of these lines: <code>1</code> means the whole plot’s height, <code>0.5</code> half the plot’s height, and so on. You can also choose colour and line type and width with the usual <code>col =</code>, <code>lty =</code>, <code>lwd =</code> arguments.</p>
-<p>Let’s use this function to add to the previous plot the points we just generated (we also redraw the plot):</p>
+<p>R has the built-in function <a href="https://stat.ethz.ch/R-manual/R-patched/library/graphics/html/rug.html"><code>rug()</code></a> to display the sample points as thin vertical lines on the x-axis. The argument <code>ticksize =</code> specifies the length of these lines: <code>1</code> means the whole plot’s height, <code>0.5</code> half the plot’s height, and so on. You can also choose colour and line type and width with the usual <code>col =</code>, <code>lty =</code>, <code>lwd =</code> arguments.</p>
+<p>Let’s use this function to add to the previous plot the sample points we just generated (we also redraw the plot):</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Redraw the plot</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> x, <span class="at">y =</span> p, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">ylab =</span> <span class="st">'p(x | I)'</span>)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rug</span>(points, <span class="at">ticksize =</span> <span class="fl">0.25</span>, <span class="at">col =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rug</span>(samples, <span class="at">ticksize =</span> <span class="fl">0.25</span>, <span class="at">col =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning in rug(points, ticksize = 0.25, col = 2): some values will be clipped</code></pre>
+<pre><code>Warning in rug(samples, ticksize = 0.25, col = 2): some values will be clipped</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
@@ -831,13 +831,9 @@ window.Quarto = {
 </div>
 </div>
 </div>
+<p>Our custom function <code>flexiplot()</code> can also draw 1D scatter plots. In the present example, we simply need to give it the sample points as the <code>x =</code> argument alone:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Redraw the plot</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> points, <span class="at">type =</span> <span class="st">'p'</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">7</span>, <span class="dv">10</span>), <span class="at">pch =</span> <span class="st">'|'</span>)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rug</span>(points, <span class="at">ticksize =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in rug(points, ticksize = 0.5): some values will be clipped</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> samples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -845,11 +841,52 @@ window.Quarto = {
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">10000</span>, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">3</span>), <span class="at">type =</span> <span class="st">'p'</span>, <span class="at">pch =</span> <span class="st">'.'</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">7</span>, <span class="dv">10</span>), <span class="at">yjitter =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You notice that the density around <span style="display:inline-block;"><span class="math inline">\(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}5\)</span></span> is not very clear; there are too many overlapping circles. We can use small bars instead, with the argument <code>pch = '|'</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> samples, <span class="at">pch =</span> <span class="st">'|'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Rintro2_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Rintro2_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Still another alternative is to generate many sample points and represent them as a cloud of dots, which also extends in the y-direction. This is done by using the arguments <code>pch = '.'</code> and <code>yjitter = TRUE</code>. Let’s first generate 10 000 sample points and then plot them this way:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="do">## generate new sample points</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">10000</span>, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> samples, <span class="at">pch =</span> <span class="st">'.'</span>, <span class="at">yjitter =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Rintro2_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><br>
+</p>
+<p>Finally, let’s suppose we want two visualize and compare two different probability densities for <span style="display:inline-block;"><span class="math inline">\(X\)</span>:</span> the Gaussian distribution from before, and a <a href="https://mathworld.wolfram.com/CauchyDistribution.html">Cauchy distribution</a>. We can do this by generating sample points for both, and then plot them together with <code>flexiplot()</code> as discussed above.</p>
+<p>First let’s generate 10 000 samples from the Cauchy distribution. In R this is done with the function <a href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Cauchy.html"><code>rcauchy()</code></a>, with arguments <code>n =</code>, <code>location =</code>, and <code>scale =</code>. The location and scale determine where the centre of the distribution is located, and how wide it is; we can for instance choose a location equal to <span style="display:inline-block;"><span class="math inline">\(5\)</span>,</span> as for the Gaussian, and scale equal to <span style="display:inline-block;"><span class="math inline">\(1\)</span>:</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>samplescauchy <span class="ot">&lt;-</span> <span class="fu">rcauchy</span>(<span class="at">n =</span> <span class="dv">10000</span>, <span class="at">location =</span> <span class="dv">5</span>, <span class="at">scale =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we plot them together, displaying only the range from <span style="display:inline-block;"><span class="math inline">\(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}-10\)</span></span> to <span style="display:inline-block;"><span class="math inline">\(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}10\)</span>.</span> We add labels for the two distributions as <code>y =</code> arguments. For both <code>x =</code> and <code>y =</code> argument we use <code>cbind()</code>. Let’s also add some nicer x- and y-labels:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">cbind</span>(samples, samplescauchy),</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">cbind</span>(<span class="st">'Gaussian'</span>, <span class="st">'Cauchy'</span>),</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">pch =</span> <span class="st">'.'</span>, <span class="at">yjitter =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">'x'</span>, <span class="at">ylab =</span> <span class="st">'densities'</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Rintro2_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
