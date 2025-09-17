@@ -1,0 +1,152 @@
+# [Working with R, III]{.lightblue} {.unnumbered}
+{{< include macros.qmd >}}
+
+In this R interlude we shall see how to represent tables of joint probability distributions for two quantities ("contingency tables"), how to generate sample points from discrete probability distributions, and how to create 2D scatter plots of such samples.
+
+```{r}
+#| echo: false
+knitr::opts_knit$set(root.dir = "code/")
+```
+
+## Storing joint quantities in R {#sec-R-store-joint-quant}
+
+In a previous example we had a quantity $\mathrm{animal}$ with a domain having six possible values, and a probability distribution over them. The domain and the probability distributions were simply stored in two R variables: `animal` and `prob1`:
+
+```{r}
+animal <- c('cat', 'dog', 'chicken', 'cow', 'pig', 'horse')
+prob1 <- c(0.05, 0.3, 0.4, 0.2, 0.03, 0.02)
+```
+
+and we can do many things simply with these: draw plots, generate sample points, and so on.
+\
+
+Now consider the example from [§@sec-repr-joint-prob], with two joint quantities: urgency $U$ and transportation $T$. The joint quantity $(U, T)$ has a domain with 2 × 3 possible values. [Table @tbl-urgent-arrival] reported a joint probability distribution for this joint quantity.
+
+How can we store information about this joint quantity?
+
+There are many way to do that. One way is to follow the example of the $\mathrm{animal}$ quantity, and just create two R variables: one containing all six possible values of $(U, T)$, and one containing the six values of the joint probability distribution.
+
+Here we follow another, slightly more elegant way, which will be implicitly used in later chapters.
+
+First we can store the quantities' names and their domains as an R [`list()`](https://stat.ethz.ch/R-manual/R-patched/library/base/html/list.html). It's actually easier to show this with a concrete example than by wordy explanations. Take the quantity $U$ with domain $\set{\texttt{urgent}, \texttt{non-urgent}}$, and the quantity $T$ with domain $\set{\texttt{ambulance}, \texttt{helicopter}, \texttt{other}}$. We store the joint quantity $(U, T)$ as the list `UT`:
+
+```{r}
+UT <- list(
+    U = c('urgent', 'non-urgent'),
+    T = c('ambulance', 'helicopter', 'other')
+)
+```
+
+Easy! You clearly understand how this could be generalized to three or more quantities with discrete domains. In fact, we could also use this representation for just one quantity. Each domain does not need to consist in character string; it could also be numeric. We can use any quantity names we like, but if they contain special characters such as spaces, hyphens `-`, and some others, then we must write them within back-ticks `` `...` ``, for instance `` `farm-animal` ``.
+
+Once we have the variable `UT` containing name and domain of each quantity, we can also get the domain for the joint quantity by using the R function
+[`expand.grid()`](https://stat.ethz.ch/R-manual/R-patched/library/base/html/expand.grid.html) with `UT` as argument. We must also add the argument `stringsAsFactors = FALSE` owing to how we treat some quantities in these notes; we won't explain its meaning or reason.
+
+Let's generate the domain of $(U, T)$ and store it in the variable `UTdomain`:
+
+```{r}
+UTdomain <- expand.grid(UT, stringsAsFactors = FALSE)
+```
+
+The resulting object `UTdomain` is a so-called [`data.frame`](https://stat.ethz.ch/R-manual/R-patched/library/base/html/data.frame.html). Let's simply print it to understand how it looks like:
+
+```{r}
+UTdomain
+```
+
+It has a column for each quantity, and each row shows a combination of values for those quantities. The numbers you see in front of each row are simply printed as reference.
+
+We can access any joint value, say the 3rd one, by using square brackets, as follows; note the comma:
+
+```{r}
+UTdomain[3, ]
+```
+
+\
+
+## Storing joint probability distributions in R {#sec-R-store-joint-prob}
+
+How can we store a joint probability distribution, like that in [Table @tbl-urgent-arrival], for a joint quantity such as `UT`? There are many ways to do this as well. Let's see three.
+
+(1) We can simply create a variable that contains all six probability values. We must make sure that the ordering correspond to that of `UTdomain`:
+
+```{r}
+UTprob1 <- c(0.11, 0.17, 0.04, 0.01, 0.03, 0.64)
+```
+
+(check that the order above is correct by comparing with [Table @tbl-urgent-arrival] and `UTdomain`).
+\
+
+(2) We can add the probability values as an additional column in the `UTdomain` object; this is done with `cbind()` as follows:
+
+```{r}
+UTprob2 <- cbind(
+    probability = c(0.11, 0.17, 0.04, 0.01, 0.03, 0.64),
+    UTdomain
+)
+```
+
+Take a look at how the `UTprob2` object looks like:
+
+```{r}
+UTprob2
+```
+\
+
+(3) We could use a representation that allows us to read the probabilities just like in [Table @tbl-urgent-arrival]. In R this is easily done with the built-in [`array()`](https://stat.ethz.ch/R-manual/R-patched/library/base/html/array.html) function. This function has the following arguments which we use to store our information:
+
+- `data =`: the probabilities values (again in appropriate order).
+
+- `dim =`: the sizes of the domains of the joint quantities. In our case they are $3$ and $2$.
+
+- `dimnames =`: The list representing the joint quantity, `UT` in our case.
+
+Let's call the resulting object `UTtable`:
+
+
+```{r}
+UTtable <- array(
+    data = c(0.11, 0.17, 0.04, 0.01, 0.03, 0.64),
+    dim = c(2, 3),
+    dimnames = UT
+)
+```
+
+Here is how the `UTtable` object looks like:
+
+```{r}
+UTtable
+```
+
+It's very neat to read!
+
+\
+
+
+## Sampling from discrete probability distributions {#sec-R-sample-joint}
+
+Our next task is to graphically represent the probability distribution of a joint quantity (for the case of two quantities). Here we focus on scatter-plots representations.
+
+
+In the previous [R interlude](Rintro2.html) we saw how to generate sample points from some special probability densities by using the built-in R functions `r...()`. For example `rnorm()` allows us to generate sample points from a Gaussian, or "normal", distribution.
+
+How can we generate sample points from a discrete probability distribution? Consider a previous example, where we had a quantity `animal` with a domain having six possible values, and a probability distribution `prob1` over them:
+```{r}
+animal <- c('cat', 'dog', 'chicken', 'cow', 'pig', 'horse')
+prob1 <- c(0.05, 0.3, 0.4, 0.2, 0.03, 0.02)
+```
+
+To generate samples of this quantity according to that probability distribution we can use the built-in [`sample()`](https://stat.ethz.ch/R-manual/R-patched/library/base/html/sample.html) function. The domain is given as the `x =` argument, the number of samples as the `size =` argument, and the probability distribution as the `prob =` argument. We must also specify the argument `replace = TRUE`, to allow for sampling of the same value more than once. Let's generate 100 samples from the distribution above:
+
+```{r}
+samples1 <- sample(x = animal, size = 100, prob = prob1, replace = TRUE)
+```
+
+Let's read the first 10 samples:
+
+```{r}
+samples1[1:10]
+```
+
+Note that `'chicken'` and `'dog'` appears more frequently; indeed these values have the highest probabilities.
+
