@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-09-16">
+<meta name="dcterms.date" content="2025-09-17">
 
 <title>Working with R, II – ADA511 0.3</title>
 <style>
@@ -169,7 +169,7 @@ window.Quarto = {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.3</span><br><span class="small grey">2025-09-16</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.3</span><br><span class="small grey">2025-09-17</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -615,6 +615,8 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#a-custom-plot-function" id="toc-a-custom-plot-function" class="nav-link" data-scroll-target="#a-custom-plot-function">A custom plot function</a></li>
   </ul></li>
+  <li><a href="#sec-R-plotting-densities" id="toc-sec-R-plotting-densities" class="nav-link" data-scroll-target="#sec-R-plotting-densities">Plotting probability densities in R</a></li>
+  <li><a href="#sec-R-1Dscatter" id="toc-sec-R-1Dscatter" class="nav-link" data-scroll-target="#sec-R-1Dscatter">1D scatter plots in R</a></li>
   </ul>
 </nav>
     </div>
@@ -634,7 +636,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-09-16</p>
+      <p class="date">2025-09-17</p>
     </div>
   </div>
   
@@ -724,7 +726,7 @@ window.Quarto = {
 </div>
 <p>Note how the animal names appear in the x-axis, in the order specified. The range specification <code>ylim = c(0, NA)</code> (not available for <code>plot()</code>) says that the lower range should be <span style="display:inline-block;"><span class="math inline">\(0\)</span>,</span> and the upper range should be the maximum available among the y-axis values.<br>
 </p>
-<p>Suppose we need to plot two different probability distributions (or two different sets of y-values more generally), stored in the variables <code>prob1</code> and <code>prob2</code>, for the same x-values, as in the last plot of [§.@sec-discr-prob-distr]. We can do this by binding them together into an array with two columns with the <a href="https://stat.ethz.ch/R-manual/R-patched/library/base/html/cbind.html"><code>cbind()</code></a> function, and then giving this array as the <code>y =</code> argument:</p>
+<p>Suppose we need to plot two different probability distributions (or two different sets of y-values more generally), stored in the variables <code>prob1</code> and <code>prob2</code>, for the same x-values, as in the last plot of <a href="probability_distributions.html#sec-discr-prob-distr" class="quarto-xref">§&nbsp;<span>Discrete probability distributions</span></a>. We can do this by binding them together into an array with two columns with the <a href="https://stat.ethz.ch/R-manual/R-patched/library/base/html/cbind.html"><code>cbind()</code></a> function, and then giving this array as the <code>y =</code> argument:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>prob1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>, <span class="fl">0.2</span>, <span class="fl">0.03</span>, <span class="fl">0.02</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>prob2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.6</span>, <span class="fl">0.05</span>, <span class="fl">0.04</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>)</span>
@@ -740,9 +742,72 @@ window.Quarto = {
 </div>
 </div>
 </div>
-
-
+<p>We could also issue two separate <code>flexiplot()</code> commands, giving the argument <code>add = TRUE</code> to the second. But in this case we must make sure to give the correct y-range already in the first plot, and we must also explicitly use different colours <code>col =</code> and line types <code>lty =</code>. Check for instance what would happen for the case above:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Plot for prob1</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> animal, <span class="at">y =</span> prob1,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">'b'</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">'two probability distributions'</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Plot for prob2</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> animal, <span class="at">y =</span> prob2,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">'b'</span>, <span class="at">col =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="dv">2</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Rintro2_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>You see that the curve in the second plot was partly cut off, because the first plot adapted the y-range to the first curve only.</p>
+<p><br>
+</p>
 </section>
+</section>
+<section id="sec-R-plotting-densities" class="level2">
+<h2 class="anchored" data-anchor-id="sec-R-plotting-densities">Plotting probability densities in R</h2>
+<p>If <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> is a continuous quantity, we know the mathematical formula for a probability density over its domain, then the density can be plotted as pairs of values, as we did above. We need to generate many values of <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> in the range of interest, and calculate the probability density for each from the mathematical formula.</p>
+<p>Suppose for instance that <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> has all real numbers as its domain, and probability density <span style="display:inline-block;"><span class="math inline">\(\mathrm{p}(X\nonscript\:\vert\nonscript\:\mathopen{}I)\)</span></span> given by a <a href="https://mathworld.wolfram.com/NormalDistribution.html">Gaussian, or “normal”, distribution</a> with mean <span style="display:inline-block;"><span class="math inline">\(5\)</span></span> and standard deviation <span style="display:inline-block;"><span class="math inline">\(3\)</span>.</span> Its mathematical formula is</p>
+<p><span class="math display">\[
+\mathrm{p}(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x \nonscript\:\vert\nonscript\:\mathopen{} I) = \frac{1}{\sqrt{2\pi\cdot 3^2}}\,
+\exp\biggl[
+-\frac{(x - 5)^2}{2\cdot 3^2}
+\biggr]\,.
+\]</span></p>
+<p>We’d like to visualize this probability density between <span style="display:inline-block;"><span class="math inline">\(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}-7\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}10\)</span>.</span> Then we proceed as follows:</p>
+<ul>
+<li><p>Generate a large number of values, say hundreds, for <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> from <span style="display:inline-block;"><span class="math inline">\(-5\)</span></span> to <span style="display:inline-block;"><span class="math inline">\(10\)</span>.</span> The number of values to generate depends on the resolution at which the final plot will be shown.</p>
+<p>In this example we’ll generate 257 values using the function <a href="https://stat.ethz.ch/R-manual/R-patched/library/base/html/seq.html"><code>seq()</code></a> with argument <code>length =</code>, and store them in the variable <code>x</code>.</p></li>
+<li><p>Calculate the probability density for each <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> value generated. In R this is often easy, as we can give the whole sequence of numbers to a mathematical function.</p>
+<p>In R, the formula for the Gaussian distribution is given by the function <a href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html"><code>dnorm()</code></a> with arguments <code>mean =</code> and <code>sd =</code>.</p></li>
+<li><p>Plot the pairs of values generated.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="sc">-</span><span class="dv">7</span>, <span class="at">to =</span> <span class="dv">10</span>, <span class="at">length =</span> <span class="dv">257</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(x, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> x, <span class="at">y =</span> p, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">ylab =</span> <span class="st">'p(x | I)'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Rintro2_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>If we need to display more densities in the same plot we can proceed as described in the previous section.</p>
+<p>R has built-in functions for many common probability densities; they have all names of the form <code>d...()</code>, take a look at the <a href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/00Index.html">index</a>. Packages like <a href="https://cran.r-project.org/package=extraDistr"><strong>extraDistr</strong></a> provide even more densities.</p>
+<p><br>
+</p>
+</section>
+<section id="sec-R-1Dscatter" class="level2">
+<h2 class="anchored" data-anchor-id="sec-R-1Dscatter">1D scatter plots in R</h2>
+<p>What if we want to represent a probability density as a scatter plot, as was done in <a href="probability_distributions.html#sec-represent-dens" class="quarto-xref">§&nbsp;<span>Representation of probability densities</span></a>?</p>
+
+
 </section>
 
 </main> <!-- /main -->

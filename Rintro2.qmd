@@ -66,7 +66,7 @@ flexiplot(x = animal, y = prob, type = 'b', ylim = c(0, NA))
 Note how the animal names appear in the x-axis, in the order specified. The range specification `ylim = c(0, NA)` (not available for `plot()`) says that the lower range should be $0$, and the upper range should be the maximum available among the y-axis values.
 \
 
-Suppose we need to plot two different probability distributions (or two different sets of y-values more generally), stored in the variables `prob1` and `prob2`, for the same x-values, as in the last plot of [§.@sec-discr-prob-distr]. We can do this by binding them together into an array with two columns with the [`cbind()`](https://stat.ethz.ch/R-manual/R-patched/library/base/html/cbind.html) function, and then giving this array as the `y =` argument:
+Suppose we need to plot two different probability distributions (or two different sets of y-values more generally), stored in the variables `prob1` and `prob2`, for the same x-values, as in the last plot of [§@sec-discr-prob-distr]. We can do this by binding them together into an array with two columns with the [`cbind()`](https://stat.ethz.ch/R-manual/R-patched/library/base/html/cbind.html) function, and then giving this array as the `y =` argument:
 
 ```{r}
 prob1 <- c(0.05, 0.3, 0.4, 0.2, 0.03, 0.02)
@@ -77,3 +77,66 @@ flexiplot(x = animal, y = cbind(prob1, prob2),
     ylab = 'two probability distributions')
 ```
 
+We could also issue two separate `flexiplot()` commands, giving the argument `add = TRUE` to the second. But in this case we must make sure to give the correct y-range already in the first plot, and we must also explicitly use different colours `col =` and line types `lty =`. Check for instance what would happen for the case above:
+
+```{r}
+## Plot for prob1
+flexiplot(x = animal, y = prob1,
+    type = 'b', ylim = c(0, NA),
+    ylab = 'two probability distributions')
+
+## Plot for prob2
+flexiplot(x = animal, y = prob2,
+    type = 'b', col = 2, lty = 2,
+    add = TRUE)
+```
+
+You see that the curve in the second plot was partly cut off, because the first plot adapted the y-range to the first curve only.
+
+\
+
+## Plotting probability densities in R {#sec-R-plotting-densities}
+
+If $X$ is a continuous quantity, we know the mathematical formula for a probability density over its domain, then the density can be plotted as pairs of values, as we did above. We need to generate many values of $X$ in the range of interest, and calculate the probability density for each from the mathematical formula.
+
+Suppose for instance that $X$ has all real numbers as its domain, and probability density $\p(X\|I)$ given by a [Gaussian, or "normal", distribution](https://mathworld.wolfram.com/NormalDistribution.html) with mean $5$ and standard deviation $3$. Its mathematical formula is
+
+$$
+\p(X\mo x \| I) = \frac{1}{\sqrt{2\pi\cdot 3^2}}\,
+\exp\biggl[
+-\frac{(x - 5)^2}{2\cdot 3^2}
+\biggr]\,.
+$$
+
+We'd like to visualize this probability density between $X\mo -7$ and $X\mo 10$. Then we proceed as follows:
+
+- Generate a large number of values, say hundreds, for $X$ from $-5$ to $10$. The number of values to generate depends on the resolution at which the final plot will be shown.
+    
+    In this example we'll generate 257 values using the function [`seq()`](https://stat.ethz.ch/R-manual/R-patched/library/base/html/seq.html) with argument `length =`, and store them in the variable `x`.
+
+- Calculate the probability density for each $X$ value generated. In R this is often easy, as we can give the whole sequence of numbers to a mathematical function.
+    
+    In R, the formula for the Gaussian distribution is given by the function [`dnorm()`](https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html) with arguments `mean =` and `sd =`.
+
+- Plot the pairs of values generated.
+
+```{r}
+x <- seq(from = -7, to = 10, length = 257)
+
+p <- dnorm(x, mean = 5, sd = 3)
+
+flexiplot(x = x, y = p, ylim = c(0, NA), ylab = 'p(x | I)')
+```
+
+If we need to display more densities in the same plot we can proceed as described in the previous section.
+
+R has built-in functions for many common probability densities; they have all names of the form `d...()`, take a look at the [index](https://stat.ethz.ch/R-manual/R-patched/library/stats/html/00Index.html). Packages like [**extraDistr**](https://cran.r-project.org/package=extraDistr) provide even more densities.
+
+
+\
+
+## 1D scatter plots in R {#sec-R-1Dscatter}
+
+What if we want to represent a probability density as a scatter plot, as was done in [§@sec-represent-dens]?
+
+R has the built-in function [`rug()`](https://stat.ethz.ch/R-manual/R-patched/library/graphics/html/rug.html)
