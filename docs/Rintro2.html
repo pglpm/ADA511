@@ -799,13 +799,61 @@ window.Quarto = {
 </div>
 </div>
 <p>If we need to display more densities in the same plot we can proceed as described in the previous section.</p>
-<p>R has built-in functions for many common probability densities; they have all names of the form <code>d...()</code>, take a look at the <a href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/00Index.html">index</a>. Packages like <a href="https://cran.r-project.org/package=extraDistr"><strong>extraDistr</strong></a> provide even more densities.</p>
+<p>R has built-in functions for many common probability densities; they all have the form <code>d...()</code>, take a look at the <a href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/00Index.html">index</a>. Packages like <a href="https://cran.r-project.org/package=extraDistr"><strong>extraDistr</strong></a> provide even more densities.</p>
 <p><br>
 </p>
 </section>
 <section id="sec-R-1Dscatter" class="level2">
 <h2 class="anchored" data-anchor-id="sec-R-1Dscatter">1D scatter plots in R</h2>
 <p>What if we want to represent a probability density as a scatter plot, as was done in <a href="probability_distributions.html#sec-represent-dens" class="quarto-xref">§&nbsp;<span>Representation of probability densities</span></a>?</p>
+<p>First of all we need to generate points that reflect the probability density. R has built-in functions to generate points for many common densities; they have the form <code>r...()</code> corresponding to the <code>d...()</code> one. For instance, to generate 100 points from a Gaussian density we can use <code>rnorm()</code> with arguments <code>n =</code> for the number of points, and <code>mean =</code>, <code>sd =</code> for the mean and standard deviation. Packages like <a href="https://cran.r-project.org/package=extraDistr"><strong>extraDistr</strong></a> also provide point generators.</p>
+<p>How many points should we generate? The answer is heavily context- and problem-dependent. Too few points, say a dozen, may not give any clear idea of the density. Too many, say thousands, may end up producing a compact blob where no density differences are discernible. It also depends on the structure of the probability density itself. Around a 100 points or so may be a good starting point. But if you need to explore regions of the domain where the probability density is low, then you’ll need more points.</p>
+<p>Let’s generate 200 points for the Gaussian density of the previous example, storing them in the <code>points</code> variable:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>points <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">200</span>, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then we need to display these points in a graph.</p>
+<p>R has the built-in function <a href="https://stat.ethz.ch/R-manual/R-patched/library/graphics/html/rug.html"><code>rug()</code></a> to display the points as thin vertical lines on the x-axis. The argument <code>ticksize =</code> specifies the length of these lines: <code>1</code> means the whole plot’s height, <code>0.5</code> half the plot’s height, and so on. You can also choose colour and line type and width with the usual <code>col =</code>, <code>lty =</code>, <code>lwd =</code> arguments.</p>
+<p>Let’s use this function to add to the previous plot the points we just generated (we also redraw the plot):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Redraw the plot</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> x, <span class="at">y =</span> p, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">ylab =</span> <span class="st">'p(x | I)'</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rug</span>(points, <span class="at">ticksize =</span> <span class="fl">0.25</span>, <span class="at">col =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in rug(points, ticksize = 0.25, col = 2): some values will be clipped</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Rintro2_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Redraw the plot</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> points, <span class="at">type =</span> <span class="st">'p'</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">7</span>, <span class="dv">10</span>), <span class="at">pch =</span> <span class="st">'|'</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rug</span>(points, <span class="at">ticksize =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in rug(points, ticksize = 0.5): some values will be clipped</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Rintro2_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">10000</span>, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">3</span>), <span class="at">type =</span> <span class="st">'p'</span>, <span class="at">pch =</span> <span class="st">'.'</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">7</span>, <span class="dv">10</span>), <span class="at">yjitter =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Rintro2_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
 </section>

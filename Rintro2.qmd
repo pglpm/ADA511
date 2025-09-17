@@ -130,7 +130,7 @@ flexiplot(x = x, y = p, ylim = c(0, NA), ylab = 'p(x | I)')
 
 If we need to display more densities in the same plot we can proceed as described in the previous section.
 
-R has built-in functions for many common probability densities; they have all names of the form `d...()`, take a look at the [index](https://stat.ethz.ch/R-manual/R-patched/library/stats/html/00Index.html). Packages like [**extraDistr**](https://cran.r-project.org/package=extraDistr) provide even more densities.
+R has built-in functions for many common probability densities; they all have the form `d...()`, take a look at the [index](https://stat.ethz.ch/R-manual/R-patched/library/stats/html/00Index.html). Packages like [**extraDistr**](https://cran.r-project.org/package=extraDistr) provide even more densities.
 
 
 \
@@ -139,4 +139,38 @@ R has built-in functions for many common probability densities; they have all na
 
 What if we want to represent a probability density as a scatter plot, as was done in [§@sec-represent-dens]?
 
-R has the built-in function [`rug()`](https://stat.ethz.ch/R-manual/R-patched/library/graphics/html/rug.html)
+First of all we need to generate points that reflect the probability density. R has built-in functions to generate points for many common densities; they have the form `r...()` corresponding to the `d...()` one. For instance, to generate 100 points from a Gaussian density we can use `rnorm()` with arguments `n =` for the number of points, and `mean =`, `sd =` for the mean and standard deviation. Packages like [**extraDistr**](https://cran.r-project.org/package=extraDistr) also provide point generators.
+
+How many points should we generate? The answer is heavily context- and problem-dependent. Too few points, say a dozen, may not give any clear idea of the density. Too many, say thousands, may end up producing a compact blob where no density differences are discernible. It also depends on the structure of the probability density itself. Around a 100 points or so may be a good starting point. But if you need to explore regions of the domain where the probability density is low, then you'll need more points.
+
+Let's generate 200 points for the Gaussian density of the previous example, storing them in the `points` variable:
+
+```{r}
+points <- rnorm(n = 200, mean = 5, sd = 3)
+```
+
+Then we need to display these points in a graph.
+
+R has the built-in function [`rug()`](https://stat.ethz.ch/R-manual/R-patched/library/graphics/html/rug.html) to display the points as thin vertical lines on the x-axis. The argument `ticksize =` specifies the length of these lines: `1` means the whole plot's height, `0.5` half the plot's height, and so on. You can also choose colour and line type and width with the usual `col =`, `lty =`, `lwd =` arguments.
+
+Let's use this function to add to the previous plot the points we just generated (we also redraw the plot):
+
+```{r}
+## Redraw the plot
+flexiplot(x = x, y = p, ylim = c(0, NA), ylab = 'p(x | I)')
+
+rug(points, ticksize = 0.25, col = 2)
+```
+
+
+```{r}
+## Redraw the plot
+flexiplot(x = points, type = 'p', xlim = c(-7, 10), pch = '|')
+rug(points, ticksize = 0.5)
+
+flexiplot(x = rnorm(n = 10000, mean = 5, sd = 3), type = 'p', pch = '.', xlim = c(-7, 10), yjitter = TRUE)
+
+```
+
+
+
