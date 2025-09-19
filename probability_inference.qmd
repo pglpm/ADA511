@@ -426,9 +426,9 @@ This algorithm is not mathematically difficult, but it is somewhat involved. It 
 
 ## An implementation in R
 
-The algorithm described in the previous section is implemented in the [R function `findP()`](https://github.com/pglpm/ADA511/blob/master/code/findP.R); it requires the [**lpSolve**](https://cran.r-project.org/package=lpSolve) R package, which we installed in the [R introduction](Rintro1.html).
+The algorithm described in the previous section is implemented in the R function [`findP()`](https://github.com/pglpm/ADA511/blob/master/code/findP.R); it requires the [**lpSolve**](https://cran.r-project.org/package=lpSolve) R package, which we installed in the [R introduction](Rintro1.html).
 
-The `findP()` function takes as first argument the probability we want to find, and as remaining arguments the values of the given probabilities, or equalities among probabilities. We must use the following notation:
+The `findP()` function takes as first `target =` argument the probability we want to find, and as remaining arguments the values of the given probabilities, or equalities among probabilities. We must use the following notation:
 
 - $\lnot$\ \ becomes\ \ `!`
 - $\land$\ \ becomes\ \ `&`\ or equivalently\ `&&`
@@ -452,8 +452,8 @@ source('findP.R') ## load the function
 
 findP(
     ## target probability:
-    P(!h ~ f & J),
-    ## initial probabilities:
+    target = P(!h ~ f & J),
+    ## given probabilities:
     P(!h || !s ~ f & J) == 1,
     P(!h & !s ~ f & J) == 0.1,
     P(h ~ f & J) == P(s ~ f & J)
@@ -469,7 +469,7 @@ Obviously the algorithm becomes more expensive, the larger the number of sentenc
 - Consider the following inference:
 ```{r}
 findP(
-    P(hypothesis ~ evidence1 & evidence2 & I), ## target
+    target = P(hypothesis ~ evidence1 & evidence2 & I),
     P(hypothesis ~ evidence1 & I) == 0.1,
     P(hypothesis ~ evidence2 & I) == 0.9
 )
