@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-09-16">
+<meta name="dcterms.date" content="2025-09-19">
 
 <title>33&nbsp; Code design – ADA511 0.3</title>
 <style>
@@ -134,7 +134,7 @@ window.Quarto = {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.3</span><br><span class="small grey">2025-09-16</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.3</span><br><span class="small grey">2025-09-19</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -604,7 +604,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-09-16</p>
+      <p class="date">2025-09-19</p>
     </div>
   </div>
   
@@ -776,7 +776,7 @@ P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sma
 <p>Our prototype software must therefore include two main functions, which we can call as follows:</p>
 <ul>
 <li><dl>
-<dt><code>buildagent()</code> (<a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildagent.R">see code</a>)</dt>
+<dt><code>buildagent()</code> (<a href="https://github.com/pglpm/ADA511/blob/master/code/buildagent.R">see code</a>)</dt>
 <dd>
 computes <span class="math inline">\(\color[RGB]{34,136,51}\#{\color[RGB]{68,119,170}z}\)</span> for all values <span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>, as well as the multiplicative factors
 </dd>
@@ -792,7 +792,7 @@ computes <span class="math inline">\(\color[RGB]{34,136,51}\#{\color[RGB]{68,119
 \]</span></p>
 <p>for all <span style="display:inline-block;"><span class="math inline">\(k\)</span>,</span> in (<a href="#eq-objectP" class="quarto-xref"><span>33.2</span></a>). This computation is done once and for all in a given task, using the training <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{34,136,51}data}\)</span></span> and the metadata <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}_{\textrm{d}}\)</span></span> provided. The result can be stored in an array or similar object, which we shall call an <code>agent</code>-class object.</p></li>
 <li><dl>
-<dt><code>infer()</code> (<a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/infer.R">see code</a>)</dt>
+<dt><code>infer()</code> (<a href="https://github.com/pglpm/ADA511/blob/master/code/infer.R">see code</a>)</dt>
 <dd>
 computes probabilities such as (<a href="#eq-forecast" class="quarto-xref"><span>33.3</span></a>) at each new instance, using the stored <code>agent</code>-class object as well as the predictor variates and values provided with that instance, and the predictand variates requested at that instance.
 </dd>
@@ -882,8 +882,8 @@ P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sma
 <section id="sec-code-optim" class="level2 page-columns page-full" data-number="33.3">
 <h2 data-number="33.3" class="anchored" data-anchor-id="sec-code-optim"><span class="header-section-number">33.3</span> Code optimization</h2>
 <p>The formulae of <a href="dirichlet-mixture.html" class="quarto-xref">chapter&nbsp;&nbsp;<span>32</span></a>, if used as-written, easily lead to two kinds of computation problems. First, they generate overflows and <code>NaN</code>, owing to factorials and their divisions. Second, the products over variates may involve so many terms as to require a long computation time. In the end we would have to wait a long time just to receive a string of <code>NaN</code>s.</p>
-<p>The first problem is dealt with by rewriting the formulae in terms of logarithms, and renormalizing numerators and denominators of fractions. See for example the lines defining <code>auxalphas</code> in the <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildagent.R"><code>buildagent()</code></a> function, and the line that redefines <code>counts</code> one last time in the <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/infer.R"><code>infer()</code></a> function.</p>
-<p>The second problem is dealt with by reorganizing the sums as multiples of identical summands; see the lines working with <code>freqscounts</code> in the <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/buildagent.R"><code>buildagent()</code></a> function.</p>
+<p>The first problem is dealt with by rewriting the formulae in terms of logarithms, and renormalizing numerators and denominators of fractions. See for example the lines defining <code>auxalphas</code> in the <a href="https://github.com/pglpm/ADA511/blob/master/code/buildagent.R"><code>buildagent()</code></a> function, and the line that redefines <code>counts</code> one last time in the <a href="https://github.com/pglpm/ADA511/blob/master/code/infer.R"><code>infer()</code></a> function.</p>
+<p>The second problem is dealt with by reorganizing the sums as multiples of identical summands; see the lines working with <code>freqscounts</code> in the <code>buildagent()</code>function.</p>
 
 
 

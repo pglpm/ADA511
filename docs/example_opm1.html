@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-09-16">
+<meta name="dcterms.date" content="2025-09-19">
 
 <title>35&nbsp; Example application: adult-income task – ADA511 0.3</title>
 <style>
@@ -169,7 +169,7 @@ window.Quarto = {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.3</span><br><span class="small grey">2025-09-16</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.3</span><br><span class="small grey">2025-09-19</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -653,7 +653,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-09-16</p>
+      <p class="date">2025-09-19</p>
     </div>
   </div>
   
@@ -676,7 +676,7 @@ window.Quarto = {
 </div>
 <p>Let’s illustrate the example workflow described in <a href="prototype_code.html#sec-opm-workflow" class="quarto-xref">§&nbsp;<span>34.2</span></a> with a toy, but not too simplistic, example, based on the <a href="https://archive.ics.uci.edu/dataset/2/adult">adult-income dataset</a>.</p>
 <p>All code functions and data files are in the directory<br>
-<a href="https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal">https://github.com/pglpm/ADA511/tree/master/code/OPM-nominal</a></p>
+<a href="https://github.com/pglpm/ADA511/tree/master/code">https://github.com/pglpm/ADA511/tree/master/code</a></p>
 <p>We start loading the R libraries and functions needed at several stages. You need to have installed<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> the packages <a href="https://cran.r-project.org/package=extraDistr"><em>extraDistr</em></a> and <a href="https://cran.r-project.org/package=foreach"><em>foreach</em></a>. Make sure you have saved all source files and data files in the same directory.</p>
 <div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;This is done with the <a href="https://rdrr.io/r/utils/install.packages.html"><code>install.packages()</code> function</a>.</p></div></div><div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'extraDistr'</span>)</span>
@@ -711,13 +711,13 @@ window.Quarto = {
 <section id="variates-and-domains" class="level3">
 <h3 class="anchored" data-anchor-id="variates-and-domains">Variates and domains</h3>
 <p>The variates to be used must be of nominal type, because our agent’s background beliefs (represented by the Dirichlet-mixture distribution) are only appropriate for nominal variates. In this toy example we simply discard all original non-nominal variates. These included some, such as age, that would surely be relevant for this task. As a different approach, we could have coarsened each non-nominal variate into three or four range values, so that treating it as nominal would have been an acceptable approximation.</p>
-<p>First, create a preliminary metadata file by running the function <code>guessmetadata()</code> on the training data <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/train-income_data_example.csv"><code>train-income_data_example.csv</code></a>:</p>
+<p>First, create a preliminary metadata file by running the function <code>guessmetadata()</code> on the training data <a href="https://github.com/pglpm/ADA511/blob/master/code/train-income_data_example.csv"><code>train-income_data_example.csv</code></a>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">guessmetadata</span>(<span class="at">data =</span> <span class="st">'train-income_data_example.csv'</span>,</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">file =</span> <span class="st">'preliminary.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Inspect the resulting file <code>preliminary.csv</code> and check whether you can alter it to add additional background information.</p>
-<p>As an example, note that domain of the <span style="display:inline-block;"><span class="math inline">\(\mathit{native\_country}\)</span></span> variate does not include <span style="display:inline-block;"><span class="math inline">\({\small\verb;Norway;}\)</span></span> or <span style="display:inline-block;"><span class="math inline">\({\small\verb;Sweden;}\)</span>.</span> Yet it’s extremely likely that there were some native Norwegian or Swedish people in the USA in 1994; maybe too few to have been sampled into the training data. Let’s add these two values to the list of domain values, and increase the domain size of <span style="display:inline-block;"><span class="math inline">\(\mathit{native\_country}\)</span></span> from 40 to 42. The resulting, updated metadata file has already been saved as <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/meta_income_data_example.csv"><code>meta_income_data_example.csv</code></a>.</p>
+<p>As an example, note that domain of the <span style="display:inline-block;"><span class="math inline">\(\mathit{native\_country}\)</span></span> variate does not include <span style="display:inline-block;"><span class="math inline">\({\small\verb;Norway;}\)</span></span> or <span style="display:inline-block;"><span class="math inline">\({\small\verb;Sweden;}\)</span>.</span> Yet it’s extremely likely that there were some native Norwegian or Swedish people in the USA in 1994; maybe too few to have been sampled into the training data. Let’s add these two values to the list of domain values, and increase the domain size of <span style="display:inline-block;"><span class="math inline">\(\mathit{native\_country}\)</span></span> from 40 to 42. The resulting, updated metadata file has already been saved as <a href="https://github.com/pglpm/ADA511/blob/master/code/meta_income_data_example.csv"><code>meta_income_data_example.csv</code></a>.</p>
 </section>
 <section id="agents-parameters-k_textmi-k_textma" class="level3">
 <h3 class="anchored" data-anchor-id="agents-parameters-k_textmi-k_textma">Agent’s parameters <span class="math inline">\(k_{\text{mi}}, k_{\text{ma}}\)</span></h3>
@@ -728,7 +728,7 @@ window.Quarto = {
 </section>
 <section id="collect-prepare-training-data" class="level2" data-number="35.3">
 <h2 data-number="35.3" class="anchored" data-anchor-id="collect-prepare-training-data"><span class="header-section-number">35.3</span> Collect &amp; prepare training data</h2>
-<p>The 11 306 training data have been prepared by including only nominal variates, and discarding datapoints with partially missing data (although the function <code>buildagent()</code> discards such incomplete datapoints automatically). The resulting file is <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM-nominal/test-income_data_example.csv"><code>test-income_data_example.csv</code></a>.</p>
+<p>The 11 306 training data have been prepared by including only nominal variates, and discarding datapoints with partially missing data (although the function <code>buildagent()</code> discards such incomplete datapoints automatically). The resulting file is <a href="https://github.com/pglpm/ADA511/blob/master/code/test-income_data_example.csv"><code>test-income_data_example.csv</code></a>.</p>
 <p><br>
 </p>
 </section>
@@ -1024,22 +1024,22 @@ occupation          Female Male
 
        sex
 income    Female    Male
-  &lt;=50K 28.67559 42.6162
-  &gt;50K   7.42585 21.2824
+  &lt;=50K 28.01148 43.1558
+  &gt;50K   7.30246 21.5302
 
 , , sample = #2
 
        sex
-income    Female    Male
-  &lt;=50K 28.14812 42.9729
-  &gt;50K   7.27895 21.6000
+income   Female    Male
+  &lt;=50K 28.3280 43.3205
+  &gt;50K   6.8263 21.5252
 
 , , sample = #3
 
        sex
-income    Female    Male
-  &lt;=50K 28.97065 42.2300
-  &gt;50K   6.98747 21.8119</code></pre>
+income   Female    Male
+  &lt;=50K 27.9562 43.7793
+  &gt;50K   7.1729 21.0915</code></pre>
 </div>
 </div>
 <p>These possible full-population frequency distributions can be used to assess how much the probabilities we find could change, if we collected a much, much larger amount of training data. Here is an example:</p>
@@ -1059,19 +1059,19 @@ income    Female    Male
 <pre><code>                   sex
 occupation          Female Male
   Adm-clerical        0.28 0.32
-  Armed-Forces        0.16 0.16
-  Craft-repair        0.17 0.46
-  Exec-managerial     0.29 0.59
+  Armed-Forces        0.15 0.16
+  Craft-repair        0.16 0.49
+  Exec-managerial     0.29 0.61
   Farming-fishing     0.16 0.23
   Handlers-cleaners   0.16 0.20
   Machine-op-inspct   0.17 0.27
-  Other-service       0.20 0.21
-  Priv-house-serv     0.16 0.16
-  Prof-specialty      0.36 0.57
-  Protective-serv     0.16 0.28
-  Sales               0.21 0.47
-  Tech-support        0.20 0.29
-  Transport-moving    0.16 0.31</code></pre>
+  Other-service       0.21 0.21
+  Priv-house-serv     0.15 0.16
+  Prof-specialty      0.34 0.58
+  Protective-serv     0.16 0.29
+  Sales               0.22 0.50
+  Tech-support        0.20 0.31
+  Transport-moving    0.17 0.31</code></pre>
 </div>
 </div>
 <p>the agent believes (at around 68%) that the current probability wouldn’t change more than about ±0.5%.</p>
@@ -1195,7 +1195,7 @@ Exercise&nbsp;35.1
 <span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a><span class="do">## Print total time required</span></span>
 <span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">Sys.time</span>() <span class="sc">-</span> stopwatch)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time difference of 4.43604 secs</code></pre>
+<pre><code>Time difference of 4.44693 secs</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Histogram and average accuracy (rounded to one decimal)</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">thist</span>(testprobs, <span class="at">n =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="at">length.out =</span> <span class="dv">10</span>), <span class="at">plot =</span> <span class="cn">TRUE</span>,</span>

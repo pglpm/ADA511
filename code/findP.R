@@ -1,9 +1,10 @@
-findP <- function(x, ...) {
+findP <- function(target, ...) {
     ## number of constraints
+    `%>%` <- function(a, b){b || !a}
     nc <- length(substitute(alist(...)))
     ## find atomic sentences and prepare truth table for DNF
     tvals <- c(FALSE, TRUE)
-    atoms <- sort(all.vars(as.formula(substitute(~ alist(x, ...)))))
+    atoms <- sort(all.vars(as.formula(substitute(~ alist(target, ...)))))
     ttable <- list()
     for(i in atoms) {
         ttable[[i]] <- tvals
@@ -16,7 +17,7 @@ findP <- function(x, ...) {
     Esyms <- c('==', '<=', '>=', '<', '>')
 
 ### Target probability
-    Tsupp <- substitute(x)
+    Tsupp <- substitute(target)
     if(
         !(length(Tsupp) == 2) || !(deparse(Tsupp[[1]]) %in% Psyms)
     ) {
