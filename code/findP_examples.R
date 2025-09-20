@@ -197,7 +197,8 @@ findP(
 ## Gregory's problem
 
 findP(
-    target = P(R3 ~ ((R2 & G1) | (G2 & R1) | (R2 & R1)) & I),
+    target = P(R3 ~ ((R2 & G1) || (G2 & R1) || (R2 & R1)) & I),
+    ##
     P(R1 ~ I) == 1/2,
     P(G1 ~ I) == 1/2,
     ##
@@ -207,10 +208,8 @@ findP(
     ##
     P(R3 ~ R2 & R1 & I) == 1/4,
     P(R3 ~ R2 & G1 & I) == 2/4,
-    P(R3 ~ G2 & R1 & I) == 2/4,
+    P(R3 ~ G2 & R1 & I) == 2/4
     ##
-    P(R1 & G1 ~ I) == 0, P(R2 & G2 ~ I) == 0
+    # P(R1 & G1 ~ I) == 0, P(R2 & G2 ~ I) == 0
 )
-##    min    max 
-## 0.4375 0.4375 
 
