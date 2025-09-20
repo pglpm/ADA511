@@ -1,3 +1,46 @@
+#' Calculation of lower and upper probability bounds
+#'
+#' @description
+#' Compute the minimum and maximum value that the probability of a logical formula conditional on another one, given numerical or equality constraints for the conditional probabilities of other logical formulae.
+#'
+#' @details
+#' This function takes as first argument the desired probability expression, and as subsequent arguments the known probability constraints.
+#'
+#' The constraints can be of the form `P(...|...) == [number]` or `P(...|...) == P(...|...)`, even with inequalities instead of equalities.
+#'
+#' All probability expressions must start with `P` or `p` or `Pr` followed by parentheses. The symbol for the conditional bar and the logical connectives are as follows:
+#'
+#' - Conditional bar: `~`
+#' - Not: `!`
+#' - And: `&&` or `&`
+#' - Or: `||` or `|`
+#' - If-then: `%>`
+#'
+#' @param target The desired probability expression.
+#' @param ... Probability constraints (see Details).
+#'
+#' @return A vector of `min` and `max` values of the desired probability.
+#'
+#' @import lpSolve
+#'
+#' @examples
+#' findP(
+#'     target = P(a & b ~ h), # P(a ∧ b | h) in standard notation
+#'     P(a ~ h) == 0.3,
+#'     P(b ~ h) == 0.6
+#' )
+#' ## min max
+#' ## 0.0 0.3
+#'
+#' findP(
+#'     target = P(a & b ~ h), # P(a ∧ b | h) in standard notation
+#'     P(a ~ h) == 0.3,
+#'     P(b ~ a & h) == 0.2
+#' )
+#' ##  min  max
+#' ## 0.06 0.06
+
+
 findP <- function(target, ...) {
     ## number of constraints
     `%>%` <- function(a, b){b || !a}
