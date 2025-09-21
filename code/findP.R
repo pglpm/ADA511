@@ -25,9 +25,9 @@
 #'
 #' @examples
 #' findP(
-#'     target = P(a & b ~ h), # P(a ∧ b | h) in standard notation
-#'     P(a ~ h) == 0.3,
-#'     P(b ~ h) == 0.6
+#'   target = P(a & b ~ h), # P(a ∧ b | h) in standard notation
+#'   P(a ~ h) == 0.3,
+#'   P(b ~ h) == 0.6
 #' )
 #' ## min max
 #' ## 0.0 0.3
@@ -39,6 +39,35 @@
 #' )
 #' ##  min  max
 #' ## 0.06 0.06
+#'
+#' ## Solution to the Monty Hall problem:
+#' findP(
+#'   target = P(car1 ~ you1 & host2 & I),
+#'   P(car1 | car2 | car3 ~ I) == 1,
+#'   P(car1 & car2 ~ I) == 0,
+#'   P(car1 & car3 ~ I) == 0,
+#'   P(car2 & car3 ~ I) == 0,
+#'   P(host1 & you1 ~ I) == 0,
+#'   P(host2 & you2 ~ I) == 0,
+#'   P(host3 & you3 ~ I) == 0,
+#'   P(host1 & car1 ~ I) == 0,
+#'   P(host2 & car2 ~ I) == 0,
+#'   P(host3 & car3 ~ I) == 0,
+#'   P(host1 & host2 ~ I) == 0,
+#'   P(host1 & host3 ~ I) == 0,
+#'   P(host2 & host3 ~ I) == 0,
+#'   P(host1 | host2 | host3 ~ I) == 1,
+#'   P(host2 ~ car1 & you1 & I) == P(host3 ~ car1 & you1 & I),
+#'   P(car1 ~ I) == 1/3,
+#'   P(car2 ~ I) == 1/3,
+#'   P(car3 ~ I) == 1/3,
+#'   P(car1 ~ you1 & I) == 1/3,
+#'   P(car2 ~ you1 & I) == 1/3,
+#'   P(car3 ~ you1 & I) == 1/3
+#' )
+#' ##      min      max
+#' ## 0.333333 0.333333
+
 
 
 findP <- function(target, ...) {
