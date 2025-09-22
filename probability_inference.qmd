@@ -426,15 +426,15 @@ This algorithm is not mathematically difficult, but it is somewhat involved. It 
 
 ## An implementation in R
 
-The algorithm described in the previous section is implemented in the R function [`findP()`](https://github.com/pglpm/ADA511/blob/master/code/findP.R); it requires the [**lpSolve**](https://cran.r-project.org/package=lpSolve) R package, which we installed in the [R introduction](Rintro1.html).
+The algorithm described in the previous section is implemented in the R function [`inferP()`](https://github.com/pglpm/ADA511/blob/master/code/inferP.R); it requires the [**lpSolve**](https://cran.r-project.org/package=lpSolve) R package, which we installed in the [R introduction](Rintro1.html).
 
-The `findP()` function takes as first `target =` argument the probability we want to find, and as remaining arguments the values of the given probabilities, or equalities among probabilities. We must use the following notation:
+The `inferP()` function takes as first `target =` argument the probability we want to find, and as remaining arguments the values of the given probabilities, or equalities among probabilities. We must use the following notation:
 
-- $\lnot$\ \ becomes\ \ `!`
-- $\land$\ \ becomes\ \ `&`\ or equivalently\ `&&`
-- $\lor$\ \ becomes\ \ `|`\ (sadly) or equivalently\ `||`
+- $\lnot$\ \ becomes\ \ ` !`\ or equivalently\ ` -`
+- $\land$\ \ becomes\ \ ` & `\ or equivalently\ ` && `
+- $\lor$\ \ becomes\ \ `+`
 - $=$\ \ becomes\ \ `==`
-- conditional bar $\|$\ \ becomes\ \ `~`
+- conditional bar $\|$\ \ becomes\ \ ` | `
 
 The output are the minimum and maximum possible values of the target probability, or `NA` if the starting probabilities are inconsistent.
 
@@ -448,30 +448,30 @@ knitr::opts_knit$set(root.dir = "code/")
 ```{r}
 library('lpSolve') ## load the library
 
-source('findP.R') ## load the function
+source('inferP.R') ## load the function
 
-findP(
+inferP(
     ## target probability:
-    target = P(!h ~ f & J),
+    target = P(!h  |  f & J),
     ## given probabilities:
-    P(!h || !s ~ f & J) == 1,
-    P(!h & !s ~ f & J) == 0.1,
-    P(h ~ f & J) == P(s ~ f & J)
-)
+    P(!h + !s  |  f & J) == 1,
+    P(!h & !s  |  f & J) == 0.1,
+    P(h  |  f & J) == P(s  |  f & J)
+) 
 ```
 
 Obviously the algorithm becomes more expensive, the larger the number of sentences in the inference problem. In inference problems involving continuous quantities, such as energy, such an algorithm cannot be applied in practice. Also, the way the algorithm above works cannot be represented as a sequence of "logical" steps with consecutive applications of the rules, as shown in the step-wise solution above. Later on in this course we shall focus on specific kinds of inferences for which other, less opaque inference algorithms are available.
 
 :::{.callout-caution}
 
-- Play with the function `findP()`: test it in other inference problems, find problems where there is no solution and others where the `min` and `max` values are different.
+- Play with the function `inferP()`: test it in other inference problems, find problems where there is no solution and others where the `min` and `max` values are different.
 
 - Consider the following inference:
 ```{r}
-findP(
-    target = P(hypothesis ~ evidence1 & evidence2 & I),
-    P(hypothesis ~ evidence1 & I) == 0.1,
-    P(hypothesis ~ evidence2 & I) == 0.9
+inferP(
+    target = P(hypothesis  |  evidence1 & evidence2 & I),
+    P(hypothesis  |  evidence1 & I) == 0.1,
+    P(hypothesis  |  evidence2 & I) == 0.9
 )
 ```
 What does this result tells us about "combining evidence" to prove a hypothesis?
