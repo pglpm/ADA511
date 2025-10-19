@@ -8,7 +8,8 @@ guessmetadata <- function(
             file <- paste0('meta_', data)
         }
         data <- read.csv(data,
-            na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE)
+            na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE,
+            header = TRUE)
     }else{
         if(is.null(file)){
             cat("\n'file' argument missing: output to stdout\n")
@@ -33,7 +34,7 @@ guessmetadata <- function(
     ##
     if(!is.null(file)){
         write.csv(x = metadata, file = file,
-            row.names = FALSE, quote = FALSE, na = '')
+            row.names = FALSE, quote = TRUE, na = '')
     }else{
         metadata
     }
