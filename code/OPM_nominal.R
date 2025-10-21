@@ -50,92 +50,113 @@ buildagent <- function(
     base = 2
 ){
 #### Builds "agent" object encoding background & learned knowledge
-    ##
+#### Requires 'collapse'
+
     ## Read metadata from file, if given as file
     if(is.character(metadata)){
         metadata <- read.csv(metadata,
             na.strings='', stringsAsFactors = FALSE, tryLogical = FALSE)
     }
-    ##
-    variates <- metadata[['variate']] # list of variates
+
+    variates <- metadata$variate # list of variates
     nvariates <- length(variates) # total number of variates
-    domainsizes <- metadata[['domainsize']]
+    domainsizes <- metadata$domainsize
     names(domainsizes) <- variates
+
     M <- prod(domainsizes) # total number of possible values
-    ##
+
     ## Load training data, if given as file
     if(is.character(data)){
         data <- read.csv(data,
             na.strings='', stringsAsFactors = FALSE, tryLogical = FALSE)
     }
-    ##
+
+    ## stop if variates are missing in data
+    if(!all(variates %in% colnames(data))){
+        stop('Missing variates in data.')
+    }
+    ## remove variates not given in metadata, with warning
+    if(!all(colnames(data) %in% variates)){
+        message('Discarding data variates not given in metadata.')
+        data <- data[, variates, drop = FALSE]
+    }
+    ## remove datapoints with missing values
+    toremove <- which(is.na(data), arr.ind = TRUE)
+    if(length(toremove) > 0){
+        message('Removing datapoints with missing values, ',
+            nrow(data) - nrow(toremove), ' data left.')
+        data <- data[-toremove[1,], ]
+        if(nrow(data) == 0){data <- NULL}
+    }
+
     ## Building a Dirichlet-mixture distribution
     ## with concentration parameters alpha:=(2^k)
     if(is.null(alphas)){
         alphas <- base^(kmi:kma)
-    }else if(isTRUE(alphas)){
+    } else if(isTRUE(alphas)){
         alphas <- sqrt(M) # other alternative with just one k
     }
     ## Possibility of adding a p(k) weight in the Dirichlet-mixture distribution
     logpalphas0 <- 0 # do not use
     ## logpalphas0 <- -abs(alphas) # Good's hyperprior
-    ##
-    ## counts := #z  are the joint absolute frequencies
-    ## of all possible variate values
-    counts <- numeric(M) # zero vector
-    dim(counts) <- domainsizes # transform to array
-    ## give names to the array elements, from metadata
-    dimnames(counts) <- apply(metadata, 1,
-        function(metadatum){
-            unname(metadatum[paste0('V',1:(metadatum['domainsize']))])
-        }, simplify=list)
-    names(dimnames(counts)) <- variates
-    ##
-    ## Calculate #z from data, if data are given
+
+    ## Count non-zero frequencies
+    ## Unique values in data
     if(!is.null(data)){
-        ## Check consistency of variates in metadata and data
-        if(length(setdiff(variates, colnames(data))) > 0){
-            stop('Some metadata variates are missing in data')
-        }
-        if(length(setdiff(colnames(data), variates)) > 0){
-            message('Discarding data variates not present in metadata')
-        }
-        data <- data[, variates, drop = FALSE]
-        ##
-        ## fill absolute frequency values from data
-        ## datapoints with missing values are discarded
-        ## (note to self: for-loop was faster than 'apply')
-        for(arow in 1:nrow(data)){
-            datum <- data[arow,]
-            if(!any(is.na(datum))){
-                temp <- rbind(as.character(datum))
-                counts[temp] <- counts[temp] + 1
-            }
-        }
+        NN <- nrow(data) # total number of training datapoints
+        uni <- collapse::fcount(data)
+        ncounts <- nrow(uni)
+        counts <- uni[, ncol(uni)]
+        uni <- uni[, -ncol(uni), drop = FALSE]
+
+        ## counts <- numeric(ncounts)
+        ## cat('\n')
+        ## for(i in seq_len(ncounts)){
+        ##     cat('\r',i)
+        ##     counts[i] <- sum(
+        ##         apply(data, 1, function(datum){all(datum == uni[i, ])})
+        ##     )
+        ## }
+    } else {
+        NN <- 0L
+        uni <- as.data.frame(rbind(variates))[-1, , drop = FALSE]
+        ncounts <- 0L
+        counts <- numeric(0)
     }
-    ##
-    NN <- sum(counts) # total number of training datapoints
-    ##
+
     ## Calculate frequencies of counts for faster iteration
-    freqscounts <- tabulate(c(counts)+1)
-    counts1 <- which(freqscounts > 0) # discard non-appearing ones count values
+    ## First item is number of missing data
+    freqscounts <- c(M - ncounts, tabulate(counts))
+    counts1 <- which(freqscounts > 0) # discard counts with zero freqs
     freqscounts <- freqscounts[counts1]
-    ##
+    counts1 <- counts1 - 1
+
     ## final auxalphas := log-probability for new unit
     auxalphas <- sapply(alphas, function(alpha){
-        sum(freqscounts * lgamma(counts1-1 + alpha/M))
-    })  - M*lgamma(alphas/M) + lgamma(alphas) + logpalphas0
-    ##
+        sum(freqscounts * lgamma(counts1 + alpha / M))
+    })  - M * lgamma(alphas / M) + lgamma(alphas) + logpalphas0
+
     ## Final palphas := probability distribution for the alpha parameters
 ### used for population-frequency forecasts
     palphas <- auxalphas - lgamma(alphas + NN)
-    palphas <- exp(palphas-max(palphas)) # renormalize against overflow
-    palphas <- palphas/sum(palphas)
+    palphas <- exp(palphas - max(palphas)) # renormalize to avoid overflow
+    palphas <- palphas / sum(palphas)
     ##
     auxalphas <- auxalphas - lgamma(alphas + NN + 1)
     ##
     ## Output "agent" object
-    out <- list(counts=counts, alphas=alphas, auxalphas=auxalphas, palphas=palphas)
+    out <- list(
+        uniquedata = uni,
+        counts = counts,
+        variatevalues = setNames(object = apply(metadata, 1,
+            function(metadatum){
+                unname(metadatum[paste0('V', seq_len(metadatum['domainsize']))])
+            }, simplify = list),
+            nm = variates),
+        alphas = alphas,
+        auxalphas = auxalphas,
+        palphas = palphas
+    )
     class(out) <- c('agent', class(out))
     out
 }
@@ -143,177 +164,165 @@ buildagent <- function(
 
 infer <- function(
     agent,
-    predictand = NULL,
+    predictand,
     predictor = NULL
 ){
 #### Calculates conditional or unconditional probability for new unit
-    variates <- names(dimnames(agent[['counts']]))
-    ##
-    ## Load alpha parameters from "agent" object
-    ## length(agent[['counts']]) =: M
-    alphas <- agent[['alphas']] / length(agent[['counts']])
-    ##
-    ## Check if at least one predictor variate is valid
-    if(!is.null(predictor) && !any(variates %in% names(predictor))){
-        message('Warning: discarding all predictors, none valid')
-        predictor <- NULL
-    }
-    ##
-    ## Selection of predictor values, if predictor is given
-    if(!is.null(predictor)){ # predictor is given
-        predictor <- as.list(predictor)
-        ## Check consistency of variates in metadata and predictor
-        if(all(variates %in% names(predictor))){
-            stop('All variates are in the predictor')
-        }
-        if(!all(names(predictor) %in% variates)){
-            message('Discarding predictor variates not present in metadata')
-        }
-        predictor <- predictor[variates]
-        predictor[lengths(predictor) == 0] <- TRUE
-        ## select subarray of counts corresponding to the predictor values
-        counts <- do.call(`[`, c(list(agent[['counts']]), predictor))
-        if(is.null(dim(counts))){
-            dim(counts) <- length(counts)
-            dimnames(counts) <- dimnames(agent[['counts']])[
-                -which(names(predictor) %in% variates)]
-        }
-    }else{ # no predictor specified
-        counts <- agent[['counts']]
-    }
-    ##
-    ## Selection of predictand variates, if given
-    if(!is.null(predictand) && !any(predictand %in% names(dimnames(counts)))){
-        message('Discarding all predictands: none matches allowed ones')
-        predictand <- NULL
-    }
-    if(!is.null(predictand)){ # predictand given
-        ## Check consistency of variates in metadata and predictand
-        if(!all(predictand %in% names(dimnames(counts)))){
-            message('Discarding predictands not present in metadata')
-        }
-        predictand <- predictand[predictand %in% names(dimnames(counts))]
-        ##
-        ## predictand-index
-        ipredictand <- which(names(dimnames(counts)) %in% predictand)
-        ## Multiplicative factor for alpha parameters, owing to marginalization
-        alphas <- prod(dim(counts)[-ipredictand]) * alphas
-        ##
-        ## Marginalize frequencies
-        counts <- apply(counts, predictand, sum)
-        if(is.null(dim(counts))){
-            dim(counts) <- length(counts)
-            dimnames(counts) <- dimnames(agent[['counts']])[predictand]
-        }
-    }
-    ##
-    ## create an array of alphas and counts
-    ## then complete with log-probabilities stored in "agent" object
-    ## (note to self: aperm+sapply is half as fast)
-    counts <- log(outer(alphas, counts, `+`)) + agent[['auxalphas']]
-    ##
-    temp <- dimnames(counts)[-1] # save dimnames, possibly lost in colSums
-    ## Calculate final probability distribution for new unit:
-    ## "-max(counts)": renormalize against overflow
-    ## "exp()": go from log-probabilities to probabilities
-    ## "colSums()": sum over alpha (that is, k)
-    counts <- colSums(exp(counts - max(counts)))
-    ## Reshape array of results
-    if(is.null(dim(counts))){
-        dim(counts) <- length(counts)
-        dimnames(counts) <- temp
-    }
-    ## Normalize and output the probability distribution as a vector/array
-    counts / sum(counts)
-}
+    with(agent, {
+        variatenames <- names(variatevalues)
+        dimensions <- lengths(variatevalues)
 
+        ## Load alpha parameters from "agent" object
+        ## divide by total number of possible joint values
+        alphas <- alphas / prod(dimensions)
+
+        ## Check validity of predictands
+        predictand <- unlist(predictand)
+        if(!all(predictand %in% variatenames)){
+            stop('Unknown predictands')
+        }
+
+        ## Check if at least one predictor variate is valid
+        if(!is.null(predictor)){
+            predictor <- as.list(predictor)
+            namespredictor <- names(predictor)
+
+            if(!all(namespredictor %in% variatenames)){
+                message('Discarding predictor variates not given in metadata.')
+                predictor <- predictor[namespredictor %in% variatenames]
+            }
+            if(all(variatenames %in% namespredictor)){
+                stop('All variates are in the predictor')
+            }
+            if(length(predictor) == 0){
+                message('Warning: discarding all predictors, none valid')
+                predictor <- NULL
+            }
+        }
+
+        ## select subarray of counts corresponding to the predictor values
+        if(!is.null(predictor)){
+            keeprows <- apply(uniquedata[, namespredictor, drop = FALSE], 1,
+                function(x) all(x == predictor))
+
+            uniquedata <- uniquedata[keeprows, predictand, drop = FALSE]
+            counts <- counts[keeprows]
+        }
+
+        ## prepare a probability array
+        probs <- numeric(prod(dimensions[predictand]))
+        dim(probs) <- dimensions[predictand]
+        dimnames(probs) <- variatevalues[predictand]
+        out <- probs
+
+        ## fill count values in probability array
+        uniquedata <- as.matrix(uniquedata[, predictand, drop = FALSE])
+        for(i in seq_along(counts)){
+            datum <- uniquedata[i, , drop = FALSE]
+            probs[datum] <- probs[datum] + counts[i]
+        }
+
+
+        ## Multiplicative factor for alpha parameters, owing to marginalization
+        excludevars <- which(variatenames %in% c(predictand, names(predictor)))
+        alphas <- prod(dimensions[-excludevars]) * alphas
+
+        ## reduce value of auxalphas by maximum, to avoid overflow
+        auxalphas <- auxalphas - max(log(alphas + max(probs)) + auxalphas)
+
+        ## Calculate final probabilities for predictands
+        for(i in seq_along(alphas)){
+            out <- out + exp(log(alphas[i] + probs) + auxalphas[i])
+        }
+
+        out / sum(out)
+    })
+}
 
 rF <- function(
     n = 1,
     agent,
-    predictand = NULL,
+    predictand,
     predictor = NULL
 ){
 #### Returns a sample of full-population frequency
 #### Requires 'extraDistr'
-    variates <- names(dimnames(agent[['counts']]))
-    ##
-    ## Select n alpha parameters according to their probabilities given data
-    ## length(agent[['counts']]) =: M
-    alphas <- agent[['alphas']] / length(agent[['counts']])
-    ## recycling 'alphas'
-    alphas <- alphas[sample.int(n = length(alphas), size = n, replace = TRUE,
-                                prob = agent[['palphas']])]
-    ##
-    ##
-    ## Selection of predictor values
-    ##
-    ## Check if at least one predictor variate is valid
-    if(!is.null(predictor) && !any(variates %in% names(predictor))){
-        message('Warning: discarding all predictors, none valid')
-        predictor <- NULL
-    }
-    if(!is.null(predictor)){ # predictor is given
-        predictor <- as.list(predictor)
-        ## Check consistency of variates in metadata and predictor
-        if(all(variates %in% names(predictor))){
-            stop('All variates are in the predictor')
+    with(agent, {
+        variatenames <- names(variatevalues)
+        dimensions <- lengths(variatevalues)
+
+        ## Load alpha parameters from "agent" object
+        ## divide by total number of possible joint values
+        alphas <- alphas / prod(dimensions)
+
+    ## Select n alpha parameters according to their probabilities
+        alphas <- alphas[sample.int(n = length(alphas),
+            size = n, replace = TRUE,
+            prob = palphas)]
+
+        ## Check validity of predictands
+        predictand <- unlist(predictand)
+        if(!all(predictand %in% variatenames)){
+            stop('Unknown predictands')
         }
-        if(!all(names(predictor) %in% variates)){
-            message('Discarding predictor variates not present in metadata')
+
+        ## Check if at least one predictor variate is valid
+        if(!is.null(predictor)){
+            predictor <- as.list(predictor)
+            namespredictor <- names(predictor)
+
+            if(!all(namespredictor %in% variatenames)){
+                message('Discarding predictor variates not given in metadata.')
+                predictor <- predictor[namespredictor %in% variatenames]
+            }
+            if(all(variatenames %in% namespredictor)){
+                stop('All variates are in the predictor')
+            }
+            if(length(predictor) == 0){
+                message('Warning: discarding all predictors, none valid')
+                predictor <- NULL
+            }
         }
-        predictor <- predictor[variates]
-        predictor[lengths(predictor) == 0] <- TRUE
+
         ## select subarray of counts corresponding to the predictor values
-        counts <- do.call(`[`, c(list(agent[['counts']]), predictor))
-        if(is.null(dim(counts))){
-            dim(counts) <- length(counts)
-            dimnames(counts) <- dimnames(agent[['counts']])[
-                -which(names(predictor) %in% variates)]
+        if(!is.null(predictor)){
+            keeprows <- apply(uniquedata[, namespredictor, drop = FALSE], 1,
+                function(x) all(x == predictor))
+
+            uniquedata <- uniquedata[keeprows, predictand, drop = FALSE]
+            counts <- counts[keeprows]
         }
-    }else{ # no predictor specified
-        counts <- agent[['counts']]
-    }
-    ##
-    ## Selection of predictand variates, if given
-    if(!is.null(predictand) && !any(predictand %in% names(dimnames(counts)))){
-        message('Discarding all predictands: none matches allowed ones')
-        predictand <- NULL
-    }
-    if(!is.null(predictand)){ # predictand given
-        ## Check consistency of variates in metadata and predictand
-        if(!all(predictand %in% names(dimnames(counts)))){
-            message('Discarding predictands not present in metadata')
+
+        ## prepare a probability array
+        probs <- numeric(prod(dimensions[predictand]))
+        dim(probs) <- dimensions[predictand]
+        dimnames(probs) <- variatevalues[predictand]
+
+        ## fill count values in probability array
+        uniquedata <- as.matrix(uniquedata[, predictand, drop = FALSE])
+        for(i in seq_along(counts)){
+            datum <- uniquedata[i, , drop = FALSE]
+            probs[datum] <- probs[datum] + counts[i]
         }
-        predictand <- predictand[predictand %in% names(dimnames(counts))]
-        ##
-        ## predictand-index
-        ipredictand <- which(names(dimnames(counts)) %in% predictand)
+
         ## Multiplicative factor for alpha parameters, owing to marginalization
-        alphas <- prod(dim(counts)[-ipredictand]) * alphas
-        ##
-        ## Marginalize frequencies
-        counts <- apply(counts, predictand, sum)
-        if(is.null(dim(counts))){
-            dim(counts) <- length(counts)
-            dimnames(counts) <- dimnames(agent[['counts']])[predictand]
-        }
-    }
-    ##
+        excludevars <- which(variatenames %in% c(predictand, names(predictor)))
+        alphas <- prod(dimensions[-excludevars]) * alphas
+
     ## Create n joint-frequency distributions
-    ##
-    ff <- extraDistr::rdirichlet(n, alpha = outer(alphas, c(counts), `+`))
+    ff <- extraDistr::rdirichlet(n, alpha = outer(alphas, c(probs), `+`))
     ## ff <- nimble::rdirch(n, alpha = outer(alphas, c(counts), `+`))
-    dim(ff) <- c(n, dim(counts))
-    dimnames(ff) <- c(list(sample = NULL), dimnames(counts))
+    dim(ff) <- c(n, dim(probs))
+    dimnames(ff) <- c(list(sample = NULL), dimnames(probs))
     ff
+    })
 }
 
 
 plotFsamples1D <- function(
     agent,
     n = 100,
-    predictand = NULL,
+    predictand,
     predictor = NULL,
     probability = TRUE,
     file = NULL,
@@ -321,37 +330,70 @@ plotFsamples1D <- function(
 ){
 #### Plots samples of full-population freq. distributions for one variate
 #### Requires 'png' to plot png
-    if(
-    (!is.null(predictand) && length(predictand) > 1) ||
-    (!is.null(predictor) && length(predictor)-length(dim(agent[['counts']])) > 1)
-    ){
-        stop('State of knowledge comprises more than one variate.')
-    }
-    samples <- rF(n=n, agent=agent, predictand=predictand, predictor=predictor)
-    if(!is.null(file)){
-        filext <- sub(".*\\.|.*", "", file, perl=TRUE)
-        if(filext == 'pdf'){
-            mypdf(sub('.pdf$', '', file))
-        }else{
-            mypng(sub('.png$', '', file))
+    with(agent, {
+        variatenames <- names(variatevalues)
+        dimensions <- lengths(variatevalues)
+
+        ## Check validity of predictands
+        predictand <- unlist(predictand)
+        if(!all(predictand %in% variatenames)){
+            stop('Unknown predictands')
         }
-    }
-    ##
-    tplot(y=t(samples), x=1:ncol(samples), type='b',
-      xticks=1:ncol(samples), xlabels=dimnames(samples)[[2]],
-      xlab=bquote(italic(.(names(dimnames(samples))[2]))),
-      ylab='probability',
-      lty=1, lwd=1, pch=16, col=7, alpha=0.25, ...
-      )
-    if(probability){
-        fmean <- infer(agent=agent, predictand=predictand, predictor=predictor)
-        tplot(y=fmean, x=1:ncol(samples), type='b',
-              lty=1, lwd=4, pch=18, col=1, alpha=0.75, add = TRUE
-              )
-    }
-    if(!is.null(file)){
-        dev.off()
-    }
+
+        ## Check if at least one predictor variate is valid
+        if(!is.null(predictor)){
+            predictor <- as.list(predictor)
+            namespredictor <- names(predictor)
+
+            if(!all(namespredictor %in% variatenames)){
+                message('Discarding predictor variates not given in metadata.')
+                predictor <- predictor[namespredictor %in% variatenames]
+            }
+            if(all(variatenames %in% namespredictor)){
+                stop('All variates are in the predictor')
+            }
+            if(length(predictor) == 0){
+                message('Warning: discarding all predictors, none valid')
+                predictor <- NULL
+            }
+        }
+        if(length(predictand) > 1){
+        stop('This function only work with one predictand.')
+        }
+
+        samples <- rF(n = n, agent=agent,
+            predictand = predictand, predictor = predictor)
+
+        if(!is.null(file)){
+            filext <- sub(".*\\.|.*", "", file, perl=TRUE)
+            if(filext == 'pdf'){
+                mypdf(sub('.pdf$', '', file))
+            }else{
+                mypng(sub('.png$', '', file))
+            }
+        }
+
+        xx <- seq_along(variatevalues[[predictand]])
+        tplot(y = t(samples), x = xx,
+            type='b', lty=1, lwd=1, pch=16, col=7, alpha=0.25,
+            xticks = xx,
+            xlabels = dimnames(samples)[[2]],
+            xlab = bquote(italic(.(names(dimnames(samples))[2]))),
+            ylab = 'probability',
+            ...
+        )
+        if(probability){
+            fmean <- infer(agent = agent,
+                predictand = predictand, predictor = predictor)
+            tplot(y = fmean, x = xx,
+                type='b', lty=1, lwd=4, pch=18, col=1, alpha=0.75,
+                add = TRUE
+            )
+        }
+        if(!is.null(file)){
+            dev.off()
+        }
+    })
 }
 
 
@@ -361,42 +403,50 @@ decide <- function(
 ){
 #### Makes a decision depending on probabilities and utilities
 #### Decisions correspond to ROWS of the utilities array
-    ##
+
     ## Sanity checks for input arguments
     if(is.null(probs) && is.null(utils)){
         stop("Either 'probs' or 'utils' must be given")
     }
+
     if(is.null(utils)){ # utilities not given: assume accuracy utility
         if(!is.null(dim(probs)) && length(dim(probs)) > 1){
             stop("'probs' is not a vector, please specify array of utilities")
         }
         utils <- diag(length(probs))
+
         if(!is.null(dimnames(probs))){
-            dimnames(utils) <- c(decision = dimnames(probs), dimnames(probs))
+            dimnames(utils) <- c(decision = dimnames(probs),
+                dimnames(probs))
         }else{
             if(is.null(names(probs))){
                 names(probs) <- 1:length(probs)
             }
-            dimnames(utils) <- list(decision = names(probs), outcome = names(probs))
+            dimnames(utils) <- list(decision = names(probs),
+                outcome = names(probs))
         }
-    }else if(is.null(probs)){ # probabilities not given: assume uniform probs
+    }else if(is.null(probs)){
+        ## probabilities not given: assume uniform probs
         probs <- rep(1 / ncol(utils), ncol(utils))
         dim(probs) <- ncol(utils)
         if(is.null(dimnames(utils))){
             dimnames(utils) <- list(decision = 1:nrow(utils),
-                outcome = 1:ncol(utils))
+                outcome = seq_len(ncol(utils)))
         }
         dimnames(probs) <- dimnames(utils)[-1]
     }
+
     ## Check that dimension of probability variates and utilities match
     if(length(probs) != prod(dim(utils)[-1])){
         stop('Mismatch between inference and utility variates')
     }
     if(is.null(dimnames(utils))){
         if(dim(utils)[1] == dim(utils)[2]){
-            dimnames(utils) <- c(decision = dimnames(probs), dimnames(probs))
+            dimnames(utils) <- c(decision = dimnames(probs),
+                dimnames(probs))
         } else {
-            dimnames(utils) <- c(decision = 1:nrow(utils), dimnames(probs))
+            dimnames(utils) <- c(decision = seq_len(nrow(utils)),
+                dimnames(probs))
         }
     } else {
         if(!identical(dimnames(utils)[-1], dimnames(probs))){
@@ -406,7 +456,7 @@ decide <- function(
             if(dim(utils)[1] == dim(utils)[2]){
                 dimnames(utils)[1] <- dimnames(probs)
             } else {
-                dimnames(utils)[1] <- list(decision = 1:nrow(utils))
+                dimnames(utils)[1] <- list(decision = seq_len(nrow(utils)))
             }
         }
     }
@@ -437,31 +487,37 @@ mutualinfo <- function(
     base = 2
 ){
 #### Returns the mutual information between two sets of variates A, B
-    ## calculate the joint probability of variates A and B
-    probs <- infer(agent = agent, predictand = c(A, B))
+    with(agent, {
+        variatenames <- names(variatevalues)
+        dimensions <- lengths(variatevalues)
 
-    ## load list of variates
-    variates <- names(dimnames(probs))
     ## Sanity checks of input arguments
-    if(!all(A %in% variates)){
+    if(!all(A %in% variatenames)){
         message('Discarding A variates not present in probs')
-        A <- A[A %in% variates]
+        A <- A[A %in% variatenames]
     }
-    if(!all(B %in% variates)){
+    if(!all(B %in% variatenames)){
         message('Discarding B variates not present in probs')
-        B <- B[B %in% variates]
+        B <- B[B %in% variatenames]
     }
     if(any(A %in% B)){
         stop('A and B have variates in common.')
     }
+
+        ## calculate the joint probability of variates A and B
+        probs <- infer(agent = agent, predictand = c(A, B),
+            predictor = NULL)
+
     ## Calculate marginal joint probability for (A,B) if necessary
     ## probs <- apply(probs, c(A, B), sum)
     ## probs <- probs / sum(probs)
-    sum(probs * (log2(probs) - log2(outer(
-                                   apply(probs, A, sum),
-                                   apply(probs, B, sum),
-                                   `*`
-                               ))), na.rm = TRUE) / log2(base)
+        sum(probs * (log2(probs) -
+                         log2(outer(
+                             apply(probs, A, sum),
+                             apply(probs, B, sum),
+                             `*`
+                         ))), na.rm = TRUE) / log2(base)
+        })
 }
 
 
