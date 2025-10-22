@@ -90,15 +90,19 @@ Prepare and train each with the `buildagent()` function:
 traindata <- tread.csv('train-income_data_example.csv')
 
 ## feed first 10 datapoints to an agent
-opm10 <- buildagent(metadata = 'meta_income_data_example.csv',
-                    data = traindata[1:10, ])
+opm10 <- buildagent(
+    metadata = 'meta_income_data_example.csv',
+    data = traindata[1:10, ]
+)
 
 ## delete training data for memory efficiency
 rm(traindata)
 
 
-opmall <- buildagent(metadata = 'meta_income_data_example.csv',
-                     data = 'train-income_data_example.csv')
+opmall <- buildagent(
+    metadata = 'meta_income_data_example.csv',
+    data = 'train-income_data_example.csv'
+)
 ```
 
 \
@@ -121,8 +125,8 @@ The agent has internally guessed how many training data should be necessary to a
 
 ```{r}
 flexiplot(x = opmall$alphas, y = opmall$palphas, type = 'b',
-      xlim = c(0, 10000), ylim = c(0, NA),
-      xlab = 'required number of training data', ylab = 'probability')
+    xlim = c(0, 10000), ylim = c(0, NA),
+    xlab = 'required number of training data', ylab = 'probability')
 ```
 
 The most probable amount seems to be of the order of magnitude of 2000 units.
@@ -153,10 +157,10 @@ This agent gives a slightly larger probability to the $\cat{<=50K}$ case. Using 
 
 ```{r}
 plotFsamples1D(agent = opm10,
-               n = 200, ## number of example frequency distributions
-               predictand = 'income',
-               ylim = c(0,1), ## y-axis range
-               main = 'opm10') ## plot title
+    n = 200, ## number of example frequency distributions
+    predictand = 'income',
+    ylim = c(0,1), ## y-axis range
+    main = 'opm10') ## plot title
 ```
 
 where the **black line** is the probability distribution previously calculated with the `infer()` function.
@@ -167,8 +171,9 @@ This plot expresses the `opm10`-agent's belief that future training data might l
 Let's visualize the beliefs of the `opmall`-agent, trained with the full training dataset:
 
 ```{r}
-plotFsamples1D(agent = opmall, n = 200, predictand = 'income',
-               ylim = c(0,1), main = 'opmall')
+plotFsamples1D(agent = opmall, n = 200,
+    predictand = 'income',
+    ylim = c(0,1), main = 'opmall')
 ```
 
 The probability that the next unit has $\mathit{income}\mo\cat{<=50}$ is now above 70%. Also note that the `opmall`-agent doesn't believe that this probability would change appreciably if more training data were provided.
@@ -179,9 +184,10 @@ We can perform a similar exploration for any other variate. Let's take the $\mat
 
 
 ```{r}
-plotFsamples1D(agent = opm10, n = 200, predictand = 'race',
-               ylim = c(0,1), main = 'opm10',
-               cex.axis = 0.75) ## smaller axis-font size
+plotFsamples1D(agent = opm10, n = 200,
+    predictand = 'race',
+    ylim = c(0,1), main = 'opm10',
+    cex.axis = 0.75) ## smaller axis-font size
 ```
 
 Note again how the little-trained `opm10`-agent has practically uniform beliefs. But it's also expressing the fact that future training data will probably increase the probability of $\mathit{race}\mo\cat{White}$.
@@ -190,8 +196,9 @@ This is corroborated by the fully-trained agent:
 
 
 ```{r}
-plotFsamples1D(agent = opmall, n = 200, predictand = 'race',
-               ylim = c(0,1), main = 'opmall', cex.axis = 0.75)
+plotFsamples1D(agent = opmall, n = 200,
+    predictand = 'race',
+    ylim = c(0,1), main = 'opmall', cex.axis = 0.75)
 ```
 
 \
@@ -233,9 +240,10 @@ We ask the `opm10` agent to forecast the $\mathit{income}$ of a new unit, given 
 The `opm10`-agent's belief about the unit -- as well as about the *full subpopulation* ([§@sec-subpopulations]) of units having those predictors -- is shown in the following plot:
 
 ```{r}
-plotFsamples1D(agent = opm10, n = 200, predictand = 'income',
-               predictor = list(occupation = 'Exec-managerial', sex = 'Male'),
-               ylim = c(0,1), main = 'opm10')
+plotFsamples1D(agent = opm10, n = 200,
+    predictand = 'income',
+    predictor = list(occupation = 'Exec-managerial', sex = 'Male'),
+    ylim = c(0,1), main = 'opm10')
 ```
 
 Note how the `opm10`-agent still slightly higher probability to $\mathit{income}\mo\cat{<=50}$, but at the same time it is quite uncertain about the subpopulation frequencies; more than if the predictor had not been specified. That is, according to this little-trained agent there could be large variety of possibilities *within this specific subpopulation*.
@@ -243,9 +251,10 @@ Note how the `opm10`-agent still slightly higher probability to $\mathit{income}
 The `opmall`-agent's beliefs are shown below:
 
 ```{r}
-plotFsamples1D(agent = opmall, n = 200, predictand = 'income',
-               predictor = list(occupation = 'Exec-managerial', sex = 'Male'),
-               ylim = c(0,1), main = 'opmall')
+plotFsamples1D(agent = opmall, n = 200,
+    predictand = 'income',
+    predictor = list(occupation = 'Exec-managerial', sex = 'Male'),
+    ylim = c(0,1), main = 'opmall')
 ```
 
 it believes with around 55% probability that such a unit would have higher, $\cat{>50K}$ income. The representative subpopulation-frequency distributions in [light-blue]{.lightblue} indicate that this belief is unlikely to be changed by new training data.
@@ -256,8 +265,8 @@ Let's now see an example of our agent's versatility by switching predictands and
 
 ```{r}
 result <- infer(agent = opmall,
-                predictand = c('occupation', 'sex'),
-                predictor = list(income = '>50K'))
+    predictand = c('occupation', 'sex'),
+    predictor = list(income = '>50K'))
 
 round(result * 100, 1) ## round to one decimal
 ```
@@ -284,14 +293,13 @@ These possible full-population frequency distributions can be used to assess how
 We generate 1000 frequency distributions for $(\mathit{occupation} \and \mathit{sex})$ given $\mathit{income}\mo\cat{>50K}$, and then take the standard deviations of the samples as a rough measure of how much the probabilities we previously calculated could change;
 
 ```{r}
-freqsamples <- rF(n = 1000,
-                  agent = opmall,
-                  predictand = c('occupation', 'sex'),
-                  predictor = list(income = '>50K'))
+freqsamples <- rF(n = 1000, agent = opmall,
+    predictand = c('occupation', 'sex'),
+    predictor = list(income = '>50K'))
 
 variability <- apply(freqsamples,
-                     c('occupation','sex'), ## which dimensions to apply
-                     sd) ## function to apply to those dimensions
+    c('occupation','sex'), ## which dimensions to apply
+    sd) ## function to apply to those dimensions
 
 round(variability * 100, 1) ## round to one decimal
 ```
