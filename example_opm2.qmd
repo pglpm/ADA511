@@ -6,6 +6,7 @@
 ```{r}
 #| echo: false
 knitr::opts_knit$set(root.dir = "code/")
+options(repr.plot.width = 6*sqrt(2), repr.plot.height = 6)
 ```
 
 It is straightforward to implement decision-making in our prototype Optimal Predictor Machine. Let's continue with the example from [chapter @sec-example-opm1].
@@ -16,16 +17,15 @@ It is straightforward to implement decision-making in our prototype Optimal Pred
 Load the necessary libraries and functions, including the `decide()` function, and train the agent as we did previously:
 
 ```{r}
-library('extraDistr')
-library('foreach')
-
 source('tplotfunctions.R')
 source('OPM_nominal.R')
 
-options(repr.plot.width = 6*sqrt(2), repr.plot.height = 6)
+set.seed(100)
 
-opmall <- buildagent(metadata = 'meta_income_data_example.csv',
-                     data = 'train-income_data_example.csv')
+opmall <- buildagent(
+    metadata = 'meta_income_data_example.csv',
+    data = 'train-income_data_example.csv'
+)
 ```
 
 ## Decision matrix
@@ -33,14 +33,15 @@ opmall <- buildagent(metadata = 'meta_income_data_example.csv',
 We use the targeted-advertisement scenario of [§@sec-max-exp-util-example], with the following utility matrix for the three ad-types:
 
 ```{r}
-adutilities <- matrix(
+adUtilities <- matrix(
     c(-1, 3,
         2, 2,
         3,-1),
     nrow = 3, byrow = TRUE,
-    dimnames = list(ad_type = c('A','B','C'), income = c('<=50K', '>50K')))
+    dimnames = list(ad_type = c('A','B','C'),
+        income = c('<=50K', '>50K')))
 
-print(adutilities)
+print(adUtilities)
 ```
 
 ## Example application
@@ -50,14 +51,20 @@ First let's apply the principle of maximal expected utility step-by-step.
 Consider the example from [§@sec-max-exp-util-example]. The agent calculates the probabilities for the predictand `income` from the given predictor values:
 
 ```{r}
-userpredictors <- list(workclass = 'Private', education = 'Bachelors',
-                       marital_status = 'Never-married',
-                       occupation = 'Prof-specialty',
-                       relationship = 'Not-in-family', race = 'White',
-                       sex = 'Female', native_country = 'United-States')
+userpredictors <- list(
+    workclass = 'Private',
+    education = 'Bachelors',
+    marital_status = 'Never-married',
+    occupation = 'Prof-specialty',
+    relationship = 'Not-in-family',
+    race = 'White',
+    sex = 'Female',
+    native_country = 'United-States'
+)
 
-probs <- infer(agent = opmall, predictand = 'income',
-               predictor = userpredictors)
+probs <- infer(agent = opmall,
+    predictand = 'income',
+    predictor = userpredictors)
 
 print(probs)
 ```
@@ -65,7 +72,7 @@ print(probs)
 Find the expected utilities of the three possible ad-types by matrix multiplication:
 
 ```{r}
-adutilities %*% probs
+adUtilities %*% probs
 ```
 
 And we see that ad-type `C` is optimal.
@@ -78,51 +85,59 @@ The [function `decide()`](https://github.com/pglpm/ADA511/blob/master/code/OPM_n
 - `optimal`: one decision unsystematically chosen among the optimal ones (if more than one)
 
 ```{r}
-optimalad <- decide(utils = adutilities, probs = probs)
+optimalAd <- decide(utils = adUtilities, probs = probs)
 
-print(optimalad)
+print(optimalAd)
 ```
 
 ## Performance on test set
 
 Finally let's apply our prototype agent to a test set, as a demonstration, and see how much utility it yields. This procedure will be discussed in more detail in [§@sec-eval-decision].
 
-Load the test dataset; `M` is the number of test data:
+Load the test dataset; `ntest` is the number of test data:
 
 ```{r}
-testdata <- read.csv('test-income_data_example.csv', header = TRUE,
-    na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE)
+testdata <- read.csv('test-income_data_example.csv',
+    header = TRUE, na.strings = '',
+    stringsAsFactors = FALSE, tryLogical = FALSE)
 
-M <- nrow(testdata)
+ntest <- nrow(testdata)
 ```
 
 We build the analogous of a "confusion matrix" ([§@sec-eval-decision]), telling us how many times the agent chooses the three ad-types for both income levels.
 
 ```{r}
-confusionmatrix <- adutilities * 0L
+confusionmatrix <- adUtilities * 0
 
 ## Use a for-loop for clarity
-for(i in 1:M){
+for(i in 1:ntest){
     userpredictors <- testdata[i, colnames(testdata) != 'income']
-    probs <- infer(agent = opmall, predictand = 'income',
-                   predictor = userpredictors)
-    decision <- decide(utils = adutilities, probs = probs)$optimal
+
+    probs <- infer(agent = opmall,
+        predictand = 'income',
+        predictor = userpredictors)
+
+    decision <- decide(utils = adUtilities, probs = probs)$optimal
+
     trueincome <- testdata[i, 'income']
 
-    confusionmatrix[decision, trueincome] <- confusionmatrix[decision, trueincome] + 1L
+    confusionmatrix[decision, trueincome] <-
+        confusionmatrix[decision, trueincome] + 1
 }
 
 print(confusionmatrix)
 ```
 
-The total utility yield is the total sum of the element-wise product of the `confusionmatrix` and the `adutilities` matrix
+The total utility yield is the total sum of the element-wise product of the `confusionmatrix` and the `adUtilities` matrix
 
 ```{r}
-totalyield <- sum(adutilities * confusionmatrix)
-averageyield <- totalyield/M
+totalyield <- sum(adUtilities * confusionmatrix)
 
-cat('\nTotal yield =', totalyield, 
-'\nAverage yield =', averageyield, '\n')
+averageyield <- totalyield/ntest
+
+cat('\nTotal yield =', totalyield,
+    '\nAverage yield =', averageyield,
+    '\n')
 ```
 
 Note that:
