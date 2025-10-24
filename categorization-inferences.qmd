@@ -1,35 +1,22 @@
-# [Beyond machine learning]{.green} {#sec-beyond-ML}
+# [A categorization of inferences]{.green} {#sec-kinds-inferences}
 {{< include macros.qmd >}}
 {{< include macros_prob_inference.qmd >}}
 {{< include macros_connection-3.qmd >}}
 
-## Machine learning from a bird's-eye view {#sec-ML-birds-eye}
+In this and the next few chapters we shall focus on particular kinds of inferences and predictions, and on how an AI agent should do them. Later on we shall also explore ways to make our agent faster, at the expense of optimality; most present-day machine-learning algorithms are examples of such fast, sub-optimal approximations.
 
-The last few chapters gave a brief introduction to and overview of popular machine-learning methods, their terminology, and the points of view that they typically adopt. Now let's try to look at them keeping in mind our main goal in this course: [exploring new inference methods, understanding their foundations, and thinking out of the box](index.html).
+## A task-oriented categorization of some inference problems {#sec-cat-problems}
 
-In this and the next few chapters we shall focus on the following question: [*to what purpose do we use machine-learning algorithms?*]{.yellow}. After answering this question and clarifying what the purpose is, we shall try to achieve it in an *optimal way*, according to the methods and concepts we studied in the initial part of the course. Remember that they are guaranteed to give the optimal solution ([chapter @sec-framework]). But we shall keep an eye open to see where our optimal methods seem to be similar or dissimilar to machine-learning methods.
+There are all sorts of inferences that we need to draw, in everyday life and in highly technological applications, in situations without serious consequences and in others, like medicine, where lives may be at stake.
 
-Thereafetr, in the last chapters, we shall examine where the optimal solution and machine-learning methods converge and diverge, try to understand what machine-learning methods do from the point of view of our optimal solution, and think of ways to improve them.
+There are no distinct, clear-cut categories of inferences, but an informal categorization can provide a starting point from which to examine a new kind of inference task that we may face. Many tasks will fall in between categories: every data-engineering or data-science problem is unique.
 
-## A task-oriented categorization of some machine-learning problems {#sec-cat-problems}
+The important questions for us are these:
 
-For our goal, the common machine-learning categorization and terminology discussed in [chapter @sec-ml-introduction] are somewhat inadequate. Distinctions such as "supervised learning" vs "unsupervised learning" are of secondary importance to a data engineer (as opposed to a ["data mechanic"](preface.html)) for several reasons:
+- **What do we wish to infer or choose?**
+- **From which kind of information?**
 
-- {{< fa shuffle >}}\ \ They group together some types of tasks that are actually quite different from an inferential or decision-making viewpoint; and conversely they separate types of tasks that are quite similar.
-
-- {{< fa bullseye >}}\ \ They focus on procedures rather than on purposes.
-
-The important questions for us, in fact, are: [*What do we wish to infer or choose?*]{.blue} and [*From which kind of information?*]{.green} These questions define the problem we want to solve. <!-- The procedure may then be chosen depending on the theory, resources and technologies, other contingent factors, and so on. -->
-
-<!-- It's somewhat like saying that the difference between car and aeroplane is that the latter has wings. Sure -- but *why?* The focus on wings misses the essential difference between these two means of transportation: they operate through different material media and exploit different kinds of physics; that's why the second has wings. -->
-
-Let's introduce a different categorization of the kind of tasks that we want to accomplish; a categorization that tries to focus on the purpose or task, and on the types of desired information and of available information, rather than on the procedure.
-
-
-The categorization below <!-- , of the types of *task* that machine-learning algorithms try to solve, --> is informal. It only provides a starting point from which to examine a new kind of task we may face. Many tasks will fall in between categories: every data-engineering or data-science problem is unique.
-
-\
-We *exclude* from the start all tasks that require an agent to continuously and actively interact with its environment for acquiring information, making choices, getting feedback, and so on. Clearly these tasks are the domain of Decision Theory in its most complex form, with ramified decisions, *strategies*, and possibly the interaction with other decision-making agents. To explore and analyse this kind of tasks is beyond the purpose of this course.
+So let's focus on a categorization based on the purpose, and on the types of desired information and of available information. We *exclude* all tasks that require an agent to *continuously and actively interact with its environment* for acquiring information, making choices, getting feedback, and so on. These tasks are the domain of Decision Theory in its most complex form, with ramified decisions, *strategies*, and possibly the interaction with other decision-making agents. To explore and analyse this kind of tasks is beyond the purpose of this course.
 
 ::::{.column-margin}
 ::: {.callout-tip}
@@ -54,9 +41,9 @@ Remember that you can adopt any terminology you like. If you prefer "instance" a
 
 A first distinction can be made between
 
-- [{{< fa sign-out-alt >}} {{< fa cube >}}\ \ Tasks where an agent must itself *generate* a new unit]{.yellow}
+- [{{< fa sign-out-alt >}} {{< fa cube >}}\ \ Tasks where an agent must itself *generate* a new unit.]{.darkgrey}
 
-- [{{< fa cube >}} {{< fa question >}}\ \ Tasks where a new unit is given to an agent, who must *guess* some of its variates]{.green}
+- [{{< fa cube >}} {{< fa question >}}\ \ Tasks where a new unit is given to an agent, who must *guess* some of its variates.]{.darkgrey}
 
 An example of the first type of task is image generation: an algorithm is given a collection of images and is asked to generate a new image based on them.
 
@@ -71,9 +58,9 @@ The terms "discriminative" and "generative" are sometimes associated in machine 
 
 Focusing on the second type of task (a new unit is given to the agent), we can further divide it into two subtypes:
 
-- [{{< fa regular star >}}\ \ The agent must guess *all* variates of the new unit]{.purple}
+- [{{< fa regular star >}}\ \ The agent must guess *all* variates of the new unit.]{.darkgrey}
 
-- [{{< fa star-half-alt >}}\ \ The agent must guess *some* variates of the new unit, but can observe other variates of the new unit]{.red}
+- [{{< fa star-half-alt >}}\ \ The agent must guess *some* variates of the new unit, but can observe other variates of the new unit.]{.darkgrey}
 
 An example of the first subtype of task is the "urgent vs non-urgent" problem of [§@sec-conditional-joint-sim]: having observed incoming patients, some of which where urgent and some non-urgent, the agent must guess whether the next incoming patient will be urgent or not. No other kinds of information (transport, patient characteristics, or others) are available.
 
@@ -87,11 +74,11 @@ The terms "unsupervised learning" and "supervised learning" are sometimes associ
 
 Finally we can further divide the second subtype above into two or three subsubtypes, depending on the information available to the agent about *previous units*:
 
-- [{{< fa star-half-alt >}} {{< fa star-half-alt >}}\ \ All predictors and predictands of previous units are known to the agent]{.blue}
+- [{{< fa star-half-alt >}} {{< fa star-half-alt >}}\ \ All predictors and predictands of previous units are known to the agent]{.darkgrey}
 
-- [{{< fa star-half >}} {{< fa star-half >}}\ \ All predictors of previous units, but not the predictands, are known to the agent]{.lightblue}
+- [{{< fa star-half >}} {{< fa star-half >}}\ \ All predictors of previous units, but not the predictands, are known to the agent]{.darkgrey}
 
-- [{{< fa regular star-half >}} {{< fa regular star-half >}}\ \ All predictands of previous units, but not the predictors, are known to the agent]{.midgrey}
+- [{{< fa regular star-half >}} {{< fa regular star-half >}}\ \ All predictands of previous units, but not the predictors, are known to the agent]{.darkgrey}
 
 \
 
@@ -125,8 +112,11 @@ The term "unsupervised learning" can refer to the second subsubtype, for instanc
 The third subsubtype is very rarely considered in machine learning, yet it is not an unrealistic task.
 :::
 
-The types, subtypes, subsubtypes above are obviously not mutually exclusive or comprehensive. We can easily imagine scenarios where an agent has some predictors & predictands available about *some* previous units, but only predictors or only predictands available for other previous units. This scenario falls in between the three subsubtypes above. In machine learning, hybrid situations like these are categorized as "missing data" or "imputation".
+The types, subtypes, subsubtypes above are obviously not mutually exclusive or comprehensive. We can easily imagine scenarios where an agent has some predictors & predictands available about *some* previous units, but only predictors or only predictands available for other previous units. This scenario falls in between the three subsubtypes above.
 
+:::{.small .midgrey}
+In machine learning, hybrid situations like these are categorized as "missing data" or "imputation".
+:::
 
 ## Flexible categorization using probability theory {#sec-categ-probtheory}
 
@@ -161,7 +151,7 @@ Finally let's see how to express different typologies of tasks in probability no
 
 \
 
-### [{{< fa regular star >}}]{.purple}\ \ The agent must guess *all* variates of the new unit
+### [{{< fa regular star >}}]{.darkgrey}\ \ The agent must guess *all* variates of the new unit
 
 This kinds of guess is represented by the probability distribution
 
@@ -180,7 +170,7 @@ for all possible values $\red z$ in the domain of $\bZ$. The specific values $\g
 
 \
 
-### [{{< fa star-half-alt >}}]{.red}\ \ The agent must guess *some* variates of the new unit, having observed other variates of the new unit
+### [{{< fa star-half-alt >}}]{.darkgrey}\ \ The agent must guess *some* variates of the new unit, having observed other variates of the new unit
 
 This kind of guess is represented by the probability distribution
 
@@ -201,7 +191,7 @@ The remaining information "$\dotsb$" contained in the conditional depends on the
 
 \
 
-#### [{{< fa star-half-alt >}} {{< fa star-half-alt >}}]{.blue}\ \ All predictors and predictands of previous units are known to the agent
+#### [{{< fa star-half-alt >}} {{< fa star-half-alt >}}]{.darkgrey}\ \ All predictors and predictands of previous units are known to the agent
 
 This corresponds to the probability distribution
 
@@ -232,7 +222,7 @@ where ${\red y} \in \set{\red\cat{Saitama}, \cat{Fubuki}, \cat{Genos}, \cat{Meta
 
 \
 
-#### [{{< fa star-half >}} {{< fa star-half >}}]{.lightblue}\ \ All predictors of previous units, but not their predictands, are known to the agent
+#### [{{< fa star-half >}} {{< fa star-half >}}]{.darkblue}\ \ All predictors of previous units, but not their predictands, are known to the agent
 
 This corresponds to the probability distribution
 
@@ -304,7 +294,7 @@ $$
 :::
 ::::
 
-### [{{< fa sign-out-alt >}} {{< fa cube >}}]{.yellow}\ \ Tasks where an agent must itself *generate* a new unit
+### [{{< fa sign-out-alt >}} {{< fa cube >}}]{.darkgrey}\ \ Tasks where an agent must itself *generate* a new unit
 
 Our very first categorization included the task of generating a new unit, given previous examples. In this kind of task there are possible alternatives that the agent could generate. How should one alternative be chosen? A moment's thought shows that the *probabilities* for the possible alternatives should enter the choice.
 
@@ -332,11 +322,11 @@ Our general conclusion is this:
 :::{.callout-note style="font-size:120%"}
 ##  
 ::::{style="font-size:120%"}
-Probability distribution such as those discussed above should intrinsically enter all types of machine-learning algorithms.
+Probability distribution such as those discussed above should intrinsically enter all types of inference algorithms, including machine-learning algorithms.
 ::::
 :::
 
-This is the condition for machine-learning algorithms to be optimal and self-consistent. The less an algorithm satisfies that condition, the less optimal and less consistent it is.
+This is the condition for any inference algorithm to be optimal and self-consistent. The less an algorithm satisfies that condition, the less optimal and less consistent it is.
 
 \
 
@@ -480,7 +470,7 @@ $$
 \sum_{\yellow c}\P({\yellow C\mo c} \and  {\green\boldsymbol{\dotsb}} \| \yI)
 $$
 
-Using the marginalization rule we find these final expressions for the probabilities of some machine-learning tasks discussed so far:
+Using the marginalization rule we find these final expressions of the probabilities for some tasks discussed so far:
 
 ::::{.column-page-right}
 :::{.callout-note}
@@ -716,7 +706,7 @@ Stop for a moment and contemplate some of the consequences of this remarkable fa
 
 - [{{< fa arrows-spin >}}\ \ *An agent that can perform one of the tasks above can, in principle, also perform all other tasks.*]{.blue}
 
-    This is why a perfect agent, working with probability, in principle does not have to worry about "supervised", "unsupervised", "missing data", "imputation", and similar situations. This also shows what was briefly mentioned before: all these task typologies are much closer to one another than it might look like from the perspective of current machine-learning methods.
+    This is why a perfect agent, working with probability, in principle does not have to worry about "supervised", "unsupervised", "missing data", "imputation", and similar situations. This also shows that all these task typologies are much closer to one another than it might look like from the perspective of current machine-learning methods.
 	
 :::{.column-margin}
 The acronym [*OPM*]{.green} ![](opm_fist2.png){height=2em} can stand for [*Optimal Predictor Machine*]{.green} or [*Omni-Predictor Machine*]{.green}
@@ -776,7 +766,7 @@ The "encode" goal sounds quite challenging, because the number $N$ of units can 
 In the next [Inference III]{.green} part we shall see that partially solving the "assign" goal actually makes the "encode" goal feasible.
 
 \
-One question arises if we now look at machine-learning methods from our Probability Theory perspective. Some machine-learning methods, including many popular ones, don't give us probabilities about values. They return *one* definite value. How do we reconcile this with the probabilistic point of view above? We shall answer this question in full in the last chapters; but a short, intuitive answer can already be given now.
+One question arises if we now look at present-day machine-learning algorithms. Many popular machine-learning algorithms don't give us probabilities about values. They return *one* definite value. How do we reconcile this with the probabilistic point of view above? We shall answer this question in full in the last chapters; but a short, intuitive answer can already be given now.
 
 If there are several possible correct answers to a given guess, but a machine-learning algorithm gives us only one answer, then the algorithm must have internally *chosen* one of them. In other words, the machine-learning algorithm is internally doing decision-making. We know from chapters [@sec-framework] and [@sec-basic-decisions] that this process should obey Decision Theory and therefore *must* involve:
 
