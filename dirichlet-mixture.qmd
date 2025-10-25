@@ -7,7 +7,7 @@
 
 ## A belief distribution for frequency distributions over nominal variates {#sec-intro-dirichlet-mix}
 
-In this course we sadly shall not examine in depth many mathematical expressions for belief distributions $\P(F\mo\vf\|\yI)$ over frequencies. We briefly discuss one, called the [**Dirichlet-mixture**]{.blue} belief distribution. The state of knowledge underlying this distribution will be denoted $\yD$.
+There are infinite possible ways to choose a belief distribution $\P(F\mo\vf\|\yI)$ over frequencies. In this chapter we discuss one, called the [**Dirichlet-mixture**]{.blue} belief distribution, in some detail. The state of knowledge underlying this distribution will be denoted $\yD$.
 
 The Dirichlet-mixture distribution is appropriate for statistical populations with *nominal*, discrete variates, or joint variates with all nominal components. It is not appropriate to discrete ordinal variates, because it implicitly assumes that there is no natural order to the variate values.
 
@@ -18,7 +18,7 @@ Some of the theoretical basis for the choice of this belief distribution can be 
 :::
 ::::
 
-Suppose we have a simple or joint nominal variate $\bZ$ which can assume $M$ different values (these can be joint values, as in the examples of [§@sec-know-freq]). As usual $\vf$ denotes a specific frequency distribution for the variate values. For a specific value $\bz$, $f(\bz)$ is the relative frequency with which that value occurs in the full population.
+Suppose we have a simple or joint nominal variate $\bZ$ which can take on $M$ different possible values; these can be joint values, as in the examples of [§@sec-categ-probtheory]. As usual $\vf$ denotes a specific frequency distribution for the variate values. For a given value $\bz$, we denote by $f(\bz)$ the relative frequency with which that value occurs in the full population.
 
 The Dirichlet-mixture distribution assigns to $\vf$ a probability density given by the following formula:
 
@@ -42,31 +42,27 @@ $$
 \amax=20
 $$
 
-so the sum $\sum_k$ runs over 21 terms.
-
-In most applications it does not matter if we take a lower $\amin$ or a higher $\amax$.
+so the sum "$\sum_k$" runs over 21 terms. In most applications it does not matter if we take a lower $\amin$ or a higher $\amax$.
 
 ### Meaning of the $\amin, \amax$ parameters
 
-The parameters $\amin, \amax$ encode, approximately speaking, the agent's prior belief about how many data are needed to change its initial beliefs. More precisely, $2^{\amin}$ and $2^{\amax}$ represent a lower and an upper bound on the amount of data necessary to overcome initial beliefs. Values\ \ $\amin=0$,\ \ $\amax=20$\ \ represent the belief that such amount could be anywhere between 1 unit and approximately 1 million units. The belief is spread out uniformly across the orders of magnitude in between.
+The parameters $\amin, \amax$ encode, approximately speaking, the agent's built-in belief about how many data are needed to change its initial beliefs. More precisely, $2^{\amin}$ and $2^{\amax}$ represent a lower and an upper bound on the amount of data necessary to overcome initial beliefs. Values\ \ $\amin=0$,\ \ $\amax=20$\ \ represent the belief that such amount could be anywhere between 1 unit and approximately 1 million units. The belief is spread out uniformly across the orders of magnitude in between.
 
 If $2^{\amin}$ is larger than the amount of training data, the agent will consider these data insufficient, and tend to give uniform probabilities to its inferences, for example a 50%/50% probability to a binary variate.
 
-If the amount of data that should be considered "enough" is known, for example from previous studies on similar populations, the parameters $\amin,\amax$ can be set to that order of magnitude (in base 2), minus or plus some magnitude range.
+If the amount of data that should be considered "enough" is known, for example from previous studies on similar populations, the parameters $\amin,\amax$ can be set to that order of magnitude, in base 2, minus or plus some magnitude range.
 
-Note that if such an order of magnitude is not known, then it does *not* make sense to "estimate" it from training data with other methods, because an agent with a Dirichlet-mixture distribution will already do that internally (and in an optimal way), provided an ample range is given with $\amin, \amax$.
+Note that if such an order of magnitude is not known, then it does *not* make sense to "estimate" it from training data with other methods, because an agent with a Dirichlet-mixture belief will already do that internally and in an optimal way, provided an ample range is given with $\amin, \amax$.
 
 :::{.callout-caution}
-
-
-In the calculations and exercises that follow, you're welcome to do them also with other $\amin$ and $\amax$ values, and see what happens.
+In the calculations and exercises that follow, try also other $\amin$ and $\amax$ values, and see what happens.
 :::
 
 \
 
-Let's see how this formula looks like in a concrete, simple example: the Mars-prospecting scenario (which has many analogies with coin tosses).
+Let's see how this formula looks like in a concrete, simple example: the Mars-prospecting scenario, which has many analogies with coin tosses.
 
-The variate $\yR$ can assume two values $\set{\yy,\yn}$, so $M=2$ in this case. The frequency distribution consists in two frequencies:
+The variate $\yR$ can take on two values $\set{\yy,\yn}$, so $M=2$ in this case. The frequency distribution consists in two frequencies:
 
 $$f(\yy) \qquad f(\yn)$$
 
@@ -82,13 +78,13 @@ of which only one can be chosen independently, since they must sum up to 1. For 
 <!-- \amax = 2 -->
 <!-- $$ -->
 
-*Only for this example* we choose
+In the present example we choose
 
 $$\amin=0 \qquad \amax=2$$
 
-so that the sum $\sum_k$ runs over 3 terms.
+so that the sum "$\sum_k$" runs over 3 terms.
 
-The agent's belief distribution for the frequencies is
+Let's use these specific values of $M$, $\amin$, $\amax$ in the agent's belief distribution for the frequencies, and simplify its expression a little:
 
 $$
 \begin{aligned}
@@ -141,12 +137,20 @@ f(\yy)^{\frac{2^{2}}{2}-1}\cdot f(\yn)^{\frac{2^{2}}{2}-1}
 +{} \\[1ex]&\qquad f(\yy)\cdot f(\yn)
 \cdot \frac{6}{1}
 \Biggr]
+\\[2ex]
+&=
+\frac{1}{3\pi} \cdot
+\frac{1}{\sqrt{f(\yy)}}\cdot \frac{1}{\sqrt{f(\yn)}}
++
+\frac{1}{3}
++ 3 \cdot
+f(\yy)\cdot f(\yn)
 \end{aligned}
 $$
 
 \
 
-We can visualize this belief distribution (with $\amin=0, \amax=2$) with a generalized scatter plot ([§@sec-repr-general-distr]) of 100 frequency distributions, each represented by a line histogram ([§@sec-discr-prob-distr]):
+We can visualize this belief distribution (with $\amin=0, \amax=2$) with a generalized scatter plot ([§@sec-repr-general-distr]) of 100 frequency distributions; each distribution is represented by a line (recall [§@sec-discr-prob-distr]):
 
 ![](samples_rocks.png){width=100%}
 
@@ -179,11 +183,11 @@ The second characteristic expresses the belief that the agent may more often dea
 
 Calculate the formula above for these three frequency distributions:
 
-- $f(\yy)=0.5\quad f(\yn)=0.5$
+1.\ \ \ $f(\yy)=0.5\quad f(\yn)=0.5$
 
-- $f(\yy)=0.75\quad f(\yn)=0.25$
+2.\ \ \ $f(\yy)=0.75\quad f(\yn)=0.25$
 
-- $f(\yy)=0.99\quad f(\yn)=0.01$
+3.\ \ \ $f(\yy)=0.99\quad f(\yn)=0.01$
 
 <!-- ## [1] 1.33103 -->
 <!-- ## [1] 0.945739 -->
@@ -194,7 +198,7 @@ Calculate the formula above for these three frequency distributions:
 
 ## Formula for joint probabilities about units with the Dirichlet-mixture distribution {#sec-joint-prob-dirichlet}
 
-A mathematical advantage of the Dirichlet-mixture belief distribution is that some formulae where it enters can be computed exactly. The most important formula is de Finetti's representation theorem ([§@sec-freq-not-known]), where the sum $\sum_{\vf}$ (really an integral $\int\,\di\vf$) can be calculated analytically in the case of the Dirichlet-mixture:
+A mathematical advantage of the Dirichlet-mixture belief distribution is that some probability formulae that contain it can be computed exactly. The most important formula is de Finetti's representation theorem ([§@sec-freq-not-known]), where the sum "$\sum_{\vf}$" (really an integral "$\int\,\di\vf$") can be calculated analytically in the case of the Dirichlet-mixture:
 
 :::{.column-body-outset-right}
 $$
@@ -320,14 +324,14 @@ $$
 
 - Using the formula above, calculate:
 
-    - $\P(\yR_1\mo\yy\| \yD)$ ; does the result make sense?
+    - $\P(\yR_1\mo\yy\| \yD)$ . Does the result make sense?
 
     - $\P(\yR_{32}\mo\yn \and \yR_{102}\mo\yn \and \yR_{8}\mo\yn\| \yD)$
 
 <!-- ## [1] 0.5 -->
 <!-- ## [1] 0.254167 -->
 
-- Try doing the calculation above on a computer, with $\amin=0, \amax=20$. What happens?
+- Try doing the calculation above on a computer with $\amin=0, \amax=20$. What happens?
 
 :::
 
