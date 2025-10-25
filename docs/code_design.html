@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-09-21">
+<meta name="dcterms.date" content="2025-10-25">
 
 <title>30&nbsp; Code design – ADA511 0.3</title>
 <style>
@@ -32,7 +32,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./prototype_code.html" rel="next">
-<link href="./dirichlet-mixture.html" rel="prev">
+<link href="./summary_formulae.html" rel="prev">
 <link href="./favicon.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -134,7 +134,7 @@ window.Quarto = {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.3</span><br><span class="small grey">2025-09-21</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.3</span><br><span class="small grey">2025-10-25</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -415,8 +415,14 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./dirichlet-mixture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title"><span class="green">Example of belief over frequencies: the Dirichlet-mixture distribution</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./summary_formulae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title"><span class="green">Final inference formulae</span></span></span></a>
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="green">Final inference formulae for exchangeable beliefs</span></span></span></a>
   </div>
 </li>
       </ul>
@@ -432,14 +438,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./dirichlet-mixture.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="red">The Dirichlet-mixture belief distribution</span></span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./code_design.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title"><span class="red">Code design</span></span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title"><span class="red">Implementing an OPM</span></span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -604,7 +604,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-09-21</p>
+      <p class="date">2025-10-25</p>
     </div>
   </div>
   
@@ -625,6 +625,11 @@ window.Quarto = {
 <div class="hidden">
 
 </div>
+<p>We have finally collected all we need to build a real, prototype</p>
+<p><img src="optimal_predictor_machine.png" class="img-fluid" style="width:75.0%"></p>
+<p>up from ground principles. This will be done in the present and following chapters of this part. In this chapter we specify and discuss a concrete belief distribution representing an agent with exchangeable beliefs about nominal variates. In the next we put it into code. Then we apply it to some real datasets.</p>
+<p><br>
+</p>
 <p>Before starting, let’s agree on some terminology in order not to get confused in the discussion below.</p>
 <ul>
 <li>We shall call <span class="blue"><em>task</em></span> a repetitive inference problem with a specified set of units and variates. For instance, a task could be the consecutive prediction of the urgency of incoming patients, given their mean of transportation. We assume that the details of the variates, such as their domain, are well specified. Possibly also a set of data from other patients is available, which we call “training data”.</li>
@@ -632,7 +637,7 @@ window.Quarto = {
 </ul>
 <section id="sec-code-range" class="level2 page-columns page-full" data-number="30.1">
 <h2 data-number="30.1" class="anchored" data-anchor-id="sec-code-range"><span class="header-section-number">30.1</span> Range of use of the code</h2>
-<p>The concrete formulae discussed in the previous <a href="dirichlet-mixture.html" class="quarto-xref">chapter&nbsp;&nbsp;<span>29</span></a> can be put into code, for use in different tasks involving only nominal variates. Software of this kind can in principle be written to allow for some or all of the versatility discussed in §§&nbsp;<a href="categorization-inferences.html#sec-categ-probtheory" class="quarto-xref"><span>24.2</span></a>–<a href="categorization-inferences.html#sec-underlying-distribution" class="quarto-xref"><span>24.3</span></a>, for example the possibility of taking care (in a first-principled way!) of partially missing training data. But the more versatile we make the software, the more memory, processing power, and computation time it will require.</p>
+<p>The concrete formulae discussed in the previous <a href="dirichlet-mixture.html" class="quarto-xref">chapter&nbsp;&nbsp;<span>28</span></a> can be put into code, for use in different tasks involving only nominal variates. Software of this kind can in principle be written to allow for some or all of the versatility discussed in §§&nbsp;<a href="categorization-inferences.html#sec-categ-probtheory" class="quarto-xref"><span>24.2</span></a>–<a href="categorization-inferences.html#sec-underlying-distribution" class="quarto-xref"><span>24.3</span></a>, for example the possibility of taking care (in a first-principled way!) of partially missing training data. But the more versatile we make the software, the more memory, processing power, and computation time it will require.</p>
 <p>Roughly speaking, more versatility corresponds to calculations of the joint probability</p>
 <div class="column-page-right">
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -881,7 +886,7 @@ P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sma
 </section>
 <section id="sec-code-optim" class="level2 page-columns page-full" data-number="30.3">
 <h2 data-number="30.3" class="anchored" data-anchor-id="sec-code-optim"><span class="header-section-number">30.3</span> Code optimization</h2>
-<p>The formulae of <a href="dirichlet-mixture.html" class="quarto-xref">chapter&nbsp;&nbsp;<span>29</span></a>, if used as-written, easily lead to two kinds of computation problems. First, they generate overflows and <code>NaN</code>, owing to factorials and their divisions. Second, the products over variates may involve so many terms as to require a long computation time. In the end we would have to wait a long time just to receive a string of <code>NaN</code>s.</p>
+<p>The formulae of <a href="dirichlet-mixture.html" class="quarto-xref">chapter&nbsp;&nbsp;<span>28</span></a>, if used as-written, easily lead to two kinds of computation problems. First, they generate overflows and <code>NaN</code>, owing to factorials and their divisions. Second, the products over variates may involve so many terms as to require a long computation time. In the end we would have to wait a long time just to receive a string of <code>NaN</code>s.</p>
 <p>The first problem is dealt with by rewriting the formulae in terms of logarithms, and renormalizing numerators and denominators of fractions. See for example the lines defining <code>auxalphas</code> in the <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM_nominal.R"><code>buildagent()</code></a> function, and the line that redefines <code>counts</code> one last time in the <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM_nominal.R"><code>infer()</code></a> function.</p>
 <p>The second problem is dealt with by reorganizing the sums as multiples of identical summands; see the lines working with <code>freqscounts</code> in the <code>buildagent()</code>function.</p>
 
@@ -1310,8 +1315,8 @@ P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sma
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./dirichlet-mixture.html" class="pagination-link" aria-label="[The Dirichlet-mixture belief distribution]{.red}">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="red">The Dirichlet-mixture belief distribution</span></span></span>
+      <a href="./summary_formulae.html" class="pagination-link" aria-label="[Final inference formulae for exchangeable beliefs]{.green}">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="green">Final inference formulae for exchangeable beliefs</span></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
