@@ -195,10 +195,6 @@ infer.agentcompressed <- function(
         variatenames <- names(variates)
         dimensions <- lengths(variates)
 
-        ## Load alpha parameters from "agent" object
-        ## divide by total number of possible joint values
-        alphas <- alphas / prod(dimensions)
-
         ## Check validity of predictands
         predictand <- unlist(predictand)
         if(!all(predictand %in% variatenames)){
@@ -248,8 +244,7 @@ infer.agentcompressed <- function(
 
 
         ## Multiplicative factor for alpha parameters, owing to marginalization
-        excludevars <- which(variatenames %in% c(predictand, names(predictor)))
-        alphas <- prod(dimensions[-excludevars]) * alphas
+        alphas <- alphas / prod(dimensions[predictand])
 
         ## reduce value of auxalphas by maximum, to avoid overflow
         auxalphas <- auxalphas - max(log(alphas + max(probs)) + auxalphas)
@@ -278,10 +273,6 @@ infer.agent <- function(
     with(agent, {
         variatenames <- names(variates)
         dimensions <- lengths(variates)
-
-        ## Load alpha parameters from "agent" object
-        ## divide by total number of possible joint values
-        alphas <- alphas / prod(dimensions)
 
         ## Check validity of predictands
         predictand <- unlist(predictand)
@@ -320,11 +311,6 @@ infer.agent <- function(
             }
         }
 
-        ## predictand-index
-        ipredictand <- which(names(dimnames(counts)) %in% predictand)
-        ## Multiplicative factor for alpha parameters, owing to marginalization
-        alphas <- prod(dim(counts)[-ipredictand]) * alphas
-        ##
         ## Marginalize frequencies
         counts <- apply(counts, predictand, sum)
         if(is.null(dim(counts))){
@@ -332,19 +318,16 @@ infer.agent <- function(
             dimnames(counts) <- temp[predictand]
         }
 
+        ## Multiplicative factor for alpha parameters, owing to marginalization
+        alphas <- alphas / prod(dimensions[predictand])
+
         ## reduce value of auxalphas by maximum, to avoid overflow
         auxalphas <- auxalphas - max(log(alphas + max(counts)) + auxalphas)
 
-        ## create an array of alphas and counts
-        ## then complete with log-probabilities stored in "agent" object
-        ## (note to self: aperm+sapply is half as fast)
+        ## Calculate final probabilities for predictands
         temp <- dimnames(counts) # save dimnames, possibly lost in colSums
         counts <- colSums(exp(log(outer(alphas, counts, `+`)) + auxalphas))
 
-    ## Calculate final probability distribution for new unit:
-    ## "-max(counts)": renormalize against overflow
-    ## "exp()": go from log-probabilities to probabilities
-    ## "colSums()": sum over alpha (that is, k)
     ## Reshape array of results
     if(is.null(dim(counts))){
         dim(counts) <- length(counts)
