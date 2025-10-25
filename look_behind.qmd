@@ -6,276 +6,70 @@ In the past chapters we have learned a lot of theory and fundamentals, illustrat
 
 Before proceeding, let's take a quick look back at the road behind us and recall the most important milestones:
 
-- {{< fa hand-point-right >}}\ \ In order to make decisions and to act, an agent needs to maximize expected utility, using its utilities and its degrees of belief.
-
-
-
-We have finally collected all we need to build up a real, prototype
-
-![](optimal_predictor_machine.png){width=75%}
-
-from ground principles. This will be done in the present and following chapters of this part. In this chapter we specify and discuss a concrete belief distribution representing an agent with exchangeable beliefs about nominal variates. In the next we put it into code. Then we apply it to some real datasets.
-
-
+::::{.column-page-inset-right .green}
+- {{< fa traffic-light >}}\ \ In order to make decisions and to act in an optimal way, an agent needs to maximize expected utility. The agent must quantify its "values" (*utilities*) and its degrees of belief (*probabilities*) about the consequences of the problem.
+\
 \
 
-Before starting, let's agree on some terminology in order not to get confused in the discussion below.
-
-- We shall call [*task*]{.blue} a repetitive inference problem with a specified set of units and variates. For instance, a task could be the consecutive prediction of the urgency of incoming patients, given their mean of transportation. We assume that the details of the variates, such as their domain, are well specified. Possibly also a set of data from other patients is available, which we call "training data".
-- We shall call [*application*]{.blue} or [*instance*]{.blue} of the task a single inference about a specific new unit, for example a new incoming patient.
-
-
-## Range of use of the code {#sec-code-range}
-
-The concrete formulae discussed in the previous [chapter @sec-dirichlet-mix] can be put into code, for use in different tasks involving only nominal variates. Software of this kind can in principle be written to allow for some or all of the versatility discussed in §§ [-@sec-categ-probtheory]--[-@sec-underlying-distribution], for example the possibility of taking care (in a first-principled way!) of partially missing training data. But the more versatile we make the software, the more memory, processing power, and computation time it will require.
-
-Roughly speaking, more versatility corresponds to calculations of the joint probability
-
-::::{.column-page-right}
-:::{.callout-note}
-##  
-
-$$
-\P(
-\blue 
-Z_{L}\mo  z_{L}
-\and
-\dotsb \and
-Z_{1}\mo z_1
-\black
-\| \yD
-)
-=
-\frac{1}{\amax-\amin+1}
-\sum_{\ya=\amin}^{\amax}
-\frac{
-\prod_{\bz} \bigl(\frac{2^{\ya}}{M} + \#\bz - 1\bigr)!
-}{
-\bigl(2^{\ya} + L -1 \bigr)!
-}
-\cdot
-\frac{
-\bigl(2^{\ya} -1 \bigr)!
-}{
-{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
-}
-\quad
-$$ {#eq-main-joint}
-
-:::
-::::
-
-for more values of the quantities $\blue Z_1, Z_2, \dotsc$. For instance, if data about unit #4 are missing, then we need to calculate the joint probability above for several (possibly all) values of $\blue Z_4$. If data about two units are missing, then we need to do an analogous calculation for all possible *combinations* of values; and so on.
-
-For our prototype, let's forgo versatility about units used as training data. From now on we abbreviate the set of training data as
-
-:::{.column-margin}
-Recall that $\bZ$ denotes all (nominal) variates of the population
-:::
-
-$$
-\data \defd
-(\green
-Z_{N}\mo z_{N} \land \dotsb \land
-Z_{2}\mo z_2 \land
-Z_{1}\mo z_{1}
-\black)
-$$
-
-where $\blue z_N, \dotsc, z_2, z_1$ are specific values, stored in some training dataset. No values are missing.
-
-Since the training $\data$ are given and fixed in a task, we omit the suffix "${}_{N+1}$" that we have often used to indicate a "new" unit. So "$\blue Z\mo z$" simply refers to the variate $\bZ$ in a new application of the task.
-
-We allow for full versatility in every new instance. This means that we can accommodate, *on the spot at each new instance*, what the predictand variates are, and what the predictor variates (if any) are. For example, if the population has three variates $\bZ=(\bA \and \bB \and \bC)$, our prototype can calculate, at each new application, inferences such as
-
-- $P(\bB\mo\dotso\|\data \and \yD)$: any one predictand variate, no predictors
-
-- $P(\bA\mo\dotso \and \bC\mo\dotso\|\data \and \yD)$: any two predictand variates, no predictors
-
-- $P(\bA\mo\dotso \and \bB\mo\dotso \and \bC\mo\dotso\|\data \and \yD)$: all three variates
-
-- $P(\bB\mo\dotso\|\bA\mo\dotso \and \data \and \yD)$: any one predictand variate, any other one predictor
-
-- $P(\bB\mo\dotso\| \bA\mo\dotso \and \bC\mo\dotso \and\data \and  \yD)$: any one predictand variate, any other two predictors
-
-- $P(\bA\mo\dotso \and \bC\mo\dotso\|\bB\mo\dotso \and \data \and \yD)$: any two predictand variates, any other one predictor
-
-
-## Code design and computations needed {#sec-code-computations}
-
-
-To enjoy the versatility discussed above, the code needs to compute
-
-::::{.column-page-right}
-:::{.callout-note}
-##  
-
-$$
-\P(
-\blue Z \mo z
-\and
-\green\data
-\black \| \yD)
-=
-\frac{1}{\amax-\amin+1}
-\sum_{\ya=\amin}^{\amax}
-\Biggl(\frac{2^{\ya}}{M} + {\green\#}\bz\Biggr)
-\cdot
-\frac{
-\prod_{\bz} \bigl(\frac{2^{\ya}}{M} + {\green\# z} - 1\bigr)!
-}{
-\bigl(2^{\ya} + N \bigr)!
-}
-\cdot
-\frac{
-\bigl(2^{\ya} -1 \bigr)!
-}{
-{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
-}
-$$ {#eq-objectP}
-
-for all possible values $\bz$, where ${\green\#}\bz$ is the number of times value $\bz$ appears **in the training [data]{.green}**, and $N = \sum_{\green z}{\green\# z}$ is the number of training data
-:::
-::::
-
-This formula is just a rewriting of formula (@eq-main-joint) for $L=N+1$, simplified by using the property of the factorial
-
-$$(a+1)! = (a+1) \cdot a!$$
-
-
-
-But the computation of formula (@eq-objectP) (for all values of $\bz$) must be done *only once* for a given task. For a new application we only need to combine these already-computed probabilities via sums and fractions. For example, in the three-variate case above, if in a new application we need to forecast $\red A\mo a$ given $\yellow C\mo c$, then we calculate
-
-::::{.column-page-inset-right}
-:::{.callout-note}
-##  
-
-(example with $Z \defd ({\red A}, {\blue B}, {\yellow C})$)
-
-$$
-P(\red A\mo a \black \|\yellow C\mo c \black \and \data \and \yD)
-=
-\frac{
-\sum_{\blue b}
-P(\red A\mo a \black \and \blue B\mo b \black \and \yellow C\mo c \black \and \data \| \yD)
-}{
-\sum_{\purple \alpha}\sum_{\blue b}
-P(\red A\mo {\purple \alpha} \black \and \blue B\mo b \black \and \yellow C\mo c \black \and \data \| \yD)
-}
-\quad
-$$ {#eq-forecast}
-
-:::
-::::
-
-where all $P(\red A\mo\dotso \black \and \blue B\mo\dotso \black \and \yellow C\mo\dotso \black \and \data \| \yD)$ are already computed.
-
-\
-
-Our prototype software must therefore include two main functions, which we can call as follows:
-
-<!-- you can add url to specific line n by appending #Ln -->
-
-- `buildagent()` ([see code](https://github.com/pglpm/ADA511/blob/code/OPM_nominal.R))
-: computes $\green\#\bz$ for all values $\bz$, as well as the multiplicative factors
+- {{< fa traffic-light >}}\ \ In order to calculate its degrees of belief in a logically consistent way, an agent must use the **four fundamental rules of inference**:
     
-	$$
+    $\P(\lnot X \| Z) = 1 - \P(X \| Z)$  
+    $\P(X \and Y \| Z) 
+= \P(X \| Y \and Z) \cdot \P(Y \| Z) 
+= \P(Y \| X \and Z) \cdot \P(X \| Z)$  
+    $\P(X \lor Y \| Z) = 
+    \P(X \| Z) + \P(Y \| Z) - \P(X \and Y \| Z)$  
+    $\P(X \| X \and Z) = 1$
+    
+    Any departure from these rules will lead to small or large logical errors.
+\
+\
+
+- {{< fa traffic-light >}}\ \ When an agent must draw inferences about populations, having observed $N$ units (*training data*) from the population, the four rules lead to the general formula
+    
+    $\P( Z_{N+1}\mo z \| 
+    Z_{N}\mo z_{N} \and \dotsb \and Z_{1}\mo z_{1} \and \yI) =
+    \frac{
+    \P( Z_{N+1}\mo z \and
+    Z_{N}\mo z_{N} \and \dotsb \and Z_{1}\mo z_{1} \| \yI)
+    }{
+\sum_z \P( Z_{N+1}\mo z \and
+    Z_{N}\mo z_{N} \and \dotsb \and Z_{1}\mo z_{1} \| \yI)
+    }$
+    
+    and some slight variations of it.
+    
+    The probability distribution $\P( Z_{N+1}\mo z \and \dotsb \and Z_{1}\mo z_{1} \| \yI)$ must be built-in in the agent.
+\
+\
+
+- {{< fa traffic-light >}}\ \ When an agent must draw inferences about an approximately infinite population, having observed $N$ units (*training data*) from the population, and the agent has *exchangeable* beliefs about the population, the four rules lead to the general formula
+    
+    $\P( Z_{N+1}\mo z \| 
+    Z_{N}\mo z_{N} \and \dotsb \and Z_{1}\mo z_{1} \and \yI) =
 	\frac{
-	\bigl(2^{\ya} -1 \bigr)!
-}{
-\bigl(2^{\ya} + N \bigr)!
+\sum_{\vf}
+f(Z\mo z) \cdot
+f(Z\mo z_{N}) \cdot
+\, \dotsb\, \cdot
+f(Z\mo z_{1})
 \cdot
-{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
-}
-$$
+\P(F\mo\vf \| \yI)
+}{
+\sum_{\vf}
+f(Z\mo z_{N}) \cdot
+\, \dotsb\, \cdot
+f(Z\mo z_{1})
+\cdot
+\P(F\mo\vf \| \yI)
+}$
     
-    for all $k$, in (@eq-objectP). This computation is done once and for all in a given task, using the training $\data$ and the metadata $\yD$ provided. The result can be stored in an array or similar object, which we shall call an `agent`-class object.
-
-- `infer()` ([see code](https://github.com/pglpm/ADA511/blob/master/code/OPM_nominal.R))
-: computes probabilities such as (@eq-forecast) at each new instance, using the stored `agent`-class object as well as the predictor variates and values provided with that instance, and the predictand variates requested at that instance.
-
+    and some slight variations of it.
+    
+    The probability distribution $\P(F\mo\vf \| \yI)$ must be built-in in the agent.
+::::
 \
 
-We shall also include four additional functions for convenience:
+Pay attention to the fact that all inference formulae about populations came straight from the four fundamental rules of inference. We did not use intuition, and **we did not use any "models"**.
 
-- `guessmetadata()`
-: builds a preliminary metadata file, encoding the background information $\yD$, from some dataset.
-
-- `decide()`
-: makes a decision according to expected-utility maximization ([chapter @sec-basic-decisions]), using probabilities calculated with `infer()` and utilities.
-
-- `rF()`
-: draws one or more possible full-population frequency distribution $\vf$, according to the updated degree of belief $\p(F\mo\vf \| \data \and \yD)$
-
-- `plotFsamples1D()`
-: plots, as a generalized scatter plot, the possible full-population marginal frequency distributions for a single (not joint) predictand variate. If required it also also the final probability obtained with `infer()`.
-
-- `mutualinfo()`
-: calculates the mutual information ([§@sec-entropy-mutualinfo]) between any two sets of variates.
-
-::::{.column-body-outset-right}
-:::{.callout-caution}
-
-
-
-Using the `and`-rule, prove (pay attention to the conditional "$\|$" bar):
-
-$$
-\frac{
-\sum_{\blue b}
-P(\red A\mo a \black \and \blue B\mo b \black \and \yellow C\mo c \black \and \data \| \yD)
-}{
-\sum_{\purple \alpha}\sum_{\blue b}
-P(\red A\mo {\purple \alpha} \black \and \blue B\mo b \black \and \yellow C\mo c \black \and \data \| \yD)
-}
-=
-\frac{
-\sum_{\blue b}
-P(\red A\mo a \black \and \blue B\mo b \black \and \yellow C\mo c \black \| \data \and \yD)
-}{
-\sum_{\purple \alpha}\sum_{\blue b}
-P(\red A\mo {\purple \alpha} \black \and \blue B\mo b \black \and \yellow C\mo c \black \| \data \and \yD)
-}
-$$
-
-\
-
-This exercise shows that instead of
-
-$$\P(\blue Z \mo z \black \and \green\data \black \| \yD)$$
-
-we could calculate
-
-$$
-\P(
-\blue Z \mo z
-\black \|
-\green\data
-\black \and  \yD)
-$$
-
-once for all possible values $\bz$, and use that. Mathematically and logically the two ways are completely equivalent. Numerically they can be different as regards precision or possible overflow errors. Using $\P( \blue Z \mo z \black \| \green\data \black \and \yD)$ would be convenient if our basic formula (@eq-main-joint) didn't contain the sum $\sum_k$ over the $k$ index. Our code shall instead use $\P(\blue Z \mo z \black \and \green\data \black \| \yD)$ because it leads to slightly more precision and speed in some tasks.
-
-:::
-::::
-
-
-
-
-## Code optimization {#sec-code-optim}
-
-The formulae of [chapter @sec-dirichlet-mix], if used as-written, easily lead to two kinds of computation problems. First, they generate overflows and `NaN`, owing to factorials and their divisions. Second, the products over variates may involve so many terms as to require a long computation time. In the end we would have to wait a long time just to receive a string of `NaN`s.
-
-The first problem is dealt with by rewriting the formulae in terms of logarithms, and renormalizing numerators and denominators of fractions. See for example the lines defining `auxalphas` in the [`buildagent()`](https://github.com/pglpm/ADA511/blob/master/code/OPM_nominal.R) function, and the line that redefines `counts` one last time in the [`infer()`](https://github.com/pglpm/ADA511/blob/master/code/OPM_nominal.R) function.
-
-The second problem is dealt with by reorganizing the sums as multiples of identical summands; see the lines working with `freqscounts` in the `buildagent()`function.
-
-::::{.column-margin}
-::: {.callout-tip}
-## {{< fa rocket >}} For the extra curious
-§6.1 in [*Numerical Recipes*](references.html)
-:::
-::::
-
-
-
+In the next chapter we address the practical question of implementing the formulae above into code.

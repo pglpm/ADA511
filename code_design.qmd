@@ -3,19 +3,134 @@
 {{< include macros_exchangeability.qmd >}}
 {{< include macros_opm.qmd >}}
 
-We have finally collected all we need to build up a real, prototype
+We now try to build up a real prototype AI agent from basic principles, using the formulae summarized in [ch. @sec-summary-formulae] and in the previous chapter. By design, this agent is as close to optimal as theoretically possible; so let's call it an
 
 ![](optimal_predictor_machine.png){width=75%}
 
-from ground principles. This will be done in the present and following chapters of this part. In this chapter we specify and discuss a concrete belief distribution representing an agent with exchangeable beliefs about nominal variates. In the next we put it into code. Then we apply it to some real datasets.
+or *OPM* for short.
 
-
-\
-
-Before starting, let's agree on some terminology in order not to get confused in the discussion below.
+Before starting, let's agree on some terminology so as not to get confused in the discussion below.
 
 - We shall call [*task*]{.blue} a repetitive inference problem with a specified set of units and variates. For instance, a task could be the consecutive prediction of the urgency of incoming patients, given their mean of transportation. We assume that the details of the variates, such as their domain, are well specified. Possibly also a set of data from other patients is available, which we call "training data".
-- We shall call [*application*]{.blue} or [*instance*]{.blue} of the task a single inference about a specific new unit, for example a new incoming patient.
+- We shall call [*application*]{.blue} or [*instance*]{.blue} of the task a *single* inference about a new unit, for example a new incoming patient.
+
+
+
+## Desired characteristics of the OPM {#sec-characteristics-opm}
+
+We design our Optimal Predictor Machine with the following specific characteristics:
+
+- It handles inferences and decisions about approximately infinite populations.
+
+- It handles variates of *nominal* type ([§@sec-basic-types]).
+
+- Its beliefs about the population are *exchangeable* ([ch. @sec-exchangeable-beliefs]).
+
+- Its initial beliefs about the population are represented by a *Dirichlet-mixture distribution* ([ch. @sec-dirichlet-mix]):
+
+::::{.column-page-right}
+$$
+\P(
+\blue 
+Z_{L}\mo  z_{L}
+\and
+\dotsb \and
+Z_{1}\mo z_1
+\black
+\| \yD
+)
+=
+\frac{1}{\amax-\amin+1}
+\sum_{\ya=\amin}^{\amax}
+\frac{
+\prod_{\bz} \bigl(\frac{2^{\ya}}{M} + \#\bz - 1\bigr)!
+}{
+\bigl(2^{\ya} + L -1 \bigr)!
+}
+\cdot
+\frac{
+\bigl(2^{\ya} -1 \bigr)!
+}{
+{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
+}
+\quad
+$$
+::::
+\
+
+### Example of what kind of agent we want
+
+Let's give an example of what we want our agent to be able to do. Suppose we have a population having three nominal variates $\bZ=(\bA \and \bB \and \bC)$. Abbreviate the set of training data as
+
+$\data \defd
+( Z_{N}\mo z_{N} \and \dotsb \and
+Z_{2}\mo z_2 \and
+Z_{1}\mo z_{1} )$    
+
+:::{.column-margin}
+Recall that $Z$ denotes all (nominal) variates of the population
+:::
+
+where $z_N, \dotsc, z_2, z_1$ are specific values, stored in some training dataset. To simplify things, we assume that no values are missing.
+
+We want an agent that draw inferences like these, as often as required:
+
+- $P(\bB\mo\dotso\|\data \and \yD)$: inference about a predictand variate, without knowledge of any predictors.
+
+- $P(\bA\mo\dotso \and \bC\mo\dotso\|\data \and \yD)$: same but for any two predictand variates.
+
+- $P(\bA\mo\dotso \and \bB\mo\dotso \and \bC\mo\dotso\|\data \and \yD)$: same but for all three variates.
+
+- $P(\bB\mo\dotso\|\bA\mo\dotso \and \data \and \yD)$: inference about any one predictand variate, given information about one predictor variate.
+
+- $P(\bB\mo\dotso\| \bA\mo\dotso \and \bC\mo\dotso \and\data \and  \yD)$: same, but given information about any pair of predictors.
+
+- $P(\bA\mo\dotso \and \bC\mo\dotso\|\bB\mo\dotso \and \data \and \yD)$: inference about any two predictand variates, given information about one predictor.
+
+Note that *we are not fixing beforehand what are the predictands and what are the predictors*. Once the agent has learnt from the training data, we want to be able to change *on the fly, at each new application*, what the predictands are, and what the predictors are (if any).
+
+Pause for a second and *ponder about the flexibility that we are requesting from our prototype agent!* Consider that virtually all present-day machine-learning algorithms only work one way: a machine-learning algorithm designed to guess the labels of images cannot guess an image given a label. Will we really manage to build an agent with the amazing versatility illustrated above?
+
+
+## Computations needed and mathematical challenges in the code {#sec-code-computations}
+
+The code implementing the OPM agent must essentially calculate
+
+::::{.column-page-right}
+:::{.callout-note}
+##  
+
+$$
+\P(
+\blue Z \mo z
+\and
+\green\data
+\black \| \yD)
+=
+\frac{1}{\amax-\amin+1}
+\sum_{\ya=\amin}^{\amax}
+\Biggl(\frac{2^{\ya}}{M} + {\green\#}\bz\Biggr)
+\cdot
+\frac{
+\prod_{\bz} \bigl(\frac{2^{\ya}}{M} + {\green\# z} - 1\bigr)!
+}{
+\bigl(2^{\ya} + N \bigr)!
+}
+\cdot
+\frac{
+\bigl(2^{\ya} -1 \bigr)!
+}{
+{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
+}
+$$ {#eq-objectP}
+
+for all possible values $\bz$, where ${\green\#}\bz$ is the number of times value $\bz$ appears **in the training [data]{.green}**, and $N = \sum_{\green z}{\green\# z}$ is the number of training data
+:::
+::::
+
+This formula is just a rewriting of formula (@eq-main-joint) for $L=N+1$, simplified by using the property of the factorial
+
+$$(a+1)! = (a+1) \cdot a!$$
 
 
 ## Range of use of the code {#sec-code-range}
@@ -68,11 +183,11 @@ Recall that $\bZ$ denotes all (nominal) variates of the population
 
 $$
 \data \defd
-(\green
-Z_{N}\mo z_{N} \land \dotsb \land
-Z_{2}\mo z_2 \land
+(
+Z_{N}\mo z_{N} \and \dotsb \and
+Z_{2}\mo z_2 \and
 Z_{1}\mo z_{1}
-\black)
+)
 $$
 
 where $\blue z_N, \dotsc, z_2, z_1$ are specific values, stored in some training dataset. No values are missing.
