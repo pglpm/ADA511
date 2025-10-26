@@ -83,11 +83,12 @@ buildagent <- function(
     if(!all(variatenames %in% colnames(data))){
         stop('Missing variates in data.')
     }
+    ## reorder data columns according to metadata variates
     ## remove variates not given in metadata, with warning
     if(!all(colnames(data) %in% variatenames)){
         message('Discarding data variates not given in metadata.')
-        data <- data[, variatenames, drop = FALSE]
     }
+    data <- data[, variatenames, drop = FALSE]
     ## remove datapoints with missing values
     toremove <- which(is.na(data), arr.ind = TRUE)
     if(length(toremove) > 0){
@@ -172,7 +173,7 @@ buildagent <- function(
     out <- list(
         uniquedata = uniquedata,
         counts = counts,
-        variates = variates,
+        variates = dimnames(counts),
         alphas = alphas,
         auxalphas = auxalphas,
         palphas = palphas
@@ -302,14 +303,17 @@ infer.agent <- function(
         if(!is.null(predictor)){
             predictor <- predictor[variatenames]
             predictor[lengths(predictor) == 0] <- TRUE
+            str(predictor)
             ## select subarray of counts corresponding to the predictor values
             counts <- do.call(`[`, c(list(counts), predictor))
+            str(counts)
             if(is.null(dim(counts))){
                 dim(counts) <- length(counts)
                 dimnames(counts) <- temp[
                     -which(names(predictor) %in% variatenames)]
             }
         }
+        testc2 <<- counts
 
         ## Marginalize frequencies
         counts <- apply(counts, predictand, sum)
