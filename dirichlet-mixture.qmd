@@ -5,7 +5,7 @@
 {{< include macros_marg_cond.qmd >}}
 
 
-## A belief distribution for frequency distributions over nominal variates {#sec-intro-dirichlet-mix}
+## A belief distribution for frequencies over nominal variates {#sec-intro-dirichlet-mix}
 
 There are infinite possible ways to choose a belief distribution $\P(F\mo\vf\|\yI)$ over frequencies. In this chapter we discuss one, called the [**Dirichlet-mixture**]{.blue} belief distribution, in some detail. The state of knowledge underlying this distribution will be denoted $\yD$.
 
@@ -22,6 +22,10 @@ Suppose we have a simple or joint nominal variate $\bZ$ which can take on $M$ di
 
 The Dirichlet-mixture distribution assigns to $\vf$ a probability density given by the following formula:
 
+:::{.column-page-inset-right}
+::::{.callout-note}
+##  
+
 $$\p(F\mo\vf \| \yD) =
 \frac{1}{\amax-\amin+1}
 \sum_{\ya=\amin}^{\amax}
@@ -34,7 +38,10 @@ $$\p(F\mo\vf \| \yD) =
 }
 $$ {#eq-dirichlet-f}
 
-Besides some multiplicative constants, the probability is simply proportional to the product of all frequencies, raised to some powers. The product "$\prod_{\bz}$" is over all $M$ possible values of $\bZ$. The sum "$\sum_{\ya}$" is over an *integer* (positive or negative) index $\ya$ that runs between the minimum value $\amin$ and the maximum value $\amax$. In the applications of the next chapters these minimum and maximum are chosen as follows:
+::::
+:::
+
+Besides some multiplicative constants, the probability of a particular frequency distribution is simply proportional to the product of all its individual frequencies, raised to some powers. The product "$\prod_{\bz}$" is over all $M$ possible values of $\bZ$. The sum "$\sum_{\ya}$" is over an *integer* (positive or negative) index $\ya$ that runs between the minimum value $\amin$ and the maximum value $\amax$. In the applications of the next chapters these minimum and maximum are chosen as follows:
 
 $$
 \amin=0
@@ -195,8 +202,11 @@ Calculate the formula above for these three frequency distributions:
 
 :::
 
+\
 
-## Formula for joint probabilities about units with the Dirichlet-mixture distribution {#sec-joint-prob-dirichlet}
+## Examples of inference by a Dirichlet-mixture agent {#sec-formulae-with-Dirmix}
+
+### Degree of belief about a data sequence {#sec-joint-prob-dirichlet}
 
 Recall that an agent, in order to learn, needs to be initially provided with the full joint belief distribution
 
@@ -212,9 +222,9 @@ Z_{1}\mo z_1
 )
 $$
 
-for all possible values of $L$.
+where $L$ is the total number of data that will be used to learn, as well as those that will be subsequently analysed.
 
-A mathematical advantage of the Dirichlet-mixture belief distribution is that it allows us to compute this belief distribution in an exact way. Start from de Finetti's representation theorem ([§@sec-freq-not-known]) and use the Dirichlet-mixture [@eq-dirichlet-f] for $\P(F\mo \vf \| \yI)$. The integral "$\int\,\di\vf$" can be solved explicitly and we find the following result:
+A mathematical advantage of the Dirichlet-mixture belief distribution is that it allows us to compute this belief distribution, and several others, in an exact way. Start from de Finetti's representation theorem ([§@sec-freq-not-known]) and use the Dirichlet-mixture [@eq-dirichlet-f] for $\P(F\mo \vf \| \yI)$. The integral "$\int\,\di\vf$" can be solved explicitly and we find the following result:
 
 :::{.column-body-outset-right}
 $$
@@ -251,12 +261,12 @@ f(\blue Z_{1}\mo z_1 \black) \cdot
 {\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
 }
 \end{aligned}
-$$
+$$ {#eq-joint-p-from-dirichlet}
 :::
 
 where $\#\bz$ is the multiplicity with which the specific value $\bz$ occurs in the sequence $\blue z_1,\dotsc,z_{L}$.
 
-Let's see how to concretely use the formula above in an example from the Mars-prospecting scenario. Take the sequence^[Remember that the agent has exchangeable beliefs, so the units' IDs don't matter ([§@sec-exchaneable-distr])!]
+To understand better the formula above, let's use it in an example from the Mars-prospecting scenario of [ch. @sec-exchangeable-beliefs]. Take the sequence^[Remember that the agent has exchangeable beliefs, so the units' IDs don't matter ([§@sec-exchaneable-distr])!]
 
 $$
 \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yR_4\mo\yy
@@ -266,7 +276,7 @@ In this sequence of four values, value $\yy$ appears thrice and value $\yn$ once
 
 $$\#\yy = 3\ ,\qquad \#\yn = 1 \ ,\qquad L = 4\ .$$
 
-We also have $M=2$ (two possible distinct values), and we still take $\amin=0, \amax=2$. The formula above then becomes
+We also have $M=2$ (two possible distinct values), and we still take $\amin=0, \amax=2$. The formula above then gives
 
 :::{.column-body-outset-right}
 $$
@@ -333,6 +343,8 @@ $$
 
 :::{.callout-caution}
 
+- Implement the calculation above in your favourite programming language.
+
 
 - Using the formula above, calculate:
 
@@ -346,86 +358,52 @@ $$
 - Try doing the calculation above on a computer with $\amin=0, \amax=20$. What happens?
 
 :::
+\
 
 
-## Examples of inference tasks with the Dirichlet-mixture belief distribution {#sec-formulae-with-Dirmix}
-
-With the explicit formula
-
-:::{.column-page-inset-right}
-::::{.callout-note}
-##  
-
-$$
-\P(
-\blue 
-Z_{L}\mo  z_{L}
-\and
-\dotsb \and
-Z_{1}\mo z_1
-\black
-\| \yD
-)
-=
-\frac{1}{\amax-\amin+1}
-\sum_{\ya=\amin}^{\amax}
-\frac{
-\prod_{\bz} \bigl(\frac{2^{\ya}}{M} + \#\bz - 1\bigr)!
-}{
-\bigl(2^{\ya} + L -1 \bigr)!
-}
-\cdot
-\frac{
-\bigl(2^{\ya} -1 \bigr)!
-}{
-{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
-}
-$$
-
-where $\#\bz$ is the number of times some value $\bz$ appears in the sequence
-
-::::
-:::
-
-we can now solve all the kinds of task involving multiple units that were discussed in [§@sec-categ-probtheory]. Let's see a simple example of forecasting all variates for a new unit (no predictors), and another example where we guess a predictand given a predictor. We shall solve them step by step.
-
-
-
+Using formula [@eq-joint-p-from-dirichlet] we can solve all the kinds of task  discussed in [§@sec-categ-probtheory]. Let's see a couple of simple examples.
 
 ### Example 1: Forecast about one variate, given previous observations {#sec-dirmix-example1}
 
-In this task there are no predictors and only one predictand variate $\yR$: the presence of haematite. The agent observes the value of this variate in several rocks, and tries to forecast its value in a new rock.
-
-The agent has exchangeable beliefs represented by a Dirichlet-mixture distribution. The variate of the population of interest has two possible values, so in the formulae above we have\ \ $M=2$. We still take $\amin=0$, $\amax=2$.
+In the following example we consider only one predictand variate $\yR$: the presence of haematite. There are no predictors. The Dirichlet-mixture agent observes the value of this variate in several rocks, and tries to forecast its value in a new rock. The variate of the population of interest has two possible values, in formula [@eq-joint-p-from-dirichlet] we have\ \ $M=2$. We still take $\amin=0$, $\amax=2$.
 
 
 The agent has collected three rocks. Upon examination, two of them contain haematite, one doesn't. The agent's data are therefore
 
 $$\text{\small data:}\quad \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn$$
 
-(remember that it doesn't matter how the rocks are labelled, because the agent's beliefs are exchangeable).
+What belief should the agent have about finding haematite in a newly collected rock? That is, what value should it assign to the probability
 
-What probability should the agent give to finding haematite in a newly collected rock? That is, what value should it assign to
+$$\P(\yR_4\mo\yy \| \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yD)\ ?$$
 
-$$\P(\yR_4\mo\yy \| \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yD) \ ?$$
-
-
-Our main formula is
+This conditional probability is given by
 
 :::{.column-body-outset-right}
 $$
-\P(\yR_4\mo\yy \| \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yD)
-=
+\begin{aligned}
+&\P(\yR_4\mo\yy \| \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yD)
+\\[1ex]
+&\qquad{}=
 \frac{
 \P(\yR_4\mo\yy \and \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD)
 }{
 \sum_{{\purple r}=\yy}^{\yn}
 \P(\yR_4\mo{\purple r} \and  \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD)
 }
+\\[1ex]
+&\qquad{}\equiv
+\frac{
+\P(\yR_4\mo\yy \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD)
+}{
+\P(\yR_4\mo\yy \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD) +
+\P(\yR_4\mo\yn \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD)
+}
+\end{aligned}
 $$
 :::
 
-\
+and we can calculate the probabilities at the numerator and denominators using formula [@eq-joint-p-from-dirichlet]:
+
 
 [{{< fa 1 >}} --]{.green}\ \ \ The fraction above requires the computation of two joint probabilities:
 
@@ -439,7 +417,7 @@ $$
 
 Note how they are associated with the two possible hypotheses about the new rock:
 
-$$\yR_4\mo\yy \qquad \yR_4\mo\yn$$
+$$\yR_4\mo\yy\,? \qquad \yR_4\mo\yn\,?$$
 
 of which the first one interests us.
 
@@ -450,7 +428,7 @@ of which the first one interests us.
 
 $$\#\yy = 3\ ,\qquad \#\yn = 1\ ,\qquad {\midgrey L} = {\midgrey 4}\ .$$
 
-The de Finetti representation formula gives
+Formula [@eq-joint-p-from-dirichlet] gives
 
 $$\begin{aligned}
 &\P(\yR_4\mo\yy \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD) 
@@ -512,42 +490,21 @@ $$
 
 \
 
-[{{< fa 3 >}} --]{.green}\ \ \ The probability for the hypothesis of interest is finally given by the fraction
-
-:::{.column-page-inset-right}
+[{{< fa 3 >}} --]{.green}\ \ \ We can finally substitute the values we just found into the initial fraction. The probability for the hypothesis of interest is
 
 $$
 \begin{aligned}
-&\P(\yR_4\mo\yy \| \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yD)
-\\[1ex]
-&\qquad{}=
-\frac{
-\P(\yR_4\mo\yy \and \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD)
-}{
-\sum_{{\purple r}=\yy}^{\yn}
-\P(\yR_4\mo{\purple r} \and  \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD)
-}
-\\[1ex]
-&\qquad{}=
-\frac{
-\P(\yR_4\mo\yy \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD)
-}{
-\P(\yR_4\mo\yy \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD) +
-\P(\yR_4\mo\yn \, \and\, \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \| \yD)
-}
-\\[1ex]
-&\qquad{}=
+\P(\yR_4\mo\yy \| \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yD)
+& =
 \frac{0.048 735 1}{0.048 735 1 + 0.033 209 3}
 \\[1ex]
-&\qquad{}=
+&=
 \boldsymbol{59.47\%}
 \end{aligned}
 $$
 
-:::
 
 :::{.callout-caution}
-
 
 - The inference problem above has some analogy with coin tossing: there's just one, binary, variate. This agent could have been used to make forecasts about coin tosses.
 
@@ -564,35 +521,49 @@ $$
 :::
 
 
-### Example 2: Forecast about one predictand, given predictor and previous observations {#sec-dirmix-example2}
+### Example 2: Forecast given predictor but no previous observations {#sec-dirmix-example2}
 
 Let's go back to the hospital scenario of [§@sec-conditional-joint-general]. The units are patients coming into a hospital. The population is characterized by two nominal variates:
 
 - $T$: the patient's means of transportation at arrival, with domain $\set{\ambu, \heli, \othe}$
 - $U$: the patient's need of urgent care, with domain $\set{\urge, \nonu}$
 
-The combined variate $(U \and T)$ has\ \ $M = 2\cdot 3 = 6$\ \ possible values. We still use parameters $\amin=0$ and $\amax=2$ to use the de Finetti formula as-is without causing overflow errors.
+The combined variate $(U \and T)$ has\ \ $M = 2\cdot 3 = 6$\ \ possible values. We still use parameters $\amin=0$ and $\amax=2$ in formula [@eq-joint-p-from-dirichlet].
 
-The agent's task is to forecast whether the next incoming patient will require urgent care, given information about the patient's transportation. So $U$ is the predictand variate, $T$ the predictor variate.
+The agent's task is to forecast whether the next incoming patient will require urgent care, given information about the patient's transportation. Therefore variate $U$ is the predictand, and $T$ the predictor.
 
-At the moment the agent has a complete record of two previous patients:
-
-- $U_1\mo\ambu \and T_1\mo\ambu$
-- $U_2\mo\nonu \and T_2\mo\othe$
+Two patients previously arrived to the hospital, but for the moment we assume that *no information about them was given to the agent*. Thus we have a Dirichlet-mixture agent that hasn't learned anything yet.
 
 A third patient is incoming by ambulance:
 
 - $T_3\mo\ambu$
 
-What is the probability that this patient requires urgent care?
+What is the agent's belief that this patient requires urgent care?
+\
 
+Since no information about the previous patients is available to the agent, its belief is expressed by
 
-#### Initial belief
-
-First let's get a glimpse of the agent's forecast if it were given *no* information about previous patients. We therefore want to calculate the probability
-
-$$\P(U_3\mo\urge \| T_3\mo\ambu \and \yD)$$
-
+:::{.column-page-inset-right}
+$$
+\begin{aligned}
+&\P(U_3\mo \urge \| T_3\mo\ambu \and \yD)
+\\[1ex]
+&\qquad {}= \frac{
+\P(U_3\mo \urge \and T_3\mo\ambu \| \yD)
+}{
+\sum_{u = \urge}^{\nonu}
+\P(U_3\mo u \and T_3\mo\ambu \| \yD)
+}
+\\[1ex]
+&\qquad {}= \frac{
+\P(U_3\mo\urge \and T_3\mo\ambu \| \yD)
+}{
+\P(U_3\mo \urge \and T_3\mo\ambu \| \yD)
++ \P(U_3\mo \nonu \and T_3\mo\ambu \| \yD)
+}
+\end{aligned}
+$$
+:::
 \
 
 [{{< fa 1 >}} --]{.green}\ \ \ We need to calculate the two joint probabilities
@@ -605,18 +576,18 @@ $$
 $$
 :::
 
-corresponding to the two hypotheses of interest, $U_3\mo\urge$ and $U_3\mo\nonu$.
+corresponding to the two hypotheses of interest: $U_3\mo\urge$ and $U_3\mo\nonu$.
 
 \
 
-[{{< fa 2 >}}{{< fa a >}} --]{.green}\ \ In the first joint probability above the value pair $(U\mo\urge \and T\mo\ambu)$ appears once, and the remaining five pairs appear zero times:
+[{{< fa 2 >}}{{< fa a >}} --]{.green}\ \ In the first joint probability, the joint value $(U\mo\urge \and T\mo\ambu)$ appears once, and the remaining five joint values, like $(U\mo\nonu \and T\mo\ambu)$, $(U\mo\urge \and T\mo\othe)$, etc.,  appear zero times:
 
 :::{.column-body-outset-right}
 $$\#(\urge, \ambu) = {\lblue 1}\ ,\qquad\text{\small five others }\#(\dotsc,\dotsc) = {\yellow 0}\ ,\qquad 
 {\midgrey L} = {\midgrey 1}\ .$$
 :::
 
-The de Finetti formula gives
+Formula [@eq-joint-p-from-dirichlet] gives
 
 :::{.column-page-inset-right}
 $$
@@ -649,13 +620,13 @@ $$
 
 \
 
-[{{< fa 2 >}}{{< fa b >}} --]{.green}\ \ In the second joint probability above the value pair $(U\mo\nonu \and T\mo\ambu)$ appears once, and the remaining five pairs appear zero times:
+[{{< fa 2 >}}{{< fa b >}} --]{.green}\ \ In the second joint probability, the joint value $(U\mo\nonu \and T\mo\ambu)$ appears once, and the remaining five joint values appear zero times:
 
 :::{.column-body-outset-right}
 $$\#(\nonu, \ambu) = {\lblue 1}\ ,\qquad\text{\small five others }\#(\dotsc,\dotsc) = {\yellow 0}\ ,\qquad {\midgrey L} = {\midgrey 1}\ .$$
 :::
 
-The de Finetti formula gives an identical result as before:
+Formula [@eq-joint-p-from-dirichlet] gives again:
 
 :::{.column-page-inset-right}
 $$
@@ -688,51 +659,36 @@ $$
 
 \
 
-[{{< fa 3 >}} --]{.green}\ \ \ The probability that this incoming patient is urgent is then
-
-:::{.column-page-inset-right}
+[{{< fa 3 >}} --]{.green}\ \ \ The probability that the third incoming patient is urgent, given that the agent doesn't know anything about the previous two, is then
 
 $$
 \begin{aligned}
-&
 \P(U_3\mo\urge \| T_3\mo\ambu \and \yD)
-\\[1ex]
-&\qquad{}=
-\frac{
-\P(U_3\mo\urge \and T_3\mo\ambu \| \yD)
-}{
-\sum_{\purple u}
-\P(U_3\mo{\purple u} \and T_3\mo\ambu \| \yD)
-}
-\\[1ex]
-&\qquad{}=
-\frac{
-\P(U_3\mo\urge \and T_3\mo\ambu \| \yD)
-}{
-\P(U_3\mo\urge \and T_3\mo\ambu \| \yD)
-+
-\P(U_3\mo\nonu \and T_3\mo\ambu \| \yD)
-}
-\\[1ex]
-&\qquad{}=
+&=
 \frac{1/6 }{1/6 + 1/6}
 \\[1ex]
-&\qquad{}=
+&=
 \boldsymbol{50\%}
 \end{aligned}
 $$
 
-:::
-
 \
 
-The agent's background information says that, a priori, urgent and non-urgent patients are equally plausible. This is a characteristic of the particular Dirichlet-mixture belief distribution we are using. It would actually be possible to modify it so as to give a-priori different probabilities for the $\urge$ and $\nonu$ values; but we shall not pursue this possibility here.
+This result makes sense. The agent's background information says that, a priori, urgent and non-urgent patients are equally plausible. And the agent hasn't had the opportunity to learn any statistical association between transportation and urgency, so the information $T_3\mo\ambu$ is irrelevant in the present situation.
 
+It is actually possible to modify the agent so as to give it a-priori different beliefs about $\urge$ and $\nonu$; but we shall not pursue this possibility here.
 \
 
-#### Forecast after learning
+### Example 3: Forecast given predictor and previous observations {#sec-dirmix-example3}
 
-Now let's take into account the information about the previous two patients. We therefore want to calculate the probability
+Imagine that at the last minute, just a little while the third patient arrives, someone gives the agent information about the previous two patients:
+
+- $U_1\mo\ambu \and T_1\mo\ambu$
+- $U_2\mo\nonu \and T_2\mo\othe$
+
+Learning this, what is the agent's belief about the urgency of the third patient, arriving by ambulance?
+
+The agent's updated belief is expressed by the probability
 
 :::{.column-page-right}
 $$\P(U_3\mo\urge \| T_3\mo\ambu \and  
@@ -742,9 +698,11 @@ U_1\mo\urge \and T_1\mo\ambu \and
 $$
 :::
 
+which can be written as a fraction in the usual way ([write the fraction explicitly as an exercise]{.yellow}).
+
 \
 
-[{{< fa 1 >}} --]{.green}\ \ \ The hypotheses are again $U_3\mo\urge$ and $U_3\mo\nonu$, and we need the joint probabilities
+[{{< fa 1 >}} --]{.green}\ \ \ We need the joint probabilities
 
 :::{.column-page-right}
 $$
@@ -774,7 +732,7 @@ $$
 {\midgrey L} = {\midgrey 3}\ .$$
 :::
 
-and therefore
+Therefore
 
 :::{.column-page-right}
 $$
@@ -826,7 +784,7 @@ $$
 $$
 :::
 
-and therefore
+Therefore
 
 :::{.column-page-right}
 $$
@@ -867,7 +825,7 @@ $$
 
 \
 
-[{{< fa 3 >}} --]{.green}\ \ \ Finally, the probability that the third incoming patient is urgent is
+[{{< fa 3 >}} --]{.green}\ \ \ Finally, the agent's belief that the third incoming patient is urgent, knowing that the patient is arriving by ambulance and having learned about the two previous patients, is
 
 :::{.column-page-inset-right}
 
@@ -889,7 +847,11 @@ $$
 
 :::
 
-The agent has learned an association between $\ambu$ and $\urge$ from the first patient. Note that if we had used parameters $\amin=0, \amax=20$, the result would have been more conservative: $\boldsymbol{54.90\%}$.
+\
+
+Note the difference from the belief before learning. The agent has learned a statistical association between $\ambu$ and $\urge$ from the first patient.
+
+You may find the belief 78.77% a little too strong: after all, the agent has learned about only *one* case of urgency & ambulance. This strong belief comes form the particular parameters $\amin=0, \amax=2$ our agent was built with. If we had used parameters $\amin=0, \amax=20$, the result would have been more conservative: $\boldsymbol{54.90\%}$.
 
 
 ::::{.column-page-inset-right}
