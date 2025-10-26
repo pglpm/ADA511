@@ -880,6 +880,119 @@ U_2\mo\nonu \and T_2\mo\othe \and
 :::
 ::::
 
+## Other useful formulae from the Dirichlet-mixture belief distribution {#sec-formulae-dirmix}
+
+We have how some experience with calculating the beliefs of a Dirichlet-mixture agent from formula [@eq-joint-p-from-dirichlet], which in turn comes from the agent's initial belief [@eq-dirichlet-f] about frequencies.
+
+Thank again to particular mathematical form of the Dirichlet-mixture distribution, we can actually find even more compact formulae for the beliefs of a Dirichlet-mixture agent that has learned from $N$ units. We list these formulae here and we'll use them in [ch. @sec-code-design].
+
+To consider the general case, suppose we have a population with variates $Y$, which can take on $M_Y$ possible values, and $X$, which can take on $M_X$ possible values, for a total of $M = M_Y \cdot M_X$ possible joint values. Also suppose that the agent has learned the values of $N$ units, which we collectively call $\data$:
+
+$\data \defd
+( Y_{N}\mo y_{N} \and  X_{N}\mo x_{N} \,
+\and\dotsb \and \,
+Y_{1}\mo y_{1} \and  X_{1}\mo x_{1})$
+
+Use also the following notation:
+
+- $\#(y, x)$ is the number of times (the absolute frequency) with which the specific *pair* of values $(y, x)$ appear in the data.
+- $\#y$ is the number of times with which the specific value $y$ of variate $Y$ appears in the data.
+- $\#x$: ditto, but for $X$.
+
+For example, if $Y$ has domain $\set{\urge, \nonu}$ and $X$ has domain $\set{\ambu, \othe}$, and our data are
+
+::::{.column-page-inset-right}
+$\data = (
+Y_{3}\mo\urge \and X_{3}\mo \ambu \and
+Y_{2}\mo\urge \and X_{2}\mo \othe \and
+Y_{1}\mo\nonu \and X_{1}\mo \ambu
+)$
+::::
+
+then we have $M_X = 2$, $M_Y = 2$, $M = 4$, $N = 3$, and
+
+$$\begin{aligned}
+&\#(\urge, \ambu) = 1 \ ,
+&&\#(\urge, \othe) = 1 \ ,
+\\
+&\#(\nonu, \ambu) = 1 \ ,
+&&\#(\nonu, \othe) = 0 \ ;
+\\[1ex]
+&\#\urge = 2 \ ,
+&&\#\nonu = 1 \ ;
+\\[1ex]
+&\#\ambu = 2 \ ,
+&&\#\othe = 1 \ .
+\end{aligned}
+$$
+
+\
+
+Using this notation, it is possible to prove that following conditional-probability formulae for the Dirichlet-mixture agent:
+
+:::{.column-page-inset-right}
+::::{.callout-note}
+##  
+
+$$
+\P(Y\mo y \| \data, \yD)
+=
+\sum_{\ya = \amin}^{\amax}
+\bigl(\tfrac{2^k}{M_Y} + \#y\bigr)
+\cdot \aux(k)
+$$ {#eq-dmagent-y}
+
+$$
+\P(Y\mo y \| X\mo x \and \data, \yD)
+=
+\frac{
+\sum_{\ya = \amin}^{\amax}
+\bigl(\tfrac{2^k}{M_Y \cdot M_X} + \#(y,x)\bigr)
+\cdot \aux(k)
+}{
+\sum_{y}\sum_{\ya = \amin}^{\amax}
+\bigl(\tfrac{2^k}{M_Y \cdot M_X} + \#(y,x)\bigr)
+\cdot \aux(k)
+}
+$$ {#eq-dmagent-yx}
+
+with
+
+$$
+\aux(k)
+\defd
+\frac{
+\frac{
+\prod_{x,y} \bigl(\frac{2^{\ya}}{M} + \#(x,y) - 1\bigr)!
+}{
+\bigl(2^{\ya} + N -1 \bigr)!
+}
+\cdot
+\frac{
+\bigl(2^{\ya} -1 \bigr)!
+}{
+{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
+}
+}{
+\sum_{l = \amin}^{\amax}
+\frac{
+\prod_{x,y} \bigl(\frac{2^{l}}{M} + \#(x,y) - 1\bigr)!
+}{
+\bigl(2^{l} + N -1 \bigr)!
+}
+\cdot
+\frac{
+\bigl(2^{l} -1 \bigr)!
+}{
+{\bigl(\frac{2^{l}}{M} - 1\bigr)!}^M
+}
+}
+$$ {#eq-dmagent-aux}
+::::
+:::
+
+\
+
 ## When is the Dirichlet-mixture belief distribution appropriate? {#sec-critique-dirmix}
 
 The two examples above reveal some characteristics of an agent based on the Dirichlet-mixture belief distribution:
