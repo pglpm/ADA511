@@ -32,7 +32,7 @@ $$\p(F\mo\vf \| \yD) =
 }{
 {\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
 }
-$$
+$$ {#eq-dirichlet-f}
 
 Besides some multiplicative constants, the probability is simply proportional to the product of all frequencies, raised to some powers. The product "$\prod_{\bz}$" is over all $M$ possible values of $\bZ$. The sum "$\sum_{\ya}$" is over an *integer* (positive or negative) index $\ya$ that runs between the minimum value $\amin$ and the maximum value $\amax$. In the applications of the next chapters these minimum and maximum are chosen as follows:
 
@@ -198,7 +198,23 @@ Calculate the formula above for these three frequency distributions:
 
 ## Formula for joint probabilities about units with the Dirichlet-mixture distribution {#sec-joint-prob-dirichlet}
 
-A mathematical advantage of the Dirichlet-mixture belief distribution is that some probability formulae that contain it can be computed exactly. The most important formula is de Finetti's representation theorem ([§@sec-freq-not-known]), where the sum "$\sum_{\vf}$" -- really an integral "$\int\,\di\vf$" -- can be calculated analytically in the case of the Dirichlet-mixture:
+Recall that an agent, in order to learn, needs to be initially provided with the full joint belief distribution
+
+$$
+\P(
+\blue 
+Z_{L}\mo  z_{L}
+\and
+\dotsb \and
+Z_{1}\mo z_1
+\black
+\| \yI
+)
+$$
+
+for all possible values of $L$.
+
+A mathematical advantage of the Dirichlet-mixture belief distribution is that it allows us to compute this belief distribution in an exact way. Start from de Finetti's representation theorem ([§@sec-freq-not-known]) and use the Dirichlet-mixture [@eq-dirichlet-f] for $\P(F\mo \vf \| \yI)$. The integral "$\int\,\di\vf$" can be solved explicitly and we find the following result:
 
 :::{.column-body-outset-right}
 $$
@@ -240,21 +256,17 @@ $$
 
 where $\#\bz$ is the multiplicity with which the specific value $\bz$ occurs in the sequence $\blue z_1,\dotsc,z_{L}$.
 
-\
-
-Let's see how this formula looks like in an example from the Mars-prospecting scenario.
-
-Take the sequence^[Remember that the agent has exchangeable beliefs, so the units' IDs don't matter ([§@sec-exchaneable-distr])!]
+Let's see how to concretely use the formula above in an example from the Mars-prospecting scenario. Take the sequence^[Remember that the agent has exchangeable beliefs, so the units' IDs don't matter ([§@sec-exchaneable-distr])!]
 
 $$
 \yR_1\mo\yy \and \yR_2\mo\yy \and \yR_3\mo\yn \and \yR_4\mo\yy
 $$
 
-in this sequence, value $\yy$ appears thrice and value $\yn$ once, that is
+In this sequence of four values, value $\yy$ appears thrice and value $\yn$ once. So in this case we have
 
-$$L=4 \qquad \#\yy = 3 \qquad \#\yn = 1$$
+$$L=4\ , \qquad \#\yy = 3\ , \qquad \#\yn = 1 \ .$$
 
-In this case we have $M=2$, and we still take $\amin=0, \amax=2$. The formula above then becomes
+We also have $M=2$ (two possible distinct values), and we still take $\amin=0, \amax=2$. The formula above then becomes
 
 :::{.column-body-outset-right}
 $$
@@ -283,7 +295,7 @@ $$
 \\[2ex]
 &\qquad{}=
 \frac{1}{2-0+1}
-\sum_{\ya=\amin}^{\amax}
+\sum_{\ya=0}^{2}
 \frac{
 \bigl(\frac{2^{\ya}}{2} + \#\yy - 1\bigr)!
 \cdot \bigl(\frac{2^{\ya}}{2} + \#\yn - 1\bigr)!
@@ -299,7 +311,7 @@ $$
 \\[2ex]
 &\qquad{}=
 \frac{1}{3}
-\sum_{\ya=-1}^{2}
+\sum_{\ya=0}^{2}
 \frac{
 \bigl(\frac{2^{\ya}}{2} + {\lblue 3} - 1\bigr)! \cdot
 \bigl(\frac{2^{\ya}}{2} + {\yellow 1} - 1\bigr)!
@@ -380,7 +392,7 @@ we can now solve all the kinds of task involving multiple units that were discus
 
 
 
-## Example 1: Forecast about one variate, given previous observations {#sec-dirmix-example1}
+### Example 1: Forecast about one variate, given previous observations {#sec-dirmix-example1}
 
 In this task there are no predictors and only one predictand variate $\yR$: the presence of haematite. The agent observes the value of this variate in several rocks, and tries to forecast its value in a new rock.
 
@@ -552,7 +564,7 @@ $$
 :::
 
 
-## Example 2: Forecast about one predictand, given predictor and previous observations {#sec-dirmix-example2}
+### Example 2: Forecast about one predictand, given predictor and previous observations {#sec-dirmix-example2}
 
 Let's go back to the hospital scenario of [§@sec-conditional-joint-general]. The units are patients coming into a hospital. The population is characterized by two nominal variates:
 

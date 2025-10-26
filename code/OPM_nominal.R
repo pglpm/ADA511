@@ -60,14 +60,15 @@ buildagent <- function(
     }
 
     variatenames <- metadata$variate # list of variates
+    nvariates <- length(variatenames) # total number of variates
+    domainsizes <- metadata$domainsize
+    names(domainsizes) <- variatenames
+
     variates <- setNames(object = apply(metadata, 1,
         function(metadatum){
             unname(metadatum[paste0('V', seq_len(metadatum['domainsize']))])
         }, simplify = list),
         nm = variatenames)
-    nvariates <- length(variatenames) # total number of variates
-    domainsizes <- metadata$domainsize
-    names(domainsizes) <- variatenames
 
     M <- prod(domainsizes) # total number of possible values
 
@@ -144,8 +145,9 @@ buildagent <- function(
             i <- i + length(toadd)
         }
         counts <- table(rbind(data, temp))
-        freqscounts <- tabulate(c(counts)+1)
+        freqscounts <- tabulate(c(counts) + 1L)
         uniquedata <- NULL
+        variates <- dimnames(counts)
     }
 
     NN <- sum(counts) # total number of training datapoints
@@ -173,7 +175,7 @@ buildagent <- function(
     out <- list(
         uniquedata = uniquedata,
         counts = counts,
-        variates = dimnames(counts),
+        variates = variates,
         alphas = alphas,
         auxalphas = auxalphas,
         palphas = palphas
@@ -218,6 +220,8 @@ infer.agentcompressed <- function(
                 message('Warning: discarding all predictors, none valid')
                 predictor <- NULL
             }
+        } else {
+            namespredictor <- NULL
         }
 
         ## select subarray of counts corresponding to the predictor values
@@ -245,7 +249,7 @@ infer.agentcompressed <- function(
 
 
         ## Multiplicative factor for alpha parameters, owing to marginalization
-        alphas <- alphas / prod(dimensions[predictand])
+        alphas <- alphas / prod(dimensions[c(predictand, namespredictor)])
 
         ## reduce value of auxalphas by maximum, to avoid overflow
         auxalphas <- auxalphas - max(log(alphas + max(probs)) + auxalphas)
@@ -297,23 +301,22 @@ infer.agent <- function(
                 message('Warning: discarding all predictors, none valid')
                 predictor <- NULL
             }
+        } else {
+            namespredictor <- NULL
         }
 
         temp <- dimnames(counts)
         if(!is.null(predictor)){
             predictor <- predictor[variatenames]
             predictor[lengths(predictor) == 0] <- TRUE
-            str(predictor)
             ## select subarray of counts corresponding to the predictor values
             counts <- do.call(`[`, c(list(counts), predictor))
-            str(counts)
             if(is.null(dim(counts))){
                 dim(counts) <- length(counts)
                 dimnames(counts) <- temp[
                     -which(names(predictor) %in% variatenames)]
             }
         }
-        testc2 <<- counts
 
         ## Marginalize frequencies
         counts <- apply(counts, predictand, sum)
@@ -323,7 +326,7 @@ infer.agent <- function(
         }
 
         ## Multiplicative factor for alpha parameters, owing to marginalization
-        alphas <- alphas / prod(dimensions[predictand])
+        alphas <- alphas / prod(dimensions[c(predictand, namespredictor)])
 
         ## reduce value of auxalphas by maximum, to avoid overflow
         auxalphas <- auxalphas - max(log(alphas + max(counts)) + auxalphas)
@@ -341,6 +344,87 @@ infer.agent <- function(
     counts / sum(counts)
     })
 }
+
+
+infer2 <- function(agent, ...) {
+    UseMethod("infer2")
+}
+
+infer2.agent <- function(
+    agent,
+    predictand,
+    predictor = NULL
+){
+#### Calculates conditional or unconditional probability for new unit
+    with(agent, {
+        variatenames <- names(variates)
+        dimensions <- lengths(variates)
+
+        ## Check validity of predictands
+        predictand <- unlist(predictand)
+        if(!all(predictand %in% variatenames)){
+            stop('Unknown predictands')
+        }
+
+        ## Check if at least one predictor variate is valid
+        if(!is.null(predictor)){
+            predictor <- as.list(predictor)
+
+            if(!all(namespredictor %in% variatenames)){
+                message('Discarding predictor variates not given in metadata.')
+                predictor <- predictor[namespredictor %in% variatenames]
+            }
+            if(all(variatenames %in% namespredictor)){
+                stop('All variates are in the predictor')
+            }
+            if(length(predictor) == 0){
+                message('Warning: discarding all predictors, none valid')
+                predictor <- NULL
+            }
+        }
+        namespredictor <- names(predictor)
+
+
+        temp <- dimnames(counts)
+        if(!is.null(predictor)){
+            predictor <- predictor[variatenames]
+            predictor[lengths(predictor) == 0] <- TRUE
+            ## select subarray of counts corresponding to the predictor values
+            counts <- do.call(`[`, c(list(counts), predictor))
+            if(is.null(dim(counts))){
+                dim(counts) <- length(counts)
+                dimnames(counts) <- temp[
+                    -which(names(predictor) %in% variatenames)]
+            }
+        }
+
+        ## Marginalize frequencies
+        counts <- apply(counts, predictand, sum)
+        if(is.null(dim(counts))){
+            dim(counts) <- length(counts)
+            dimnames(counts) <- temp[predictand]
+        }
+
+        ## Multiplicative factor for alpha parameters, owing to marginalization
+        alphas <- alphas / prod(dimensions[c(predictand, namespredictor)])
+
+        ## reduce value of auxalphas by maximum, to avoid overflow
+        auxalphas <- auxalphas - max(log(alphas + max(counts)) + auxalphas)
+
+        ## Calculate final probabilities for predictands
+        temp <- dimnames(counts) # save dimnames, possibly lost in colSums
+        counts <- colSums(exp(log(outer(alphas, counts, `+`)) + auxalphas))
+
+    ## Reshape array of results
+    if(is.null(dim(counts))){
+        dim(counts) <- length(counts)
+        dimnames(counts) <- temp
+    }
+    ## Normalize and output the probability distribution as a vector/array
+    counts / sum(counts)
+    })
+}
+
 
 rF <- function(agent, ...) {
     UseMethod("rF")
