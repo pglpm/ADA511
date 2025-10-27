@@ -11,9 +11,9 @@ The functions are collected in
 
 ## Function documentation {#sec-opm-docs}
 
-Optional arguments are written with `= ...`, which specify their default values. Some additional optional arguments, mainly used for testing, are omitted in this documentation.
+Optional arguments are written with `= ...`, which specifies their default values. Some additional optional arguments, mainly used for testing, are omitted in this documentation.
 
-{{< fa code >}} `guessmetadata(data, file=NULL)`
+{{< fa code >}} `guessmetadata(data, file = NULL)`
 : Arguments:
     : - *`data`*: either a string with the file name of a dataset in `.csv` format (with header line), or a dataset given as a `data.frame` object.
 	- *`file`*: a string specifying the file name of the metadata file. If no `file` is given and `data` is a file name, then `file` will be the same name as `data` but with the prefix `meta_`. If no `file` is given and `data` is not a string, then the metadata are output to `stdout`.
@@ -23,40 +23,39 @@ Optional arguments are written with `= ...`, which specify their default values.
 
 \
 
-{{< fa code >}} `buildagent(metadata, data=NULL, kmi=0, kma=20)`
+:::{.column-page-inset-right}
+
+{{< fa code >}} `buildagent(metadata, data = NULL, kmi = 0, kma = 20, savememory = FALSE)`
 : Arguments:
     : - *`metadata`*: either a string with the name of a metadata file in `.csv` format, or metadata given as a `data.frame`.
 	- *`data`*: either a string with the file name of a *training* dataset in `.csv` format (with header line), or a training dataset given as a `data.frame`.
-	- *`kmi`*: the $\amin$ parameter of formula (@eq-main-joint).
-	- *`kma`*: the $\amax$ parameter of formula (@eq-main-joint).
+	- *`kmi`*: the $\amin$ parameter.
+	- *`kma`*: the $\amax$ parameter.
 	
 	Output:
-	: - an object of class `agent`, consisting of a list of an array `counts` and three vectors `alphas`, `auxalphas`, `palphas`.
+	: - an object of class `agent` or `agentcompressed`, consisting of a list of an array or list `counts` and three vectors `alphas`, `auxalphas`, `palphas`. The class `agentcompressed` saves the counts in a memory-efficient way.
 
-\
+:::
 
-{{< fa code >}} `infer(agent, predictand=NULL, predictor=NULL)`
+{{< fa code >}} `infer(agent, predictand, predictor = NULL)`
 : Arguments:
     : - *`agent`*: an `agent` object.
 	- *`predictand`*: a vector of strings with the names of variates.
-	- *`predictor`*: either a list of elements of the form `variate=value`, or a corresponding one-row `data.frame`.
-	
+	- *`predictor`*: either a list of elements of the form `variate = value`, or a corresponding one-row `data.frame`.
 	
 	Output:
     : - the joint probability distribution $\P(\mathit{predictand} \| \mathit{predictor}\mo\cat{values} \and \data \and \yD)$ for all possible values of the predictands.
 	
 	Notes:
 	: - If *`predictors`* is present, the agent is acting as a "supervised-learning" algorithm. Otherwise it is acting as an "unsupervised-learning" algorithm. The obtained probabilities could be used to generate a new unit similar to the ones observed.
-	    - If *`predictand`* is missing, the predictands are taken to be all variates not listed among the predictors (hence all variates, if no predictors are given).
         - The variate names in the *`predictand`* and *`predictor`* inputs must match some variate names known to the agent. Unknown variate names are discarded. The function gives an error if predictand and predictor have variates in common.
 
 \
 
-{{< fa code >}} `decide(probs, utils=NULL)`
+{{< fa code >}} `decide(probs, utils = NULL)`
 : Arguments:
     : - *`probs`*: a probability distribution for one or more variates.
 	- *`utils`*: a named matrix or array of utilities. The **rows** of the matrix correspond to the available decisions, the **columns** or remaining array dimensions correspond to the possible values of the predictand variates.
-	
 	
 	Output:
     : a list of elements `EUs` and `optimal`:
@@ -71,10 +70,10 @@ Optional arguments are written with `= ...`, which specify their default values.
 
 [**({{< fa person-digging >}} Further documentation will be added {{< fa person-digging >}})**]{.yellow .small}
 
-{{< fa code >}} `rF(n=1, agent, predictand=NULL, predictor=NULL)`
+{{< fa code >}} `rF(n = 1, agent, predictand, predictor = NULL)`
 : (generate population-frequency samples)
 
-{{< fa code >}} `mutualinfo(agent, A, B, base=2)`
+{{< fa code >}} `mutualinfo(agent, A, B, base = 2)`
 : (calculate mutual information)
 
 
