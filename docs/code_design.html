@@ -627,9 +627,8 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#example-of-what-kind-of-agent-we-want" id="toc-example-of-what-kind-of-agent-we-want" class="nav-link" data-scroll-target="#example-of-what-kind-of-agent-we-want">Example of what kind of agent we want</a></li>
   </ul></li>
-  <li><a href="#sec-code-computations" id="toc-sec-code-computations" class="nav-link" data-scroll-target="#sec-code-computations"><span class="header-section-number">31.2</span> Computations needed and mathematical challenges in the code</a></li>
-  <li><a href="#sec-code-computations2" id="toc-sec-code-computations2" class="nav-link" data-scroll-target="#sec-code-computations2"><span class="header-section-number">31.3</span> Code design and computations needed</a></li>
-  <li><a href="#sec-code-optim" id="toc-sec-code-optim" class="nav-link" data-scroll-target="#sec-code-optim"><span class="header-section-number">31.4</span> Code optimization</a></li>
+  <li><a href="#sec-code-computations" id="toc-sec-code-computations" class="nav-link" data-scroll-target="#sec-code-computations"><span class="header-section-number">31.2</span> Computations needed and computational challenges</a></li>
+  <li><a href="#sec-code-writing" id="toc-sec-code-writing" class="nav-link" data-scroll-target="#sec-code-writing"><span class="header-section-number">31.3</span> The code</a></li>
   </ul>
 </nav>
     </div>
@@ -714,8 +713,8 @@ Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0
 <p>Pause for a second and <em>ponder about the flexibility that we are requesting from our prototype agent!</em> Consider that virtually all present-day machine-learning algorithms only work one way: a machine-learning algorithm designed to guess a label from some features cannot guess features from a label. Will we really manage to build an agent with the amazing versatility illustrated above?</p>
 </section>
 </section>
-<section id="sec-code-computations" class="level2" data-number="31.2">
-<h2 data-number="31.2" class="anchored" data-anchor-id="sec-code-computations"><span class="header-section-number">31.2</span> Computations needed and mathematical challenges in the code</h2>
+<section id="sec-code-computations" class="level2 page-columns page-full" data-number="31.2">
+<h2 data-number="31.2" class="anchored" data-anchor-id="sec-code-computations"><span class="header-section-number">31.2</span> Computations needed and computational challenges</h2>
 <p>The examples above of requested inferences show that the OPM agent must essentially use formulae&nbsp;(<a href="dirichlet-mixture.html#eq-dmagent-y" class="quarto-xref"><span>28.3</span></a>)–(<a href="dirichlet-mixture.html#eq-dmagent-aux" class="quarto-xref"><span>28.5</span></a>) from <a href="dirichlet-mixture.html#sec-formulae-dirmix" class="quarto-xref">§&nbsp;<span>28.3</span></a>, which we repeat here:</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -766,7 +765,7 @@ Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0
 </div>
 <p>The values of <span style="display:inline-block;"><span class="math inline">\(\operatorname{aux}(k)\)</span></span> can be calculated just once, when the OPM agent is built, and stored. Subsequently the agent will draw inferences by using (<a href="dirichlet-mixture.html#eq-dmagent-y" class="quarto-xref"><span>28.3</span></a>) or (<a href="dirichlet-mixture.html#eq-dmagent-yx" class="quarto-xref"><span>28.4</span></a>) as needed. To use those formulae, the agent needs to store the counts <span style="display:inline-block;"><span class="math inline">\(\#(x,y,w,\dotsc)\)</span>,</span> which it found in the training data, for all combinations of values <span style="display:inline-block;"><span class="math inline">\(x,y,w,\dotsc\)</span>.</span><br>
 </p>
-<p>This kind of storage and computation could be implemented in a straightforward way if we had unlimited storage and computation precision. But in a real implementation we must face the following difficulties:</p>
+<p>This kind of storage and computation could be implemented in a straightforward way if we had unlimited storage and computation precision. But in a real implementation we must face several difficulties. Here are the main difficulties and their solutions:</p>
 <dl>
 <dt><span class="red"><i class="fa-solid fa-circle-exclamation" aria-label="circle-exclamation"></i> Finite precision</span></dt>
 <dd>
@@ -828,194 +827,6 @@ The formulae that the agent uses may involve sums over many terms, or repeated c
 <p><br>
 </p>
 <p>You see that mathematical “tricks” become very important when we must implement formulae with finite precision and limited memory. Unfortunately getting acquainted with such tricks requires a separate course.</p>
-</section>
-<section id="sec-code-computations2" class="level2 page-columns page-full" data-number="31.3">
-<h2 data-number="31.3" class="anchored" data-anchor-id="sec-code-computations2"><span class="header-section-number">31.3</span> Code design and computations needed</h2>
-<p>To enjoy the versatility discussed above, the code needs to compute</p>
-<div class="column-page-right">
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-&nbsp;
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><span id="eq-objectP"><span class="math display">\[
-\mathrm{P}(
-\color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z
-\mathbin{\mkern-0.5mu,\mkern-0.5mu}
-\color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}
-\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\textrm{d}})
-=
-\frac{1}{k_{\text{ma}}-k_{\text{mi}}+1}
-\sum_{k=k_{\text{mi}}}^{k_{\text{ma}}}
-\Biggl(\frac{2^{k}}{M} + {\color[RGB]{34,136,51}\#}{\color[RGB]{68,119,170}z}\Biggr)
-\cdot
-\frac{
-\prod_{{\color[RGB]{68,119,170}z}} \bigl(\frac{2^{k}}{M} + {\color[RGB]{34,136,51}\# z} - 1\bigr)!
-}{
-\bigl(2^{k} + N \bigr)!
-}
-\cdot
-\frac{
-\bigl(2^{k} -1 \bigr)!
-}{
-{\bigl(\frac{2^{k}}{M} - 1\bigr)!}^M
-}
-\tag{31.1}\]</span></span></p>
-<p>for all possible values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>,</span> where <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}\#}{\color[RGB]{68,119,170}z}\)</span></span> is the number of times value <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span></span> appears <strong>in the training <span class="green">data</span></strong>, and <span style="display:inline-block;"><span class="math inline">\(N = \sum_{\color[RGB]{34,136,51}z}{\color[RGB]{34,136,51}\# z}\)</span></span> is the number of training data</p>
-</div>
-</div>
-</div>
-<p>This formula is just a rewriting of formula (<span class="quarto-unresolved-ref">?eq-main-joint</span>) for <span style="display:inline-block;"><span class="math inline">\(L=N+1\)</span>,</span> simplified by using the property of the factorial</p>
-<p><span class="math display">\[(a+1)! = (a+1) \cdot a!\]</span></p>
-<p>But the computation of formula (<a href="#eq-objectP" class="quarto-xref"><span>31.1</span></a>) (for all values of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>)</span> must be done <em>only once</em> for a given task. For a new application we only need to combine these already-computed probabilities via sums and fractions. For example, in the three-variate case above, if in a new application we need to forecast <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a\)</span></span> given <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c\)</span>,</span> then we calculate</p>
-<div class="column-page-inset-right">
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-&nbsp;
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>(example with <span style="display:inline-block;"><span class="math inline">\(Z \coloneqq({\color[RGB]{238,102,119}A}, {\color[RGB]{68,119,170}B}, {\color[RGB]{204,187,68}C})\)</span>)</span></p>
-<p><span id="eq-forecast"><span class="math display">\[
-P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a \color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{}\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})
-=
-\frac{
-\sum_{\color[RGB]{68,119,170}b}
-P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\textrm{d}})
-}{
-\sum_{\color[RGB]{170,51,119}\alpha}\sum_{\color[RGB]{68,119,170}b}
-P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{170,51,119}\alpha} \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\textrm{d}})
-}
-\quad
-\tag{31.2}\]</span></span></p>
-</div>
-</div>
-</div>
-<p>where all <span style="display:inline-block;"><span class="math inline">\(P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\textrm{d}})\)</span></span> are already computed.</p>
-<p><br>
-</p>
-<p>Our prototype software must therefore include two main functions, which we can call as follows:</p>
-<ul>
-<li><dl>
-<dt><code>buildagent()</code> (<a href="https://github.com/pglpm/ADA511/blob/code/OPM_nominal.R">see code</a>)</dt>
-<dd>
-computes <span class="math inline">\(\color[RGB]{34,136,51}\#{\color[RGB]{68,119,170}z}\)</span> for all values <span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>, as well as the multiplicative factors
-</dd>
-</dl>
-<p><span class="math display">\[
-  \frac{
-  \bigl(2^{k} -1 \bigr)!
-}{
-\bigl(2^{k} + N \bigr)!
-\cdot
-{\bigl(\frac{2^{k}}{M} - 1\bigr)!}^M
-}
-\]</span></p>
-<p>for all <span style="display:inline-block;"><span class="math inline">\(k\)</span>,</span> in (<a href="#eq-objectP" class="quarto-xref"><span>31.1</span></a>). This computation is done once and for all in a given task, using the training <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{34,136,51}data}\)</span></span> and the metadata <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}_{\textrm{d}}\)</span></span> provided. The result can be stored in an array or similar object, which we shall call an <code>agent</code>-class object.</p></li>
-<li><dl>
-<dt><code>infer()</code> (<a href="https://github.com/pglpm/ADA511/blob/master/code/OPM_nominal.R">see code</a>)</dt>
-<dd>
-computes probabilities such as (<a href="#eq-forecast" class="quarto-xref"><span>31.2</span></a>) at each new instance, using the stored <code>agent</code>-class object as well as the predictor variates and values provided with that instance, and the predictand variates requested at that instance.
-</dd>
-</dl></li>
-</ul>
-<p><br>
-</p>
-<p>We shall also include four additional functions for convenience:</p>
-<ul>
-<li><dl>
-<dt><code>guessmetadata()</code></dt>
-<dd>
-builds a preliminary metadata file, encoding the background information <span class="math inline">\(\mathsfit{I}_{\textrm{d}}\)</span>, from some dataset.
-</dd>
-</dl></li>
-<li><dl>
-<dt><code>decide()</code></dt>
-<dd>
-makes a decision according to expected-utility maximization (<a href="basic_decisions.html" class="quarto-xref">chapter&nbsp;&nbsp;<span>3</span></a>), using probabilities calculated with <code>infer()</code> and utilities.
-</dd>
-</dl></li>
-<li><dl>
-<dt><code>rF()</code></dt>
-<dd>
-draws one or more possible full-population frequency distribution <span class="math inline">\(\boldsymbol{f}\)</span>, according to the updated degree of belief <span class="math inline">\(\mathrm{p}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span>
-</dd>
-</dl></li>
-<li><dl>
-<dt><code>plotFsamples1D()</code></dt>
-<dd>
-plots, as a generalized scatter plot, the possible full-population marginal frequency distributions for a single (not joint) predictand variate. If required it also also the final probability obtained with <code>infer()</code>.
-</dd>
-</dl></li>
-<li><dl>
-<dt><code>mutualinfo()</code></dt>
-<dd>
-calculates the mutual information (<a href="information.html#sec-entropy-mutualinfo" class="quarto-xref">§&nbsp;<span>18.5</span></a>) between any two sets of variates.
-</dd>
-</dl></li>
-</ul>
-<div class="column-body-outset-right">
-<div id="cau-unique1" class="callout callout-style-default callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Exercise&nbsp;31.1
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Using the <code>and</code>-rule, prove (pay attention to the conditional <span style="display:inline-block;">“<span class="math inline">\(\nonscript\:\vert\nonscript\:\mathopen{}\)</span>”</span> bar):</p>
-<p><span class="math display">\[
-\frac{
-\sum_{\color[RGB]{68,119,170}b}
-P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\textrm{d}})
-}{
-\sum_{\color[RGB]{170,51,119}\alpha}\sum_{\color[RGB]{68,119,170}b}
-P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{170,51,119}\alpha} \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\textrm{d}})
-}
-=
-\frac{
-\sum_{\color[RGB]{68,119,170}b}
-P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})
-}{
-\sum_{\color[RGB]{170,51,119}\alpha}\sum_{\color[RGB]{68,119,170}b}
-P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{170,51,119}\alpha} \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})
-}
-\]</span></p>
-<p><br>
-</p>
-<p>This exercise shows that instead of</p>
-<p><span class="math display">\[\mathrm{P}(\color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\textrm{d}})\]</span></p>
-<p>we could calculate</p>
-<p><span class="math display">\[
-\mathrm{P}(
-\color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z
-\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{}
-\color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}
-\color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})
-\]</span></p>
-<p>once for all possible values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>,</span> and use that. Mathematically and logically the two ways are completely equivalent. Numerically they can be different as regards precision or possible overflow errors. Using <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}( \color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z \color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}\color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span></span> would be convenient if our basic formula&nbsp;(<span class="quarto-unresolved-ref">?eq-main-joint</span>) didn’t contain the sum <span style="display:inline-block;"><span class="math inline">\(\sum_k\)</span></span> over the <span style="display:inline-block;"><span class="math inline">\(k\)</span></span> index. Our code shall instead use <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(\color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\textrm{d}})\)</span></span> because it leads to slightly more precision and speed in some tasks.</p>
-</div>
-</div>
-</div>
-</section>
-<section id="sec-code-optim" class="level2 page-columns page-full" data-number="31.4">
-<h2 data-number="31.4" class="anchored" data-anchor-id="sec-code-optim"><span class="header-section-number">31.4</span> Code optimization</h2>
-<p>The formulae of <a href="dirichlet-mixture.html" class="quarto-xref">chapter&nbsp;&nbsp;<span>28</span></a>, if used as-written, easily lead to two kinds of computation problems. First, they generate overflows and <code>NaN</code>, owing to factorials and their divisions. Second, the products over variates may involve so many terms as to require a long computation time. In the end we would have to wait a long time just to receive a string of <code>NaN</code>s.</p>
-<p>The first problem is dealt with by rewriting the formulae in terms of logarithms, and renormalizing numerators and denominators of fractions. See for example the lines defining <code>auxalphas</code> in the <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM_nominal.R"><code>buildagent()</code></a> function, and the line that redefines <code>counts</code> one last time in the <a href="https://github.com/pglpm/ADA511/blob/master/code/OPM_nominal.R"><code>infer()</code></a> function.</p>
-<p>The second problem is dealt with by reorganizing the sums as multiples of identical summands; see the lines working with <code>freqscounts</code> in the <code>buildagent()</code>function.</p>
-
-
 
 <div class="no-row-height column-margin column-container"><div class="">
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -1031,7 +842,96 @@ P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sma
 <p>§6.1 in <a href="references.html"><em>Numerical Recipes</em></a></p>
 </div>
 </div>
-</div></div></section>
+</div></div><p>Note that <strong>the solutions just discussed are <em>not</em> approximations</strong>. Even if we use different mathematical formulae, they are still equivalent to the original ones. The internal logic of our OPM agent is therefore still fully correct. In other situations the mathematical or computational solutions above may not be enough, and then we may need to resort to approximations, as it often happens with machine-learning algorithms.</p>
+<div id="cau-unique1" class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise&nbsp;31.1
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Try to prove some of the mathematical identities above.</p>
+</div>
+</div>
+</section>
+<section id="sec-code-writing" class="level2" data-number="31.3">
+<h2 data-number="31.3" class="anchored" data-anchor-id="sec-code-writing"><span class="header-section-number">31.3</span> The code</h2>
+<p>We implement the OPM agent and its inferences through three main functions. These and other helper functions are defined in the script <a href="https://github.com/pglpm/ADA511/blob/code/OPM_nominal.R"><code>OPM_nominal.R</code></a>:</p>
+<ul>
+<li><dl>
+<dt><code>buildagent()</code></dt>
+<dd>
+creates an “agent” object that stores the built-in information and the information learned from the training data. The built-in information consists in the choices of <span class="math inline">\(k_{\text{mi}}\)</span> and <span class="math inline">\(k_{\text{ma}}\)</span> parameters, the <span class="math inline">\(\operatorname{aux}(k)\)</span> parameters, and the list of variates and of their domains – the agent knows what are the possible values before seeing any data. The learned information consists in the set of counts <span class="math inline">\(\#(x,y,\dotsc)\)</span> for all joint values of the variates.
+</dd>
+</dl>
+<p>We can used this function to build several agents, which differ in their background information or in the data they have learned.</p>
+<p>We write this function with an option <code>savememory</code> for storing the learned information in a memory-efficient way, if needed.</p></li>
+<li><dl>
+<dt><code>infer()</code></dt>
+<dd>
+asks an agent to draw an inference for a new unit, specifying the desired predictands and the known predictors for the new unit, if any are available. It returns the agent’s degrees of belief about the predictands, using formulae&nbsp;(<a href="dirichlet-mixture.html#eq-dmagent-y" class="quarto-xref"><span>28.3</span></a>)–(<a href="dirichlet-mixture.html#eq-dmagent-aux" class="quarto-xref"><span>28.5</span></a>).
+</dd>
+</dl>
+<p>The formulae must be implemented in slightly different ways, depending on whether the learned information is stored in a memory-efficient way. For this reason we actually have two implementations of this function, called <code>infer.agent()</code> and <code>infer.agentcompressed()</code>.</p>
+<p>This function can be used as often as we please, and with any agents we please.</p></li>
+<li><dl>
+<dt><code>decide()</code></dt>
+<dd>
+asks an agent to make a decision, specifying the list of possible decisions, the predictands and their probabilities, and the utilities for the different decisions and outcomes. We shall discuss this function more in detail in <a href="example_opm2.html" class="quarto-xref">ch.&nbsp;&nbsp;<span>36</span></a>.
+</dd>
+</dl></li>
+</ul>
+<div id="cau-unique2" class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise&nbsp;31.2
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Open the script <a href="https://github.com/pglpm/ADA511/blob/code/OPM_nominal.R"><code>OPM_nominal.R</code></a> and locate the functions <code>buildagent()</code> and <code>infer.agent()</code>. In each, identify the lines of code that implement the various calculations discussed above. Note that <code>alpha</code> stands for <span style="display:inline-block;"><span class="math inline">\(2^k\)</span>,</span> and <code>counts</code> stands for the array or list of counts <span style="display:inline-block;"><span class="math inline">\(\#(y,x,\dotsc)\)</span>.</span></p>
+</div>
+</div>
+<p><br>
+</p>
+<p>Besides the three main functions above, we can write other functions that help us handling the inference task and calculate other quantities of interest:</p>
+<ul>
+<li><dl>
+<dt><code>guessmetadata()</code></dt>
+<dd>
+takes a dataset and builds a preliminary metadata file, encoding the information about variates and domain <em>guessed</em> from the dataset. Typically we have to correct this preliminary file to include values that may be missing from the learning data.
+</dd>
+</dl></li>
+<li><dl>
+<dt><code>rF()</code></dt>
+<dd>
+draws one or more possible full-population frequency distribution <span class="math inline">\(\boldsymbol{f}\)</span>, according to an agent’s degree of belief <span class="math inline">\(\mathrm{p}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span> updated after learning the data.
+</dd>
+</dl></li>
+<li><dl>
+<dt><code>plotFsamples1D()</code></dt>
+<dd>
+plots, as a generalized scatter plot, the possible full-population marginal frequency distributions for a single (not joint) predictand variate. If required it also plots the final probability distribution obtained with <code>infer()</code>.
+</dd>
+</dl></li>
+<li><dl>
+<dt><code>mutualinfo()</code></dt>
+<dd>
+asks an agent to calculate the mutual information (<a href="information.html#sec-entropy-mutualinfo" class="quarto-xref">§&nbsp;<span>18.5</span></a>) between any two sets of variates.
+</dd>
+</dl></li>
+</ul>
+<p><br>
+</p>
+<p>In the next chapter we give some more documentation on these functions and on how to use them, and in <a href="example_opm1.html" class="quarto-xref">ch.&nbsp;&nbsp;<span>33</span></a> we use them in a concrete task.</p>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
