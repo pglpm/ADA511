@@ -20,22 +20,22 @@ Before starting, let's agree on some terminology so as not to get confused in th
 
 We design our Optimal Predictor Machine with the following specific characteristics:
 
-- It handles inferences and decisions about approximately infinite populations.
-
 - It handles variates of *nominal* type ([§@sec-basic-types]).
 
-- Its beliefs about the population are *exchangeable* ([ch. @sec-exchangeable-beliefs]).
+- It handles inferences and decisions about approximately infinite populations, and its beliefs about the population are *exchangeable* ([ch. @sec-exchangeable-beliefs]).
 
 - Its initial beliefs about the population frequencies are represented by a *Dirichlet-mixture distribution* ([ch. @sec-dirichlet-mix]).
+
+- Before deployment, it learns from a set of $N$ units.
 \
 
 ### Example of what kind of agent we want
 
-Let's give an example of what we want our agent to be able to do. Suppose we have a population having three nominal variates $\bZ=(\bA \and \bB \and \bC)$. Abbreviate the set of training data as
+Let's give an example of what we want our agent to be able to do. Suppose we have a population having three nominal variates $Z = (Y \and X \and W)$.\  Abbreviate the set of $N$ training data as
 
 $\data \defd
 ( Z_{N}\mo z_{N} \and \dotsb \and
-Z_{2}\mo z_2 \and
+Z_{2}\mo z_{2} \and
 Z_{1}\mo z_{1} )$    
 
 :::{.column-margin}
@@ -44,19 +44,19 @@ Recall that $Z$ denotes all (nominal) variates of the population
 
 where $z_N, \dotsc, z_2, z_1$ are specific values, stored in some training dataset. To simplify things, we assume that no values are missing.
 
-We want an agent that draw inferences like these, as often as required:
+We want an agent that can draw inferences like the following ones, as often as required:
 
-- $P(\bB\mo\dotso\|\data \and \yD)$: inference about a predictand variate, without knowledge of any predictors.
+- $P(X\mo\dotso\|\data \and \yD)$,\  $P(Y\mo\dotso\|\data \and \yD)$,\ etc.: inference about a predictand variate, without knowledge of any predictors.
 
-- $P(\bA\mo\dotso \and \bC\mo\dotso\|\data \and \yD)$: same but for any two predictand variates.
+- $P(Y\mo\dotso \and W\mo\dotso\|\data \and \yD)$: same but for any two predictand variates.
 
-- $P(\bA\mo\dotso \and \bB\mo\dotso \and \bC\mo\dotso\|\data \and \yD)$: same but for all three variates.
+- $P(Y\mo\dotso \and X\mo\dotso \and W\mo\dotso\|\data \and \yD)$: same but for all three variates.
 
-- $P(\bB\mo\dotso\|\bA\mo\dotso \and \data \and \yD)$: inference about any one predictand variate, given information about one predictor variate.
+- $P(X\mo\dotso\|Y\mo\dotso \and \data \and \yD)$: inference about any one predictand variate, given information about one predictor variate.
 
-- $P(\bB\mo\dotso\| \bA\mo\dotso \and \bC\mo\dotso \and\data \and  \yD)$: same, but given information about any pair of predictors.
+- $P(X\mo\dotso\| Y\mo\dotso \and W\mo\dotso \and\data \and  \yD)$: same, but given information about any pair of predictors.
 
-- $P(\bA\mo\dotso \and \bC\mo\dotso\|\bB\mo\dotso \and \data \and \yD)$: inference about any two predictand variates, given information about one predictor.
+- $P(Y\mo\dotso \and W\mo\dotso\|X\mo\dotso \and \data \and \yD)$: inference about any two predictand variates, given information about one predictor.
 
 Note that *we are not fixing beforehand which variates are predictands and which are predictors*. Once the agent has learnt from the training data, we want to be able to change *on the fly, at each new application*, what the predictands are, and what the predictors are (if any).
 
@@ -65,43 +65,112 @@ Pause for a second and *ponder about the flexibility that we are requesting from
 
 ## Computations needed and mathematical challenges in the code {#sec-code-computations}
 
-The code implementing the OPM agent must essentially calculate
+The examples above of requested inferences show that the OPM agent must essentially use formulae (@eq-dmagent-y)--(@eq-dmagent-aux) from [§@sec-formulae-dirmix], which we repeat here:
 
-::::{.column-page-right}
-:::{.callout-note}
+::::{.callout-note}
 ##  
 
-$$
-\P(
-\blue Z \mo z
-\and
-\green\data
-\black \| \yD)
+$\P(Y\mo y \| \data, \yD)
 =
-\frac{1}{\amax-\amin+1}
-\sum_{\ya=\amin}^{\amax}
-\Biggl(\frac{2^{\ya}}{M} + {\green\#}\bz\Biggr)
-\cdot
+\sum_{\ya = \amin}^{\amax}
+\Bigl(\tfrac{2^\ya}{M_Y} + \#y\Bigr)
+\cdot \aux(\ya)$   (@eq-dmagent-y)
+
+$\P(Y\mo y \| X\mo x \and \data, \yD)
+=
 \frac{
-\prod_{\bz} \bigl(\frac{2^{\ya}}{M} + {\green\# z} - 1\bigr)!
+\sum_{\ya = \amin}^{\amax}
+\Bigl(\tfrac{2^\ya}{M_Y \cdot M_X} + \#(y,x)\Bigr)
+\cdot \aux(\ya)
 }{
-\bigl(2^{\ya} + N \bigr)!
+\sum_{y}\sum_{\ya = \amin}^{\amax}
+\Bigl(\tfrac{2^\ya}{M_Y \cdot M_X} + \#(y,x)\Bigr)
+\cdot \aux(\ya)
+}$   (@eq-dmagent-yx)
+
+with\ \ $\aux(\ya)
+\defd
+\frac{
+\frac{
+\prod_{x,y,w} \Bigl(\frac{2^{\ya}}{M} + \#(x,y,w) - 1\Bigr)!
+}{
+\bigl(2^{\ya} + N -1 \bigr)!
 }
 \cdot
 \frac{
 \bigl(2^{\ya} -1 \bigr)!
 }{
-{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
+{\Bigl(\frac{2^{\ya}}{M} - 1\Bigr)!}^M
 }
-$$ {#eq-objectP}
-
-for all possible values $\bz$, where ${\green\#}\bz$ is the number of times value $\bz$ appears **in the training [data]{.green}**, and $N = \sum_{\green z}{\green\# z}$ is the number of training data
-:::
+}{
+\sum_{\yb = \amin}^{\amax}
+\frac{
+\prod_{x,y,w} \Bigl(\frac{2^{\yb}}{M} + \#(x,y,w) - 1\Bigr)!
+}{
+\bigl(2^{\yb} + N \bigr)!
+}
+\cdot
+\frac{
+\bigl(2^{\yb} -1 \bigr)!
+}{
+{\Bigl(\frac{2^{\yb}}{M} - 1\Bigr)!}^M
+}
+}$   (@eq-dmagent-aux)
 ::::
 
-This formula is just a rewriting of formula (@eq-main-joint) for $L=N+1$, simplified by using the property of the factorial
+The values of $\aux(\ya)$ can be calculated just once, when the OPM agent is built, and stored. Subsequently the agent will draw inferences by using (@eq-dmagent-y) or (@eq-dmagent-yx) as needed. To use those formulae, the agent needs to store the counts $\#(x,y,w,\dotsc)$, which it found in the training data, for all combinations of values $x,y,w,\dotsc$.
+\
 
-$$(a+1)! = (a+1) \cdot a!$$
+This kind of storage and computation could be implemented in a straightforward way if we had unlimited storage and computation precision. But in a real implementation we must face the following difficulties:
+
+[{{< fa circle-exclamation >}} Finite precision]{.red}
+: Owing to finite precision, the operations in the formulae may easily lead to overflow or underflow: large numbers are treated as `infinity`, and small non-zero numbers as `0`. For instance this is what happens if we directly compute something like $(2^{10})! / (2^{10})!$, obviously equal to $1$:
+```{r}
+factorial(2^10) / factorial(2^10)
+```
+One way to bypass this problem is by rewriting the formulae in ways that are mathematically equivalent but less prone to over- and under-flow. For example we can use identities like
+
+$$
+x / y = \exp\bigl(\ln x - \ln y\bigr)\ ,\quad x, y > 0 \ .
+$$
+
+Now indeed it works; note that `lfactorial()` is `log(factorial())` in R:
+```{r}
+exp( lfactorial(2^10) - lfactorial(2^10) )
+```
+Another useful identity that avoids over- and under-flow, if $\pmb{x}$ is a vector of positive numbers, is the following:
+
+$$
+\frac{\pmb{x}}{\operatorname{\texttt{sum}}(\pmb{x})}
+=
+\frac{
+\operatorname{\texttt{exp}}\bigl(\operatorname{\texttt{log}}(\pmb{x})
+- \operatorname{\texttt{max}}(\operatorname{\texttt{log}}(\pmb{x}))\bigr)
+}{\operatorname{\texttt{sum}}\bigl(
+\operatorname{\texttt{exp}}\bigl(\operatorname{\texttt{log}}(\pmb{x})
+- \operatorname{\texttt{max}}(\operatorname{\texttt{log}}(\pmb{x}))\bigr)
+\bigr)}
+$$
+
+\
+
+[{{< fa circle-exclamation >}} Storage]{.red}
+: With many variates and large domains, we may run out of memory in storing all possible counts $\#(x,y,w,\dotsc)$. For instance if we have four variates with 20 possible values each, we would need to store $4^{20}$ integers, which would take more than 4 000 GB:
+```{r}
+try( x <- integer(length = 4^20) )
+```
+We can bypass this problem again by using smart mathematical manipulations. In the case of formulae (@eq-dmagent-y)--(@eq-dmagent-aux), the product over all possible values $(x,y,w,\dotsc)$ can be rewritten in one over all different *values of the counts*, which usually has much fewer terms. For example, if we have $N=10000$ datapoints, and $4^20 -1$ counts are equal to $9000$, while one count is equal to $1000$, then we only need to store these four numbers rather than $4^20$ numbers!
+
+Many such mathematical tricks are used in finite-precision computations. Unfortunately their knowledge requires a separate course.
+
+\
+
+[{{< fa circle-exclamation >}} Speed]{.red}
+: The formulae that the agent uses may involve sums over many terms, or repeated computations for many different variate values. Thus computation speed may become an issue.
+
+
+
+
 
 
 ## Range of use of the code {#sec-code-range}

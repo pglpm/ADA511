@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-10-26">
+<meta name="dcterms.date" content="2025-10-27">
 
 <title>31&nbsp; Implementing an OPM – ADA511 0.3</title>
 <style>
@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -134,7 +169,7 @@ window.Quarto = {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.3</span><br><span class="small grey">2025-10-26</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.3</span><br><span class="small grey">2025-10-27</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -615,7 +650,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-10-26</p>
+      <p class="date">2025-10-27</p>
     </div>
   </div>
   
@@ -650,40 +685,39 @@ window.Quarto = {
 <h2 data-number="31.1" class="anchored" data-anchor-id="sec-characteristics-opm"><span class="header-section-number">31.1</span> Desired characteristics of the OPM</h2>
 <p>We design our Optimal Predictor Machine with the following specific characteristics:</p>
 <ul>
-<li><p>It handles inferences and decisions about approximately infinite populations.</p></li>
 <li><p>It handles variates of <em>nominal</em> type (<a href="quantities_types.html#sec-basic-types" class="quarto-xref">§&nbsp;<span>12.2</span></a>).</p></li>
-<li><p>Its beliefs about the population are <em>exchangeable</em> (<a href="exchangeable_probabilities.html" class="quarto-xref">ch.&nbsp;&nbsp;<span>25</span></a>).</p></li>
-<li><p>Its initial beliefs about the population frequencies are represented by a <em>Dirichlet-mixture distribution</em> (<a href="dirichlet-mixture.html" class="quarto-xref">ch.&nbsp;&nbsp;<span>28</span></a>).<br>
+<li><p>It handles inferences and decisions about approximately infinite populations, and its beliefs about the population are <em>exchangeable</em> (<a href="exchangeable_probabilities.html" class="quarto-xref">ch.&nbsp;&nbsp;<span>25</span></a>).</p></li>
+<li><p>Its initial beliefs about the population frequencies are represented by a <em>Dirichlet-mixture distribution</em> (<a href="dirichlet-mixture.html" class="quarto-xref">ch.&nbsp;&nbsp;<span>28</span></a>).</p></li>
+<li><p>Before deployment, it learns from a set of <span style="display:inline-block;"><span class="math inline">\(N\)</span></span> units.<br>
 </p></li>
 </ul>
 <section id="example-of-what-kind-of-agent-we-want" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="example-of-what-kind-of-agent-we-want">Example of what kind of agent we want</h3>
-<p>Let’s give an example of what we want our agent to be able to do. Suppose we have a population having three nominal variates <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}Z}=({\color[RGB]{68,119,170}A}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}B}\mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C})\)</span>.</span> Abbreviate the set of training data as</p>
+<p>Let’s give an example of what we want our agent to be able to do. Suppose we have a population having three nominal variates <span style="display:inline-block;"><span class="math inline">\(Z = (Y \mathbin{\mkern-0.5mu,\mkern-0.5mu}X \mathbin{\mkern-0.5mu,\mkern-0.5mu}W)\)</span>.&nbsp;</span> Abbreviate the set of <span style="display:inline-block;"><span class="math inline">\(N\)</span></span> training data as</p>
 <p><span class="math inline">\(\mathsfit{\color[RGB]{34,136,51}data}\coloneqq
 ( Z_{N}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{N} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\dotsb \mathbin{\mkern-0.5mu,\mkern-0.5mu}
-Z_{2}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_2 \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+Z_{2}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{2} \mathbin{\mkern-0.5mu,\mkern-0.5mu}
 Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z_{1} )\)</span></p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>Recall that <span style="display:inline-block;"><span class="math inline">\(Z\)</span></span> denotes all (nominal) variates of the population</p>
 </div></div><p>where <span style="display:inline-block;"><span class="math inline">\(z_N, \dotsc, z_2, z_1\)</span></span> are specific values, stored in some training dataset. To simplify things, we assume that no values are missing.</p>
-<p>We want an agent that draw inferences like these, as often as required:</p>
+<p>We want an agent that can draw inferences like the following ones, as often as required:</p>
 <ul>
-<li><p><span class="math inline">\(P({\color[RGB]{68,119,170}B}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span>: inference about a predictand variate, without knowledge of any predictors.</p></li>
-<li><p><span class="math inline">\(P({\color[RGB]{68,119,170}A}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span>: same but for any two predictand variates.</p></li>
-<li><p><span class="math inline">\(P({\color[RGB]{68,119,170}A}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}B}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span>: same but for all three variates.</p></li>
-<li><p><span class="math inline">\(P({\color[RGB]{68,119,170}B}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{}{\color[RGB]{68,119,170}A}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span>: inference about any one predictand variate, given information about one predictor variate.</p></li>
-<li><p><span class="math inline">\(P({\color[RGB]{68,119,170}B}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{} {\color[RGB]{68,119,170}A}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span>: same, but given information about any pair of predictors.</p></li>
-<li><p><span class="math inline">\(P({\color[RGB]{68,119,170}A}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}{\color[RGB]{68,119,170}C}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{}{\color[RGB]{68,119,170}B}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span>: inference about any two predictand variates, given information about one predictor.</p></li>
+<li><p><span class="math inline">\(P(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span>,&nbsp; <span style="display:inline-block;"><span class="math inline">\(P(Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span>,&nbsp;etc.:</span> inference about a predictand variate, without knowledge of any predictors.</p></li>
+<li><p><span class="math inline">\(P(Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}W\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span>: same but for any two predictand variates.</p></li>
+<li><p><span class="math inline">\(P(Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}W\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span>: same but for all three variates.</p></li>
+<li><p><span class="math inline">\(P(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span>: inference about any one predictand variate, given information about one predictor variate.</p></li>
+<li><p><span class="math inline">\(P(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{} Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}W\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span>: same, but given information about any pair of predictors.</p></li>
+<li><p><span class="math inline">\(P(Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}W\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso\nonscript\:\vert\nonscript\:\mathopen{}X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\dotso \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span>: inference about any two predictand variates, given information about one predictor.</p></li>
 </ul>
-<p>Note that <em>we are not fixing beforehand what are the predictands and what are the predictors</em>. Once the agent has learnt from the training data, we want to be able to change <em>on the fly, at each new application</em>, what the predictands are, and what the predictors are (if any).</p>
-<p>Pause for a second and <em>ponder about the flexibility that we are requesting from our prototype agent!</em> Consider that virtually all present-day machine-learning algorithms only work one way: a machine-learning algorithm designed to guess the labels of images cannot guess an image given a label. Will we really manage to build an agent with the amazing versatility illustrated above?</p>
+<p>Note that <em>we are not fixing beforehand which variates are predictands and which are predictors</em>. Once the agent has learnt from the training data, we want to be able to change <em>on the fly, at each new application</em>, what the predictands are, and what the predictors are (if any).</p>
+<p>Pause for a second and <em>ponder about the flexibility that we are requesting from our prototype agent!</em> Consider that virtually all present-day machine-learning algorithms only work one way: a machine-learning algorithm designed to guess a label from some features cannot guess features from a label. Will we really manage to build an agent with the amazing versatility illustrated above?</p>
 </section>
 </section>
-<section id="sec-code-computations" class="level2 page-columns page-full" data-number="31.2">
+<section id="sec-code-computations" class="level2" data-number="31.2">
 <h2 data-number="31.2" class="anchored" data-anchor-id="sec-code-computations"><span class="header-section-number">31.2</span> Computations needed and mathematical challenges in the code</h2>
-<p>The code implementing the OPM agent must essentially calculate</p>
-<div class="column-page-right">
+<p>The examples above of requested inferences show that the OPM agent must essentially use formulae&nbsp;(<a href="dirichlet-mixture.html#eq-dmagent-y" class="quarto-xref"><span>28.3</span></a>)–(<a href="dirichlet-mixture.html#eq-dmagent-aux" class="quarto-xref"><span>28.5</span></a>) from <a href="dirichlet-mixture.html#sec-formulae-dirmix" class="quarto-xref">§&nbsp;<span>28.3</span></a>, which we repeat here:</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -694,35 +728,114 @@ Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><span id="eq-objectP"><span class="math display">\[
-\mathrm{P}(
-\color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z
-\mathbin{\mkern-0.5mu,\mkern-0.5mu}
-\color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}
-\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\textrm{d}})
+<p><span class="math inline">\(\mathrm{P}(Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{\color[RGB]{34,136,51}data}, \mathsfit{I}_{\textrm{d}})
 =
-\frac{1}{k_{\text{ma}}-k_{\text{mi}}+1}
-\sum_{k=k_{\text{mi}}}^{k_{\text{ma}}}
-\Biggl(\frac{2^{k}}{M} + {\color[RGB]{34,136,51}\#}{\color[RGB]{68,119,170}z}\Biggr)
-\cdot
+\sum_{k= k_{\text{mi}}}^{k_{\text{ma}}}
+\Bigl(\tfrac{2^k}{M_Y} + \#y\Bigr)
+\cdot \operatorname{aux}(k)\)</span>&nbsp;&nbsp;&nbsp;(<a href="dirichlet-mixture.html#eq-dmagent-y" class="quarto-xref"><span>28.3</span></a>)</p>
+<p><span class="math inline">\(\mathrm{P}(Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y \nonscript\:\vert\nonscript\:\mathopen{} X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}x \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}, \mathsfit{I}_{\textrm{d}})
+=
 \frac{
-\prod_{{\color[RGB]{68,119,170}z}} \bigl(\frac{2^{k}}{M} + {\color[RGB]{34,136,51}\# z} - 1\bigr)!
+\sum_{k= k_{\text{mi}}}^{k_{\text{ma}}}
+\Bigl(\tfrac{2^k}{M_Y \cdot M_X} + \#(y,x)\Bigr)
+\cdot \operatorname{aux}(k)
 }{
-\bigl(2^{k} + N \bigr)!
+\sum_{y}\sum_{k= k_{\text{mi}}}^{k_{\text{ma}}}
+\Bigl(\tfrac{2^k}{M_Y \cdot M_X} + \#(y,x)\Bigr)
+\cdot \operatorname{aux}(k)
+}\)</span>&nbsp;&nbsp;&nbsp;(<a href="dirichlet-mixture.html#eq-dmagent-yx" class="quarto-xref"><span>28.4</span></a>)</p>
+<p>with&nbsp;&nbsp;<span style="display:inline-block;"><span class="math inline">\(\operatorname{aux}(k)
+\coloneqq
+\frac{
+\frac{
+\prod_{x,y,w} \Bigl(\frac{2^{k}}{M} + \#(x,y,w) - 1\Bigr)!
+}{
+\bigl(2^{k} + N -1 \bigr)!
 }
 \cdot
 \frac{
 \bigl(2^{k} -1 \bigr)!
 }{
-{\bigl(\frac{2^{k}}{M} - 1\bigr)!}^M
+{\Bigl(\frac{2^{k}}{M} - 1\Bigr)!}^M
 }
-\tag{31.1}\]</span></span></p>
-<p>for all possible values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>,</span> where <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}\#}{\color[RGB]{68,119,170}z}\)</span></span> is the number of times value <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span></span> appears <strong>in the training <span class="green">data</span></strong>, and <span style="display:inline-block;"><span class="math inline">\(N = \sum_{\color[RGB]{34,136,51}z}{\color[RGB]{34,136,51}\# z}\)</span></span> is the number of training data</p>
+}{
+\sum_{l= k_{\text{mi}}}^{k_{\text{ma}}}
+\frac{
+\prod_{x,y,w} \Bigl(\frac{2^{l}}{M} + \#(x,y,w) - 1\Bigr)!
+}{
+\bigl(2^{l} + N \bigr)!
+}
+\cdot
+\frac{
+\bigl(2^{l} -1 \bigr)!
+}{
+{\Bigl(\frac{2^{l}}{M} - 1\Bigr)!}^M
+}
+}\)</span>&nbsp;&nbsp;&nbsp;(</span><a href="dirichlet-mixture.html#eq-dmagent-aux" class="quarto-xref"><span>28.5</span></a>)</p>
 </div>
 </div>
+<p>The values of <span style="display:inline-block;"><span class="math inline">\(\operatorname{aux}(k)\)</span></span> can be calculated just once, when the OPM agent is built, and stored. Subsequently the agent will draw inferences by using (<a href="dirichlet-mixture.html#eq-dmagent-y" class="quarto-xref"><span>28.3</span></a>) or (<a href="dirichlet-mixture.html#eq-dmagent-yx" class="quarto-xref"><span>28.4</span></a>) as needed. To use those formulae, the agent needs to store the counts <span style="display:inline-block;"><span class="math inline">\(\#(x,y,w,\dotsc)\)</span>,</span> which it found in the training data, for all combinations of values <span style="display:inline-block;"><span class="math inline">\(x,y,w,\dotsc\)</span>.</span><br>
+</p>
+<p>This kind of storage and computation could be implemented in a straightforward way if we had unlimited storage and computation precision. But in a real implementation we must face the following difficulties:</p>
+<dl>
+<dt><span class="red"><i class="fa-solid fa-circle-exclamation" aria-label="circle-exclamation"></i> Finite precision</span></dt>
+<dd>
+Owing to finite precision, the operations in the formulae may easily lead to overflow or underflow: large numbers are treated as <code>infinity</code>, and small non-zero numbers as <code>0</code>. For instance this is what happens if we directly compute something like <span class="math inline">\((2^{10})! / (2^{10})!\)</span>, obviously equal to <span class="math inline">\(1\)</span>:
+</dd>
+</dl>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">factorial</span>(<span class="dv">2</span><span class="sc">^</span><span class="dv">10</span>) <span class="sc">/</span> <span class="fu">factorial</span>(<span class="dv">2</span><span class="sc">^</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NaN</code></pre>
 </div>
-<p>This formula is just a rewriting of formula (<a href="#eq-main-joint" class="quarto-xref"><span>31.2</span></a>) for <span style="display:inline-block;"><span class="math inline">\(L=N+1\)</span>,</span> simplified by using the property of the factorial</p>
-<p><span class="math display">\[(a+1)! = (a+1) \cdot a!\]</span></p>
+</div>
+<p>One way to bypass this problem is by rewriting the formulae in ways that are mathematically equivalent but less prone to over- and under-flow. For example we can use identities like</p>
+<p><span class="math display">\[
+x / y = \exp\bigl(\ln x - \ln y\bigr)\ ,\quad x, y &gt; 0 \ .
+\]</span></p>
+<p>Now indeed it works; note that <code>lfactorial()</code> is <code>log(factorial())</code> in R:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>( <span class="fu">lfactorial</span>(<span class="dv">2</span><span class="sc">^</span><span class="dv">10</span>) <span class="sc">-</span> <span class="fu">lfactorial</span>(<span class="dv">2</span><span class="sc">^</span><span class="dv">10</span>) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+</div>
+<p>Another useful identity that avoids over- and under-flow, if <span style="display:inline-block;"><span class="math inline">\(\pmb{x}\)</span></span> is a vector of positive numbers, is the following:</p>
+<p><span class="math display">\[
+\frac{\pmb{x}}{\operatorname{\texttt{sum}}(\pmb{x})}
+=
+\frac{
+\operatorname{\texttt{exp}}\bigl(\operatorname{\texttt{log}}(\pmb{x})
+- \operatorname{\texttt{max}}(\operatorname{\texttt{log}}(\pmb{x}))\bigr)
+}{\operatorname{\texttt{sum}}\bigl(
+\operatorname{\texttt{exp}}\bigl(\operatorname{\texttt{log}}(\pmb{x})
+- \operatorname{\texttt{max}}(\operatorname{\texttt{log}}(\pmb{x}))\bigr)
+\bigr)}
+\]</span></p>
+<p><br>
+</p>
+<dl>
+<dt><span class="red"><i class="fa-solid fa-circle-exclamation" aria-label="circle-exclamation"></i> Storage</span></dt>
+<dd>
+With many variates and large domains, we may run out of memory in storing all possible counts <span class="math inline">\(\#(x,y,w,\dotsc)\)</span>. For instance if we have four variates with 20 possible values each, we would need to store <span class="math inline">\(4^{20}\)</span> integers, which would take more than 4 000 GB:
+</dd>
+</dl>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">try</span>( x <span class="ot">&lt;-</span> <span class="fu">integer</span>(<span class="at">length =</span> <span class="dv">4</span><span class="sc">^</span><span class="dv">20</span>) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Error : cannot allocate vector of size 4096.0 Gb</code></pre>
+</div>
+</div>
+<p>We can bypass this problem again by using smart mathematical manipulations. In the case of formulae&nbsp;(<a href="dirichlet-mixture.html#eq-dmagent-y" class="quarto-xref"><span>28.3</span></a>)–(<a href="dirichlet-mixture.html#eq-dmagent-aux" class="quarto-xref"><span>28.5</span></a>), the product over all possible values <span style="display:inline-block;"><span class="math inline">\((x,y,w,\dotsc)\)</span></span> can be rewritten in one over all different <em>values of the counts</em>, which usually has much fewer terms. For example, if we have <span style="display:inline-block;"><span class="math inline">\(N=10000\)</span></span> datapoints, and <span style="display:inline-block;"><span class="math inline">\(4^20 -1\)</span></span> counts are equal to <span style="display:inline-block;"><span class="math inline">\(9000\)</span>,</span> while one count is equal to <span style="display:inline-block;"><span class="math inline">\(1000\)</span>,</span> then we only need to store these four numbers rather than <span style="display:inline-block;"><span class="math inline">\(4^20\)</span></span> numbers!</p>
+<p>Many such mathematical tricks are used in finite-precision computations. Unfortunately their knowledge requires a separate course.</p>
+<p><br>
+</p>
+<dl>
+<dt><span class="red"><i class="fa-solid fa-circle-exclamation" aria-label="circle-exclamation"></i> Speed</span></dt>
+<dd>
+The formulae that the agent uses may involve sums over many terms, or repeated computations for many different variate values. Thus computation speed may become an issue.
+</dd>
+</dl>
 </section>
 <section id="sec-code-range" class="level2 page-columns page-full" data-number="31.3">
 <h2 data-number="31.3" class="anchored" data-anchor-id="sec-code-range"><span class="header-section-number">31.3</span> Range of use of the code</h2>
@@ -764,7 +877,7 @@ Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0
 {\bigl(\frac{2^{k}}{M} - 1\bigr)!}^M
 }
 \quad
-\tag{31.2}\]</span></span></p>
+\tag{31.1}\]</span></span></p>
 </div>
 </div>
 </div>
@@ -829,14 +942,14 @@ Z_{1}\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0
 }{
 {\bigl(\frac{2^{k}}{M} - 1\bigr)!}^M
 }
-\tag{31.3}\]</span></span></p>
+\tag{31.2}\]</span></span></p>
 <p>for all possible values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>,</span> where <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{34,136,51}\#}{\color[RGB]{68,119,170}z}\)</span></span> is the number of times value <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span></span> appears <strong>in the training <span class="green">data</span></strong>, and <span style="display:inline-block;"><span class="math inline">\(N = \sum_{\color[RGB]{34,136,51}z}{\color[RGB]{34,136,51}\# z}\)</span></span> is the number of training data</p>
 </div>
 </div>
 </div>
-<p>This formula is just a rewriting of formula (<a href="#eq-main-joint" class="quarto-xref"><span>31.2</span></a>) for <span style="display:inline-block;"><span class="math inline">\(L=N+1\)</span>,</span> simplified by using the property of the factorial</p>
+<p>This formula is just a rewriting of formula (<a href="#eq-main-joint" class="quarto-xref"><span>31.1</span></a>) for <span style="display:inline-block;"><span class="math inline">\(L=N+1\)</span>,</span> simplified by using the property of the factorial</p>
 <p><span class="math display">\[(a+1)! = (a+1) \cdot a!\]</span></p>
-<p>But the computation of formula (<a href="#eq-objectP" class="quarto-xref"><span>31.3</span></a>) (for all values of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>)</span> must be done <em>only once</em> for a given task. For a new application we only need to combine these already-computed probabilities via sums and fractions. For example, in the three-variate case above, if in a new application we need to forecast <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a\)</span></span> given <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c\)</span>,</span> then we calculate</p>
+<p>But the computation of formula (<a href="#eq-objectP" class="quarto-xref"><span>31.2</span></a>) (for all values of <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>)</span> must be done <em>only once</em> for a given task. For a new application we only need to combine these already-computed probabilities via sums and fractions. For example, in the three-variate case above, if in a new application we need to forecast <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}a\)</span></span> given <span style="display:inline-block;"><span class="math inline">\(\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c\)</span>,</span> then we calculate</p>
 <div class="column-page-inset-right">
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -860,7 +973,7 @@ P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sma
 P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}{\color[RGB]{170,51,119}\alpha} \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{68,119,170}B\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}b \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{204,187,68}C\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}c \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{\color[RGB]{34,136,51}data}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\textrm{d}})
 }
 \quad
-\tag{31.4}\]</span></span></p>
+\tag{31.3}\]</span></span></p>
 </div>
 </div>
 </div>
@@ -884,11 +997,11 @@ computes <span class="math inline">\(\color[RGB]{34,136,51}\#{\color[RGB]{68,119
 {\bigl(\frac{2^{k}}{M} - 1\bigr)!}^M
 }
 \]</span></p>
-<p>for all <span style="display:inline-block;"><span class="math inline">\(k\)</span>,</span> in (<a href="#eq-objectP" class="quarto-xref"><span>31.3</span></a>). This computation is done once and for all in a given task, using the training <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{34,136,51}data}\)</span></span> and the metadata <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}_{\textrm{d}}\)</span></span> provided. The result can be stored in an array or similar object, which we shall call an <code>agent</code>-class object.</p></li>
+<p>for all <span style="display:inline-block;"><span class="math inline">\(k\)</span>,</span> in (<a href="#eq-objectP" class="quarto-xref"><span>31.2</span></a>). This computation is done once and for all in a given task, using the training <span style="display:inline-block;"><span class="math inline">\(\mathsfit{\color[RGB]{34,136,51}data}\)</span></span> and the metadata <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}_{\textrm{d}}\)</span></span> provided. The result can be stored in an array or similar object, which we shall call an <code>agent</code>-class object.</p></li>
 <li><dl>
 <dt><code>infer()</code> (<a href="https://github.com/pglpm/ADA511/blob/master/code/OPM_nominal.R">see code</a>)</dt>
 <dd>
-computes probabilities such as (<a href="#eq-forecast" class="quarto-xref"><span>31.4</span></a>) at each new instance, using the stored <code>agent</code>-class object as well as the predictor variates and values provided with that instance, and the predictand variates requested at that instance.
+computes probabilities such as (<a href="#eq-forecast" class="quarto-xref"><span>31.3</span></a>) at each new instance, using the stored <code>agent</code>-class object as well as the predictor variates and values provided with that instance, and the predictand variates requested at that instance.
 </dd>
 </dl></li>
 </ul>
@@ -968,7 +1081,7 @@ P(\color[RGB]{238,102,119}A\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\sma
 \color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}
 \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})
 \]</span></p>
-<p>once for all possible values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>,</span> and use that. Mathematically and logically the two ways are completely equivalent. Numerically they can be different as regards precision or possible overflow errors. Using <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}( \color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z \color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}\color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span></span> would be convenient if our basic formula&nbsp;(<a href="#eq-main-joint" class="quarto-xref"><span>31.2</span></a>) didn’t contain the sum <span style="display:inline-block;"><span class="math inline">\(\sum_k\)</span></span> over the <span style="display:inline-block;"><span class="math inline">\(k\)</span></span> index. Our code shall instead use <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(\color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\textrm{d}})\)</span></span> because it leads to slightly more precision and speed in some tasks.</p>
+<p>once for all possible values <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{68,119,170}z}\)</span>,</span> and use that. Mathematically and logically the two ways are completely equivalent. Numerically they can be different as regards precision or possible overflow errors. Using <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}( \color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z \color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}\color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}_{\textrm{d}})\)</span></span> would be convenient if our basic formula&nbsp;(<a href="#eq-main-joint" class="quarto-xref"><span>31.1</span></a>) didn’t contain the sum <span style="display:inline-block;"><span class="math inline">\(\sum_k\)</span></span> over the <span style="display:inline-block;"><span class="math inline">\(k\)</span></span> index. Our code shall instead use <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(\color[RGB]{68,119,170}Z \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}z \color[RGB]{0,0,0}\mathbin{\mkern-0.5mu,\mkern-0.5mu}\color[RGB]{34,136,51}\mathsfit{\color[RGB]{34,136,51}data}\color[RGB]{0,0,0}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}_{\textrm{d}})\)</span></span> because it leads to slightly more precision and speed in some tasks.</p>
 </div>
 </div>
 </div>
