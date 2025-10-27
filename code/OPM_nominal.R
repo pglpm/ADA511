@@ -1,8 +1,9 @@
+#### Guess metadata information from dataset
+#### and save it in a metadata file
 guessmetadata <- function(
     data,
     file = NULL
 ){
-#### Guess metadata information from dataset and save it in a metadata file
     if(is.character(data)){
         if(is.null(file)){
             file <- paste0('meta_', data)
@@ -10,69 +11,71 @@ guessmetadata <- function(
         data <- read.csv(data,
             na.strings = '', stringsAsFactors = FALSE, tryLogical = FALSE,
             header = TRUE)
-    }else{
+    } else {
         if(is.null(file)){
             cat("\n'file' argument missing: output to stdout\n")
         }
     }
-    ##
+
     nvariates <- ncol(data)
     nn <- sapply(data, function(xx){length(unique(xx))})
     maxN <- max(nn)
+    ## ## for debugging
     ## str(matrix(NA, nrow=nvariates,ncol=2+maxN, dimnames=list(NULL, c('variate','domainsize',paste0('V',1:maxN)))))
     metadata <- as.data.frame(matrix(character(),
         nrow = nvariates, ncol = 2 + maxN,
         dimnames = list(NULL,
             c('variate', 'domainsize', paste0('V', 1:maxN)))
     ))
+    ## ## for debugging
     ## print(metadata)
     metadata[['variate']] <- colnames(data)
     metadata[['domainsize']] <- nn
     for(i in 1:nvariates){
         metadata[i, paste0('V', 1:nn[i])] <- as.list(sort(unique(data[[i]])))
     }
-    ##
+
     if(!is.null(file)){
         write.csv(x = metadata, file = file,
             row.names = FALSE, quote = TRUE, na = '')
-    }else{
+    } else {
         metadata
     }
 }
 
 
+#### Builds "agent" object encoding background & learned knowledge
+#### Requires package 'collapse'
 buildagent <- function(
     metadata,
     data = NULL,
     kmi = 0,
     kma = 20,
-    alphas = NULL,
     base = 2,
+    alphas = NULL,
     savememory = FALSE
 ){
-#### Builds "agent" object encoding background & learned knowledge
-#### Requires package 'collapse'
-
     ## Read metadata from file, if given as file
     if(is.character(metadata)){
         metadata <- read.csv(metadata,
             na.strings='', stringsAsFactors = FALSE, tryLogical = FALSE)
     }
 
-    variatenames <- metadata$variate # list of variates
-    nvariates <- length(variatenames) # total number of variates
+    variatenames <- metadata$variate
+    nvariates <- length(variatenames)
     domainsizes <- metadata$domainsize
     names(domainsizes) <- variatenames
+    M <- prod(domainsizes) # number of possible joint values
 
+    ## put all variate values in a list
     variates <- setNames(object = apply(metadata, 1,
-        function(metadatum){
-            unname(metadatum[paste0('V', seq_len(metadatum['domainsize']))])
-        }, simplify = list),
+        function(metadatum){unname(
+            metadatum[paste0('V', seq_len(metadatum['domainsize']))]
+        )}, simplify = list),
         nm = variatenames)
 
-    M <- prod(domainsizes) # total number of possible values
 
-#### Handling & checks of dataset
+    ## Handling & checks of dataset
 
     ## Load training data, if given as file
     if(is.character(data)){
@@ -91,93 +94,116 @@ buildagent <- function(
     }
     data <- data[, variatenames, drop = FALSE]
     ## remove datapoints with missing values
-    toremove <- which(is.na(data), arr.ind = TRUE)
-    if(length(toremove) > 0){
-        message('Removing datapoints with missing values, ',
-            nrow(data) - nrow(toremove), ' data left.')
-        data <- data[-toremove[1,], ]
-        if(nrow(data) == 0){data <- NULL}
+    tokeep <- complete.cases(data)
+    N <- sum(tokeep) # total number of learning data
+    if(any(!tokeep)){
+        message('Removing datapoints with missing values: ',
+            N, ' data left.')
+        if(all(!tokeep)){ # no data left
+            data <- NULL
+        } else {
+            data <- data[tokeep, , drop = FALSE]
+        }
     }
 
 
-#### Handling of alphas in Dirichlet-mixture distribution
+    ## Handling of 2^k in Dirichlet-mixture distribution
+    ## each "2^k" is called "alpha"
 
-    ## concentration parameters alpha:=(2^k)
     if(is.null(alphas)){
-        alphas <- base^(kmi:kma)
+        alphas <- base^(kmi:kma) # 2^kmin to 2^kmax
     } else if(isTRUE(alphas)){
         alphas <- sqrt(M) # other alternative with just one k
     }
+
     ## Possibility of adding a p(k) weight in the Dirichlet-mixture distribution
-    logpalphas0 <- 0 # do not use
     ## logpalphas0 <- -abs(alphas) # Good's hyperprior
 
-#### Count and saving of dataset fraquencies
+    ## Calculation and Storage of counts in learning dataset
+    ## Two methodos:
+    ## savememory == TRUE  ->  smart storage
+    ## savememory == FALSE  ->  store all
     if(savememory){
         agentclass <- 'agentcompressed'
 
-        ## Count non-zero frequencies
-        ## Unique values in data
+        ## list unique joint values in data
+        ## count occurrence of each unique value
         if(!is.null(data)){
             uniquedata <- collapse::fcount(data)
-            ncounts <- nrow(uniquedata)
+            ## extract counts, stored in last column
             counts <- uniquedata[, ncol(uniquedata)]
+            ncounts <- nrow(uniquedata)
+            ## remove counts column
             uniquedata <- uniquedata[, -ncol(uniquedata), drop = FALSE]
         } else {
-            uniquedata <- as.data.frame(rbind(variatenames))[-1, , drop = FALSE]
-            ncounts <- 0L
+            uniquedata <- as.data.frame(
+                rbind(variatenames))[-1, , drop = FALSE]
             counts <- numeric(0)
+            ncounts <- 0L
         }
+
+        ## store how many times each different count value appears
         freqscounts <- c(M - ncounts, tabulate(counts))
+
     } else {
         agentclass <- 'agent'
-        missingv <- Filter(length, sapply(variatenames, function(var){
-            variates[[var]][!(variates[[var]] %in% data[,var])]
-        }))
+
+        ## check which variate values are not present in data
+        missingvals <- Filter(length,
+            sapply(variatenames, function(var){
+                variates[[var]][!(variates[[var]] %in% data[,var])]
+            })
+        )
         temp <- data.frame(matrix(NA_character_,
-            sum(lengths(missingv)), nvariates))
+            sum(lengths(missingvals)), nvariates))
         colnames(temp) <- variatenames
-        ##
+
         i <- 0
-        for(var in names(missingv)){
-            toadd <- missingv[[var]]
+        for(var in names(missingvals)){
+            toadd <- missingvals[[var]]
             temp[i + seq_along(toadd), var] <- toadd
             i <- i + length(toadd)
         }
+
+        ## count occurrences of all possible joint values
+        ## counts := #z for all values of z
         counts <- table(rbind(data, temp))
+
+        ## store how many times each different count value appears
         freqscounts <- tabulate(c(counts) + 1L)
-        uniquedata <- NULL
+
+        ## reorder variate values so they match those in counts
         variates <- dimnames(counts)
+        uniquedata <- NULL
     }
 
-    NN <- sum(counts) # total number of training datapoints
 
-    ## Calculate frequencies of counts for faster iteration
-    ## First item is number of missing data
-    counts1 <- which(freqscounts > 0) # discard counts with zero freqs
-    freqscounts <- freqscounts[counts1]
-    counts1 <- counts1 - 1
+    ## For faster computation, remove counts that never appear
+    nonzerofreqs <- which(freqscounts > 0)
+    freqscounts <- freqscounts[nonzerofreqs]
+    countsvalues <- nonzerofreqs - 1L ## first count is for 0
 
-    ## final auxalphas := log-probability for new unit
-    auxalphas <- sapply(alphas, function(alpha){
-        sum(freqscounts * lgamma(counts1 + alpha / M))
-    })  - M * lgamma(alphas / M) + lgamma(alphas) + logpalphas0
+    ## calculate log(aux(k)) for all k (alphas)
+    ## lgamma(...) := log(factorial(... - 1))
+    logauxk <- colSums(
+        freqscounts * lgamma(outer(countsvalues, alphas / M, `+`))
+    ) - lgamma(alphas + N + 1) + lgamma(alphas) -
+        M * lgamma(alphas / M)  # + logpalphas0
 
-    ## Final palphas := probability distribution for the alpha parameters
-### used for population-frequency forecasts
-    palphas <- auxalphas - lgamma(alphas + NN)
-    palphas <- exp(palphas - max(palphas)) # renormalize to avoid overflow
+
+    ## palphas := log-probability distribution for alpha parameters
+    ## used for population-frequency forecasts
+    palphas <- logauxk + log(alphas + N)
+    palphas <- exp(palphas - max(palphas)) # avoid overflow
     palphas <- palphas / sum(palphas)
-    ##
-    auxalphas <- auxalphas - lgamma(alphas + NN + 1)
-    ##
+
     ## Output "agent" object
     out <- list(
         uniquedata = uniquedata,
         counts = counts,
         variates = variates,
         alphas = alphas,
-        auxalphas = auxalphas,
+        logauxk = logauxk,
         palphas = palphas
     )
     class(out) <- agentclass
@@ -251,15 +277,15 @@ infer.agentcompressed <- function(
         ## Multiplicative factor for alpha parameters, owing to marginalization
         alphas <- alphas / prod(dimensions[c(predictand, namespredictor)])
 
-        ## reduce value of auxalphas by maximum, to avoid overflow
-        auxalphas <- auxalphas - max(log(alphas + max(probs)) + auxalphas)
+        ## reduce value of logauxk by maximum, to avoid overflow
+        logauxk <- logauxk - max(log(alphas + max(probs)) + logauxk)
 
         ## Calculate final probabilities for predictands
             for(i in seq_along(alphas)){
-                out <- out + exp(log(alphas[i] + probs) + auxalphas[i])
+                out <- out + exp(log(alphas[i] + probs) + logauxk[i])
             }
         ## } else {
-        ##     out <- colSums(exp(log(outer(alphas, probs, `+`)) + auxalphas))
+        ##     out <- colSums(exp(log(outer(alphas, probs, `+`)) + logauxk))
         ##     dim(out) <- dimensions[predictand]
         ##     dimnames(out) <- variates[predictand]
         ## }
@@ -328,12 +354,12 @@ infer.agent <- function(
         ## Multiplicative factor for alpha parameters, owing to marginalization
         alphas <- alphas / prod(dimensions[c(predictand, namespredictor)])
 
-        ## reduce value of auxalphas by maximum, to avoid overflow
-        auxalphas <- auxalphas - max(log(alphas + max(counts)) + auxalphas)
+        ## reduce value of logauxk by maximum, to avoid overflow
+        logauxk <- logauxk - max(log(alphas + max(counts)) + logauxk)
 
         ## Calculate final probabilities for predictands
         temp <- dimnames(counts) # save dimnames, possibly lost in colSums
-        counts <- colSums(exp(log(outer(alphas, counts, `+`)) + auxalphas))
+        counts <- colSums(exp(log(outer(alphas, counts, `+`)) + logauxk))
 
     ## Reshape array of results
     if(is.null(dim(counts))){
@@ -408,12 +434,12 @@ infer2.agent <- function(
         ## Multiplicative factor for alpha parameters, owing to marginalization
         alphas <- alphas / prod(dimensions[c(predictand, namespredictor)])
 
-        ## reduce value of auxalphas by maximum, to avoid overflow
-        auxalphas <- auxalphas - max(log(alphas + max(counts)) + auxalphas)
+        ## reduce value of logauxk by maximum, to avoid overflow
+        logauxk <- logauxk - max(log(alphas + max(counts)) + logauxk)
 
         ## Calculate final probabilities for predictands
         temp <- dimnames(counts) # save dimnames, possibly lost in colSums
-        counts <- colSums(exp(log(outer(alphas, counts, `+`)) + auxalphas))
+        counts <- colSums(exp(log(outer(alphas, counts, `+`)) + logauxk))
 
     ## Reshape array of results
     if(is.null(dim(counts))){
@@ -641,7 +667,7 @@ plotFsamples1D <- function(
             filext <- sub(".*\\.|.*", "", file, perl=TRUE)
             if(filext == 'pdf'){
                 mypdf(sub('.pdf$', '', file))
-            }else{
+            } else {
                 mypng(sub('.png$', '', file))
             }
         }
@@ -691,7 +717,7 @@ decide <- function(
         if(!is.null(dimnames(probs))){
             dimnames(utils) <- c(decision = dimnames(probs),
                 dimnames(probs))
-        }else{
+        } else {
             if(is.null(names(probs))){
                 names(probs) <- 1:length(probs)
             }

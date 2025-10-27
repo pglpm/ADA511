@@ -31,7 +31,7 @@ We design our Optimal Predictor Machine with the following specific characterist
 
 ### Example of what kind of agent we want
 
-Let's give an example of what we want our agent to be able to do. Suppose we have a population having three nominal variates $Z = (Y \and X \and W)$.\  Abbreviate the set of $N$ training data as
+Let's give an example of what we want our agent to be able to do. Suppose we have a population having three nominal variates\ \ $Z = (Y \and X \and W)$\ (keep in mind that $X$, $Y$, $W$ could each be a joint variate). Abbreviate the set of $N$ training data as
 
 $\data \defd
 ( Z_{N}\mo z_{N} \and \dotsb \and
@@ -63,7 +63,7 @@ Note that *we are not fixing beforehand which variates are predictands and which
 Pause for a second and *ponder about the flexibility that we are requesting from our prototype agent!* Consider that virtually all present-day machine-learning algorithms only work one way: a machine-learning algorithm designed to guess a label from some features cannot guess features from a label. Will we really manage to build an agent with the amazing versatility illustrated above?
 
 
-## Computations needed and mathematical challenges in the code {#sec-code-computations}
+## Computations needed and computational challenges {#sec-code-computations}
 
 The examples above of requested inferences show that the OPM agent must essentially use formulae (@eq-dmagent-y)--(@eq-dmagent-aux) from [§@sec-formulae-dirmix], which we repeat here:
 
@@ -72,9 +72,15 @@ The examples above of requested inferences show that the OPM agent must essentia
 
 $\P(Y\mo y \| \data, \yD)
 =
+\frac{
 \sum_{\ya = \amin}^{\amax}
 \Bigl(\tfrac{2^\ya}{M_Y} + \#y\Bigr)
-\cdot \aux(\ya)$   (@eq-dmagent-y)
+\cdot \aux(\ya)
+}{
+\sum_{y}\sum_{\ya = \amin}^{\amax}
+\Bigl(\tfrac{2^\ya}{M_Y} + \#y\Bigr)
+\cdot \aux(\ya)
+}$   (@eq-dmagent-y)
 
 $\P(Y\mo y \| X\mo x \and \data, \yD)
 =
@@ -91,30 +97,15 @@ $\P(Y\mo y \| X\mo x \and \data, \yD)
 with\ \ $\aux(\ya)
 \defd
 \frac{
-\frac{
 \prod_{x,y,w} \Bigl(\frac{2^{\ya}}{M} + \#(x,y,w) - 1\Bigr)!
 }{
-\bigl(2^{\ya} + N -1 \bigr)!
+\bigl(2^{\ya} + N\bigr)!
 }
 \cdot
 \frac{
 \bigl(2^{\ya} -1 \bigr)!
 }{
 {\Bigl(\frac{2^{\ya}}{M} - 1\Bigr)!}^M
-}
-}{
-\sum_{\yb = \amin}^{\amax}
-\frac{
-\prod_{x,y,w} \Bigl(\frac{2^{\yb}}{M} + \#(x,y,w) - 1\Bigr)!
-}{
-\bigl(2^{\yb} + N \bigr)!
-}
-\cdot
-\frac{
-\bigl(2^{\yb} -1 \bigr)!
-}{
-{\Bigl(\frac{2^{\yb}}{M} - 1\Bigr)!}^M
-}
 }$   (@eq-dmagent-aux)
 ::::
 
@@ -161,92 +152,14 @@ try( x <- integer(length = 4^20) )
 ```
 We can bypass this problem again by using smart mathematical manipulations. In the case of formulae (@eq-dmagent-y)--(@eq-dmagent-aux), the product over all possible values $(x,y,w,\dotsc)$ can be rewritten in one over all different *values of the counts*, which usually has much fewer terms. For example, if we have $N=10000$ datapoints, and $4^{20} -1$ counts are equal to $9000$, while one count is equal to $1000$, then we only need to store these *four* numbers rather than $4^{20}$ numbers!
 
-Many such mathematical tricks are used in finite-precision computations. Unfortunately their knowledge requires a separate course.
-
 \
 
 [{{< fa circle-exclamation >}} Speed]{.red}
-: The formulae that the agent uses may involve sums over many terms, or repeated computations for many different variate values. Thus computation speed may become an issue.
+: The formulae that the agent uses may involve sums over many terms, or repeated computations for many different variate values. Computation speed may therefore become an issue. There are two kinds of solutions to this problem. The first is, again, to use mathematical identities to rewrite formulae in ways that require fewer computations. The second is to exploit computation features of the programming language used to code the agent, such as vectorization or parallel computing. In our case we shall use some R functions that performs computations in a vectorized way, that is, using underlying fast C or C++ implementations.
 
+\
 
-
-
-
-
-## Range of use of the code {#sec-code-range}
-
-The concrete formulae discussed in the previous [chapter @sec-dirichlet-mix] can be put into code, for use in different tasks involving only nominal variates. Software of this kind can in principle be written to allow for some or all of the versatility discussed in §§ [-@sec-categ-probtheory]--[-@sec-underlying-distribution], for example the possibility of taking care (in a first-principled way!) of partially missing training data. But the more versatile we make the software, the more memory, processing power, and computation time it will require.
-
-Roughly speaking, more versatility corresponds to calculations of the joint probability
-
-::::{.column-page-right}
-:::{.callout-note}
-##  
-
-$$
-\P(
-\blue 
-Z_{L}\mo  z_{L}
-\and
-\dotsb \and
-Z_{1}\mo z_1
-\black
-\| \yD
-)
-=
-\frac{1}{\amax-\amin+1}
-\sum_{\ya=\amin}^{\amax}
-\frac{
-\prod_{\bz} \bigl(\frac{2^{\ya}}{M} + \#\bz - 1\bigr)!
-}{
-\bigl(2^{\ya} + L -1 \bigr)!
-}
-\cdot
-\frac{
-\bigl(2^{\ya} -1 \bigr)!
-}{
-{\bigl(\frac{2^{\ya}}{M} - 1\bigr)!}^M
-}
-\quad
-$$ {#eq-main-joint}
-
-:::
-::::
-
-for more values of the quantities $\blue Z_1, Z_2, \dotsc$. For instance, if data about unit #4 are missing, then we need to calculate the joint probability above for several (possibly all) values of $\blue Z_4$. If data about two units are missing, then we need to do an analogous calculation for all possible *combinations* of values; and so on.
-
-For our prototype, let's forgo versatility about units used as training data. From now on we abbreviate the set of training data as
-
-:::{.column-margin}
-Recall that $\bZ$ denotes all (nominal) variates of the population
-:::
-
-$$
-\data \defd
-(
-Z_{N}\mo z_{N} \and \dotsb \and
-Z_{2}\mo z_2 \and
-Z_{1}\mo z_{1}
-)
-$$
-
-where $\blue z_N, \dotsc, z_2, z_1$ are specific values, stored in some training dataset. No values are missing.
-
-Since the training $\data$ are given and fixed in a task, we omit the suffix "${}_{N+1}$" that we have often used to indicate a "new" unit. So "$\blue Z\mo z$" simply refers to the variate $\bZ$ in a new application of the task.
-
-We allow for full versatility in every new instance. This means that we can accommodate, *on the spot at each new instance*, what the predictand variates are, and what the predictor variates (if any) are. For example, if the population has three variates $\bZ=(\bA \and \bB \and \bC)$, our prototype can calculate, at each new application, inferences such as
-
-- $P(\bB\mo\dotso\|\data \and \yD)$: any one predictand variate, no predictors
-
-- $P(\bA\mo\dotso \and \bC\mo\dotso\|\data \and \yD)$: any two predictand variates, no predictors
-
-- $P(\bA\mo\dotso \and \bB\mo\dotso \and \bC\mo\dotso\|\data \and \yD)$: all three variates
-
-- $P(\bB\mo\dotso\|\bA\mo\dotso \and \data \and \yD)$: any one predictand variate, any other one predictor
-
-- $P(\bB\mo\dotso\| \bA\mo\dotso \and \bC\mo\dotso \and\data \and  \yD)$: any one predictand variate, any other two predictors
-
-- $P(\bA\mo\dotso \and \bC\mo\dotso\|\bB\mo\dotso \and \data \and \yD)$: any two predictand variates, any other one predictor
+You see that mathematical "tricks" become very important when we must implement formulae with finite precision and limited memory. Unfortunately getting acquainted with such tricks requires a separate course.
 
 
 ## Code design and computations needed {#sec-code-computations2}
