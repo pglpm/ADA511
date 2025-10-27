@@ -16,12 +16,13 @@ buildagent <- function(
     ## Read metadata from file, if given as file
     if(is.character(metadata)){
         metadata <- read.csv(metadata,
-            na.strings='', stringsAsFactors = FALSE, tryLogical = FALSE)
+            na.strings='', stringsAsFactors = FALSE, tryLogical = FALSE,
+            colClasses = 'character')
     }
 
     variatenames <- metadata$variate
     nvariates <- length(variatenames)
-    domainsizes <- metadata$domainsize
+    domainsizes <- as.integer(metadata$domainsize)
     names(domainsizes) <- variatenames
     M <- prod(domainsizes) # number of possible joint values
 
@@ -220,10 +221,13 @@ infer.agentcompressed <- function(
                 uniquedata[, namespredictor, drop = FALSE], 1,
                 function(x) all(x == predictor)
             )
-
-            uniquedata <- uniquedata[keeprows, predictand, drop = FALSE]
-            counts <- counts[keeprows]
+        } else {
+            keeprows <- TRUE
         }
+        uniquedata <- as.matrix(
+            uniquedata[keeprows, predictand, drop = FALSE]
+        )
+        counts <- counts[keeprows]
 
         ## prepare an empty array for the relevant counts
         ## and an empty array for the output probabilities
@@ -233,7 +237,6 @@ infer.agentcompressed <- function(
         out <- countarray # both empty
 
         ## fill count values in probability array
-        uniquedata <- as.matrix(uniquedata[, predictand, drop = FALSE])
         for(i in seq_along(counts)){
             datum <- uniquedata[i, , drop = FALSE]
             countarray[datum] <- countarray[datum] + counts[i]

@@ -4,10 +4,10 @@ separatepunct <- function(text){
     text <- gsub(
         "[^1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ,.;:?!%$&']",
         "", text)
-    text <- gsub("[0-9]+", "@", text)
+    text <- gsub("[0-9]+", " n ", text)
     text <- unlist(
         strsplit(x = gsub(
-            "([,.;:?!#])",
+            "([,.;:?!n])",
             " \\1", text), split = " "),
         use.names = FALSE)
     text[text != ""]
@@ -75,9 +75,10 @@ preparengramfiles <- function(
         variate = paste0('word', seq_len(n)),
         domainsize = rep(length(tokens), n)
     )
-    values <- rep(tokens, each = n)
-    dim(values) <- c(n, length(tokens))
-    colnames(values) <- paste0('V', seq_along(tokens))
+    values <- t(matrix(tokens,
+        nrow = length(tokens), ncol = n,
+        dimnames = list(paste0('V', seq_along(tokens)), NULL)
+    ))
     metadata <- cbind(metadata, values)
 
     metafile <- paste0('meta-', sub('.txt$', '', outsuffix), '.csv')
@@ -88,4 +89,66 @@ preparengramfiles <- function(
     c(metafile, ngramfile)
 }
 
+#### Generate text of a given length
+generatetext <- function(
+    agent,
+    length = 100,
+    start = NULL,
+    online = TRUE
+) {
+    with(agent, {
+        n <- length(variates)
 
+        ## check that start has words in vocabulary
+        notwords <- start[!(start %in% variates[[1]])]
+        if(length(notwords) > 0){
+            stop('Tokens: ', paste0(notwords, collapse = ', '),
+                ' not in vocabulary')
+        }
+
+        ## outtext will contain the whole generated text
+        outtext <- '\n'
+        predictor <- start[length(start) - ((n - 2L):0L)]
+        n0 <- length(predictor)
+        if(!is.null(predictor)){
+            predictor <- as.list(predictor)
+            names(predictor) <- paste0('word', seq_len(n0))
+        }
+
+        for(i in seq_along(start)){
+            outtext <- combinetokens(outtext, start[i])
+            }
+
+        for(i in seq_len(n - 1L - n0)){
+            wordi <- paste0('word', n0 + i)
+            out <- infer(agent = agent,
+                predictand = wordi,
+                predictor = predictor)
+            nextw <- sample(x = names(out), size = 1, prob = out)
+            ## nextw <- names(out)[sample(which(out == max(out)), 1)]
+            predictor <- c(predictor, setNames(list(nextw), wordi))
+            wordi <- paste0('word', n0 + i + 1L)
+            outtext <- combinetokens(outtext, nextw)
+        }
+        ##
+        wcount <- n - 1L
+        wordn <- paste0('word', n)
+        while(wcount < length){
+            ## print('***')
+            ## print(predor)
+            ## print(wordi)
+            out <- infer(agent = agent,
+                predictand = wordn,
+                predictor = predictor)
+            nextw <- sample(x = names(out), size = 1, prob = out)
+            ## cat(combinetokens(NULL, nextw))
+            outtext <- combinetokens(outtext, nextw)
+            ##
+            predictor[] <- c(predictor[-1], list(nextw))
+            ## w2 <- sample(names(out)[which(out == max(out))], 1)
+            ##
+            wcount <- wcount + 1L
+        }
+        paste0(outtext, '\n')
+    })
+}
