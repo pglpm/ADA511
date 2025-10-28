@@ -589,7 +589,10 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#hyperparameters-and-model-complexity" id="toc-hyperparameters-and-model-complexity" class="nav-link active" data-scroll-target="#hyperparameters-and-model-complexity"><span class="header-section-number">38.1</span> Hyperparameters and model complexity</a></li>
+  <li><a href="#hyperparameters-and-model-complexity" id="toc-hyperparameters-and-model-complexity" class="nav-link active" data-scroll-target="#hyperparameters-and-model-complexity"><span class="header-section-number">38.1</span> Hyperparameters and model complexity</a>
+  <ul class="collapse">
+  <li><a href="#underfitting-and-overfitting-why-where-from" id="toc-underfitting-and-overfitting-why-where-from" class="nav-link" data-scroll-target="#underfitting-and-overfitting-why-where-from">Underfitting and overfitting: why? where from?</a></li>
+  </ul></li>
   <li><a href="#model-selection-in-practice" id="toc-model-selection-in-practice" class="nav-link" data-scroll-target="#model-selection-in-practice"><span class="header-section-number">38.2</span> Model selection (in practice)</a></li>
   <li><a href="#machine-learning-taxonomy" id="toc-machine-learning-taxonomy" class="nav-link" data-scroll-target="#machine-learning-taxonomy"><span class="header-section-number">38.3</span> Machine learning taxonomy</a></li>
   </ul>
@@ -625,6 +628,9 @@ window.Quarto = {
 
 <div class="hidden">
 <p><span class="math inline">\(\DeclarePairedDelimiter{\set}{\{}{\}}\)</span> </p>
+</div>
+<div class="hidden">
+
 </div>
 <div class="hidden">
 
@@ -845,10 +851,23 @@ Exercise&nbsp;38.1
 </ol>
 </div>
 </div>
+<section id="underfitting-and-overfitting-why-where-from" class="level3">
+<h3 class="anchored" data-anchor-id="underfitting-and-overfitting-why-where-from">Underfitting and overfitting: why? where from?</h3>
+<p>Up to now we have never met the problem of underfitting and overfitting. The OPM agent that we applied in chapters&nbsp;<a href="example_opm1.html" class="quarto-xref"><span>Chapter 33</span></a>, <a href="slm.html" class="quarto-xref"><span>Chapter 34</span></a>, <a href="example_opm2.html" class="quarto-xref"><span>Chapter 37</span></a> did not suffer from this kind of problems. In fact, in <span class="citation" data-cites="application-and-exploration">[§@application-and-exploration]</span> we saw that the agent trained with just 10 datapoints did not try to fit them perfectly, but rather kept more conservative beliefs. The agent also warned us that further learning data might substantially change its beliefs. When a substantial amount of learning data was given to the agent, it aligned its beliefs with the observed frequencies, which was a reasonable thing to do. No issues about under- or over-fitting appeared at any stage; we did not even think about them.</p>
+<p>Why do the machine-learning models above suffer from these issues instead? Where do these issues come from?</p>
+<p>The sources are various, and may be different for every machine-learning algorithm. In the cases above, the main sources are the following, in no specific order:</p>
+<ul>
+<li><p><span class="red"><strong>Unreasonable built-in prior beliefs</strong></span>.&nbsp;&nbsp;The built-in prior beliefs can be unreasonable in two different ways:</p>
+<ul>
+<li>The machine-learning algorithms above represent agents with the built-in belief that the functional relationship between time and temperature has as specific polynomial form. This belief may be unrealistic, although it leads to simpler computations than more realistic beliefs.</li>
+<li>Within a particular complex functional relationship, the agent has too weak prior beliefs about which shapes could be more or less reasonable. The shape is therefore completely determined by the data. Note that we could have programmed a similar behaviour in the OPM agent, by choosing a very low <span class="math inline">\(k_{\text{ma}}\)</span> parameter (<a href="dirichlet-mixture.html#sec-intro-dirichlet-mix" class="quarto-xref">§&nbsp;<span>28.1</span></a>).</li>
+</ul></li>
+</ul>
+</section>
 </section>
 <section id="model-selection-in-practice" class="level2" data-number="38.2">
 <h2 data-number="38.2" class="anchored" data-anchor-id="model-selection-in-practice"><span class="header-section-number">38.2</span> Model selection (in practice)</h2>
-<p>As alluded to in the exercises above, there are ways of including both the data and our prior expectations when building a model, but it is, in fact, not very common to do so. In this section we will have a look at the typical <em>data science</em> approach, which relies on splitting the data in different sets. Starting from all our available data on a given problem that we wish to model, we divide it into</p>
+<p>As alluded to in the exercises above, there are ways of including both the data and our prior expectations when building a model, but it is, in fact, not very common to do so. In this section we will have a look at the typical <em>machine learning</em> approach, which relies on splitting the data in different sets. Starting from all our available data on a given problem that we wish to model, we divide it into</p>
 <ul>
 <li>the <span class="blue"><em>training set</em></span>, which is the data we will use to determine the model parameters <span class="math inline">\(\mathbf{w}\)</span>,</li>
 <li>the <span class="red"><em>validation set</em></span>, which is used to evaluate the model complexity (i.e.&nbsp;finding the optimal bias-variance tradeoff), and</li>

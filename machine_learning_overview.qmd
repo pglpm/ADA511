@@ -1,6 +1,7 @@
 # Introduction to machine learning {#sec-ml-introduction}
 {{< include macros.qmd >}}
 {{< include macros_exchangeability.qmd >}}
+{{< include macros_opm.qmd >}}
 
 So far we have learned about the principles behind drawing inferences and making decisions, and about various properties of data. Using only the four fundamental probability rules that drive the "thinking" of a perfect AI agent, we arrived at a couple of formulae that underlie many different kinds of inference, prediction, and data-generation tasks, in situations where the agent believe the data to be exchangeable ([ch. @sec-exchangeable-beliefs]). One example is
 
@@ -110,10 +111,28 @@ The blue dots are our "original" data points, plotted for reference, while the r
 @. For the different models in [figure @fig-polynomial-fit] we started by choosing polymonial degree $M$, and then computed the parameters that minimized the difference between the data points and the model. Then we had a look at the results, compared them to our expectations, and decided that $M=0$ and $M=9$ were both unlikely. Can you think of a way to incorporate our initial expectations into the computation?
 :::
 
+### Underfitting and overfitting: why? where from?
+
+Up to now we have never met the problem of underfitting and overfitting. The OPM agent that we applied in chapters [@sec-example-opm1], [@sec-example-slm], [@sec-example-opm2] did not suffer from this kind of problems. In fact, in [§@application-and-exploration] we saw that the agent trained with just 10 datapoints did not try to fit them perfectly, but rather kept more conservative beliefs. The agent also warned us that further learning data might substantially change its beliefs. When a substantial amount of learning data was given to the agent, it aligned its beliefs with the observed frequencies, which was a reasonable thing to do. No issues about under- or over-fitting appeared at any stage; we did not even think about them.
+
+Why do the machine-learning models above suffer from these issues instead? Where do these issues come from?
+
+The sources are various, and may be different for every machine-learning algorithm. In the cases above, the main sources are the following, in no specific order:
+
+- [**Maximization, instead of summation, over possible frequencies**]{.red}.\ \ 
+
+- [**Unreasonable built-in prior beliefs**]{.red}.\ \ The built-in prior beliefs can be unreasonable in two different ways:
+    
+    - The machine-learning algorithms above represent agents with the built-in belief that the functional relationship between time and temperature has as specific polynomial form. This belief may be unrealistic, although it leads to simpler computations than more realistic beliefs.
+    
+    - Within a particular complex functional relationship, the agent has too weak prior beliefs about which shapes could be more or less reasonable. The shape is therefore completely determined by the data. Note that we could have programmed a similar behaviour in the OPM agent, by choosing a very low $\amax$ parameter ([§@sec-intro-dirichlet-mix]). But even with such a programming, the OPM agent would have warned us that further learning data might considerably change its beliefs.
+    
+    In the 
+
 
 ## Model selection (in practice)
 
-As alluded to in the exercises above, there are ways of including both the data and our prior expectations when building a model, but it is, in fact, not very common to do so. In this section we will have a look at the typical *data science* approach, which relies on splitting the data in different sets. Starting from all our available data on a given problem that we wish to model, we divide it into 
+As alluded to in the exercises above, there are ways of including both the data and our prior expectations when building a model, but it is, in fact, not very common to do so. In this section we will have a look at the typical *machine learning* approach, which relies on splitting the data in different sets. Starting from all our available data on a given problem that we wish to model, we divide it into 
 
 * the [*training set*]{.blue}, which is the data we will use to determine the model parameters $\mathbf{w}$,
 * the [*validation set*]{.red}, which is used to evaluate the model complexity (i.e. finding the optimal bias-variance tradeoff), and 
