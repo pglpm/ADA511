@@ -1,15 +1,47 @@
 # Introduction to machine learning {#sec-ml-introduction}
 {{< include macros.qmd >}}
+{{< include macros_exchangeability.qmd >}}
 
-So far we have learned about the principles behind drawing inferences and about various properties of data. Using only the four fundamental probability rules that drive the "thinking" of a perfect AI agent, we arrived at a formula that underlines many different kinds of inference, prediction, and data-generation tasks:
+So far we have learned about the principles behind drawing inferences and making decisions, and about various properties of data. Using only the four fundamental probability rules that drive the "thinking" of a perfect AI agent, we arrived at a couple of formulae that underlie many different kinds of inference, prediction, and data-generation tasks, in situations where the agent believe the data to be exchangeable ([ch. @sec-exchangeable-beliefs]). One example is
 
+:::{.column-page-inset-right}
+$$
+\begin{aligned}
+    &\P\bigl(
+	\red Y_{N+1} \mo y_{N+1}
+\black \pmb{\|} 
+	\green X_{N+1} \mo x_{N+1}\, \and\,
+    Y_N \mo y_N \and X_N \mo x_N \and
+	\dotsb \and 
+	Y_1 \mo y_1 \and X_1 \mo x_1 
+    \black\and \yI \bigr)
+	\\[2ex]
+	&\qquad{}=
+	\frac{
+\sum_{\vf}
+f({\red Y\mo y_{N+1} \and \green X\mo x_{N+1}}) \cdot
+f({\green Y\mo y_{N} \and X\mo x_{N}}) \cdot
+\, \dotsb\, \cdot
+f({\green Y\mo y_{1} \and X\mo x_{1}})
+\cdot
+\P(F\mo\vf \| \yI)
+}{
+\sum_{\vf}
+f({\green X\mo x_{N+1}}) \cdot
+f({\green Y\mo y_{N} \and X\mo x_{N}}) \cdot
+\, \dotsb\, \cdot
+f({\green Y\mo y_{1} \and X\mo x_{1}})
+\cdot
+\P(F\mo\vf \| \yI)
+}
+\end{aligned}
+$$
+:::
 
+We saw that the agent needs to have a built-in belief about frequencies, $\P(F\mo\vf \| \yI)$.\ \ Once it's given some learning data, it can in principle draw all sorts of inferences and make all sorts of decisions. Concrete applications were given in chapters [@sec-example-opm1], [@sec-example-slm], [@sec-example-opm2].
 
 
 We shall now discuss about some present-day *approximate* procedures to draw inferences about data. They are approximate because they draw inferences or make decisions by doing approximate probability calculations and approximate maximizations of expected utilities, rather than exact ones. This approximating character makes these procedures very *fast*, but also *sub-optimal*. In any given problem it is therefore important to decide whether our priority is speed or optimality.
-
-
-Now it is time to combine them into a simplified mathematical [**model**]{.blue}, that can use data from the past to make predictions about the unknown. Note that for the chapters in this part we are not building an *optimal* predictor machine anymore, but rather a *approximate* one, which serves the common operational constraint of being fast to compute. 
 
 Machine learning methods can be wildly different both in terms of operation and complexity. But they all behave as functions that take in a data point $x$, a set of values $\mathbf{w}$ which we call [**parameters**]{.blue}, and returns the prediction $\hat{y}$:
 
@@ -21,7 +53,7 @@ The prediction $\hat{y}$ can be any quantity discussed in [section @sec-basic-ty
 
 It has been pointed out already -- and we will see it also in the coming chapters -- that often there *is actually not* a functional relationship between the inputs $\mathbf{x}$, and the property we want to predict. This leaves us with two possibilities for a solution:
 
-* If there is an *approximate* functional relationship, we can write an analytical function to model that. More specifically, we can write a **deterministic** function, which for a given input $x$ will repeatedly give an output $y$. Common machine learning methods will work well here. 
+* If there is an *approximate* functional relationship, we can try to find an analytical function to model that. More specifically, we can look for a **deterministic** function, which for a given input $x$ will repeatedly give an output $y$. Common machine learning methods will work well here. 
 * If there is *no* functional relationship, it does not make sense to make a model that tries to enforce one. Instead of having a model that outputs a deterministic value, we need instead, is one that outputs a probability distribution. 
 
 Because of the second point above, when we describe equation @eq-model-as-function, we will use the word "function" in the wide sense where we allow it to be non-deterministic. An example is [ChatGPT](https://chat.openai.com/), which will answer you differently if you ask it the same exact question twice. If you prefer more mathematical rigour, we could call $f$ a *process* instead, which is a more loose term.

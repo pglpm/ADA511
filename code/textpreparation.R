@@ -42,7 +42,7 @@ preparengramfiles <- function(
     inputfile,
     outsuffix = inputfile,
     n = 3,
-    ntokens = 500
+    maxtokens = Inf
 ) {
     ## retrieve text from file and do a first word division
     text <-  separatepunct(scan(file = inputfile,
@@ -53,7 +53,7 @@ preparengramfiles <- function(
     message('Unique tokens: ', length(tokens), '.')
 
     ## restrict number of unique tokens, discarding the less common ones
-    tokens <- names(tokens)[seq_len(min(ntokens, length(tokens)))]
+    tokens <- names(tokens)[seq_len(min(maxtokens, length(tokens)))]
 
     ## flag tokens not containing the vocabulary
     text[!(text %in% tokens)] <- NA
