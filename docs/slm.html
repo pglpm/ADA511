@@ -107,7 +107,7 @@ window.Quarto = {
 <link rel="stylesheet" href="ada511styles.css">
 </head>
 
-<body class="nav-sidebar docked quarto-light">
+<body class="nav-sidebar docked slimcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -584,11 +584,18 @@ window.Quarto = {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-language-inference" id="toc-sec-language-inference" class="nav-link active" data-scroll-target="#sec-language-inference"><span class="header-section-number">34.1</span> Natural language as inference and decision</a></li>
+  <li><a href="#sec-opm-as-slm" id="toc-sec-opm-as-slm" class="nav-link" data-scroll-target="#sec-opm-as-slm"><span class="header-section-number">34.2</span> The OPM as a small language model</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -624,8 +631,43 @@ window.Quarto = {
 <div class="hidden">
 
 </div>
+<div class="hidden">
+
+</div>
+<section id="sec-language-inference" class="level2 page-columns page-full" data-number="34.1">
+<h2 data-number="34.1" class="anchored" data-anchor-id="sec-language-inference"><span class="header-section-number">34.1</span> Natural language as inference and decision</h2>
+<p>In <a href="framework.html#sec-meaning-decision" class="quarto-xref">§&nbsp;<span>2.2</span></a> we remarked that even a process like speaking is a continuous decision-making process. Each uttered word is chosen among an infinity of other possible ones. The choice depends not only on the object or idea’s noun that has to be communicated at the moment, but also on long-term goals and consequences. Is the conversation’s purpose to be funny? Is it to explain something in the most precise way possible? What’s the probability that this particular choice of words offend the listener? What’s the probability that this possible sentence is misunderstood, and what would happen in that case?</p>
+<p>The decision-making underlying speaking is remarkably complex, and can only be represented by a deep sequence of decisions and outcomes (we’ll discuss decision sequences in <a href="making_decisions.html" class="quarto-xref">ch.&nbsp;&nbsp;<span>36</span></a>), trying to forecast short-term and long-term future consequences. Most of this decision-making takes place almost unconsciously in humans, by means of heuristic, approximate procedures. But it’s nevertheless a decision-making process.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><img src="decision_tree_raiffa.jpg" class="img-fluid" style="width:100.0%"></p>
+</div></div><p>Building an AI agent that can speak <em>in the sense above</em> is still out of reach. Speaking in that sense requires an agent to have long-term goals and a set of values. But speaking can remarkably be <em>mimicked</em>, at least for short time spans, by a different inference and decision process. In human speech the word choice depends on future goals as much or more than past factors; but we can try to draw an inference based on past factors alone.</p>
+<p>In the simplest inference of this kind, an agent can assign a degree of belief about the word that “should follow next”, <strong>based on the words that precede it</strong>. This is how the next-word predictors of some smartphone keyboards work, and it is essentially also the way Large Language Models (LLMs) and General Pretrained Transformers (GPTs) work. The inference is based on the frequencies of many different sequences of words, learned from as many written or spoken texts as possible.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-rocket" aria-label="rocket"></i> For the extra curious
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="references.html"><em>Large language models as Markov chains</em></a></p>
+</div>
+</div>
+</div></div><p>This way of operation is also the reason why we can’t really say that large language models <em>understand</em> language, despite some literature stating that they do. They don’t do any kind of forecast of the consequences of their word choice, nor any inferences about the intentions of their interlocutor; not even approximate, heuristic ones. They have simply learned word frequencies in a huge variety of contexts.</p>
+</section>
+<section id="sec-opm-as-slm" class="level2" data-number="34.2">
+<h2 data-number="34.2" class="anchored" data-anchor-id="sec-opm-as-slm"><span class="header-section-number">34.2</span> The OPM as a small language model</h2>
+<p>Algorithms that implement the kind of word inference just described usually do so in an <em>exchangeable</em> way. They use the frequencies of different word sequences, without regard to whether most of those sequences occur, say, in older rather than newer texts.</p>
+<p>Our OPM is also designed to use built-in exchangeable beliefs, and in the previous chapter we saw its extreme versatility with exchangeable inferences of nominal variates – just what words, more or less, are. So let’s try to use it for word inference, and see if it can mimic speech. Of course we cannot expect spectacular results: large language models manage to make their remarkable inferences after learning more than tens of trillions (10 000 000 000 000) of words, which require huge amounts of memory and time. But we can get a glimpse of the main features.</p>
+<p>To use the OPM this way, we define a population of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> variates, let’s say <span style="display:inline-block;"><span class="math inline">\(n = 3\)</span>.</span> The three variates are defined as <em>consecutive</em> words in some specific set of texts. We can call them <span style="display:inline-block;"><span class="math inline">\({\small\verb;word1;}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(, \dotsc, {\small\verb;wordn;}\)</span>.</span></p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

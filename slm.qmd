@@ -2,4 +2,74 @@
 {{< include macros.qmd >}}
 {{< include macros_exchangeability.qmd >}}
 {{< include macros_opm.qmd >}}
+{{< include macros_slm.qmd >}}
 
+```{r}
+#| echo: false
+knitr::opts_knit$set(root.dir = "code/")
+options(repr.plot.width = 6 * sqrt(2), repr.plot.height = 6)
+```
+
+## Natural language as inference and decision {#sec-language-inference}
+
+In [§@sec-meaning-decision] we remarked that even a process like speaking is a continuous decision-making process. Each uttered word is chosen among an infinity of other possible ones. The choice depends not only on the object or idea's noun that has to be communicated at the moment, but also on long-term goals and consequences. Is the conversation's purpose to be funny? Is it to explain something in the most precise way possible? What's the probability that this particular choice of words offend the listener? What's the probability that this possible sentence is misunderstood, and what would happen in that case?
+
+The decision-making underlying speaking is remarkably complex, and can only be represented by a deep sequence of decisions and outcomes (we'll discuss decision sequences in [ch. @sec-making-decisions]), trying to forecast short-term and long-term future consequences. Most of this decision-making takes place almost unconsciously in humans, by means of heuristic, approximate procedures. But it's nevertheless a decision-making process.
+
+:::{.column-margin}
+![](decision_tree_raiffa.jpg){width=100%}
+:::
+
+Building an AI agent that can speak *in the sense above* is still out of reach. Speaking in that sense requires an agent to have long-term goals and a set of values. But speaking can remarkably be *mimicked*, at least for short time spans, by a different inference and decision process. In human speech the word choice depends on future goals as much or more than past factors; but we can try to draw an inference based on past factors alone.
+
+In the simplest inference of this kind, an agent can assign a degree of belief about the word that "should follow next", **based on the words that precede it**. This is how the next-word predictors of some smartphone keyboards work, and it is essentially also the way Large Language Models (LLMs) and General Pretrained Transformers (GPTs) work. The inference is based on the frequencies of many different sequences of words, learned from as many written or spoken texts as possible.
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+
+[*Large language models as Markov chains*](references.html)
+
+:::
+::::
+
+This way of operation is also the reason why we can't really say that large language models *understand* language, despite some literature stating that they do. They don't do any kind of forecast of the consequences of their word choice, nor any inferences about the intentions of their interlocutor; not even approximate, heuristic ones. They have simply learned word frequencies in a huge variety of contexts.
+
+
+## The OPM as a small language model {#sec-opm-as-slm}
+
+Algorithms that implement the kind of word inference just described usually do so in an *exchangeable* way. They use the frequencies of different word sequences, without regard to whether most of those sequences occur, say, in older rather than newer texts.
+
+Our OPM is also designed to use built-in exchangeable beliefs, and in the previous chapter we saw its extreme versatility with exchangeable inferences of nominal variates -- just what words, more or less, are. So let's try to use it for word inference, and see if it can mimic speech. Of course we cannot expect spectacular results: large language models manage to make their remarkable inferences after learning more than tens of trillions (10 000 000 000 000) of words, which require huge amounts of memory and time. But we can get a glimpse of the main features.
+
+To use the OPM this way, we define a population of $n$ variates, let's say $n = 3$. The three variates are defined as **consecutive** words in some specific set of texts. We can call them $\worda$, $\wordb$, $\wordc$, and so on. Instead of words it's actually best to use [*tokens*]{.blue}, which comprise not only words, but punctuation marks like `,.;:!?` and other signs -- the exact definition of token depends on the specific application. The sequence of $n$ tokens is often called an **n-gram**.
+
+## Preparing the learning data from some text {#sec-prepare-text}
+
+In order to prepare the learning data for our OPM agent, let's load some R functions defined in the [`textpreparation.R`](https://github.com/pglpm/ADA511/blob/master/code/textpreparation.R) file, as well as the OPM functions, from the usual directory\
+[https://github.com/pglpm/ADA511/blob/master/code](https://github.com/pglpm/ADA511/blob/master/code):
+
+```{r}
+source('OPM_nominal.R')
+source('textpreparation.R')
+
+set.seed(200)
+```
+
+The function `preparengramfiles()` takes three input arguments:
+
+- `inputfile`: the name of a text `.txt` file, used to train the agent;
+- `outsuffix`: the suffix for the output files (see below);
+- `n`: the $n$ of the n-grams, default `n = 3`;
+- `maxtokens`: the maximum number of unique tokens to use -- the "vocabulary" -- in case we need to save memory; default is `maxtokens = Inf`, which uses all tokens from the input text.
+
+The function creates two `csv` files: one containing the training data with all n-grams from the input text, and one containing the metadata, consisting in the vocabulary.
+
+For simplicity, the function converts all text to upper case and ASCII characters, it replaces every digit 0–9 to the lowercase letter `n`, and only keeps the following punctuation: `,.;:?!%$&@+'/-`.
+
+As a concrete example let's start with a simple text: the lyrics from Daft Punk's song *Around the World*
+
+> Around the world, around the world.
+> Around the world, around the world.
+
+stored in the file [`texts/around_the_world.txt`]()
