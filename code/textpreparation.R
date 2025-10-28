@@ -1,13 +1,13 @@
 #### Helper function: separate punctation from words
 separatepunct <- function(text){
-    text <- toupper(text)
+    text <- toupper(iconv(text, to = 'ASCII//TRANSLIT'))
     text <- gsub(
-        "[^1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ,.;:?!%$&']",
+        "[^1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ,.;:?!%$&@+'/-]",
         "", text)
-    text <- gsub("[0-9]+", " n ", text)
+    text <- gsub("[0-9]", "n", text)
     text <- unlist(
         strsplit(x = gsub(
-            "([,.;:?!n])",
+            "([,.;:?!])",
             " \\1", text), split = " "),
         use.names = FALSE)
     text[text != ""]
@@ -89,12 +89,12 @@ preparengramfiles <- function(
     c(metafile, ngramfile)
 }
 
-#### Generate text of a given length
+#### Generate text of a given length or up to a given token
 generatetext <- function(
     agent,
     stopat = 100,
     prompt = NULL,
-    online = TRUE
+    online = FALSE
 ) {
     with(agent, {
         n <- length(variates)
@@ -112,13 +112,14 @@ generatetext <- function(
         } else {
             if(!(stopat %in% variates[[1]])){
                 stop('Token ', stopat, ' not in vocabulary')
+            }
             stoplength <- Inf
             stopword <- stopat
-            }
         }
 
         ## outtext will contain the whole generated text
         outtext <- '\n'
+        if(online){cat('\n')}
         predictor <- prompt[length(prompt) - ((n - 2L):0L)]
         n0 <- length(predictor)
         if(!is.null(predictor)){
@@ -127,8 +128,10 @@ generatetext <- function(
         }
 
         for(i in seq_along(prompt)){
-            outtext <- combinetokens(outtext, prompt[i])
-            }
+            nextw <- prompt[i]
+            outtext <- combinetokens(outtext, nextw)
+            if(online){cat(combinetokens(NULL, nextw))}
+        }
 
         for(i in seq_len(n - 1L - n0)){
             wordi <- paste0('word', n0 + i)
@@ -136,10 +139,11 @@ generatetext <- function(
                 predictand = wordi,
                 predictor = predictor)
             nextw <- sample(x = names(out), size = 1, prob = out)
-            ## nextw <- names(out)[sample(which(out == max(out)), 1)]
-            predictor <- c(predictor, setNames(list(nextw), wordi))
-            wordi <- paste0('word', n0 + i + 1L)
+
             outtext <- combinetokens(outtext, nextw)
+            if(online){cat(combinetokens(NULL, nextw))}
+
+            predictor <- c(predictor, setNames(list(nextw), wordi))
         }
         ##
         wcount <- n - 1L
@@ -152,14 +156,16 @@ generatetext <- function(
                 predictand = wordn,
                 predictor = predictor)
             nextw <- sample(x = names(out), size = 1, prob = out)
-            ## cat(combinetokens(NULL, nextw))
+
             outtext <- combinetokens(outtext, nextw)
-            ##
+            if(online){cat(combinetokens(NULL, nextw))}
+
             predictor[] <- c(predictor[-1], list(nextw))
-            ## w2 <- sample(names(out)[which(out == max(out))], 1)
-            ##
+
             wcount <- wcount + 1L
         }
-        paste0(outtext, '\n')
+        if(online){cat('...\n')}
+
+        paste0(outtext, '...\n')
     })
 }
