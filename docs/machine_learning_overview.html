@@ -107,7 +107,7 @@ window.Quarto = {
 <link rel="stylesheet" href="ada511styles.css">
 </head>
 
-<body class="nav-sidebar docked quarto-light">
+<body class="nav-sidebar docked slimcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -589,12 +589,13 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#hyperparameters-and-model-complexity" id="toc-hyperparameters-and-model-complexity" class="nav-link active" data-scroll-target="#hyperparameters-and-model-complexity"><span class="header-section-number">38.1</span> Hyperparameters and model complexity</a>
+  <li><a href="#hyperparameters-and-model-complexity" id="toc-hyperparameters-and-model-complexity" class="nav-link active" data-scroll-target="#hyperparameters-and-model-complexity"><span class="header-section-number">38.1</span> Hyperparameters and model complexity</a></li>
+  <li><a href="#sec-why-fitting-issues" id="toc-sec-why-fitting-issues" class="nav-link" data-scroll-target="#sec-why-fitting-issues"><span class="header-section-number">38.2</span> Overfitting and underfitting: why? where from?</a>
   <ul class="collapse">
-  <li><a href="#underfitting-and-overfitting-why-where-from" id="toc-underfitting-and-overfitting-why-where-from" class="nav-link" data-scroll-target="#underfitting-and-overfitting-why-where-from">Underfitting and overfitting: why? where from?</a></li>
+  <li><a href="#the-max-instead-of-sum-approximation" id="toc-the-max-instead-of-sum-approximation" class="nav-link" data-scroll-target="#the-max-instead-of-sum-approximation">The “max instead of sum” approximation</a></li>
   </ul></li>
-  <li><a href="#model-selection-in-practice" id="toc-model-selection-in-practice" class="nav-link" data-scroll-target="#model-selection-in-practice"><span class="header-section-number">38.2</span> Model selection (in practice)</a></li>
-  <li><a href="#machine-learning-taxonomy" id="toc-machine-learning-taxonomy" class="nav-link" data-scroll-target="#machine-learning-taxonomy"><span class="header-section-number">38.3</span> Machine learning taxonomy</a></li>
+  <li><a href="#model-selection-in-practice" id="toc-model-selection-in-practice" class="nav-link" data-scroll-target="#model-selection-in-practice"><span class="header-section-number">38.3</span> Model selection (in practice)</a></li>
+  <li><a href="#machine-learning-taxonomy" id="toc-machine-learning-taxonomy" class="nav-link" data-scroll-target="#machine-learning-taxonomy"><span class="header-section-number">38.4</span> Machine learning taxonomy</a></li>
   </ul>
 </nav>
     </div>
@@ -636,8 +637,8 @@ window.Quarto = {
 
 </div>
 <p>So far we have learned about the principles behind drawing inferences and making decisions, and about various properties of data. Using only the four fundamental probability rules that drive the “thinking” of a perfect AI agent, we arrived at a couple of formulae that underlie many different kinds of inference, prediction, and data-generation tasks, in situations where the agent believe the data to be exchangeable (<a href="exchangeable_probabilities.html" class="quarto-xref">ch.&nbsp;&nbsp;<span>25</span></a>). One example is</p>
-<div class="column-page-inset-right">
-<p><span class="math display">\[
+<div class="column-page-right">
+<p><span id="eq-definetti"><span class="math display">\[
 \begin{aligned}
     &amp;\mathrm{P}\bigl(
     \color[RGB]{238,102,119}Y_{N+1} \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}y_{N+1}
@@ -667,22 +668,22 @@ f({\color[RGB]{34,136,51}Y\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\smal
 \mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
 }
 \end{aligned}
-\]</span></p>
+\tag{38.1}\]</span></span></p>
 </div>
 <p>We saw that the agent needs to have a built-in belief about frequencies, <span style="display:inline-block;"><span class="math inline">\(\mathrm{P}(F\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}\boldsymbol{f}\nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})\)</span>.&nbsp;&nbsp;Once</span> it’s given some learning data, it can in principle draw all sorts of inferences and make all sorts of decisions. Concrete applications were given in chapters&nbsp;<a href="example_opm1.html" class="quarto-xref"><span>Chapter 33</span></a>, <a href="slm.html" class="quarto-xref"><span>Chapter 34</span></a>, <a href="example_opm2.html" class="quarto-xref"><span>Chapter 37</span></a>.</p>
 <p>We shall now discuss about some present-day <em>approximate</em> procedures to draw inferences about data. They are approximate because they draw inferences or make decisions by doing approximate probability calculations and approximate maximizations of expected utilities, rather than exact ones. This approximating character makes these procedures very <em>fast</em>, but also <em>sub-optimal</em>. In any given problem it is therefore important to decide whether our priority is speed or optimality.</p>
 <p>Machine learning methods can be wildly different both in terms of operation and complexity. But they all behave as functions that take in a data point <span style="display:inline-block;"><span class="math inline">\(x\)</span>,</span> a set of values <span style="display:inline-block;"><span class="math inline">\(\mathbf{w}\)</span></span> which we call <span class="blue"><strong>parameters</strong></span>, and returns the prediction <span style="display:inline-block;"><span class="math inline">\(\hat{y}\)</span>:</span></p>
 <p><span id="eq-model-as-function"><span class="math display">\[
     \hat{y} = f(x, \mathbf{w}).
-\tag{38.1}\]</span></span></p>
+\tag{38.2}\]</span></span></p>
 <p>The prediction <span style="display:inline-block;"><span class="math inline">\(\hat{y}\)</span></span> can be any quantity discussed in <a href="quantities_types.html#sec-basic-types" class="quarto-xref">section&nbsp;<span>12.2</span></a> – most commonly we want to classify the data (and we say we are doing <span class="green"><em>classification</em></span>), or we want to estimate some value (in which case we call it <span class="green"><em>regression</em></span>).</p>
 <p>It has been pointed out already – and we will see it also in the coming chapters – that often there <em>is actually not</em> a functional relationship between the inputs <span style="display:inline-block;"><span class="math inline">\(\mathbf{x}\)</span>,</span> and the property we want to predict. This leaves us with two possibilities for a solution:</p>
 <ul>
 <li>If there is an <em>approximate</em> functional relationship, we can try to find an analytical function to model that. More specifically, we can look for a <strong>deterministic</strong> function, which for a given input <span class="math inline">\(x\)</span> will repeatedly give an output <span class="math inline">\(y\)</span>. Common machine learning methods will work well here.</li>
 <li>If there is <em>no</em> functional relationship, it does not make sense to make a model that tries to enforce one. Instead of having a model that outputs a deterministic value, we need instead, is one that outputs a probability distribution.</li>
 </ul>
-<p>Because of the second point above, when we describe equation <a href="#eq-model-as-function" class="quarto-xref"><span>38.1</span></a>, we will use the word “function” in the wide sense where we allow it to be non-deterministic. An example is <a href="https://chat.openai.com/">ChatGPT</a>, which will answer you differently if you ask it the same exact question twice. If you prefer more mathematical rigour, we could call <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> a <em>process</em> instead, which is a more loose term.</p>
-<p>Let us break down equation <a href="#eq-model-as-function" class="quarto-xref"><span>38.1</span></a>. As engineers, when faced with the task of using data to model the behaviour of some system, our job is twofold. First, we need to select a suitable method to serve as the function <span style="display:inline-block;"><span class="math inline">\(f\)</span>,</span> and second, we need to find the optimal values for the parameters <span style="display:inline-block;"><span class="math inline">\(\mathbf{w}\)</span>.</span> In <a href="https://www.hvl.no/en/studies-at-hvl/study-programmes/courses/2023/ADA501">ADA501</a> we will see how to choose an analytical <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> that corresponds to certain physical systems, while in our course, we will look at methods where <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> can be practically anything.</p>
+<p>Because of the second point above, when we describe equation <a href="#eq-model-as-function" class="quarto-xref"><span>38.2</span></a>, we will use the word “function” in the wide sense where we allow it to be non-deterministic. An example is <a href="https://chat.openai.com/">ChatGPT</a>, which will answer you differently if you ask it the same exact question twice. If you prefer more mathematical rigour, we could call <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> a <em>process</em> instead, which is a more loose term.</p>
+<p>Let us break down equation <a href="#eq-model-as-function" class="quarto-xref"><span>38.2</span></a>. As engineers, when faced with the task of using data to model the behaviour of some system, our job is twofold. First, we need to select a suitable method to serve as the function <span style="display:inline-block;"><span class="math inline">\(f\)</span>,</span> and second, we need to find the optimal values for the parameters <span style="display:inline-block;"><span class="math inline">\(\mathbf{w}\)</span>.</span> In <a href="https://www.hvl.no/en/studies-at-hvl/study-programmes/courses/2023/ADA501">ADA501</a> we will see how to choose an analytical <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> that corresponds to certain physical systems, while in our course, we will look at methods where <span style="display:inline-block;"><span class="math inline">\(f\)</span></span> can be practically anything.</p>
 <p>Finding the parameters <span style="display:inline-block;"><span class="math inline">\(\mathbf{w}\)</span></span> is what takes us from a general method, to the specific solution to a problem. As we will see, the way of finding them differs between the various machine learning methods, but the principle is always the same: We need to choose a <span class="blue"><strong>loss function</strong></span>, and then iteratively adjust <span style="display:inline-block;"><span class="math inline">\(\mathbf{w}\)</span></span> so that the loss, when computed on known data, becomes as small as possible. The loss function should represent the difference between what the model outputs, and the correct answer – the better the model, the smaller the difference. The choice of this loss function depends on what kind of problem we wish to solve, and we will look at the common ones shortly. But at this point we can already define the three main types of machine learning:</p>
 <ul>
 <li>If we know the “correct answers” (the labels) for all entries in our data set, this is what the model should aim to learn, and we call it <strong>supervised learning</strong>.</li>
@@ -851,22 +852,74 @@ Exercise&nbsp;38.1
 </ol>
 </div>
 </div>
-<section id="underfitting-and-overfitting-why-where-from" class="level3">
-<h3 class="anchored" data-anchor-id="underfitting-and-overfitting-why-where-from">Underfitting and overfitting: why? where from?</h3>
-<p>Up to now we have never met the problem of underfitting and overfitting. The OPM agent that we applied in chapters&nbsp;<a href="example_opm1.html" class="quarto-xref"><span>Chapter 33</span></a>, <a href="slm.html" class="quarto-xref"><span>Chapter 34</span></a>, <a href="example_opm2.html" class="quarto-xref"><span>Chapter 37</span></a> did not suffer from this kind of problems. In fact, in <span class="citation" data-cites="application-and-exploration">[§@application-and-exploration]</span> we saw that the agent trained with just 10 datapoints did not try to fit them perfectly, but rather kept more conservative beliefs. The agent also warned us that further learning data might substantially change its beliefs. When a substantial amount of learning data was given to the agent, it aligned its beliefs with the observed frequencies, which was a reasonable thing to do. No issues about under- or over-fitting appeared at any stage; we did not even think about them.</p>
-<p>Why do the machine-learning models above suffer from these issues instead? Where do these issues come from?</p>
-<p>The sources are various, and may be different for every machine-learning algorithm. In the cases above, the main sources are the following, in no specific order:</p>
+</section>
+<section id="sec-why-fitting-issues" class="level2 page-columns page-full" data-number="38.2">
+<h2 data-number="38.2" class="anchored" data-anchor-id="sec-why-fitting-issues"><span class="header-section-number">38.2</span> Overfitting and underfitting: why? where from?</h2>
+<p>Up to now we have never met the problems of overfitting and underfitting. The OPM agent that we applied in chapters&nbsp;<a href="example_opm1.html" class="quarto-xref"><span>Chapter 33</span></a>, <a href="slm.html" class="quarto-xref"><span>Chapter 34</span></a>, <a href="example_opm2.html" class="quarto-xref"><span>Chapter 37</span></a> did not suffer from this kind of problems. In fact, in <span class="citation" data-cites="application-and-exploration">[§@application-and-exploration]</span> we saw that the agent trained with just 10 datapoints did not try to fit them perfectly, but rather kept more conservative beliefs. The agent also warned us that further learning data might substantially change its beliefs. When a substantial amount of learning data was given to the agent, it aligned its beliefs with the observed frequencies, which was a reasonable thing to do. No issues about over- or under-fitting appeared at any stage; we did not even think about them.</p>
+<p>Why do the machine-learning models above suffer from these issues instead? Where do these issues originate from?</p>
+<p>The origins are various and may differ from one machine-learning algorithm to another. In the cases above there are two main culprits:</p>
 <ul>
+<li>a particular approximation underlying the algorithms;</li>
+<li>unreasonable prior beliefs built into the algorithms.</li>
+</ul>
+<p>Let’s explain each in broad terms.</p>
+<section id="the-max-instead-of-sum-approximation" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="the-max-instead-of-sum-approximation">The “max instead of sum” approximation</h3>
+<p>The machine-learning algorithms above are agents that try to predict the <span style="display:inline-block;"><span class="math inline">\(\mathit{temp}\)</span>erature</span> from the time by assuming that there’s a function from time to temperature; and this could be a reasonable assumption. In probability notation we could write something like this:</p>
+<p><span class="math display">\[
+\mathrm{P}(\mathit{temp} \nonscript\:\vert\nonscript\:\mathopen{} \mathit{time} \mathbin{\mkern-0.5mu,\mkern-0.5mu}F \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
+\]</span></p>
+<p>where <span style="display:inline-block;"><span class="math inline">\(F\)</span></span> represents the assumed function.</p>
+<p>But the agents don’t know what the true function is: it could be the function <span style="display:inline-block;"><span class="math inline">\(F_{1}\)</span>,</span> or <span style="display:inline-block;"><span class="math inline">\(F_{2}\)</span>,</span> or an infinity of other possibilities. Each function is a hypothesis that the agent is entertaining. Therefore what the agents are trying to calculate is actually something like this:</p>
+<p><span class="math display">\[
+\mathrm{P}\bigl(\mathit{temp} \nonscript\:\vert\nonscript\:\mathopen{} \mathit{time} \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+(F_{1} \lor F_{2} \lor \dotsb)
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}\bigr)
+\]</span></p>
+<p>A perfect agent, reasoning according to the four fundamental rules, would in this case apply the law of extension of the conversation (<a href="derived_rules.html#sec-extension-conversation" class="quarto-xref">§&nbsp;<span>9.5</span></a>), with a sum over the possible function hypotheses:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;For simplicity we assume that <span style="display:inline-block;"><span class="math inline">\(\mathit{time}\)</span></span> alone is irrelevant for the belief about <span style="display:inline-block;"><span class="math inline">\(F\)</span>.</span></p></div></div><div class="column-page-inset-right">
+<p><span class="math display">\[
+\mathrm{P}\bigl(\mathit{temp} \nonscript\:\vert\nonscript\:\mathopen{} \mathit{time} \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+(F_{1} \lor F_{2} \lor \dotsb)
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}\bigr) =
+\sum_i
+\mathrm{P}(\mathit{temp} \nonscript\:\vert\nonscript\:\mathopen{} \mathit{time} \mathbin{\mkern-0.5mu,\mkern-0.5mu}F_{i} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}\bigr) \cdot
+\mathrm{P}(F_{i} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}\bigr)
+\]</span></p>
+</div>
+<p>This is in fact the law underlying formula&nbsp;<a href="#eq-definetti" class="quarto-xref"><span>38.1</span></a>, which we used for our OPM agent. In that formula we recognize the sum over hypotheses as <span style="display:inline-block;">“<span class="math inline">\(\sum_{\boldsymbol{f}}\)</span>”</span>, with the difference that the hypotheses in that case are frequencies.</p>
+<p>The sum over function hypotheses is computationally expensive, and the machine-learning agents above <span class="red"><em>approximate</em></span> it with something simpler: they <span class="red"><em>keep only the largest term in the sum, rather than performing the sum</em></span>:</p>
+<div class="column-page-inset-right">
+<p><span class="math display">\[
+\sum_i
+\mathrm{P}(\mathit{temp} \nonscript\:\vert\nonscript\:\mathopen{} \mathit{time} \mathbin{\mkern-0.5mu,\mkern-0.5mu}F_{i} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}\bigr) \cdot
+\mathrm{P}(F_{i} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}\bigr)
+\mathrel{\color[RGB]{238,102,119}\pmb{\approx}}
+\max_i\Bigl\{
+\mathrm{P}(\mathit{temp} \nonscript\:\vert\nonscript\:\mathopen{} \mathit{time} \mathbin{\mkern-0.5mu,\mkern-0.5mu}F_{i} \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}\bigr) \cdot
+\mathrm{P}(F_{i} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}\bigr)
+\Bigr\}
+\]</span></p>
+</div>
+<p>You will see the appearance of this maximization, disguised as a minimization (of minus the logarithm of the probability), in the next machine-learning chapters.</p>
+<p>Thus, in a manner of speaking, a perfect agent makes a prediction by appropriately balancing all unknown alternatives, whereas the approximate machine-learning agents only consider the most “flashy” alternative. This leads to overfitting.</p>
+<p>One way to mitigate this problem is by not using the maximum among the sum terms, but a somewhat smaller term than the maximum. But how much smaller should it be? In order to evaluate that, a <em>validation</em> dataset is usually introduced, to get an idea at how badly the approximate agent predicts new data while trying to overfit the old data. This is also an approximate make-do solution, however, which still does not lead to the optimal result.</p>
+<p>This is why a perfect agent, like the OPM of the previous chapters, does not need a validation dataset: it does not approximate the required sum over hypotheses by an approximate maximization, and therefore does not need extra datasets to check how bad the approximation is.</p>
+<p>In some situations the approximation above may not be too bad. But ofter</p>
+<p>, the main sources are the following, in no specific order:</p>
+<ul>
+<li><p><span class="red"><strong>Maximization, instead of summation, over possible frequencies</strong></span>.&nbsp;&nbsp;</p></li>
 <li><p><span class="red"><strong>Unreasonable built-in prior beliefs</strong></span>.&nbsp;&nbsp;The built-in prior beliefs can be unreasonable in two different ways:</p>
 <ul>
-<li>The machine-learning algorithms above represent agents with the built-in belief that the functional relationship between time and temperature has as specific polynomial form. This belief may be unrealistic, although it leads to simpler computations than more realistic beliefs.</li>
-<li>Within a particular complex functional relationship, the agent has too weak prior beliefs about which shapes could be more or less reasonable. The shape is therefore completely determined by the data. Note that we could have programmed a similar behaviour in the OPM agent, by choosing a very low <span class="math inline">\(k_{\text{ma}}\)</span> parameter (<a href="dirichlet-mixture.html#sec-intro-dirichlet-mix" class="quarto-xref">§&nbsp;<span>28.1</span></a>).</li>
-</ul></li>
+<li><p>The machine-learning algorithms above represent agents with the built-in belief that the functional relationship between time and temperature has as specific polynomial form. This belief may be unrealistic, although it leads to simpler computations than more realistic beliefs.</p></li>
+<li><p>Within a particular complex functional relationship, the agent has too weak prior beliefs about which shapes could be more or less reasonable. The shape is therefore completely determined by the data. Note that we could have programmed a similar behaviour in the OPM agent, by choosing a very low <span style="display:inline-block;"><span class="math inline">\(k_{\text{ma}}\)</span></span> parameter (<a href="dirichlet-mixture.html#sec-intro-dirichlet-mix" class="quarto-xref">§&nbsp;<span>28.1</span></a>). But even with such a programming, the OPM agent would have warned us that further learning data might considerably change its beliefs.</p></li>
+</ul>
+<p>In the</p></li>
 </ul>
 </section>
 </section>
-<section id="model-selection-in-practice" class="level2" data-number="38.2">
-<h2 data-number="38.2" class="anchored" data-anchor-id="model-selection-in-practice"><span class="header-section-number">38.2</span> Model selection (in practice)</h2>
+<section id="model-selection-in-practice" class="level2" data-number="38.3">
+<h2 data-number="38.3" class="anchored" data-anchor-id="model-selection-in-practice"><span class="header-section-number">38.3</span> Model selection (in practice)</h2>
 <p>As alluded to in the exercises above, there are ways of including both the data and our prior expectations when building a model, but it is, in fact, not very common to do so. In this section we will have a look at the typical <em>machine learning</em> approach, which relies on splitting the data in different sets. Starting from all our available data on a given problem that we wish to model, we divide it into</p>
 <ul>
 <li>the <span class="blue"><em>training set</em></span>, which is the data we will use to determine the model parameters <span class="math inline">\(\mathbf{w}\)</span>,</li>
@@ -875,13 +928,14 @@ Exercise&nbsp;38.1
 </ul>
 <p>The benefit of this approach is that it is very simple to do. The downside, on the other hand, is that each set is necessarily smaller than the total, which subjects us to increased statistical uncertainty. The final parameters will be slightly less optimal than they could have been, and the measurement of the performance will be slightly less accurate. Still, it is common practice, and for the “standard” machine learning methods there is no direct way of simultaneously optimising for the model complexity.</p>
 </section>
-<section id="machine-learning-taxonomy" class="level2" data-number="38.3">
-<h2 data-number="38.3" class="anchored" data-anchor-id="machine-learning-taxonomy"><span class="header-section-number">38.3</span> Machine learning taxonomy</h2>
-<p>Machine learning has been around for many decades, and the list of methods that fit under our simple definition of looking like equation <a href="#eq-model-as-function" class="quarto-xref"><span>38.1</span></a> and learning their parameters from data, is very long. For a (non-exhaustive) systematic list, have a look at the methods that are implemented in <a href="https://scikit-learn.org/stable/supervised_learning.html#supervised-learning">scikit-learn</a>, a Python library dedicated to data analysis.</p>
+<section id="machine-learning-taxonomy" class="level2" data-number="38.4">
+<h2 data-number="38.4" class="anchored" data-anchor-id="machine-learning-taxonomy"><span class="header-section-number">38.4</span> Machine learning taxonomy</h2>
+<p>Machine learning has been around for many decades, and the list of methods that fit under our simple definition of looking like equation <a href="#eq-model-as-function" class="quarto-xref"><span>38.2</span></a> and learning their parameters from data, is very long. For a (non-exhaustive) systematic list, have a look at the methods that are implemented in <a href="https://scikit-learn.org/stable/supervised_learning.html#supervised-learning">scikit-learn</a>, a Python library dedicated to data analysis.</p>
 <p>In this course we will not try to go through all of them, but rather focus on the fundamentals of what they all have in common. With this fundamental understanding, learning about new methods is like learning a new programming language – each has their specific syntax and specific uses, but the underlying mechanism is the same. We will look at two important methods, that are inherently very different, but still accomplish the same end result. The first is decision trees (and the extension into <em>random forests</em>), while the second is neural networks.</p>
 
 
 </section>
+
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -5,7 +5,7 @@
 
 So far we have learned about the principles behind drawing inferences and making decisions, and about various properties of data. Using only the four fundamental probability rules that drive the "thinking" of a perfect AI agent, we arrived at a couple of formulae that underlie many different kinds of inference, prediction, and data-generation tasks, in situations where the agent believe the data to be exchangeable ([ch. @sec-exchangeable-beliefs]). One example is
 
-:::{.column-page-inset-right}
+:::{.column-page-right}
 $$
 \begin{aligned}
     &\P\bigl(
@@ -36,7 +36,7 @@ f({\green Y\mo y_{1} \and X\mo x_{1}})
 \P(F\mo\vf \| \yI)
 }
 \end{aligned}
-$$
+$$ {#eq-definetti}
 :::
 
 We saw that the agent needs to have a built-in belief about frequencies, $\P(F\mo\vf \| \yI)$.\ \ Once it's given some learning data, it can in principle draw all sorts of inferences and make all sorts of decisions. Concrete applications were given in chapters [@sec-example-opm1], [@sec-example-slm], [@sec-example-opm2].
@@ -111,13 +111,84 @@ The blue dots are our "original" data points, plotted for reference, while the r
 @. For the different models in [figure @fig-polynomial-fit] we started by choosing polymonial degree $M$, and then computed the parameters that minimized the difference between the data points and the model. Then we had a look at the results, compared them to our expectations, and decided that $M=0$ and $M=9$ were both unlikely. Can you think of a way to incorporate our initial expectations into the computation?
 :::
 
-### Underfitting and overfitting: why? where from?
+## Overfitting and underfitting: why? where from? {#sec-why-fitting-issues}
 
-Up to now we have never met the problem of underfitting and overfitting. The OPM agent that we applied in chapters [@sec-example-opm1], [@sec-example-slm], [@sec-example-opm2] did not suffer from this kind of problems. In fact, in [§@application-and-exploration] we saw that the agent trained with just 10 datapoints did not try to fit them perfectly, but rather kept more conservative beliefs. The agent also warned us that further learning data might substantially change its beliefs. When a substantial amount of learning data was given to the agent, it aligned its beliefs with the observed frequencies, which was a reasonable thing to do. No issues about under- or over-fitting appeared at any stage; we did not even think about them.
+Up to now we have never met the problems of overfitting and underfitting. The OPM agent that we applied in chapters [@sec-example-opm1], [@sec-example-slm], [@sec-example-opm2] did not suffer from this kind of problems. In fact, in [§@application-and-exploration] we saw that the agent trained with just 10 datapoints did not try to fit them perfectly, but rather kept more conservative beliefs. The agent also warned us that further learning data might substantially change its beliefs. When a substantial amount of learning data was given to the agent, it aligned its beliefs with the observed frequencies, which was a reasonable thing to do. No issues about over- or under-fitting appeared at any stage; we did not even think about them.
 
-Why do the machine-learning models above suffer from these issues instead? Where do these issues come from?
+Why do the machine-learning models above suffer from these issues instead? Where do these issues originate from?
 
-The sources are various, and may be different for every machine-learning algorithm. In the cases above, the main sources are the following, in no specific order:
+The origins are various and may differ from one machine-learning algorithm to another. In the cases above there are two main culprits:
+
+- a particular approximation underlying the algorithms;
+- unreasonably restrictive prior beliefs built into the algorithms.
+
+Let's explain each in broad terms.
+
+### The "max instead of sum" approximation
+
+The machine-learning algorithms above are agents that try to predict the $\mathit{temp}$erature from the $\mathit{time}$ by assuming that there's a function from time to temperature; this could be a reasonable assumption. In loose probability notation we could write it like this:
+
+$$
+\P(\mathit{temp} \| \mathit{time} \and F \and \yI)
+$$
+
+where $F$ represents the assumed function.
+
+But the agents don't know what the true function is: it could be the function $F_{1}$, or $F_{2}$, or an infinity of other possibilities. Each function is a hypothesis that the agent is entertaining. Therefore what the agents are trying to calculate is actually something like this:
+
+$$
+\P\bigl(\mathit{temp} \| \mathit{time} \and 
+(F_{1} \lor F_{2} \lor \dotsb) 
+\and \yI\bigr)
+$$
+
+A perfect agent, reasoning  according to the four fundamental rules, would in this case apply the law of extension of the conversation ([§@sec-extension-conversation]), with a sum over the possible function hypotheses:^[For simplicity we assume that $\mathit{time}$ alone is irrelevant for the belief about $F$.]
+
+:::{.column-page-inset-right}
+$$
+\P\bigl(\mathit{temp} \| \mathit{time} \and 
+(F_{1} \lor F_{2} \lor \dotsb) 
+\and \yI\bigr) =
+\sum_i
+\P(\mathit{temp} \| \mathit{time} \and F_{i} \and \yI\bigr) \cdot
+\P(F_{i} \| \yI\bigr)
+$$
+:::
+
+This is in fact the law underlying formula @eq-definetti, which we used for our OPM agent. In that formula we recognize the sum over hypotheses as "$\sum_{\vf}$", with the difference that the hypotheses in that case are frequencies.
+
+The sum over function hypotheses is computationally expensive, and the machine-learning agents above [*approximate*]{.red} it with something simpler: they [*keep only the largest term in the sum, rather than performing the sum*]{.red}:
+
+:::{.column-page-inset-right}
+$$
+\sum_i
+\P(\mathit{temp} \| \mathit{time} \and F_{i} \and \yI\bigr) \cdot
+\P(F_{i} \| \yI\bigr)
+\mathrel{\red\pmb{\approx}}
+\max_i\Bigl\{
+\P(\mathit{temp} \| \mathit{time} \and F_{i} \and \yI\bigr) \cdot
+\P(F_{i} \| \yI\bigr)
+\Bigr\}
+$$
+:::
+
+You will see the appearance of this maximization, disguised as a minimization (of minus the logarithm of the probability), in the next machine-learning chapters.
+
+Thus, in a manner of speaking, a perfect agent makes a prediction by appropriately balancing all unknown alternatives, whereas the approximate machine-learning agents only consider the most "flashy" alternative. This leads to overfitting.
+
+One way to mitigate this problem is by not using the maximum among the sum terms, but a somewhat smaller term than the maximum. But how much smaller should it be? In order to evaluate that, a *validation* dataset is usually introduced, to get an idea at how badly the approximate agent predicts new data while trying to overfit the old data. This is also an approximate make-do solution, however, which still does not lead to the optimal result.
+
+This is why a perfect agent, like the OPM of the previous chapters, does not need a validation dataset: it does not approximate the required sum over hypotheses by an approximate maximization, and therefore does not need extra datasets to check how bad the approximation is.
+
+
+### Unreasonably restrictive beliefs
+
+
+In some situations the approximation above may not be too bad. But ofter
+
+
+
+, the main sources are the following, in no specific order:
 
 - [**Maximization, instead of summation, over possible frequencies**]{.red}.\ \ 
 
