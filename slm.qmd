@@ -63,13 +63,39 @@ The function `preparengramfiles()` takes three input arguments:
 - `n`: the $n$ of the n-grams, default `n = 3`;
 - `maxtokens`: the maximum number of unique tokens to use -- the "vocabulary" -- in case we need to save memory; default is `maxtokens = Inf`, which uses all tokens from the input text.
 
-The function creates two `csv` files: one containing the training data with all n-grams from the input text, and one containing the metadata, consisting in the vocabulary.
+The function creates two `csv` files: one containing the training data with all n-grams from the input text, and one containing the metadata, consisting in the vocabulary. It outputs the file names as list with elements `metadata` and `data`.
 
 For simplicity, the function converts all text to upper case and ASCII characters, it replaces every digit 0–9 to the lowercase letter `n`, and only keeps the following punctuation: `,.;:?!%$&@+'/-`.
 
-As a concrete example let's start with a simple text: the lyrics from Daft Punk's song *Around the World*
+As a concrete example let's start with a simple text: the lyrics from Daft Punk's song [*Around the World*](https://www.youtube.com/watch?v=K0HSD_i2DvA)
 
-> Around the world, around the world.
+:::{.column-margin}
+<!-- {{< video https://www.youtube.com/watch?v=lFIYKmos3-s >}} -->
+{{< video https://www.youtube.com/watch?v=K0HSD_i2DvA >}}
+:::
+
+> Around the world, around the world.  
 > Around the world, around the world.
 
-stored in the file [`texts/around_the_world.txt`]()
+stored in the file [`texts/around_the_world.txt`](https://github.com/pglpm/ADA511/blob/master/code/texts/around_the_world.txt).
+
+```{r}
+filenames <- preparengramfiles(
+    inputfile = 'texts/around_the_world.txt',
+    outsuffix = 'around',
+    n = 3,
+    maxtokens = Inf
+)
+```
+
+It tells us that it used five unique tokens. Let's take a look at the learning-data file:
+
+```{r}
+read.csv(filenames$data)
+```
+
+We see that the token vocabulary consists of\ \ `AROUND`, `THE`, `WORLD`, `,`, `.`.\ \ The learning data consist of all sequences of three consecutive tokens present in the text. Note that the same word in the original text may therefore appear in three different datapoints.
+
+\
+
+[*(To be continued)*]{.grey}

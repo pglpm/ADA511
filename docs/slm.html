@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -591,6 +626,7 @@ window.Quarto = {
   <ul>
   <li><a href="#sec-language-inference" id="toc-sec-language-inference" class="nav-link active" data-scroll-target="#sec-language-inference"><span class="header-section-number">34.1</span> Natural language as inference and decision</a></li>
   <li><a href="#sec-opm-as-slm" id="toc-sec-opm-as-slm" class="nav-link" data-scroll-target="#sec-opm-as-slm"><span class="header-section-number">34.2</span> The OPM as a small language model</a></li>
+  <li><a href="#sec-prepare-text" id="toc-sec-prepare-text" class="nav-link" data-scroll-target="#sec-prepare-text"><span class="header-section-number">34.3</span> Preparing the learning data from some text</a></li>
   </ul>
 </nav>
     </div>
@@ -664,7 +700,83 @@ window.Quarto = {
 <h2 data-number="34.2" class="anchored" data-anchor-id="sec-opm-as-slm"><span class="header-section-number">34.2</span> The OPM as a small language model</h2>
 <p>Algorithms that implement the kind of word inference just described usually do so in an <em>exchangeable</em> way. They use the frequencies of different word sequences, without regard to whether most of those sequences occur, say, in older rather than newer texts.</p>
 <p>Our OPM is also designed to use built-in exchangeable beliefs, and in the previous chapter we saw its extreme versatility with exchangeable inferences of nominal variates – just what words, more or less, are. So let’s try to use it for word inference, and see if it can mimic speech. Of course we cannot expect spectacular results: large language models manage to make their remarkable inferences after learning more than tens of trillions (10 000 000 000 000) of words, which require huge amounts of memory and time. But we can get a glimpse of the main features.</p>
-<p>To use the OPM this way, we define a population of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> variates, let’s say <span style="display:inline-block;"><span class="math inline">\(n = 3\)</span>.</span> The three variates are defined as <em>consecutive</em> words in some specific set of texts. We can call them <span style="display:inline-block;"><span class="math inline">\({\small\verb;word1;}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(, \dotsc, {\small\verb;wordn;}\)</span>.</span></p>
+<p>To use the OPM this way, we define a population of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> variates, let’s say <span style="display:inline-block;"><span class="math inline">\(n = 3\)</span>.</span> The three variates are defined as <strong>consecutive</strong> words in some specific set of texts. We can call them <span style="display:inline-block;"><span class="math inline">\({\small\verb;word1;}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\small\verb;word2;}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\small\verb;word3;}\)</span>,</span> and so on. Instead of words it’s actually best to use <span class="blue"><em>tokens</em></span>, which comprise not only words, but punctuation marks like <code>,.;:!?</code> and other signs – the exact definition of token depends on the specific application. The sequence of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> tokens is often called an <strong>n-gram</strong>.</p>
+</section>
+<section id="sec-prepare-text" class="level2 page-columns page-full" data-number="34.3">
+<h2 data-number="34.3" class="anchored" data-anchor-id="sec-prepare-text"><span class="header-section-number">34.3</span> Preparing the learning data from some text</h2>
+<p>In order to prepare the learning data for our OPM agent, let’s load some R functions defined in the <a href="https://github.com/pglpm/ADA511/blob/master/code/textpreparation.R"><code>textpreparation.R</code></a> file, as well as the OPM functions, from the usual directory<br>
+<a href="https://github.com/pglpm/ADA511/blob/master/code">https://github.com/pglpm/ADA511/blob/master/code</a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'OPM_nominal.R'</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'textpreparation.R'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">200</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The function <code>preparengramfiles()</code> takes three input arguments:</p>
+<ul>
+<li><code>inputfile</code>: the name of a text <code>.txt</code> file, used to train the agent;</li>
+<li><code>outsuffix</code>: the suffix for the output files (see below);</li>
+<li><code>n</code>: the <span class="math inline">\(n\)</span> of the n-grams, default <code>n = 3</code>;</li>
+<li><code>maxtokens</code>: the maximum number of unique tokens to use – the “vocabulary” – in case we need to save memory; default is <code>maxtokens = Inf</code>, which uses all tokens from the input text.</li>
+</ul>
+<p>The function creates two <code>csv</code> files: one containing the training data with all n-grams from the input text, and one containing the metadata, consisting in the vocabulary. It outputs the file names as list with elements <code>metadata</code> and <code>data</code>.</p>
+<p>For simplicity, the function converts all text to upper case and ASCII characters, it replaces every digit 0–9 to the lowercase letter <code>n</code>, and only keeps the following punctuation: <code>,.;:?!%$&amp;@+'/-</code>.</p>
+<p>As a concrete example let’s start with a simple text: the lyrics from Daft Punk’s song <a href="https://www.youtube.com/watch?v=K0HSD_i2DvA"><em>Around the World</em></a></p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/K0HSD_i2DvA" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</div></div><blockquote class="blockquote">
+<p>Around the world, around the world.<br>
+Around the world, around the world.</p>
+</blockquote>
+<p>stored in the file <a href="https://github.com/pglpm/ADA511/blob/master/code/texts/around_the_world.txt"><code>texts/around_the_world.txt</code></a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>filenames <span class="ot">&lt;-</span> <span class="fu">preparengramfiles</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">inputfile =</span> <span class="st">'texts/around_the_world.txt'</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">outsuffix =</span> <span class="st">'around'</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">3</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxtokens =</span> <span class="cn">Inf</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Unique tokens: 5.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Saved files.</code></pre>
+</div>
+</div>
+<p>It tells us that it used five unique tokens. Let’s take a look at the learning-data file:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(filenames<span class="sc">$</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    word1  word2  word3
+1  AROUND    THE  WORLD
+2     THE  WORLD      ,
+3   WORLD      , AROUND
+4       , AROUND    THE
+5  AROUND    THE  WORLD
+6     THE  WORLD      .
+7   WORLD      . AROUND
+8       . AROUND    THE
+9  AROUND    THE  WORLD
+10    THE  WORLD      ,
+11  WORLD      , AROUND
+12      , AROUND    THE
+13 AROUND    THE  WORLD
+14    THE  WORLD      .
+15  WORLD      . AROUND
+16      . AROUND    THE
+17 AROUND    THE  WORLD
+18    THE  WORLD      ,
+19  WORLD      , AROUND
+20      , AROUND    THE
+21 AROUND    THE  WORLD
+22    THE  WORLD      .</code></pre>
+</div>
+</div>
+<p>We see that the token vocabulary consists of&nbsp;&nbsp;<code>AROUND</code>, <code>THE</code>, <code>WORLD</code>, <code>,</code>, <code>.</code>.&nbsp;&nbsp;The learning data consist of all sequences of three consecutive tokens present in the text. Note that the same word in the original text may therefore appear in three different datapoints.</p>
+<p><br>
+</p>
+<p><span class="grey"><em>(To be continued)</em></span></p>
 
 
 </section>

@@ -86,7 +86,7 @@ preparengramfiles <- function(
         row.names = FALSE, quote = TRUE, na = '')
 
     message('Saved files.')
-    c(metafile, ngramfile)
+    list(metadata = metafile, data = ngramfile)
 }
 
 #### Generate text of a given length or up to a given token
