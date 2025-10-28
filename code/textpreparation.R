@@ -102,7 +102,7 @@ generatetext <- function(
         ## check that start has words in vocabulary
         notwords <- start[!(start %in% variates[[1]])]
         if(length(notwords) > 0){
-            stop('Tokens: ', paste0(notwords, collapse = ', '),
+            stop('Tokens: ', paste0(notwords, collapse = ' '),
                 ' not in vocabulary')
         }
 
