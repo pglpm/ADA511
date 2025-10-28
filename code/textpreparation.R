@@ -92,31 +92,42 @@ preparengramfiles <- function(
 #### Generate text of a given length
 generatetext <- function(
     agent,
-    length = 100,
-    start = NULL,
+    stopat = 100,
+    prompt = NULL,
     online = TRUE
 ) {
     with(agent, {
         n <- length(variates)
 
-        ## check that start has words in vocabulary
-        notwords <- start[!(start %in% variates[[1]])]
+        ## check that prompt has words in vocabulary
+        notwords <- prompt[!(prompt %in% variates[[1]])]
         if(length(notwords) > 0){
             stop('Tokens: ', paste0(notwords, collapse = ' '),
                 ' not in vocabulary')
         }
 
+        if(is.numeric(stopat)){
+            stoplength <- abs(stopat)
+            stopword <- ''
+        } else {
+            if(!(stopat %in% variates[[1]])){
+                stop('Token ', stopat, ' not in vocabulary')
+            stoplength <- Inf
+            stopword <- stopat
+            }
+        }
+
         ## outtext will contain the whole generated text
         outtext <- '\n'
-        predictor <- start[length(start) - ((n - 2L):0L)]
+        predictor <- prompt[length(prompt) - ((n - 2L):0L)]
         n0 <- length(predictor)
         if(!is.null(predictor)){
             predictor <- as.list(predictor)
             names(predictor) <- paste0('word', seq_len(n0))
         }
 
-        for(i in seq_along(start)){
-            outtext <- combinetokens(outtext, start[i])
+        for(i in seq_along(prompt)){
+            outtext <- combinetokens(outtext, prompt[i])
             }
 
         for(i in seq_len(n - 1L - n0)){
@@ -133,7 +144,7 @@ generatetext <- function(
         ##
         wcount <- n - 1L
         wordn <- paste0('word', n)
-        while(wcount < length){
+        while(wcount < stoplength && nextw != stopword){
             ## print('***')
             ## print(predor)
             ## print(wordi)
