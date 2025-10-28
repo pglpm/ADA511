@@ -590,11 +590,12 @@ window.Quarto = {
    
   <ul>
   <li><a href="#hyperparameters-and-model-complexity" id="toc-hyperparameters-and-model-complexity" class="nav-link active" data-scroll-target="#hyperparameters-and-model-complexity"><span class="header-section-number">38.1</span> Hyperparameters and model complexity</a></li>
-  <li><a href="#sec-why-fitting-issues" id="toc-sec-why-fitting-issues" class="nav-link" data-scroll-target="#sec-why-fitting-issues"><span class="header-section-number">38.2</span> Overfitting and underfitting: why? where from?</a>
+  <li><a href="#model-selection-in-practice" id="toc-model-selection-in-practice" class="nav-link" data-scroll-target="#model-selection-in-practice"><span class="header-section-number">38.2</span> Model selection (in practice)</a></li>
+  <li><a href="#sec-why-fitting-issues" id="toc-sec-why-fitting-issues" class="nav-link" data-scroll-target="#sec-why-fitting-issues"><span class="header-section-number">38.3</span> Overfitting and underfitting: why? where from?</a>
   <ul class="collapse">
   <li><a href="#the-max-instead-of-sum-approximation" id="toc-the-max-instead-of-sum-approximation" class="nav-link" data-scroll-target="#the-max-instead-of-sum-approximation">The “max instead of sum” approximation</a></li>
+  <li><a href="#unreasonably-restrictive-built-in-beliefs" id="toc-unreasonably-restrictive-built-in-beliefs" class="nav-link" data-scroll-target="#unreasonably-restrictive-built-in-beliefs">Unreasonably restrictive built-in beliefs</a></li>
   </ul></li>
-  <li><a href="#model-selection-in-practice" id="toc-model-selection-in-practice" class="nav-link" data-scroll-target="#model-selection-in-practice"><span class="header-section-number">38.3</span> Model selection (in practice)</a></li>
   <li><a href="#machine-learning-taxonomy" id="toc-machine-learning-taxonomy" class="nav-link" data-scroll-target="#machine-learning-taxonomy"><span class="header-section-number">38.4</span> Machine learning taxonomy</a></li>
   </ul>
 </nav>
@@ -853,19 +854,29 @@ Exercise&nbsp;38.1
 </div>
 </div>
 </section>
-<section id="sec-why-fitting-issues" class="level2 page-columns page-full" data-number="38.2">
-<h2 data-number="38.2" class="anchored" data-anchor-id="sec-why-fitting-issues"><span class="header-section-number">38.2</span> Overfitting and underfitting: why? where from?</h2>
+<section id="model-selection-in-practice" class="level2" data-number="38.2">
+<h2 data-number="38.2" class="anchored" data-anchor-id="model-selection-in-practice"><span class="header-section-number">38.2</span> Model selection (in practice)</h2>
+<p>As alluded to in the exercises above, there are ways of including both the data and our prior expectations when building a model, but it is, in fact, not very common to do so. In this section we will have a look at the typical <em>machine learning</em> approach, which relies on splitting the data in different sets. Starting from all our available data on a given problem that we wish to model, we divide it into</p>
+<ul>
+<li>the <span class="blue"><em>training set</em></span>, which is the data we will use to determine the model parameters <span class="math inline">\(\mathbf{w}\)</span>,</li>
+<li>the <span class="red"><em>validation set</em></span>, which is used to evaluate the model complexity (i.e.&nbsp;finding the optimal bias-variance tradeoff), and</li>
+<li>the <span class="green"><em>test set</em></span>, which is used to evaluate the final performance of the model.</li>
+</ul>
+<p>The benefit of this approach is that it is very simple to do. The downside, on the other hand, is that each set is necessarily smaller than the total, which subjects us to increased statistical uncertainty. The final parameters will be slightly less optimal than they could have been, and the measurement of the performance will be slightly less accurate. Still, it is common practice, and for the “standard” machine learning methods there is no direct way of simultaneously optimising for the model complexity.</p>
+</section>
+<section id="sec-why-fitting-issues" class="level2 page-columns page-full" data-number="38.3">
+<h2 data-number="38.3" class="anchored" data-anchor-id="sec-why-fitting-issues"><span class="header-section-number">38.3</span> Overfitting and underfitting: why? where from?</h2>
 <p>Up to now we have never met the problems of overfitting and underfitting. The OPM agent that we applied in chapters&nbsp;<a href="example_opm1.html" class="quarto-xref"><span>Chapter 33</span></a>, <a href="slm.html" class="quarto-xref"><span>Chapter 34</span></a>, <a href="example_opm2.html" class="quarto-xref"><span>Chapter 37</span></a> did not suffer from this kind of problems. In fact, in <span class="citation" data-cites="application-and-exploration">[§@application-and-exploration]</span> we saw that the agent trained with just 10 datapoints did not try to fit them perfectly, but rather kept more conservative beliefs. The agent also warned us that further learning data might substantially change its beliefs. When a substantial amount of learning data was given to the agent, it aligned its beliefs with the observed frequencies, which was a reasonable thing to do. No issues about over- or under-fitting appeared at any stage; we did not even think about them.</p>
 <p>Why do the machine-learning models above suffer from these issues instead? Where do these issues originate from?</p>
 <p>The origins are various and may differ from one machine-learning algorithm to another. In the cases above there are two main culprits:</p>
 <ul>
 <li>a particular approximation underlying the algorithms;</li>
-<li>unreasonable prior beliefs built into the algorithms.</li>
+<li>unreasonably restrictive prior beliefs built into the algorithms.</li>
 </ul>
 <p>Let’s explain each in broad terms.</p>
 <section id="the-max-instead-of-sum-approximation" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="the-max-instead-of-sum-approximation">The “max instead of sum” approximation</h3>
-<p>The machine-learning algorithms above are agents that try to predict the <span style="display:inline-block;"><span class="math inline">\(\mathit{temp}\)</span>erature</span> from the time by assuming that there’s a function from time to temperature; and this could be a reasonable assumption. In probability notation we could write something like this:</p>
+<p>The machine-learning algorithms above are agents that try to predict the <span style="display:inline-block;"><span class="math inline">\(\mathit{temp}\)</span>erature</span> from the <span style="display:inline-block;"><span class="math inline">\(\mathit{time}\)</span></span> by assuming that there’s a function from time to temperature; this could be a reasonable assumption. In loose probability notation we could write it like this:</p>
 <p><span class="math display">\[
 \mathrm{P}(\mathit{temp} \nonscript\:\vert\nonscript\:\mathopen{} \mathit{time} \mathbin{\mkern-0.5mu,\mkern-0.5mu}F \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I})
 \]</span></p>
@@ -887,8 +898,8 @@ Exercise&nbsp;38.1
 \mathrm{P}(F_{i} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}\bigr)
 \]</span></p>
 </div>
-<p>This is in fact the law underlying formula&nbsp;<a href="#eq-definetti" class="quarto-xref"><span>38.1</span></a>, which we used for our OPM agent. In that formula we recognize the sum over hypotheses as <span style="display:inline-block;">“<span class="math inline">\(\sum_{\boldsymbol{f}}\)</span>”</span>, with the difference that the hypotheses in that case are frequencies.</p>
-<p>The sum over function hypotheses is computationally expensive, and the machine-learning agents above <span class="red"><em>approximate</em></span> it with something simpler: they <span class="red"><em>keep only the largest term in the sum, rather than performing the sum</em></span>:</p>
+<p>This law in fact underlies formula&nbsp;<a href="#eq-definetti" class="quarto-xref"><span>38.1</span></a>, which we used for our OPM agent. In that formula the sum over hypotheses appears as <span style="display:inline-block;">“<span class="math inline">\(\sum_{\boldsymbol{f}}\)</span>”</span>, with the difference that the hypotheses in that case were frequencies.</p>
+<p>The sum over hypotheses is computationally expensive, and the machine-learning agents above <span class="red"><em>approximate</em></span> it with something simpler: they <span class="red"><em>keep only the largest term in the sum, rather than performing the sum</em></span>:</p>
 <div class="column-page-inset-right">
 <p><span class="math display">\[
 \sum_i
@@ -901,32 +912,22 @@ Exercise&nbsp;38.1
 \Bigr\}
 \]</span></p>
 </div>
-<p>You will see the appearance of this maximization, disguised as a minimization (of minus the logarithm of the probability), in the next machine-learning chapters.</p>
+<p>You will see the appearance of this maximization, disguised as a minimization (of minus the logarithms of the sum terms), in the next machine-learning chapters.</p>
 <p>Thus, in a manner of speaking, a perfect agent makes a prediction by appropriately balancing all unknown alternatives, whereas the approximate machine-learning agents only consider the most “flashy” alternative. This leads to overfitting.</p>
 <p>One way to mitigate this problem is by not using the maximum among the sum terms, but a somewhat smaller term than the maximum. But how much smaller should it be? In order to evaluate that, a <em>validation</em> dataset is usually introduced, to get an idea at how badly the approximate agent predicts new data while trying to overfit the old data. This is also an approximate make-do solution, however, which still does not lead to the optimal result.</p>
-<p>This is why a perfect agent, like the OPM of the previous chapters, does not need a validation dataset: it does not approximate the required sum over hypotheses by an approximate maximization, and therefore does not need extra datasets to check how bad the approximation is.</p>
-<p>In some situations the approximation above may not be too bad. But ofter</p>
-<p>, the main sources are the following, in no specific order:</p>
-<ul>
-<li><p><span class="red"><strong>Maximization, instead of summation, over possible frequencies</strong></span>.&nbsp;&nbsp;</p></li>
-<li><p><span class="red"><strong>Unreasonable built-in prior beliefs</strong></span>.&nbsp;&nbsp;The built-in prior beliefs can be unreasonable in two different ways:</p>
-<ul>
-<li><p>The machine-learning algorithms above represent agents with the built-in belief that the functional relationship between time and temperature has as specific polynomial form. This belief may be unrealistic, although it leads to simpler computations than more realistic beliefs.</p></li>
-<li><p>Within a particular complex functional relationship, the agent has too weak prior beliefs about which shapes could be more or less reasonable. The shape is therefore completely determined by the data. Note that we could have programmed a similar behaviour in the OPM agent, by choosing a very low <span style="display:inline-block;"><span class="math inline">\(k_{\text{ma}}\)</span></span> parameter (<a href="dirichlet-mixture.html#sec-intro-dirichlet-mix" class="quarto-xref">§&nbsp;<span>28.1</span></a>). But even with such a programming, the OPM agent would have warned us that further learning data might considerably change its beliefs.</p></li>
-</ul>
-<p>In the</p></li>
-</ul>
+<p>This is why a perfect agent, such as the OPM of the previous chapters, does not need a validation dataset: it does not approximate the required sum over hypotheses by a maximization, and therefore does not need extra datasets to check how bad the approximation is.</p>
 </section>
+<section id="unreasonably-restrictive-built-in-beliefs" class="level3">
+<h3 class="anchored" data-anchor-id="unreasonably-restrictive-built-in-beliefs">Unreasonably restrictive built-in beliefs</h3>
+<p>For a reasonable prediction it is of course important that the actual function <span style="display:inline-block;"><span class="math inline">\(F\)</span></span> is actually among the hypotheses built into the agent. No amount of learning data will increase the agent’s belief in a hypothesis that it isn’t even considering:</p>
+<p><span class="math display">\[
+\mathrm{P}\bigl(\mathit{temp} \nonscript\:\vert\nonscript\:\mathopen{} \mathit{time} \mathbin{\mkern-0.5mu,\mkern-0.5mu}
+(\underbracket{\color[RGB]{0,0,0}F_{1} \lor F_{2} \lor \dotsb}_{\color[RGB]{119,119,119}\text{true $F$ missing!}})
+\mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}\bigr)
+\]</span></p>
+<p>No matter how many learning data are used, such an agent will keep on making poor predictions. This leads to underfitting.</p>
+<p>Restricting an agent’s belief in this way is often used to mitigate the “max instead of sum” approximation. We can put this idea in a funny way: since the approximating agent is not balancing all alternatives but only choosing the most flashy one, let’s at least give it unreasonable alternatives to maximize from.</p>
 </section>
-<section id="model-selection-in-practice" class="level2" data-number="38.3">
-<h2 data-number="38.3" class="anchored" data-anchor-id="model-selection-in-practice"><span class="header-section-number">38.3</span> Model selection (in practice)</h2>
-<p>As alluded to in the exercises above, there are ways of including both the data and our prior expectations when building a model, but it is, in fact, not very common to do so. In this section we will have a look at the typical <em>machine learning</em> approach, which relies on splitting the data in different sets. Starting from all our available data on a given problem that we wish to model, we divide it into</p>
-<ul>
-<li>the <span class="blue"><em>training set</em></span>, which is the data we will use to determine the model parameters <span class="math inline">\(\mathbf{w}\)</span>,</li>
-<li>the <span class="red"><em>validation set</em></span>, which is used to evaluate the model complexity (i.e.&nbsp;finding the optimal bias-variance tradeoff), and</li>
-<li>the <span class="green"><em>test set</em></span>, which is used to evaluate the final performance of the model.</li>
-</ul>
-<p>The benefit of this approach is that it is very simple to do. The downside, on the other hand, is that each set is necessarily smaller than the total, which subjects us to increased statistical uncertainty. The final parameters will be slightly less optimal than they could have been, and the measurement of the performance will be slightly less accurate. Still, it is common practice, and for the “standard” machine learning methods there is no direct way of simultaneously optimising for the model complexity.</p>
 </section>
 <section id="machine-learning-taxonomy" class="level2" data-number="38.4">
 <h2 data-number="38.4" class="anchored" data-anchor-id="machine-learning-taxonomy"><span class="header-section-number">38.4</span> Machine learning taxonomy</h2>

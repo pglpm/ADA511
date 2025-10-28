@@ -111,6 +111,18 @@ The blue dots are our "original" data points, plotted for reference, while the r
 @. For the different models in [figure @fig-polynomial-fit] we started by choosing polymonial degree $M$, and then computed the parameters that minimized the difference between the data points and the model. Then we had a look at the results, compared them to our expectations, and decided that $M=0$ and $M=9$ were both unlikely. Can you think of a way to incorporate our initial expectations into the computation?
 :::
 
+
+## Model selection (in practice)
+
+As alluded to in the exercises above, there are ways of including both the data and our prior expectations when building a model, but it is, in fact, not very common to do so. In this section we will have a look at the typical *machine learning* approach, which relies on splitting the data in different sets. Starting from all our available data on a given problem that we wish to model, we divide it into 
+
+* the [*training set*]{.blue}, which is the data we will use to determine the model parameters $\mathbf{w}$,
+* the [*validation set*]{.red}, which is used to evaluate the model complexity (i.e. finding the optimal bias-variance tradeoff), and 
+* the [*test set*]{.green}, which is used to evaluate the final performance of the model.
+
+The benefit of this approach is that it is very simple to do. The downside, on the other hand, is that each set is necessarily smaller than the total, which subjects us to increased statistical uncertainty. The final parameters will be slightly less optimal than they could have been, and the measurement of the performance will be slightly less accurate. Still, it is common practice, and for the "standard" machine learning methods there is no direct way of simultaneously optimising for the model complexity.
+
+
 ## Overfitting and underfitting: why? where from? {#sec-why-fitting-issues}
 
 Up to now we have never met the problems of overfitting and underfitting. The OPM agent that we applied in chapters [@sec-example-opm1], [@sec-example-slm], [@sec-example-opm2] did not suffer from this kind of problems. In fact, in [§@application-and-exploration] we saw that the agent trained with just 10 datapoints did not try to fit them perfectly, but rather kept more conservative beliefs. The agent also warned us that further learning data might substantially change its beliefs. When a substantial amount of learning data was given to the agent, it aligned its beliefs with the observed frequencies, which was a reasonable thing to do. No issues about over- or under-fitting appeared at any stage; we did not even think about them.
@@ -155,9 +167,9 @@ $$
 $$
 :::
 
-This is in fact the law underlying formula @eq-definetti, which we used for our OPM agent. In that formula we recognize the sum over hypotheses as "$\sum_{\vf}$", with the difference that the hypotheses in that case are frequencies.
+This law in fact underlies formula @eq-definetti, which we used for our OPM agent. In that formula the sum over hypotheses appears as "$\sum_{\vf}$", with the difference that the hypotheses in that case were frequencies.
 
-The sum over function hypotheses is computationally expensive, and the machine-learning agents above [*approximate*]{.red} it with something simpler: they [*keep only the largest term in the sum, rather than performing the sum*]{.red}:
+The sum over hypotheses is computationally expensive, and the machine-learning agents above [*approximate*]{.red} it with something simpler: they [*keep only the largest term in the sum, rather than performing the sum*]{.red}:
 
 :::{.column-page-inset-right}
 $$
@@ -172,44 +184,28 @@ $$
 $$
 :::
 
-You will see the appearance of this maximization, disguised as a minimization (of minus the logarithm of the probability), in the next machine-learning chapters.
+You will see the appearance of this maximization, disguised as a minimization (of minus the logarithms of the sum terms), in the next machine-learning chapters.
 
 Thus, in a manner of speaking, a perfect agent makes a prediction by appropriately balancing all unknown alternatives, whereas the approximate machine-learning agents only consider the most "flashy" alternative. This leads to overfitting.
 
 One way to mitigate this problem is by not using the maximum among the sum terms, but a somewhat smaller term than the maximum. But how much smaller should it be? In order to evaluate that, a *validation* dataset is usually introduced, to get an idea at how badly the approximate agent predicts new data while trying to overfit the old data. This is also an approximate make-do solution, however, which still does not lead to the optimal result.
 
-This is why a perfect agent, like the OPM of the previous chapters, does not need a validation dataset: it does not approximate the required sum over hypotheses by an approximate maximization, and therefore does not need extra datasets to check how bad the approximation is.
+This is why a perfect agent, such as the OPM of the previous chapters, does not need a validation dataset: it does not approximate the required sum over hypotheses by a maximization, and therefore does not need extra datasets to check how bad the approximation is.
 
 
-### Unreasonably restrictive beliefs
+### Unreasonably restrictive built-in beliefs
 
+For a reasonable prediction it is of course important that the actual function $F$ is actually among the hypotheses built into the agent. No amount of learning data will increase the agent's belief in a hypothesis that it isn't even considering:
 
-In some situations the approximation above may not be too bad. But ofter
+$$
+\P\bigl(\mathit{temp} \| \mathit{time} \and 
+(\underbracket{\black F_{1} \lor F_{2} \lor \dotsb}_{\midgrey\text{true $F$ missing!}}) 
+\and \yI\bigr)
+$$
 
+No matter how many learning data are used, such an agent will keep on making poor predictions. This leads to underfitting.
 
-
-, the main sources are the following, in no specific order:
-
-- [**Maximization, instead of summation, over possible frequencies**]{.red}.\ \ 
-
-- [**Unreasonable built-in prior beliefs**]{.red}.\ \ The built-in prior beliefs can be unreasonable in two different ways:
-    
-    - The machine-learning algorithms above represent agents with the built-in belief that the functional relationship between time and temperature has as specific polynomial form. This belief may be unrealistic, although it leads to simpler computations than more realistic beliefs.
-    
-    - Within a particular complex functional relationship, the agent has too weak prior beliefs about which shapes could be more or less reasonable. The shape is therefore completely determined by the data. Note that we could have programmed a similar behaviour in the OPM agent, by choosing a very low $\amax$ parameter ([§@sec-intro-dirichlet-mix]). But even with such a programming, the OPM agent would have warned us that further learning data might considerably change its beliefs.
-    
-    In the 
-
-
-## Model selection (in practice)
-
-As alluded to in the exercises above, there are ways of including both the data and our prior expectations when building a model, but it is, in fact, not very common to do so. In this section we will have a look at the typical *machine learning* approach, which relies on splitting the data in different sets. Starting from all our available data on a given problem that we wish to model, we divide it into 
-
-* the [*training set*]{.blue}, which is the data we will use to determine the model parameters $\mathbf{w}$,
-* the [*validation set*]{.red}, which is used to evaluate the model complexity (i.e. finding the optimal bias-variance tradeoff), and 
-* the [*test set*]{.green}, which is used to evaluate the final performance of the model.
-
-The benefit of this approach is that it is very simple to do. The downside, on the other hand, is that each set is necessarily smaller than the total, which subjects us to increased statistical uncertainty. The final parameters will be slightly less optimal than they could have been, and the measurement of the performance will be slightly less accurate. Still, it is common practice, and for the "standard" machine learning methods there is no direct way of simultaneously optimising for the model complexity.
+Restricting an agent's belief in this way is often used to mitigate the "max instead of sum" approximation. We can put this idea in a funny way: since the approximating agent is not balancing all alternatives but only choosing the most flashy one, let's at least give it unreasonable alternatives to maximize from.
 
 
 ## Machine learning taxonomy
