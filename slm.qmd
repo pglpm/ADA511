@@ -54,7 +54,7 @@ source('tplotfunctions.R')
 source('OPM_nominal.R')
 source('textpreparation.R')
 
-set.seed(200)
+set.seed(100)
 ```
 
 The function `preparengramfiles()` takes three input arguments:
@@ -215,17 +215,17 @@ Roughly 75% of Articles begin with "everyone...", and this is roughly the agent'
 
 Large language models seem to have good grammar knowledge. This knowledge comes, not from the study of grammar rules, but again simply from the frequencies of particular word combinations in the training text. Let's see if our small language model displays some rudimentary grammar.
 
-What preposition should follow the *noun* "right", as in "the right..."?
+Which word should follow the *noun* "right", as in "the right..."?
 
 ```{r}
 probs <- infer(agent = opmSLM,
     predictand = 'word3',
-    predictor = list(word2 = 'RIGHT'))
+    predictor = list(word1 = 'THE', word2 = 'RIGHT'))
 
 sort(probs, decreasing = TRUE)[1:5]
 ```
 
-The `opmSLM` agent believes at 93% that it should be followed by the preposition "to".
+The `opmSLM` agent believes at 93% that the preposition "to" should follow "the right".
 
 Another grammar question: which is correct, "everyone has", or "everyone have"? Let's see the agent's beliefs about either sequence. To check them, we must use `infer()` to calculate the probabilities of all tokens after `EVERYONE`, and then select the particular tokens `HAS` and `HAVE`. We can compare the two probabilities against each other:
 
@@ -261,6 +261,20 @@ $$
 
 taking into account that $\cat{has}$ and $\cat{have}$ are mutually exclusive. (In our case $\yI \defd \cat{everyone} \land D$, where $D$ is the learning and background information.)
 :::
+
+
+----
+
+```{r}
+cat(
+generatetext(
+    agent = opmSLM,
+    prompt = c('ARTICLE', 'n'),
+    stopat = 30,
+    online = FALSE
+)
+)
+```
 
 \
 

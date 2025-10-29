@@ -717,7 +717,7 @@ window.Quarto = {
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'OPM_nominal.R'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'textpreparation.R'</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">200</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The function <code>preparengramfiles()</code> takes three input arguments:</p>
 <ul>
@@ -914,20 +914,20 @@ Everyone is entitled to […]</p>
 <section id="apparent-grammar-knowledge" class="level3">
 <h3 class="anchored" data-anchor-id="apparent-grammar-knowledge">Apparent grammar knowledge</h3>
 <p>Large language models seem to have good grammar knowledge. This knowledge comes, not from the study of grammar rules, but again simply from the frequencies of particular word combinations in the training text. Let’s see if our small language model displays some rudimentary grammar.</p>
-<p>What preposition should follow the <em>noun</em> “right”, as in “the right…”?</p>
+<p>Which word should follow the <em>noun</em> “right”, as in “the right…”?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM,</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictand =</span> <span class="st">'word3'</span>,</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictor =</span> <span class="fu">list</span>(<span class="at">word2 =</span> <span class="st">'RIGHT'</span>))</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictor =</span> <span class="fu">list</span>(<span class="at">word1 =</span> <span class="st">'THE'</span>, <span class="at">word2 =</span> <span class="st">'RIGHT'</span>))</span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(probs, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>word3
-       TO  INCLUDES        OF       MAY    FREELY 
-0.6817397 0.0490572 0.0247232 0.0247232 0.0247232 </code></pre>
+          TO           OF       FREELY          THE          AND 
+0.9280423224 0.0356950206 0.0356950206 0.0000011285 0.0000011285 </code></pre>
 </div>
 </div>
-<p>The <code>opmSLM</code> agent believes at 93% that it should be followed by the preposition “to”.</p>
+<p>The <code>opmSLM</code> agent believes at 93% that the preposition “to” should follow “the right”.</p>
 <p>Another grammar question: which is correct, “everyone has”, or “everyone have”? Let’s see the agent’s beliefs about either sequence. To check them, we must use <code>infer()</code> to calculate the probabilities of all tokens after <code>EVERYONE</code>, and then select the particular tokens <code>HAS</code> and <code>HAVE</code>. We can compare the two probabilities against each other:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM,</span>
@@ -938,7 +938,7 @@ Everyone is entitled to […]</p>
 <span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>probHave <span class="ot">&lt;-</span> probs[<span class="st">'HAVE'</span>]</span>
 <span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="do">## probability of each, given that one of them is true</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="do">## probability of each, assuming that one of them is true</span></span>
 <span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(probHas, probHave) <span class="sc">/</span> (probHas <span class="sc">+</span> probHave)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -967,6 +967,21 @@ Exercise&nbsp;34.1
 }
 \]</span></p>
 <p>taking into account that <span style="display:inline-block;"><span class="math inline">\({\small\verb;has;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\({\small\verb;have;}\)</span></span> are mutually exclusive. (In our case <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\coloneqq{\small\verb;everyone;} \land D\)</span>,</span> where <span style="display:inline-block;"><span class="math inline">\(D\)</span></span> is the learning and background information.)</p>
+</div>
+</div>
+<hr>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">generatetext</span>(</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">agent =</span> opmSLM,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">prompt =</span> <span class="fu">c</span>(<span class="st">'ARTICLE'</span>, <span class="st">'n'</span>),</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">stopat =</span> <span class="dv">30</span>,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">online =</span> <span class="cn">FALSE</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ ARTICLE n EVERYONE HAS THE RIGHT TO LIFE, LIBERTY AND THE RIGHT TO LEAVE ANY COUNTRY, INCLUDING HIS OWN, AND THE FREE AND FULL CONSENT OF THE...</code></pre>
 </div>
 </div>
 <p><br>
