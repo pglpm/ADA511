@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-10-28">
+<meta name="dcterms.date" content="2025-10-29">
 
 <title>34&nbsp; Example application: “small language model” – ADA511 0.4</title>
 <style>
@@ -169,7 +169,7 @@ window.Quarto = {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.4</span><br><span class="small grey">2025-10-28</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.4</span><br><span class="small grey">2025-10-29</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -625,8 +625,12 @@ window.Quarto = {
    
   <ul>
   <li><a href="#sec-language-inference" id="toc-sec-language-inference" class="nav-link active" data-scroll-target="#sec-language-inference"><span class="header-section-number">34.1</span> Natural language as inference and decision</a></li>
-  <li><a href="#sec-opm-as-slm" id="toc-sec-opm-as-slm" class="nav-link" data-scroll-target="#sec-opm-as-slm"><span class="header-section-number">34.2</span> The OPM as a small language model</a></li>
-  <li><a href="#sec-prepare-text" id="toc-sec-prepare-text" class="nav-link" data-scroll-target="#sec-prepare-text"><span class="header-section-number">34.3</span> Preparing the learning data from some text</a></li>
+  <li><a href="#sec-opm-as-slm" id="toc-sec-opm-as-slm" class="nav-link" data-scroll-target="#sec-opm-as-slm"><span class="header-section-number">34.2</span> The OPM as a small language model</a>
+  <ul class="collapse">
+  <li><a href="#sec-prepare-text" id="toc-sec-prepare-text" class="nav-link" data-scroll-target="#sec-prepare-text">Preparing the learning data from some text</a></li>
+  <li><a href="#token-inferences" id="toc-token-inferences" class="nav-link" data-scroll-target="#token-inferences">Token inferences</a></li>
+  </ul></li>
+  <li><a href="#sec-slm-large-example" id="toc-sec-slm-large-example" class="nav-link" data-scroll-target="#sec-slm-large-example"><span class="header-section-number">34.3</span> A more demanding example</a></li>
   </ul>
 </nav>
     </div>
@@ -646,7 +650,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-10-28</p>
+      <p class="date">2025-10-29</p>
     </div>
   </div>
   
@@ -696,21 +700,21 @@ window.Quarto = {
 </div>
 </div></div><p>This way of operation is also the reason why we can’t really say that large language models <em>understand</em> language, despite some literature stating that they do. They don’t do any kind of forecast of the consequences of their word choice, nor any inferences about the intentions of their interlocutor; not even approximate, heuristic ones. They have simply learned word frequencies in a huge variety of contexts.</p>
 </section>
-<section id="sec-opm-as-slm" class="level2" data-number="34.2">
+<section id="sec-opm-as-slm" class="level2 page-columns page-full" data-number="34.2">
 <h2 data-number="34.2" class="anchored" data-anchor-id="sec-opm-as-slm"><span class="header-section-number">34.2</span> The OPM as a small language model</h2>
 <p>Algorithms that implement the kind of word inference just described usually do so in an <em>exchangeable</em> way. They use the frequencies of different word sequences, without regard to whether most of those sequences occur, say, in older rather than newer texts.</p>
-<p>Our OPM is also designed to use built-in exchangeable beliefs, and in the previous chapter we saw its extreme versatility with exchangeable inferences of nominal variates – just what words, more or less, are. So let’s try to use it for word inference, and see if it can mimic speech. Of course we cannot expect spectacular results: large language models manage to make their remarkable inferences after learning more than tens of trillions (10 000 000 000 000) of words, which require huge amounts of memory and time. But we can get a glimpse of the main features.</p>
-<p>To use the OPM this way, we define a population of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> variates, let’s say <span style="display:inline-block;"><span class="math inline">\(n = 3\)</span>.</span> The three variates are defined as <strong>consecutive</strong> words in some specific set of texts. We can call them <span style="display:inline-block;"><span class="math inline">\({\small\verb;word1;}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\small\verb;word2;}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\small\verb;word3;}\)</span>,</span> and so on. Instead of words it’s actually best to use <span class="blue"><em>tokens</em></span>, which comprise not only words, but punctuation marks like <code>,.;:!?</code> and other signs – the exact definition of token depends on the specific application. The sequence of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> tokens is often called an <strong>n-gram</strong>.</p>
-</section>
-<section id="sec-prepare-text" class="level2 page-columns page-full" data-number="34.3">
-<h2 data-number="34.3" class="anchored" data-anchor-id="sec-prepare-text"><span class="header-section-number">34.3</span> Preparing the learning data from some text</h2>
+<p>Our OPM is also designed to use built-in exchangeable beliefs, and in the previous chapter we saw its extreme versatility with exchangeable inferences of nominal variates – just what words, more or less, are. So let’s try to use it for word inference, and see if it can mimic speech. Of course we cannot expect spectacular results: large language models manage to make their remarkable inferences after learning more than tens of trillions (10 000 000 000 000) of words, which require huge amounts of memory and time. Owing to our memory and time limitations, our OPM can act as a “small language model”.</p>
+<p>To use the OPM this way, we define a population of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> variates, let’s say <span style="display:inline-block;"><span class="math inline">\(n = 3\)</span>.</span> The three variates are defined as <strong>consecutive</strong> words in some specific set of texts. We can call them <span style="display:inline-block;"><span class="math inline">\(\mathit{word1}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(\mathit{word2}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(\mathit{word3}\)</span>,</span> and so on. Instead of words it’s actually best to use <span class="blue"><em>tokens</em></span>, which comprise not only words, but punctuation marks like <code>,.;:!?</code> and other signs – the exact definition of token depends on the specific application. The sequence of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> tokens is often called an <strong>n-gram</strong>.</p>
+<section id="sec-prepare-text" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="sec-prepare-text">Preparing the learning data from some text</h3>
 <p>In order to prepare the learning data for our OPM agent, let’s load some R functions defined in the <a href="https://github.com/pglpm/ADA511/blob/master/code/textpreparation.R"><code>textpreparation.R</code></a> file, as well as the OPM functions, from the usual directory<br>
 <a href="https://github.com/pglpm/ADA511/blob/master/code">https://github.com/pglpm/ADA511/blob/master/code</a>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'OPM_nominal.R'</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'textpreparation.R'</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">200</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'tplotfunctions.R'</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'OPM_nominal.R'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'textpreparation.R'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">200</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The function <code>preparengramfiles()</code> takes three input arguments:</p>
 <ul>
@@ -721,7 +725,7 @@ window.Quarto = {
 </ul>
 <p>The function creates two <code>csv</code> files: one containing the training data with all n-grams from the input text, and one containing the metadata, consisting in the vocabulary. It outputs the file names as list with elements <code>metadata</code> and <code>data</code>.</p>
 <p>For simplicity, the function converts all text to upper case and ASCII characters, it replaces every digit 0–9 to the lowercase letter <code>n</code>, and only keeps the following punctuation: <code>,.;:?!%$&amp;@+'/-</code>.</p>
-<p>As a concrete example let’s start with a simple text: the lyrics from Daft Punk’s song <a href="https://www.youtube.com/watch?v=K0HSD_i2DvA"><em>Around the World</em></a></p>
+<p>As a concrete example let’s start with a simple text: the lyrics from Daft Punk’s song <a href="https://www.youtube.com/watch?v=K0HSD_i2DvA"><em>Around the World</em></a>:</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/K0HSD_i2DvA" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
@@ -729,9 +733,9 @@ window.Quarto = {
 <p>Around the world, around the world.<br>
 Around the world, around the world.</p>
 </blockquote>
-<p>stored in the file <a href="https://github.com/pglpm/ADA511/blob/master/code/texts/around_the_world.txt"><code>texts/around_the_world.txt</code></a>.</p>
+<p>These two lines are stored in the file <a href="https://github.com/pglpm/ADA511/blob/master/code/texts/around_the_world.txt"><code>texts/around_the_world.txt</code></a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>filenames <span class="ot">&lt;-</span> <span class="fu">preparengramfiles</span>(</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ngramfiles <span class="ot">&lt;-</span> <span class="fu">preparengramfiles</span>(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">inputfile =</span> <span class="st">'texts/around_the_world.txt'</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">outsuffix =</span> <span class="st">'around'</span>,</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">3</span>,</span>
@@ -741,12 +745,12 @@ Around the world, around the world.</p>
 <pre><code>Unique tokens: 5.</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Saved files.</code></pre>
+<pre><code>Files saved.</code></pre>
 </div>
 </div>
 <p>The function tells us that it used five unique tokens. Let’s take a look at the learning-data file:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(filenames<span class="sc">$</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(ngramfiles<span class="sc">$</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    word1  word2  word3
 1  AROUND    THE  WORLD
@@ -773,7 +777,117 @@ Around the world, around the world.</p>
 22    THE  WORLD      .</code></pre>
 </div>
 </div>
-<p>We see that the token vocabulary consists of&nbsp;&nbsp;{<code>AROUND</code> <code>THE</code> <code>WORLD</code> <code>,</code> <code>.</code>}.&nbsp;&nbsp;The learning data consist of all sequences, 22 in total, of three consecutive tokens present in the text. Note that the same word in the original text may therefore appear in three different datapoints.</p>
+<p>We see that the token vocabulary consists of&nbsp;&nbsp;{<code>AROUND</code> <code>THE</code> <code>WORLD</code> <code>,</code> <code>.</code>}.&nbsp;&nbsp;The learning data consist of all sequences, 22 in total, of three consecutive tokens present in the text. Note a specific word in the original text therefore usually appears in three different datapoints, except for the very first and very last two words.</p>
+<p>Let’s build an <code>opmSLM</code> agent and make it learn from these metadata and data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>opmSLM <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">metadata =</span> ngramfiles<span class="sc">$</span>metadata,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ngramfiles<span class="sc">$</span>data</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="token-inferences" class="level3">
+<h3 class="anchored" data-anchor-id="token-inferences">Token inferences</h3>
+<p>We ask the <code>opmSLM</code> agent to draw an inference about <span style="display:inline-block;"><span class="math inline">\(\mathit{word1}\)</span>,</span> and sort the results in order of decreasing probabilities:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM, <span class="at">predictand =</span> <span class="st">'word1'</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(probs, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>word1
+  AROUND      THE    WORLD        ,        . 
+0.262502 0.262502 0.223438 0.145311 0.106248 </code></pre>
+</div>
+</div>
+<p>These degrees of belief make sense: in the learning text, if we take any token that can be followed by two more, we find <code>AROUND</code>, <code>THE</code>, and <code>WORLD</code> with approximately equal frequencies, somewhat less for <code>WORLD</code> because it also occurs in second-last position. The two punctuation marks occur with around half those frequencies.</p>
+<p>The agent learned from just two lines, though. Let’s inspect the agent’s beliefs about the frequencies in a possibly larger text, by means of the <code>plotFsamples1D()</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFsamples1D</span>(<span class="at">agent =</span> opmSLM,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">200</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictand =</span> <span class="st">'word1'</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sort =</span> <span class="sc">+</span><span class="cn">Inf</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="slm_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>so the agent is open to possible changes in the frequencies, if more text were added to its learning data.</p>
+<p>Finally let’s use the agent as a small language model. If a sequence of two tokens is “<code>AROUND</code> <code>THE</code>”, what should be the next word?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictand =</span> <span class="st">'word3'</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictor =</span> <span class="fu">list</span>(<span class="at">word1 =</span> <span class="st">'AROUND'</span>, <span class="at">word2 =</span> <span class="st">'THE'</span>))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(probs, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>word3
+     WORLD          ,          .     AROUND        THE 
+0.98125345 0.00468664 0.00468664 0.00468664 0.00468664 </code></pre>
+</div>
+</div>
+<p>The agent believe at 98% that it should be <code>WORLD</code>!</p>
+<p>Our agent can actually also do inferences that many large language models are not designed to do; for instance it can guess the token <em>preceding</em> a sequence of two tokens. What should come before “<code>THE</code> <code>WORLD</code>”?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictand =</span> <span class="st">'word1'</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictor =</span> <span class="fu">list</span>(<span class="at">word2 =</span> <span class="st">'THE'</span>, <span class="at">word3 =</span> <span class="st">'WORLD'</span>))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(probs, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>word1
+    AROUND          ,          .        THE      WORLD 
+0.98125345 0.00468664 0.00468664 0.00468664 0.00468664 </code></pre>
+</div>
+</div>
+<p>It can also guess the middle token. What should be between <code>THE</code> and <code>,</code>?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictand =</span> <span class="st">'word2'</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictor =</span> <span class="fu">list</span>(<span class="at">word1 =</span> <span class="st">'THE'</span>, <span class="at">word3 =</span> <span class="st">','</span>))</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(probs, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>word2
+     WORLD          ,          .     AROUND        THE 
+0.96336537 0.00915866 0.00915866 0.00915866 0.00915866 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-slm-large-example" class="level2" data-number="34.3">
+<h2 data-number="34.3" class="anchored" data-anchor-id="sec-slm-large-example"><span class="header-section-number">34.3</span> A more demanding example</h2>
+<p>The simple text we chose was just for testing. Now we use a slightly larger text: the United Nation’s <a href="https://www.un.org/en/about-us/universal-declaration-of-human-rights"><em>Universal Declaration of Human Rights</em></a>, stored in <a href="https://github.com/pglpm/ADA511/blob/master/code/texts/human_rights.txt"><code>texts/human_rights.txt</code></a>.</p>
+<p>Prepare the metadata and learning-data files:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ngramfiles <span class="ot">&lt;-</span> <span class="fu">preparengramfiles</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">inputfile =</span> <span class="st">'texts/human_rights.txt'</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">outsuffix =</span> <span class="st">'around'</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">3</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxtokens =</span> <span class="cn">Inf</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Unique tokens: 507.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Files saved.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(<span class="fu">read.csv</span>(ngramfiles<span class="sc">$</span>data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1904</code></pre>
+</div>
+</div>
+<p>Build an agent from this information; we call it again <code>opmSLM</code> (rewriting the previous one). To avoid memory problems, we use the option <code>savememory = TRUE</code>, which stores the learning information in a memory-efficient way – at the cost of slightly longer inference-computation times:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>opmSLM <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">metadata =</span> ngramfiles<span class="sc">$</span>metadata,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ngramfiles<span class="sc">$</span>data,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">savememory =</span> <span class="cn">TRUE</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p><br>
 </p>
 <p><span class="grey"><em>(To be continued)</em></span></p>

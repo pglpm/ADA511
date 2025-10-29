@@ -42,7 +42,8 @@ preparengramfiles <- function(
     inputfile,
     outsuffix = inputfile,
     n = 3,
-    maxtokens = Inf
+    maxtokens = Inf,
+    outprefix = NULL
 ) {
     ## retrieve text from file and do a first word division
     text <-  separatepunct(scan(file = inputfile,
@@ -66,7 +67,8 @@ preparengramfiles <- function(
     text <-text[complete.cases(text), , drop = FALSE]
 
     ## save n-gram data file
-    ngramfile <- paste0('ngram-', sub('.txt$', '', outsuffix), '.csv')
+    ngramfile <- paste0(outprefix, 'ngram-',
+        sub('.txt$', '', outsuffix), '.csv')
     write.csv(file = ngramfile, x = text,
         row.names = FALSE, quote = TRUE)
 
@@ -81,11 +83,12 @@ preparengramfiles <- function(
     ))
     metadata <- cbind(metadata, values)
 
-    metafile <- paste0('meta-', sub('.txt$', '', outsuffix), '.csv')
+    metafile <- paste0(outprefix, 'meta-',
+        sub('.txt$', '', outsuffix), '.csv')
     write.csv(x = metadata, file = metafile,
         row.names = FALSE, quote = TRUE, na = '')
 
-    message('Saved files.')
+    message('Files saved.')
     list(metadata = metafile, data = ngramfile)
 }
 

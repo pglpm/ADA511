@@ -40,16 +40,17 @@ This way of operation is also the reason why we can't really say that large lang
 
 Algorithms that implement the kind of word inference just described usually do so in an *exchangeable* way. They use the frequencies of different word sequences, without regard to whether most of those sequences occur, say, in older rather than newer texts.
 
-Our OPM is also designed to use built-in exchangeable beliefs, and in the previous chapter we saw its extreme versatility with exchangeable inferences of nominal variates -- just what words, more or less, are. So let's try to use it for word inference, and see if it can mimic speech. Of course we cannot expect spectacular results: large language models manage to make their remarkable inferences after learning more than tens of trillions (10 000 000 000 000) of words, which require huge amounts of memory and time. But we can get a glimpse of the main features.
+Our OPM is also designed to use built-in exchangeable beliefs, and in the previous chapter we saw its extreme versatility with exchangeable inferences of nominal variates -- just what words, more or less, are. So let's try to use it for word inference, and see if it can mimic speech. Of course we cannot expect spectacular results: large language models manage to make their remarkable inferences after learning more than tens of trillions (10 000 000 000 000) of words, which require huge amounts of memory and time. Owing to our memory and time limitations, our OPM can act as a "small language model".
 
 To use the OPM this way, we define a population of $n$ variates, let's say $n = 3$. The three variates are defined as **consecutive** words in some specific set of texts. We can call them $\worda$, $\wordb$, $\wordc$, and so on. Instead of words it's actually best to use [*tokens*]{.blue}, which comprise not only words, but punctuation marks like `,.;:!?` and other signs -- the exact definition of token depends on the specific application. The sequence of $n$ tokens is often called an **n-gram**.
 
-## Preparing the learning data from some text {#sec-prepare-text}
+### Preparing the learning data from some text {#sec-prepare-text}
 
 In order to prepare the learning data for our OPM agent, let's load some R functions defined in the [`textpreparation.R`](https://github.com/pglpm/ADA511/blob/master/code/textpreparation.R) file, as well as the OPM functions, from the usual directory\
 [https://github.com/pglpm/ADA511/blob/master/code](https://github.com/pglpm/ADA511/blob/master/code):
 
 ```{r}
+source('tplotfunctions.R')
 source('OPM_nominal.R')
 source('textpreparation.R')
 
@@ -67,7 +68,7 @@ The function creates two `csv` files: one containing the training data with all 
 
 For simplicity, the function converts all text to upper case and ASCII characters, it replaces every digit 0–9 to the lowercase letter `n`, and only keeps the following punctuation: `,.;:?!%$&@+'/-`.
 
-As a concrete example let's start with a simple text: the lyrics from Daft Punk's song [*Around the World*](https://www.youtube.com/watch?v=K0HSD_i2DvA)
+As a concrete example let's start with a simple text: the lyrics from Daft Punk's song [*Around the World*](https://www.youtube.com/watch?v=K0HSD_i2DvA):
 
 :::{.column-margin}
 <!-- {{< video https://www.youtube.com/watch?v=lFIYKmos3-s >}} -->
@@ -77,10 +78,10 @@ As a concrete example let's start with a simple text: the lyrics from Daft Punk'
 > Around the world, around the world.  
 > Around the world, around the world.
 
-stored in the file [`texts/around_the_world.txt`](https://github.com/pglpm/ADA511/blob/master/code/texts/around_the_world.txt).
+These two lines are stored in the file [`texts/around_the_world.txt`](https://github.com/pglpm/ADA511/blob/master/code/texts/around_the_world.txt).
 
 ```{r}
-filenames <- preparengramfiles(
+ngramfiles <- preparengramfiles(
     inputfile = 'texts/around_the_world.txt',
     outsuffix = 'around',
     n = 3,
@@ -91,10 +92,105 @@ filenames <- preparengramfiles(
 The function tells us that it used five unique tokens. Let's take a look at the learning-data file:
 
 ```{r}
-read.csv(filenames$data)
+read.csv(ngramfiles$data)
 ```
 
 We see that the token vocabulary consists of\ \ {`AROUND` `THE` `WORLD` `,` `.`}.\ \ The learning data consist of all sequences, 22 in total, of three consecutive tokens present in the text. Note a specific word in the original text therefore usually appears in three different datapoints, except for the very first and very last two words.
+
+
+Let's build an `opmSLM` agent and make it learn from these metadata and data:
+
+```{r}
+opmSLM <- buildagent(
+    metadata = ngramfiles$metadata,
+    data = ngramfiles$data
+)
+```
+
+### Token inferences
+
+We ask the `opmSLM` agent to draw an inference about $\worda$, and sort the results in order of decreasing probabilities:
+
+```{r}
+probs <- infer(agent = opmSLM, predictand = 'word1')
+
+sort(probs, decreasing = TRUE)
+```
+
+These degrees of belief make sense: in the learning text, if we take any token that can be followed by two more, we find `AROUND`, `THE`, and `WORLD` with approximately equal frequencies, somewhat less for `WORLD` because it also occurs in second-last position. The two punctuation marks occur with around half those frequencies.
+
+The agent learned from just two lines, though. Let's inspect the agent's beliefs about the frequencies in a possibly larger text, by means of the `plotFsamples1D()` function:
+
+```{r}
+plotFsamples1D(agent = opmSLM,
+    n = 200,
+    predictand = 'word1',
+    sort = +Inf,
+    ylim = c(0,1))
+```
+
+so the agent is open to possible changes in the frequencies, if more text were added to its learning data.
+
+Finally let's use the agent as a small language model. If a sequence of two tokens is "`AROUND` `THE`", what should be the next word?
+
+```{r}
+probs <- infer(agent = opmSLM,
+    predictand = 'word3',
+    predictor = list(word1 = 'AROUND', word2 = 'THE'))
+
+sort(probs, decreasing = TRUE)
+```
+
+The agent believe at 98% that it should be `WORLD`!
+
+Our agent can actually also do inferences that many large language models are not designed to do; for instance it can guess the token *preceding* a sequence of two tokens. What should come before "`THE` `WORLD`"?
+
+```{r}
+probs <- infer(agent = opmSLM,
+    predictand = 'word1',
+    predictor = list(word2 = 'THE', word3 = 'WORLD'))
+
+sort(probs, decreasing = TRUE)
+```
+
+It can also guess the middle token. What should be between `THE` and `,`?
+
+```{r}
+probs <- infer(agent = opmSLM,
+    predictand = 'word2',
+    predictor = list(word1 = 'THE', word3 = ','))
+
+sort(probs, decreasing = TRUE)
+```
+
+
+## A more demanding example {#sec-slm-large-example}
+
+The simple text we chose was just for testing. Now we use a slightly larger text: the United Nation's [*Universal Declaration of Human Rights*](https://www.un.org/en/about-us/universal-declaration-of-human-rights), stored in [`texts/human_rights.txt`](https://github.com/pglpm/ADA511/blob/master/code/texts/human_rights.txt).
+
+Prepare the metadata and learning-data files:
+
+```{r}
+ngramfiles <- preparengramfiles(
+    inputfile = 'texts/human_rights.txt',
+    outsuffix = 'around',
+    n = 3,
+    maxtokens = Inf
+)
+
+nrow(read.csv(ngramfiles$data))
+```
+
+Build an agent from this information; we call it again `opmSLM` (rewriting the previous one). To avoid memory problems, we use the option `savememory = TRUE`, which stores the learning information in a memory-efficient way -- at the cost of slightly longer inference-computation times:
+
+```{r}
+opmSLM <- buildagent(
+    metadata = ngramfiles$metadata,
+    data = ngramfiles$data,
+    savememory = TRUE
+)
+```
+
 
 \
 

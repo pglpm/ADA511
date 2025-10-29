@@ -648,6 +648,7 @@ plotFsamples1D <- function(
     predictand,
     predictor = NULL,
     probability = TRUE,
+    sort = NULL,
     file = NULL,
     ...
 ){
@@ -683,8 +684,29 @@ plotFsamples1D <- function(
         stop('This function only work with one predictand.')
         }
 
+        if(is.numeric(sort)){
+            sort <- sort[1]
+            decreasing <- sort > 0
+        }
+
         samples <- rF(n = n, agent = agent,
             predictand = predictand, predictor = predictor)
+
+        vrts <- variates[[predictand]]
+
+        if(probability || is.numeric(sort)){
+            fmean <- infer(agent = agent,
+                predictand = predictand, predictor = predictor)
+            if(is.numeric(sort)){
+                totake <- order(fmean, decreasing = decreasing)[
+                    seq_len(min(abs(sort), length(fmean)))
+                    ]
+                samples <- samples[totake, , drop = FALSE]
+                fmean <- fmean[totake]
+                vrts <- vrts[totake]
+            }
+        }
+
 
         if(!is.null(file)){
             filext <- sub(".*\\.|.*", "", file, perl=TRUE)
@@ -695,22 +717,19 @@ plotFsamples1D <- function(
             }
         }
 
-        xx <- seq_along(variates[[predictand]])
+        xx <- seq_along(vrts)
         tplot(y = samples, x = xx,
             type='b', lty=1, lwd=1, pch=16, col=7, alpha=0.25,
             xticks = xx,
-            xlabels = variates[[predictand]],
+            xlabels = vrts,
             xlab = bquote(italic(.(names(dimnames(samples))[1]))),
             ylab = 'probability',
             ...
         )
         if(probability){
-            fmean <- infer(agent = agent,
-                predictand = predictand, predictor = predictor)
             tplot(y = fmean, x = xx,
                 type='b', lty=1, lwd=4, pch=18, col=1, alpha=0.75,
-                add = TRUE
-            )
+                add = TRUE)
         }
         if(!is.null(file)){
             dev.off()
