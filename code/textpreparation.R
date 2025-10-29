@@ -26,14 +26,41 @@ buildngram <- function(
 
 
 #### Helper function: combine words with spaces in the right places
-combinetokens <- function(token1, token2){
+combinetokens <- function(token1, token2, combine = `c`){
     if(substr(token2, 1, 1) %in%
            c(",", ".", ";", ":", "?", "!", "'")
     ){
-        paste0(token1, token2)
+        combine(token1, token2)
     } else {
-        paste0(token1, ' ', token2)
+        combine(token1, ' ', token2)
     }
+}
+
+#### Helper function: add space when necessary
+addspace <- function(token){
+    if(substr(token, 1, 1) %in%
+           c(",", ".", ";", ":", "?", "!", "'")
+    ){
+        token
+    } else {
+        paste0(' ', token)
+    }
+}
+
+#### Helper function: wrap output text
+wrapprint <- function(text, wrapat = 60){
+    out <- NULL
+    width <- 0
+    for(token in text){
+        width <- width + nchar(token)
+        if(width > wrapat && substr(token, 1, 1) == ' '){
+            out <- c(out, '\n', token)
+            width <- 0
+        } else {
+            out <- c(out, token)
+        }
+    }
+    message(out, ' ...')
 }
 
 
@@ -121,7 +148,7 @@ generatetext <- function(
         }
 
         ## outtext will contain the whole generated text
-        outtext <- '\n'
+        outtext <- NULL
         if(online){cat('\n')}
         predictor <- prompt[length(prompt) - ((n - 2L):0L)]
         n0 <- length(predictor)
@@ -132,8 +159,8 @@ generatetext <- function(
 
         for(i in seq_along(prompt)){
             nextw <- prompt[i]
-            outtext <- combinetokens(outtext, nextw)
-            if(online){cat(combinetokens(NULL, nextw))}
+            outtext <- c(outtext, addspace(nextw))
+            if(online){cat(addspace(nextw))}
         }
 
         for(i in seq_len(n - 1L - n0)){
@@ -143,8 +170,8 @@ generatetext <- function(
                 predictor = predictor)
             nextw <- sample(x = names(out), size = 1, prob = out)
 
-            outtext <- combinetokens(outtext, nextw)
-            if(online){cat(combinetokens(NULL, nextw))}
+            outtext <- c(outtext, addspace(nextw))
+            if(online){cat(addspace(nextw))}
 
             predictor <- c(predictor, setNames(list(nextw), wordi))
         }
@@ -160,8 +187,8 @@ generatetext <- function(
                 predictor = predictor)
             nextw <- sample(x = names(out), size = 1, prob = out)
 
-            outtext <- combinetokens(outtext, nextw)
-            if(online){cat(combinetokens(NULL, nextw))}
+            outtext <- c(outtext, addspace(nextw))
+            if(online){cat(addspace(nextw))}
 
             predictor[] <- c(predictor[-1], list(nextw))
 
@@ -169,6 +196,6 @@ generatetext <- function(
         }
         if(online){cat('...\n')}
 
-        paste0(outtext, '...\n')
+        outtext
     })
 }
