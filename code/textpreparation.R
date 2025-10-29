@@ -51,7 +51,7 @@ addspace <- function(token){
 wrapprint <- function(text, wrapat = 60){
     out <- NULL
     width <- 0
-    for(token in text){
+    for(token in c(text, ' ...')){
         width <- width + nchar(token)
         if(width > wrapat && substr(token, 1, 1) == ' '){
             out <- c(out, '\n', token)
@@ -60,7 +60,7 @@ wrapprint <- function(text, wrapat = 60){
             out <- c(out, token)
         }
     }
-    message(out, ' ...')
+    message(out)
 }
 
 
@@ -78,7 +78,7 @@ preparengramfiles <- function(
 
     ## find unique tokens
     tokens <- sort(table(text), decreasing = TRUE)
-    message('Unique tokens: ', length(tokens), '.')
+    message('Unique tokens:  ', length(tokens), '.')
 
     ## restrict number of unique tokens, discarding the less common ones
     tokens <- names(tokens)[seq_len(min(maxtokens, length(tokens)))]
@@ -92,6 +92,7 @@ preparengramfiles <- function(
 
     ## remove ngrams with missing entries
     text <-text[complete.cases(text), , drop = FALSE]
+    message('Data:  ', nrow(text), '  ', n ,'-grams.')
 
     ## save n-gram data file
     ngramfile <- paste0(outprefix, 'ngram-',

@@ -78,7 +78,7 @@ As a concrete example let's start with a simple text: the lyrics from Daft Punk'
 > Around the world, around the world.  
 > Around the world, around the world.
 
-These two lines are stored in the file [`texts/around_the_world.txt`](https://github.com/pglpm/ADA511/blob/master/code/texts/around_the_world.txt).
+These two lines are stored in the file [`texts/around_the_world.txt`](https://github.com/pglpm/ADA511/blob/master/code/texts/around_the_world.txt). We shall use 3-grams to train our agent:
 
 ```{r}
 ngramfiles <- preparengramfiles(
@@ -89,7 +89,7 @@ ngramfiles <- preparengramfiles(
 )
 ```
 
-The function tells us that it used five unique tokens. Let's take a look at the learning-data file:
+The function tells us that it used five unique tokens, and from the text it produced a learning dataset of 22 3-grams. Let's take a look at the learning dataset:
 
 ```{r}
 read.csv(ngramfiles$data)
@@ -166,16 +166,17 @@ sort(probs, decreasing = TRUE)
 
 ## A more demanding example {#sec-slm-large-example}
 
-The simple text we chose was just for testing. Now we use a slightly larger text: the United Nation's [*Universal Declaration of Human Rights*](https://www.un.org/en/about-us/universal-declaration-of-human-rights), stored in [`texts/human_rights.txt`](https://github.com/pglpm/ADA511/blob/master/code/texts/human_rights.txt). The core of this document is a set of Articles:
+The simple text we chose was just for testing. Now we use a slightly larger text: the United Nation's [*Universal Declaration of Human Rights*](https://www.un.org/en/about-us/universal-declaration-of-human-rights), stored in [`texts/human_rights.txt`](https://github.com/pglpm/ADA511/blob/master/code/texts/human_rights.txt). The core of this document is a set of Articles, for example:
 
 > Article 1  
-> All human beings are born free and equal [...]
+> All human beings are born free and equal in dignity and rights. They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood.
 > 
 > Article 2  
-> Everyone is entitled to [...]
+> Everyone is entitled to all the rights and freedoms set forth in this Declaration, without distinction of any kind, such as race, colour, sex, language, religion, political or other opinion, national or social origin, property, birth or other status.
+> [...]
 
 
-Prepare the metadata and learning-data files:
+Prepare the metadata and learning dataset:
 
 ```{r}
 ngramfiles <- preparengramfiles(
@@ -184,11 +185,11 @@ ngramfiles <- preparengramfiles(
     n = 3,
     maxtokens = Inf
 )
-
-nrow(read.csv(ngramfiles$data))
 ```
 
-Build an agent from this information; we call it again `opmSLM` (rewriting the previous one). To avoid memory problems, we use the option `savememory = TRUE`, which stores the learning information in a memory-efficient way -- at the cost of slightly longer inference-computation times:
+This time the vocabulary is over 500 tokens, and the agent will learn from around 2000 3-grams.
+
+Build an agent from these metadata and data. We call it again `opmSLM` (rewriting the previous one). To avoid memory problems, we use the option `savememory = TRUE`, which stores the learning information in a memory-efficient way -- at the cost of slightly longer computation times during inferences.
 
 ```{r}
 opmSLM <- buildagent(
@@ -263,7 +264,27 @@ taking into account that $\cat{has}$ and $\cat{have}$ are mutually exclusive. (I
 :::
 
 
-----
+## How much learning data should we use? {#sec-amount-ngrams}
+
+Our small-language-model agent made reliable inferences so far, relying on sets of three tokens. What if we use 4-grams, or 5-grams, instead of 3-grams? won't our agent's performance increase?
+
+Not necessarily. Using n-grams with higher $n$ means that the agent is working with a population with more variates, and therefore it needs more learning data in order to arrive at sharper beliefs.
+
+Recall from [§@sec-prepare-opm1] and [§@sec-intro-dirichlet-mix] that our Dirichlet-mixture agent has the nifty capability to estimate how many training datapoints should be necessary to concretely modify its initial beliefs. What's the situation with the present agent? It learned from around 2000 datapoints; are they enough? Let's plot the belief distribution about the necessary amount, as we did in [§@sec-prepare-opm1]:
+
+```{r}
+flexiplot(x = opmSLM$alphas, y = opmSLM$palphas, type = 'b',
+    xlim = c(0, 10000), ylim = c(0, NA),
+    xlab = 'required number of training data', ylab = 'probability')
+```
+
+Oops! The agent is telling us that the 2000 datapoints we gave it are very probably not enough: it'd be better with at least 4000!
+
+As we increase the order of n-grams, much more datapoints are needed.
+
+## Text generation: a preview {#sec-preview-gentext}
+
+
 
 ```{r}
 text <- generatetext(
@@ -273,7 +294,7 @@ text <- generatetext(
     online = FALSE
 )
 
-wrapprint(text, wrapat = 55)
+wrapprint(text, wrapat = 50)
 ```
 
 \
