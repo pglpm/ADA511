@@ -627,14 +627,14 @@ window.Quarto = {
   <li><a href="#sec-language-inference" id="toc-sec-language-inference" class="nav-link active" data-scroll-target="#sec-language-inference"><span class="header-section-number">34.1</span> Natural language as inference and decision</a></li>
   <li><a href="#sec-opm-as-slm" id="toc-sec-opm-as-slm" class="nav-link" data-scroll-target="#sec-opm-as-slm"><span class="header-section-number">34.2</span> The OPM as a small language model</a>
   <ul class="collapse">
-  <li><a href="#sec-prepare-text" id="toc-sec-prepare-text" class="nav-link" data-scroll-target="#sec-prepare-text">Preparing the learning data from some text</a></li>
+  <li><a href="#sec-prepare-text" id="toc-sec-prepare-text" class="nav-link" data-scroll-target="#sec-prepare-text">Preparing the training data from some text</a></li>
   <li><a href="#token-inferences" id="toc-token-inferences" class="nav-link" data-scroll-target="#token-inferences">Token inferences</a></li>
   </ul></li>
   <li><a href="#sec-slm-large-example" id="toc-sec-slm-large-example" class="nav-link" data-scroll-target="#sec-slm-large-example"><span class="header-section-number">34.3</span> A more demanding example</a>
   <ul class="collapse">
   <li><a href="#apparent-grammar-knowledge" id="toc-apparent-grammar-knowledge" class="nav-link" data-scroll-target="#apparent-grammar-knowledge">Apparent grammar knowledge</a></li>
   </ul></li>
-  <li><a href="#sec-amount-ngrams" id="toc-sec-amount-ngrams" class="nav-link" data-scroll-target="#sec-amount-ngrams"><span class="header-section-number">34.4</span> How much learning data should we use?</a></li>
+  <li><a href="#sec-amount-ngrams" id="toc-sec-amount-ngrams" class="nav-link" data-scroll-target="#sec-amount-ngrams"><span class="header-section-number">34.4</span> How much training data should we use?</a></li>
   <li><a href="#sec-preview-gentext" id="toc-sec-preview-gentext" class="nav-link" data-scroll-target="#sec-preview-gentext"><span class="header-section-number">34.5</span> Text generation: a preview</a></li>
   </ul>
 </nav>
@@ -676,18 +676,15 @@ window.Quarto = {
 <div class="hidden">
 
 </div>
-<div class="hidden">
-
-</div>
 <section id="sec-language-inference" class="level2 page-columns page-full" data-number="34.1">
 <h2 data-number="34.1" class="anchored" data-anchor-id="sec-language-inference"><span class="header-section-number">34.1</span> Natural language as inference and decision</h2>
-<p>In <a href="framework.html#sec-meaning-decision" class="quarto-xref">§&nbsp;<span>2.2</span></a> we remarked that even a process like speaking is a continuous decision-making process. Each uttered word is chosen among an infinity of other possible ones. The choice depends not only on the object or idea’s noun that has to be communicated at the moment, but also on long-term goals and consequences. Is the conversation’s purpose to be funny? Is it to explain something in the most precise way possible? What’s the probability that this particular choice of words offend the listener? What’s the probability that this possible sentence is misunderstood, and what would happen in that case?</p>
-<p>The decision-making underlying speaking is remarkably complex, and can only be represented by a deep sequence of decisions and outcomes (we’ll discuss decision sequences in <a href="making_decisions.html" class="quarto-xref">ch.&nbsp;&nbsp;<span>36</span></a>), trying to forecast short-term and long-term future consequences. Most of this decision-making takes place almost unconsciously in humans, by means of heuristic, approximate procedures. But it’s nevertheless a decision-making process.</p>
+<p>In <a href="framework.html#sec-meaning-decision" class="quarto-xref">§&nbsp;<span>2.2</span></a> we remarked that even a process like speaking involves a continuous decision-making. Each uttered word is chosen among an infinity of other possible ones. The choice depends not only on the object or idea that has to be communicated at the moment, but also on long-term goals and consequences. Is the conversation meant to be funny? Is it to explain something in the most precise way possible? What’s the probability that this particular choice of words offend the listener? What’s the probability that this possible sentence is misunderstood, and what would happen in that case?</p>
+<p>The decision-making underlying speaking is remarkably complex, and can only be represented by a deep sequence of decisions and outcomes (we’ll discuss decision sequences in <a href="making_decisions.html" class="quarto-xref">ch.&nbsp;&nbsp;<span>36</span></a>), trying to forecast short-term and long-term future consequences. Most of this decision-making takes place almost unconsciously in humans, by means of approximate, heuristic procedures. But it’s a decision-making process nevertheless.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><img src="decision_tree_raiffa.jpg" class="img-fluid" style="width:100.0%"></p>
-</div></div><p>Building an AI agent that can speak <em>in the sense above</em> is still out of reach. Speaking in that sense requires an agent to have long-term goals and a set of values. But speaking can remarkably be <em>mimicked</em>, at least for short time spans, by a different inference and decision process. In human speech the word choice depends on future goals as much or more than past factors; but we can try to draw an inference based on past factors alone.</p>
-<p>In the simplest inference of this kind, an agent can assign a degree of belief about the word that “should follow next”, <strong>based on the words that precede it</strong>. This is how the next-word predictors of some smartphone keyboards work, and it is essentially also the way Large Language Models (LLMs) and General Pretrained Transformers (GPTs) work. The inference is based on the frequencies of many different sequences of words, learned from as many written or spoken texts as possible.</p>
+</div></div><p>Building an AI agent that can speak <em>in the sense above</em> is still out of reach. Speaking in that sense requires an agent to have long-term goals and a set of values. But speaking can be <em>mimicked</em>, at least for short time spans, by a different inference and decision process. In human speech the choice of words depends on future goals as much or more than past factors; but we can try to draw an inference based on past factors alone.</p>
+<p>In the simplest inference of this kind, an agent can assign a degree of belief about the word that “should follow next”, <strong>based on the words that precede it</strong>. This is how the next-word predictors of some smartphone keyboards work, and it is essentially also the way Large Language Models (LLMs) and General Pretrained Transformers (GPTs) work. The inference is based on the frequencies of many different sequences of words, learned from a huge amount of written or spoken texts.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
@@ -703,16 +700,16 @@ window.Quarto = {
 <p><a href="references.html"><em>Large language models as Markov chains</em></a></p>
 </div>
 </div>
-</div></div><p>This way of operation is also the reason why we can’t really say that large language models <em>understand</em> language, despite some literature stating that they do. They don’t do any kind of forecast of the consequences of their word choice, nor any inferences about the intentions of their interlocutor; not even approximate, heuristic ones. They have simply learned word frequencies in a huge variety of contexts.</p>
+</div></div><p>This way of operation is also the reason why we can’t really say that large language models <em>understand</em> language, despite some literature stating that they do. They don’t do any kind of forecast of the consequences of their word choice, nor any inferences about the intentions of their interlocutor; not even approximate, heuristic ones. They have simply learned word frequencies from a huge variety of contexts.</p>
 </section>
 <section id="sec-opm-as-slm" class="level2 page-columns page-full" data-number="34.2">
 <h2 data-number="34.2" class="anchored" data-anchor-id="sec-opm-as-slm"><span class="header-section-number">34.2</span> The OPM as a small language model</h2>
-<p>Algorithms that implement the kind of word inference just described usually do so in an <em>exchangeable</em> way. They use the frequencies of different word sequences, without regard to whether most of those sequences occur, say, in older rather than newer texts.</p>
-<p>Our OPM is also designed to use built-in exchangeable beliefs, and in the previous chapter we saw its extreme versatility with exchangeable inferences of nominal variates – just what words, more or less, are. So let’s try to use it for word inference, and see if it can mimic speech. Of course we cannot expect spectacular results: large language models manage to make their remarkable inferences after learning more than tens of trillions (10 000 000 000 000) of words, which require huge amounts of memory and time. Owing to our memory and time limitations, our OPM can act as a “small language model”.</p>
-<p>To use the OPM this way, we define a population of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> variates, let’s say <span style="display:inline-block;"><span class="math inline">\(n = 3\)</span>.</span> The three variates are defined as <strong>consecutive</strong> words in some specific set of texts. We can call them <span style="display:inline-block;"><span class="math inline">\(\mathit{word1}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(\mathit{word2}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\(\mathit{word3}\)</span>,</span> and so on. Instead of words it’s actually best to use <span class="blue"><em>tokens</em></span>, which comprise not only words, but punctuation marks like <code>,.;:!?</code> and other signs – the exact definition of token depends on the specific application. The sequence of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> tokens is often called an <strong>n-gram</strong>.</p>
+<p>Algorithms that implement the kind of word inference just described, usually do so in an <em>exchangeable</em> way. They use the frequencies of different word sequences, without regard to whether most of those sequences occur, say, in older rather than newer texts.</p>
+<p>Our OPM is also designed to use built-in exchangeable beliefs, and in the previous chapter we saw its extreme versatility with exchangeable inferences of nominal variates – which is just what words, more or less, are. So let’s try to use it for word inference, and see if it can mimic speech. Of course we cannot expect spectacular results: large language models manage to make their remarkable inferences after learning more than tens of trillions (10 000 000 000 000) of words, which require huge amounts of memory and time. Owing to our limitations of memory and time, our OPM can only act as a “small language model”.</p>
+<p>To use the OPM this way, we define a population of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> variates, let’s say <span style="display:inline-block;"><span class="math inline">\(n = 3\)</span>.</span> The three variates are defined as <strong>consecutive</strong> words in some specific set of texts. We can call them <span style="display:inline-block;"><span class="math inline">\({\small\verb;word1;}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\small\verb;word2;}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\small\verb;word3;}\)</span>,</span> and so on. Instead of words it’s actually best to use <span class="blue"><em>tokens</em></span>, which comprise not only words, but punctuation marks like <code>,.;:!?</code> and other signs. (The exact definition of token depends on the specific application, and can even include parts of words.) Such a sequence of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> tokens is often called an <strong>n-gram</strong>.</p>
 <section id="sec-prepare-text" class="level3 page-columns page-full">
-<h3 class="anchored" data-anchor-id="sec-prepare-text">Preparing the learning data from some text</h3>
-<p>In order to prepare the learning data for our OPM agent, let’s load some R functions defined in the <a href="https://github.com/pglpm/ADA511/blob/master/code/textpreparation.R"><code>textpreparation.R</code></a> file, as well as the OPM functions, from the usual directory<br>
+<h3 class="anchored" data-anchor-id="sec-prepare-text">Preparing the training data from some text</h3>
+<p>In order to prepare the training data for our OPM agent, let’s load some helper R functions defined in the <a href="https://github.com/pglpm/ADA511/blob/master/code/textpreparation.R"><code>textpreparation.R</code></a> file, as well as the OPM functions, from the usual directory<br>
 <a href="https://github.com/pglpm/ADA511/blob/master/code">https://github.com/pglpm/ADA511/blob/master/code</a>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'tplotfunctions.R'</span>)</span>
@@ -728,9 +725,9 @@ window.Quarto = {
 <li><code>n</code>: the <span class="math inline">\(n\)</span> of the n-grams, default <code>n = 3</code>;</li>
 <li><code>maxtokens</code>: the maximum number of unique tokens to use – the “vocabulary” – in case we need to save memory; default is <code>maxtokens = Inf</code>, which uses all tokens from the input text.</li>
 </ul>
-<p>The function creates two <code>csv</code> files: one containing the training data with all n-grams from the input text, and one containing the metadata, consisting in the vocabulary. It outputs the file names as list with elements <code>metadata</code> and <code>data</code>.</p>
-<p>For simplicity, the function converts all text to upper case and ASCII characters, it replaces every sequence of digits 0–9 with the single lowercase letter <code>n</code>, and only keeps the following punctuation: <code>,.;:?!%$&amp;@+'/-</code>.</p>
-<p>As a concrete example let’s start with a simple text: the lyrics from Daft Punk’s song <a href="https://www.youtube.com/watch?v=K0HSD_i2DvA"><em>Around the World</em></a>:</p>
+<p>The function creates two <code>csv</code> files: one containing the training data with all n-grams from the input text, and one containing the metadata, consisting in the vocabulary. It outputs the file names as list with elements <code>metadata</code> and <code>data</code>. These files have exactly the same format used in the previous chapter; for our OPM agent these data and metadata aren’t qualitatively different from the ones of the adult-income task.</p>
+<p>For simplicity, the helper function above converts all text to upper case and ASCII characters; it replaces every sequence of digits 0–9 with the single lowercase letter <code>x</code>; and only keeps the following punctuation: <code>,.;:?!%$&amp;@+'/-</code>.</p>
+<p>As a concrete example let’s start with a simple text: the lyrics of Daft Punk’s song <a href="https://www.youtube.com/watch?v=K0HSD_i2DvA"><em>Around the World</em></a>:</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/K0HSD_i2DvA" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
@@ -756,7 +753,7 @@ Around the world, around the world.</p>
 <pre><code>Files saved.</code></pre>
 </div>
 </div>
-<p>The function tells us that it used five unique tokens, and from the text it produced a learning dataset of 22 3-grams. Let’s take a look at the learning dataset:</p>
+<p>The helper function tells us that it used five unique tokens, and from the text it produced a training dataset of 22 3-grams. Let’s take a look at the training dataset:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(ngramfiles<span class="sc">$</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -785,7 +782,7 @@ Around the world, around the world.</p>
 22    THE  WORLD      .</code></pre>
 </div>
 </div>
-<p>We see that the token vocabulary consists of&nbsp;&nbsp;{<code>AROUND</code> <code>THE</code> <code>WORLD</code> <code>,</code> <code>.</code>}.&nbsp;&nbsp;The learning data consist of all sequences, 22 in total, of three consecutive tokens present in the text. Note a specific word in the original text therefore usually appears in three different datapoints, except for the very first and very last two words.</p>
+<p>We see that the token vocabulary consists of&nbsp;&nbsp;{<code>AROUND</code> <code>THE</code> <code>WORLD</code> <code>,</code> <code>.</code>}.&nbsp;&nbsp;The training data consist of all sequences, 22 in total, of three consecutive tokens present in the text. Note a specific word in the original text therefore usually appears in three different datapoints, except for the very first and very last two words.</p>
 <p>Let’s build an <code>opmSLM</code> agent and make it learn from these metadata and data:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>opmSLM <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(</span>
@@ -796,7 +793,7 @@ Around the world, around the world.</p>
 </section>
 <section id="token-inferences" class="level3">
 <h3 class="anchored" data-anchor-id="token-inferences">Token inferences</h3>
-<p>We ask the <code>opmSLM</code> agent to draw an inference about <span style="display:inline-block;"><span class="math inline">\(\mathit{word1}\)</span>,</span> and sort the results in order of decreasing probabilities:</p>
+<p>We ask the <code>opmSLM</code> agent to draw an inference about <span style="display:inline-block;"><span class="math inline">\({\small\verb;word1;}\)</span>,</span> and sort the results in order of decreasing probabilities:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM, <span class="at">predictand =</span> <span class="st">'word1'</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -823,8 +820,9 @@ Around the world, around the world.</p>
 </div>
 </div>
 </div>
-<p>so the agent is open to possible changes in the frequencies, if more text were added to its learning data.</p>
-<p>Finally let’s use the agent as a small language model. If a sequence of two tokens is “<code>AROUND</code> <code>THE</code>”, what should be the next word?</p>
+<p>so the agent is open to possible changes in the frequencies, if it were given more training data.<br>
+</p>
+<p>Let’s use the agent as a small language model. If a sequence of two tokens is “<code>AROUND</code> <code>THE</code>”, what should the next word be?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM,</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictand =</span> <span class="st">'word3'</span>,</span>
@@ -837,8 +835,8 @@ Around the world, around the world.</p>
 0.98125345 0.00468664 0.00468664 0.00468664 0.00468664 </code></pre>
 </div>
 </div>
-<p>The agent believe at 98% that it should be <code>WORLD</code>!</p>
-<p>Our agent can actually also do inferences that many large language models are not designed to do; for instance it can guess the token <em>preceding</em> a sequence of two tokens. What should come before “<code>THE</code> <code>WORLD</code>”?</p>
+<p>The agent believes at 98% that it should be <code>WORLD</code>!</p>
+<p>Our agent can actually also do inferences that many large language models are not designed to do. For instance it can guess the token <em>preceding</em> a sequence of two tokens. What should come before “<code>THE</code> <code>WORLD</code>”?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM,</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictand =</span> <span class="st">'word1'</span>,</span>
@@ -868,14 +866,14 @@ Around the world, around the world.</p>
 </section>
 <section id="sec-slm-large-example" class="level2" data-number="34.3">
 <h2 data-number="34.3" class="anchored" data-anchor-id="sec-slm-large-example"><span class="header-section-number">34.3</span> A more demanding example</h2>
-<p>The simple text we chose was just for testing. Now we use a slightly larger text: the United Nation’s <a href="https://www.un.org/en/about-us/universal-declaration-of-human-rights"><em>Universal Declaration of Human Rights</em></a>, stored in <a href="https://github.com/pglpm/ADA511/blob/master/code/texts/human_rights.txt"><code>texts/human_rights.txt</code></a>. The core of this document is a set of Articles, for example:</p>
+<p>The simple text we chose was just for testing. Let’s now use a slightly larger text: the United Nation’s <a href="https://www.un.org/en/about-us/universal-declaration-of-human-rights"><em>Universal Declaration of Human Rights</em></a>, stored in <a href="https://github.com/pglpm/ADA511/blob/master/code/texts/human_rights.txt"><code>texts/human_rights.txt</code></a>. The core of this document is a set of Articles, for example:</p>
 <blockquote class="blockquote">
 <p>Article 1<br>
 All human beings are born free and equal in dignity and rights. They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood.</p>
 <p>Article 2<br>
 Everyone is entitled to all the rights and freedoms set forth in this Declaration, without distinction of any kind, such as race, colour, sex, language, religion, political or other opinion, national or social origin, property, birth or other status. […]</p>
 </blockquote>
-<p>Prepare the metadata and learning dataset:</p>
+<p>Prepare the metadata and training dataset:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ngramfiles <span class="ot">&lt;-</span> <span class="fu">preparengramfiles</span>(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">inputfile =</span> <span class="st">'texts/human_rights.txt'</span>,</span>
@@ -893,8 +891,8 @@ Everyone is entitled to all the rights and freedoms set forth in this Declaratio
 <pre><code>Files saved.</code></pre>
 </div>
 </div>
-<p>This time the vocabulary is over 500 tokens, and the agent will learn from around 2000 3-grams.</p>
-<p>Build an agent from these metadata and data. We call it again <code>opmSLM</code> (rewriting the previous one). To avoid memory problems, we use the option <code>savememory = TRUE</code>, which stores the learning information in a memory-efficient way – at the cost of slightly longer computation times during inferences.</p>
+<p>This time the vocabulary is over 500 tokens, and the agent will learn from around 2000&nbsp;&nbsp;3-grams.</p>
+<p>Build an agent from these metadata and data. We call it again <code>opmSLM</code> (rewriting the previous one). To avoid memory problems, we use the option <code>savememory = TRUE</code>, which stores the learning information in a memory-efficient way, at the cost of slightly longer computation times during inferences.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>opmSLM <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">metadata =</span> ngramfiles<span class="sc">$</span>metadata,</span>
@@ -902,11 +900,11 @@ Everyone is entitled to all the rights and freedoms set forth in this Declaratio
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">savememory =</span> <span class="cn">TRUE</span></span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Now some inferences. Recall that the text is converted to uppercase, and all numbers are replaced with <code>n</code>. Many pieces of text thus begin with “<code>ARTICLE</code> <code>n</code>”. Ask the agent what should follow after these two tokens. Let’s just display the five most probable tokens:</p>
+<p>Now some inferences. Recall that the text is converted to uppercase, and all numbers are replaced with <code>x</code>. Many pieces of text thus begin with “<code>ARTICLE</code> <code>x</code>”. Ask the agent what should follow after these two tokens. Let’s just display the five most probable tokens:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM,</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictand =</span> <span class="st">'word3'</span>,</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictor =</span> <span class="fu">list</span>(<span class="at">word1 =</span> <span class="st">'ARTICLE'</span>, <span class="at">word2 =</span> <span class="st">'n'</span>))</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictor =</span> <span class="fu">list</span>(<span class="at">word1 =</span> <span class="st">'ARTICLE'</span>, <span class="at">word2 =</span> <span class="st">'x'</span>))</span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(probs, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -918,8 +916,8 @@ Everyone is entitled to all the rights and freedoms set forth in this Declaratio
 <p>Roughly 75% of Articles begin with “everyone…”, and this is roughly the agent’s belief.</p>
 <section id="apparent-grammar-knowledge" class="level3">
 <h3 class="anchored" data-anchor-id="apparent-grammar-knowledge">Apparent grammar knowledge</h3>
-<p>Large language models seem to have good grammar knowledge. This knowledge comes, not from the study of grammar rules, but again simply from the frequencies of particular word combinations in the training text. Let’s see if our small language model displays some rudimentary grammar.</p>
-<p>Which word should follow the <em>noun</em> “right”, as in “the right…”?</p>
+<p>Large language models seem to have good grammar knowledge. This knowledge comes, not from the study of grammar rules, but again simply from the frequencies of particular word combinations in the training text. Let’s see if our small language model displays some rudimentary “knowledge” of grammar.</p>
+<p>Which word should follow the noun “right”, as in “the right…”?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM,</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictand =</span> <span class="st">'word3'</span>,</span>
@@ -932,8 +930,8 @@ Everyone is entitled to all the rights and freedoms set forth in this Declaratio
 0.9280423224 0.0356950206 0.0356950206 0.0000011285 0.0000011285 </code></pre>
 </div>
 </div>
-<p>The <code>opmSLM</code> agent believes at 93% that the preposition “to” should follow “the right”.</p>
-<p>Another grammar question: which is correct, “everyone has”, or “everyone have”? Let’s see the agent’s beliefs about either sequence. To check them, we must use <code>infer()</code> to calculate the probabilities of all tokens after <code>EVERYONE</code>, and then select the particular tokens <code>HAS</code> and <code>HAVE</code>. We can compare the two probabilities against each other:</p>
+<p>The <code>opmSLM</code> agent believes at 93% that the preposition “to” should follow “the right”: “the right to…”. Well learned!</p>
+<p>Another grammar question: which is correct, “everyone has”, or “everyone have”? Let’s check the agent’s beliefs about either sequence. To this purpose we use <code>infer()</code> to calculate the probabilities of all tokens after <code>EVERYONE</code>, and then select the probabilities of the particular tokens <code>HAS</code> and <code>HAVE</code>. We can compare the two probabilities against each other:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM,</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictand =</span> <span class="st">'word2'</span>,</span>
@@ -951,7 +949,7 @@ Everyone is entitled to all the rights and freedoms set forth in this Declaratio
 0.999273886 0.000726114 </code></pre>
 </div>
 </div>
-<p>A 99.9% belief that “everyone has” is correct between the two!</p>
+<p>A 99.9% belief that “everyone has” is the correct one between the two!</p>
 <div id="cau-unique1" class="callout callout-style-default callout-caution callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -977,9 +975,9 @@ Exercise&nbsp;34.1
 </section>
 </section>
 <section id="sec-amount-ngrams" class="level2" data-number="34.4">
-<h2 data-number="34.4" class="anchored" data-anchor-id="sec-amount-ngrams"><span class="header-section-number">34.4</span> How much learning data should we use?</h2>
-<p>Our small-language-model agent made reliable inferences so far, relying on sets of three tokens. What if we use 4-grams, or 5-grams, instead of 3-grams? won’t our agent’s performance increase?</p>
-<p>Not necessarily. Using n-grams with higher <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> means that the agent is working with a population with more variates, and therefore it needs more learning data in order to arrive at sharper beliefs.</p>
+<h2 data-number="34.4" class="anchored" data-anchor-id="sec-amount-ngrams"><span class="header-section-number">34.4</span> How much training data should we use?</h2>
+<p>Our small-language-model agent made reasonable inferences so far, relying on sets of three tokens. What if we use 4-grams, 5-grams, or 1000-grams, instead of 3-grams? won’t our agent’s performance increase?</p>
+<p>Not necessarily. Using n-grams with higher <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> means that the agent is working with a population with more variates, and therefore it needs more training data in order to arrive at sharper beliefs.</p>
 <p>Recall from <a href="example_opm1.html#sec-prepare-opm1" class="quarto-xref">§&nbsp;<span>33.4</span></a> and <a href="dirichlet-mixture.html#sec-intro-dirichlet-mix" class="quarto-xref">§&nbsp;<span>28.1</span></a> that our Dirichlet-mixture agent has the nifty capability to estimate how many training datapoints should be necessary to concretely modify its initial beliefs. What’s the situation with the present agent? It learned from around 2000 datapoints; are they enough? Let’s plot the belief distribution about the necessary amount, as we did in <a href="example_opm1.html#sec-prepare-opm1" class="quarto-xref">§&nbsp;<span>33.4</span></a>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> opmSLM<span class="sc">$</span>alphas, <span class="at">y =</span> opmSLM<span class="sc">$</span>palphas, <span class="at">type =</span> <span class="st">'b'</span>,</span>
@@ -997,7 +995,7 @@ Exercise&nbsp;34.1
 <p>Oops! The agent is telling us that the 2000 datapoints we gave it are very probably not enough: it’d be better with at least 4000!</p>
 <p>As we increase the order of n-grams, and also the vocabulary size, much much more datapoints are needed. To see this, let’s double <span style="display:inline-block;"><span class="math inline">\(n\)</span>,</span> preparing a dataset of 6-gram from our text, and build a temporary agent to assess how many datapoints would be needed (<em>pay attention to the new x-axis range!</em>):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Prepare metadata and learning data for 6-grams...</span></span>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Prepare metadata and training data for 6-grams...</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>ngramfiles <span class="ot">&lt;-</span> <span class="fu">preparengramfiles</span>(</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">inputfile =</span> <span class="st">'texts/human_rights.txt'</span>,</span>
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">outsuffix =</span> <span class="st">'temp'</span>,</span>
@@ -1039,25 +1037,25 @@ Exercise&nbsp;34.1
 </section>
 <section id="sec-preview-gentext" class="level2" data-number="34.5">
 <h2 data-number="34.5" class="anchored" data-anchor-id="sec-preview-gentext"><span class="header-section-number">34.5</span> Text generation: a preview</h2>
-<p>Present-day large language models do not given probabilities about the next word: they <em>generate</em> words. We can of course use our flexible OPM agent to generate text as well. Text generation, however, is a <strong>decision-making</strong> task, which also involves <strong>utilities</strong>. We’re going to discuss decision making in the next chapters, and then we’ll use the OPM for making decisions as well.</p>
-<p>For the moment, let’s get a preview of some text generated by our <code>opmSLM</code> agent, using the function <code>generatetext()</code> which we’ll explain in a later chapter; its arguments should be self-explanatory:</p>
+<p>Present-day large language models do not only give probabilities about the next word: they <em>generate</em> words. We can of course use our flexible OPM agent to generate text as well. Text generation, however, is a <strong>decision-making</strong> task, which also involves <strong>utilities</strong>. We’re going to discuss decision making in the next chapters, and then we’ll use the OPM for making decisions as well.</p>
+<p>For the moment, let’s get a preview of some text generated by our <code>opmSLM</code> agent, using the function <code>generatetext()</code> which we’ll explain in a later chapter. Its arguments should be self-explanatory:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>text <span class="ot">&lt;-</span> <span class="fu">generatetext</span>(</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">agent =</span> opmSLM,</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">prompt =</span> <span class="fu">c</span>(<span class="st">'ARTICLE'</span>, <span class="st">'n'</span>),</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">prompt =</span> <span class="fu">c</span>(<span class="st">'ARTICLE'</span>, <span class="st">'x'</span>),</span>
 <span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">stopat =</span> <span class="dv">70</span>,</span>
 <span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">online =</span> <span class="cn">FALSE</span></span>
 <span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="fu">wrapprint</span>(text, <span class="at">wrapat =</span> <span class="dv">50</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code> ARTICLE n NOTHING IN THIS DECLARATION, WITHOUT
- DISTINCTION OF ANY CRIMINAL CHARGE AGAINST HIM. ARTICLE n
+<pre><code> ARTICLE x NOTHING IN THIS DECLARATION, WITHOUT
+ DISTINCTION OF ANY CRIMINAL CHARGE AGAINST HIM. ARTICLE x
  EVERYONE IS ENTITLED TO ALL ON THE BASIS OF MERIT.
- EDUCATION SHALL BE PROHIBITED IN ALL THEIR FORMS. ARTICLE n
+ EDUCATION SHALL BE PROHIBITED IN ALL THEIR FORMS. ARTICLE x
  EVERYONE HAS THE RIGHT TO FREEDOM OF SPEECH AND BELIEF AND
  FREEDOM, JUSTICE AND PEACE IN THE GOVERNMENT OF HIS
- INTERESTS. ARTICLE n NO ONE SHALL BE MADE ...</code></pre>
+ INTERESTS. ARTICLE x NO ONE SHALL BE MADE ...</code></pre>
 </div>
 </div>
 <p>The generated text above does not come from the <em>Universal Declaration of Human Rights</em>: as clear from the various grammar mistakes, it is a genuine creation of the OPM, “inspired” by the original text, despite the subversive “<em>EDUCATION SHALL BE PROHIBITED IN ALL THEIR FORMS</em>”.</p>
