@@ -879,7 +879,7 @@ Everyone is entitled to all the rights and freedoms set forth in this Declaratio
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ngramfiles <span class="ot">&lt;-</span> <span class="fu">preparengramfiles</span>(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">inputfile =</span> <span class="st">'texts/human_rights.txt'</span>,</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">outsuffix =</span> <span class="st">'around'</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">outsuffix =</span> <span class="st">'rights'</span>,</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">3</span>,</span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxtokens =</span> <span class="cn">Inf</span></span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -984,7 +984,8 @@ Exercise&nbsp;34.1
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> opmSLM<span class="sc">$</span>alphas, <span class="at">y =</span> opmSLM<span class="sc">$</span>palphas, <span class="at">type =</span> <span class="st">'b'</span>,</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10000</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>),</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">'required number of training data'</span>, <span class="at">ylab =</span> <span class="st">'probability'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">'required number of training 3-gram data'</span>,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">'probability'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -994,30 +995,72 @@ Exercise&nbsp;34.1
 </div>
 </div>
 <p>Oops! The agent is telling us that the 2000 datapoints we gave it are very probably not enough: it’d be better with at least 4000!</p>
-<p>As we increase the order of n-grams, much more datapoints are needed.</p>
+<p>As we increase the order of n-grams, and also the vocabulary size, much much more datapoints are needed. To see this, let’s double <span style="display:inline-block;"><span class="math inline">\(n\)</span>,</span> preparing a dataset of 6-gram from our text, and build a temporary agent to assess how many datapoints would be needed (<em>pay attention to the new x-axis range!</em>):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Prepare metadata and learning data for 6-grams...</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>ngramfiles <span class="ot">&lt;-</span> <span class="fu">preparengramfiles</span>(</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">inputfile =</span> <span class="st">'texts/human_rights.txt'</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">outsuffix =</span> <span class="st">'temp'</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">6</span>,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxtokens =</span> <span class="cn">Inf</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Unique tokens:  506.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Data:  1901  6-grams.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Files saved.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="do">## ...Build a temporary agent from them...</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>opmTemp <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">metadata =</span> ngramfiles<span class="sc">$</span>metadata,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ngramfiles<span class="sc">$</span>data,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">savememory =</span> <span class="cn">TRUE</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="do">## ...Check agent's belief about size of required dataset...</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> opmTemp<span class="sc">$</span>alphas, <span class="at">y =</span> opmTemp<span class="sc">$</span>palphas, <span class="at">type =</span> <span class="st">'b'</span>,</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100000</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>),</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">'required number of training 6-gram data'</span>,</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">'probability'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="slm_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="do">## ...remove the agent from memory</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(opmTemp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The most probable answer is roughly 65 000 training datapoints. So <strong>doubling</strong> the n-gram order requires a dataset around <strong>16</strong> times larger; and this is while keeping the vocabulary small, just 500 tokens. These numbers give us a glimpse of why commercial large language models need questionably large amounts of data and computing power.</p>
 </section>
 <section id="sec-preview-gentext" class="level2" data-number="34.5">
 <h2 data-number="34.5" class="anchored" data-anchor-id="sec-preview-gentext"><span class="header-section-number">34.5</span> Text generation: a preview</h2>
+<p>Present-day large language models do not given probabilities about the next word: they <em>generate</em> words. We can of course use our flexible OPM agent to generate text as well. Text generation, however, is a <strong>decision-making</strong> task, which also involves <strong>utilities</strong>. We’re going to discuss decision making in the next chapters, and then we’ll use the OPM for making decisions as well.</p>
+<p>For the moment, let’s get a preview of some text generated by our <code>opmSLM</code> agent, using the function <code>generatetext()</code> which we’ll explain in a later chapter; its arguments should be self-explanatory:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>text <span class="ot">&lt;-</span> <span class="fu">generatetext</span>(</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">agent =</span> opmSLM,</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">prompt =</span> <span class="fu">c</span>(<span class="st">'ARTICLE'</span>, <span class="st">'n'</span>),</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">stopat =</span> <span class="dv">50</span>,</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">online =</span> <span class="cn">FALSE</span></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="fu">wrapprint</span>(text, <span class="at">wrapat =</span> <span class="dv">50</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>text <span class="ot">&lt;-</span> <span class="fu">generatetext</span>(</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">agent =</span> opmSLM,</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">prompt =</span> <span class="fu">c</span>(<span class="st">'ARTICLE'</span>, <span class="st">'n'</span>),</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">stopat =</span> <span class="dv">70</span>,</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">online =</span> <span class="cn">FALSE</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="fu">wrapprint</span>(text, <span class="at">wrapat =</span> <span class="dv">50</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code> ARTICLE n NOTHING IN THIS DECLARATION, WITHOUT
  DISTINCTION OF ANY CRIMINAL CHARGE AGAINST HIM. ARTICLE n
  EVERYONE IS ENTITLED TO ALL ON THE BASIS OF MERIT.
  EDUCATION SHALL BE PROHIBITED IN ALL THEIR FORMS. ARTICLE n
- EVERYONE HAS THE RIGHT TO FREEDOM OF SPEECH AND BELIEF ...</code></pre>
+ EVERYONE HAS THE RIGHT TO FREEDOM OF SPEECH AND BELIEF AND
+ FREEDOM, JUSTICE AND PEACE IN THE GOVERNMENT OF HIS
+ INTERESTS. ARTICLE n NO ONE SHALL BE MADE ...</code></pre>
 </div>
 </div>
-<p><br>
-</p>
-<p><span class="grey"><em>(To be continued)</em></span></p>
+<p>The generated text above does not come from the <em>Universal Declaration of Human Rights</em>: as clear from the various grammar mistakes, it is a genuine creation of the OPM, “inspired” by the original text, despite the subversive “<em>EDUCATION SHALL BE PROHIBITED IN ALL THEIR FORMS</em>”.</p>
 
 
 </section>
