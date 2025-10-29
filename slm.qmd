@@ -227,27 +227,40 @@ sort(probs, decreasing = TRUE)[1:5]
 
 The `opmSLM` agent believes at 93% that it should be followed by the preposition "to".
 
-Another grammar question: which is correct, "everyone has", or "everyone have"? Let's see the agent's beliefs about either sequence. To check them, we must use `infer()` to calculate all two-words probabilities, and then select those particular two words. We can compare the two probabilities against each other:
+Another grammar question: which is correct, "everyone has", or "everyone have"? Let's see the agent's beliefs about either sequence. To check them, we must use `infer()` to calculate the probabilities of all tokens after `EVERYONE`, and then select the particular tokens `HAS` and `HAVE`. We can compare the two probabilities against each other:
 
 ```{r}
 probs <- infer(agent = opmSLM,
-    predictand = c('word1', 'word2'))
+    predictand = 'word2',
+    predictor = list(word1 = 'EVERYONE'))
 
-probEveryoneHas <- probs['EVERYONE', 'HAS', drop = FALSE]
+probHas <- probs['HAS']
 
-probEveryoneHave <- probs['EVERYONE', 'HAVE', drop = FALSE]
+probHave <- probs['HAVE']
 
-## probability of each, given that one of them is true
+## probability of each, assuming that one of them is true
 
-cbind(probEveryoneHas, probEveryoneHave) /
-    c(probEveryoneHas + probEveryoneHave)
+c(probHas, probHave) / (probHas + probHave)
 ```
 
 A 99.9% belief that "everyone has" is correct between the two!
 
 
+:::{.callout-caution}
 
+Using the four fundamental rules or the shortcut rules, prove that
 
+$$
+\P\bigl(\cat{has} \| (\cat{has} \lor \cat{have}) \and \yI) =
+\frac{
+\P(\cat{has} \| \yI)
+}{
+\P(\cat{has} \| \yI) + \P(\cat{have} \| \yI)
+}
+$$
+
+taking into account that $\cat{has}$ and $\cat{have}$ are mutually exclusive. (In our case $\yI \defd \cat{everyone} \land D$, where $D$ is the learning and background information.)
+:::
 
 \
 

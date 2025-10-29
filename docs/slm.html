@@ -928,25 +928,47 @@ Everyone is entitled to […]</p>
 </div>
 </div>
 <p>The <code>opmSLM</code> agent believes at 93% that it should be followed by the preposition “to”.</p>
-<p>Another grammar question: which is correct, “everyone has”, or “everyone have”? Let’s see the agent’s beliefs about either sequence. To check them, we must use <code>infer()</code> to calculate all two-words probabilities, and then select those particular two words. We can compare the two probabilities against each other:</p>
+<p>Another grammar question: which is correct, “everyone has”, or “everyone have”? Let’s see the agent’s beliefs about either sequence. To check them, we must use <code>infer()</code> to calculate the probabilities of all tokens after <code>EVERYONE</code>, and then select the particular tokens <code>HAS</code> and <code>HAVE</code>. We can compare the two probabilities against each other:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM,</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictand =</span> <span class="fu">c</span>(<span class="st">'word1'</span>, <span class="st">'word2'</span>))</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>probEveryoneHas <span class="ot">&lt;-</span> probs[<span class="st">'EVERYONE'</span>, <span class="st">'HAS'</span>, drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>probEveryoneHave <span class="ot">&lt;-</span> probs[<span class="st">'EVERYONE'</span>, <span class="st">'HAVE'</span>, drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="do">## probability of each, given that one of them is true</span></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(probEveryoneHas, probEveryoneHave) <span class="sc">/</span></span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(probEveryoneHas <span class="sc">+</span> probEveryoneHave)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictand =</span> <span class="st">'word2'</span>,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictor =</span> <span class="fu">list</span>(<span class="at">word1 =</span> <span class="st">'EVERYONE'</span>))</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>probHas <span class="ot">&lt;-</span> probs[<span class="st">'HAS'</span>]</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>probHave <span class="ot">&lt;-</span> probs[<span class="st">'HAVE'</span>]</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="do">## probability of each, given that one of them is true</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(probHas, probHave) <span class="sc">/</span> (probHas <span class="sc">+</span> probHave)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              HAS        HAVE
-EVERYONE 0.999274 0.000726114</code></pre>
+<pre><code>        HAS        HAVE 
+0.999273886 0.000726114 </code></pre>
 </div>
 </div>
 <p>A 99.9% belief that “everyone has” is correct between the two!</p>
+<div id="cau-unique1" class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise&nbsp;34.1
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Using the four fundamental rules or the shortcut rules, prove that</p>
+<p><span class="math display">\[
+\mathrm{P}\bigl({\small\verb;has;} \nonscript\:\vert\nonscript\:\mathopen{} ({\small\verb;has;} \lor {\small\verb;have;}) \mathbin{\mkern-0.5mu,\mkern-0.5mu}\mathsfit{I}) =
+\frac{
+\mathrm{P}({\small\verb;has;} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+}{
+\mathrm{P}({\small\verb;has;} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I}) + \mathrm{P}({\small\verb;have;} \nonscript\:\vert\nonscript\:\mathopen{} \mathsfit{I})
+}
+\]</span></p>
+<p>taking into account that <span style="display:inline-block;"><span class="math inline">\({\small\verb;has;}\)</span></span> and <span style="display:inline-block;"><span class="math inline">\({\small\verb;have;}\)</span></span> are mutually exclusive. (In our case <span style="display:inline-block;"><span class="math inline">\(\mathsfit{I}\coloneqq{\small\verb;everyone;} \land D\)</span>,</span> where <span style="display:inline-block;"><span class="math inline">\(D\)</span></span> is the learning and background information.)</p>
+</div>
+</div>
 <p><br>
 </p>
 <p><span class="grey"><em>(To be continued)</em></span></p>
