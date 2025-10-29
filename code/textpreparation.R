@@ -4,7 +4,7 @@ separatepunct <- function(text){
     text <- gsub(
         "[^1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ,.;:?!%$&@+'/-]",
         "", text)
-    text <- gsub("[0-9]", "n", text)
+    text <- gsub("[0-9]+", "n", text)
     text <- unlist(
         strsplit(x = gsub(
             "([,.;:?!])",

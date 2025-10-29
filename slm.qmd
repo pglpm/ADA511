@@ -66,7 +66,7 @@ The function `preparengramfiles()` takes three input arguments:
 
 The function creates two `csv` files: one containing the training data with all n-grams from the input text, and one containing the metadata, consisting in the vocabulary. It outputs the file names as list with elements `metadata` and `data`.
 
-For simplicity, the function converts all text to upper case and ASCII characters, it replaces every digit 0–9 to the lowercase letter `n`, and only keeps the following punctuation: `,.;:?!%$&@+'/-`.
+For simplicity, the function converts all text to upper case and ASCII characters, it replaces every sequence of digits 0–9 with the single lowercase letter `n`, and only keeps the following punctuation: `,.;:?!%$&@+'/-`.
 
 As a concrete example let's start with a simple text: the lyrics from Daft Punk's song [*Around the World*](https://www.youtube.com/watch?v=K0HSD_i2DvA):
 
@@ -166,7 +166,14 @@ sort(probs, decreasing = TRUE)
 
 ## A more demanding example {#sec-slm-large-example}
 
-The simple text we chose was just for testing. Now we use a slightly larger text: the United Nation's [*Universal Declaration of Human Rights*](https://www.un.org/en/about-us/universal-declaration-of-human-rights), stored in [`texts/human_rights.txt`](https://github.com/pglpm/ADA511/blob/master/code/texts/human_rights.txt).
+The simple text we chose was just for testing. Now we use a slightly larger text: the United Nation's [*Universal Declaration of Human Rights*](https://www.un.org/en/about-us/universal-declaration-of-human-rights), stored in [`texts/human_rights.txt`](https://github.com/pglpm/ADA511/blob/master/code/texts/human_rights.txt). The core of this document is a set of Articles:
+
+> Article 1  
+> All human beings are born free and equal [...]
+> 
+> Article 2  
+> Everyone is entitled to [...]
+
 
 Prepare the metadata and learning-data files:
 
@@ -190,6 +197,56 @@ opmSLM <- buildagent(
     savememory = TRUE
 )
 ```
+
+Now some inferences. Recall that the text is converted to uppercase, and all numbers are replaced with `n`. Many pieces of text thus begin with "`ARTICLE` `n`". Ask the agent what should follow after these two tokens. Let's just display the five most probable tokens:
+
+```{r}
+probs <- infer(agent = opmSLM,
+    predictand = 'word3',
+    predictor = list(word1 = 'ARTICLE', word2 = 'n'))
+
+sort(probs, decreasing = TRUE)[1:5]
+```
+
+Roughly 75% of Articles begin with "everyone...", and this is roughly the agent's belief.
+
+
+### Apparent grammar knowledge
+
+Large language models seem to have good grammar knowledge. This knowledge comes, not from the study of grammar rules, but again simply from the frequencies of particular word combinations in the training text. Let's see if our small language model displays some rudimentary grammar.
+
+What preposition should follow the *noun* "right", as in "the right..."?
+
+```{r}
+probs <- infer(agent = opmSLM,
+    predictand = 'word3',
+    predictor = list(word2 = 'RIGHT'))
+
+sort(probs, decreasing = TRUE)[1:5]
+```
+
+The `opmSLM` agent believes at 93% that it should be followed by the preposition "to".
+
+Another grammar question: which is correct, "everyone has", or "everyone have"? Let's see the agent's beliefs about either sequence. To check them, we must use `infer()` to calculate all two-words probabilities, and then select those particular two words. We can compare the two probabilities against each other:
+
+```{r}
+probs <- infer(agent = opmSLM,
+    predictand = c('word1', 'word2'))
+
+probEveryoneHas <- probs['EVERYONE', 'HAS', drop = FALSE]
+
+probEveryoneHave <- probs['EVERYONE', 'HAVE', drop = FALSE]
+
+## probability of each, given that one of them is true
+
+cbind(probEveryoneHas, probEveryoneHave) /
+    c(probEveryoneHas + probEveryoneHave)
+```
+
+A 99.9% belief that "everyone has" is correct between the two!
+
+
+
 
 
 \

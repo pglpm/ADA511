@@ -630,7 +630,10 @@ window.Quarto = {
   <li><a href="#sec-prepare-text" id="toc-sec-prepare-text" class="nav-link" data-scroll-target="#sec-prepare-text">Preparing the learning data from some text</a></li>
   <li><a href="#token-inferences" id="toc-token-inferences" class="nav-link" data-scroll-target="#token-inferences">Token inferences</a></li>
   </ul></li>
-  <li><a href="#sec-slm-large-example" id="toc-sec-slm-large-example" class="nav-link" data-scroll-target="#sec-slm-large-example"><span class="header-section-number">34.3</span> A more demanding example</a></li>
+  <li><a href="#sec-slm-large-example" id="toc-sec-slm-large-example" class="nav-link" data-scroll-target="#sec-slm-large-example"><span class="header-section-number">34.3</span> A more demanding example</a>
+  <ul class="collapse">
+  <li><a href="#apparent-grammar-knowledge" id="toc-apparent-grammar-knowledge" class="nav-link" data-scroll-target="#apparent-grammar-knowledge">Apparent grammar knowledge</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -724,7 +727,7 @@ window.Quarto = {
 <li><code>maxtokens</code>: the maximum number of unique tokens to use – the “vocabulary” – in case we need to save memory; default is <code>maxtokens = Inf</code>, which uses all tokens from the input text.</li>
 </ul>
 <p>The function creates two <code>csv</code> files: one containing the training data with all n-grams from the input text, and one containing the metadata, consisting in the vocabulary. It outputs the file names as list with elements <code>metadata</code> and <code>data</code>.</p>
-<p>For simplicity, the function converts all text to upper case and ASCII characters, it replaces every digit 0–9 to the lowercase letter <code>n</code>, and only keeps the following punctuation: <code>,.;:?!%$&amp;@+'/-</code>.</p>
+<p>For simplicity, the function converts all text to upper case and ASCII characters, it replaces every sequence of digits 0–9 with the single lowercase letter <code>n</code>, and only keeps the following punctuation: <code>,.;:?!%$&amp;@+'/-</code>.</p>
 <p>As a concrete example let’s start with a simple text: the lyrics from Daft Punk’s song <a href="https://www.youtube.com/watch?v=K0HSD_i2DvA"><em>Around the World</em></a>:</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
@@ -860,7 +863,13 @@ Around the world, around the world.</p>
 </section>
 <section id="sec-slm-large-example" class="level2" data-number="34.3">
 <h2 data-number="34.3" class="anchored" data-anchor-id="sec-slm-large-example"><span class="header-section-number">34.3</span> A more demanding example</h2>
-<p>The simple text we chose was just for testing. Now we use a slightly larger text: the United Nation’s <a href="https://www.un.org/en/about-us/universal-declaration-of-human-rights"><em>Universal Declaration of Human Rights</em></a>, stored in <a href="https://github.com/pglpm/ADA511/blob/master/code/texts/human_rights.txt"><code>texts/human_rights.txt</code></a>.</p>
+<p>The simple text we chose was just for testing. Now we use a slightly larger text: the United Nation’s <a href="https://www.un.org/en/about-us/universal-declaration-of-human-rights"><em>Universal Declaration of Human Rights</em></a>, stored in <a href="https://github.com/pglpm/ADA511/blob/master/code/texts/human_rights.txt"><code>texts/human_rights.txt</code></a>. The core of this document is a set of Articles:</p>
+<blockquote class="blockquote">
+<p>Article 1<br>
+All human beings are born free and equal […]</p>
+<p>Article 2<br>
+Everyone is entitled to […]</p>
+</blockquote>
 <p>Prepare the metadata and learning-data files:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ngramfiles <span class="ot">&lt;-</span> <span class="fu">preparengramfiles</span>(</span>
@@ -870,7 +879,7 @@ Around the world, around the world.</p>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxtokens =</span> <span class="cn">Inf</span></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Unique tokens: 507.</code></pre>
+<pre><code>Unique tokens: 506.</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Files saved.</code></pre>
@@ -888,11 +897,62 @@ Around the world, around the world.</p>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">savememory =</span> <span class="cn">TRUE</span></span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Now some inferences. Recall that the text is converted to uppercase, and all numbers are replaced with <code>n</code>. Many pieces of text thus begin with “<code>ARTICLE</code> <code>n</code>”. Ask the agent what should follow after these two tokens. Let’s just display the five most probable tokens:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM,</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictand =</span> <span class="st">'word3'</span>,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictor =</span> <span class="fu">list</span>(<span class="at">word1 =</span> <span class="st">'ARTICLE'</span>, <span class="at">word2 =</span> <span class="st">'n'</span>))</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(probs, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>word3
+ EVERYONE        NO       ALL       MEN   NOTHING 
+0.7329435 0.1332633 0.0666322 0.0333166 0.0333166 </code></pre>
+</div>
+</div>
+<p>Roughly 75% of Articles begin with “everyone…”, and this is roughly the agent’s belief.</p>
+<section id="apparent-grammar-knowledge" class="level3">
+<h3 class="anchored" data-anchor-id="apparent-grammar-knowledge">Apparent grammar knowledge</h3>
+<p>Large language models seem to have good grammar knowledge. This knowledge comes, not from the study of grammar rules, but again simply from the frequencies of particular word combinations in the training text. Let’s see if our small language model displays some rudimentary grammar.</p>
+<p>What preposition should follow the <em>noun</em> “right”, as in “the right…”?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM,</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictand =</span> <span class="st">'word3'</span>,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictor =</span> <span class="fu">list</span>(<span class="at">word2 =</span> <span class="st">'RIGHT'</span>))</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(probs, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>word3
+       TO  INCLUDES        OF       MAY    FREELY 
+0.6817397 0.0490572 0.0247232 0.0247232 0.0247232 </code></pre>
+</div>
+</div>
+<p>The <code>opmSLM</code> agent believes at 93% that it should be followed by the preposition “to”.</p>
+<p>Another grammar question: which is correct, “everyone has”, or “everyone have”? Let’s see the agent’s beliefs about either sequence. To check them, we must use <code>infer()</code> to calculate all two-words probabilities, and then select those particular two words. We can compare the two probabilities against each other:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM,</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictand =</span> <span class="fu">c</span>(<span class="st">'word1'</span>, <span class="st">'word2'</span>))</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>probEveryoneHas <span class="ot">&lt;-</span> probs[<span class="st">'EVERYONE'</span>, <span class="st">'HAS'</span>, drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>probEveryoneHave <span class="ot">&lt;-</span> probs[<span class="st">'EVERYONE'</span>, <span class="st">'HAVE'</span>, drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="do">## probability of each, given that one of them is true</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(probEveryoneHas, probEveryoneHave) <span class="sc">/</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(probEveryoneHas <span class="sc">+</span> probEveryoneHave)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              HAS        HAVE
+EVERYONE 0.999274 0.000726114</code></pre>
+</div>
+</div>
+<p>A 99.9% belief that “everyone has” is correct between the two!</p>
 <p><br>
 </p>
 <p><span class="grey"><em>(To be continued)</em></span></p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
