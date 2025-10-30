@@ -138,7 +138,7 @@ Let's explain each in broad terms.
 
 ### The "max instead of sum" approximation
 
-The machine-learning algorithms above are agents that try to predict the $\mathit{temp}$erature from the $\mathit{time}$ by assuming that there's a function from time to temperature; this could be a reasonable assumption. In loose probability notation we could write it like this:
+A machine-learning algorithm like one of the above is an agent that tries to predict the $\mathit{temp}$erature from the $\mathit{time}$ by assuming that there's a function from time to temperature; this could be a reasonable assumption. In loose probability notation we could write it like this:
 
 $$
 \P(\mathit{temp} \| \mathit{time} \and F \and \yI)
@@ -146,7 +146,7 @@ $$
 
 where $F$ represents the assumed function.
 
-But the agents don't know what the true function is: it could be the function $F_{1}$, or $F_{2}$, or an infinity of other possibilities. Each function is a hypothesis that the agent is entertaining. Therefore what the agents are trying to calculate is actually something like this:
+But the agent doesn't know what the true function $F$ is: it could be the function $F_{1}$\ \ (say, a line like $\mathit{temp} = A \cdot \mathit{time} + B$), or $F_{2}$\ \ (say, a sine like $\mathit{temp} = A \cdot \sin(B \cdot \mathit{time}) + C$), or an infinity of other possibilities. Each function is a hypothesis that the agent is entertaining. Therefore what the agent is trying to calculate is actually something like this:
 
 $$
 \P\bigl(\mathit{temp} \| \mathit{time} \and 
@@ -169,7 +169,7 @@ $$
 
 This law in fact underlies formula @eq-definetti, which we used for our OPM agent. In that formula the sum over hypotheses appears as "$\sum_{\vf}$", with the difference that the hypotheses in that case were frequencies.
 
-The sum over hypotheses is computationally expensive, and the machine-learning agents above [*approximate*]{.red} it with something simpler: they [*keep only the largest term in the sum, rather than performing the sum*]{.red}:
+The sum over hypotheses can be computationally expensive, and the machine-learning agents above [*approximate*]{.red} it with something simpler: they [*search for, and keep only the largest term in the sum, rather than performing the sum*]{.red}:
 
 :::{.column-page-inset-right}
 $$
@@ -186,11 +186,35 @@ $$
 
 You will see the appearance of this maximization, disguised as a minimization (of minus the logarithms of the sum terms), in the next machine-learning chapters.
 
-Thus, in a manner of speaking, a perfect agent makes a prediction by appropriately balancing all unknown alternatives, whereas the approximate machine-learning agents only consider the most "flashy" alternative. This leads to overfitting.
+In a manner of speaking we can say that a perfect agent makes a prediction by appropriately balancing all unknown alternatives, whereas the approximate machine-learning agent only considers the most "attention-calling" alternative. This is actually a form of *cognitive bias*, related to the so-called *anchoring* and *availability* biases.
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+
+Search for "anchoring" and "availability heuristic" in Hastie & Dawes: [*Rational Choice in an Uncertain World*](references.html)
+:::
+::::
+
+To make things worse, the factor $\P(F_{i} \| \yI)$, which should express prior information about the possible hypothesis $F_{i}$, is often poorly chosen or not chosen at all, and approximately the same for all hypotheses. So the maximum is effectively determined only by the factor $\P(\mathit{temp} \| \mathit{time} \and F_{i} \and \yI\bigr)$, which expresses how well hypothesis $F_{i}$ fits the existing data. This leads to overfitting.
+
+
 
 One way to mitigate this problem is by not using the maximum among the sum terms, but a somewhat smaller term than the maximum. But how much smaller should it be? In order to evaluate that, a *validation* dataset is usually introduced, to get an idea at how badly the approximate agent predicts new data while trying to overfit the old data. This is also an approximate make-do solution, however, which still does not lead to the optimal result.
 
-This is why a perfect agent, such as the OPM of the previous chapters, does not need a validation dataset: it does not approximate the required sum over hypotheses by a maximization, and therefore does not need extra datasets to check how bad the approximation is.
+Another way to mitigate the problem is by providing a non-constant prior-belief factor $\P(F_{i} \| \yI)$; this is what *regularization* procedures do. However, these procedures do not choose a value based on prior information; the choice is based on blind, trial-and-error attempts to reduce the influence of the data-fit term $\P(\mathit{temp} \| \mathit{time} \and F_{i} \and \yI\bigr)$. The result is again not optimal.
+
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+
+MacKay: [*A practical Bayesian framework for backpropagation networks*](references.html)
+:::
+::::
+
+\
+
+These are the reasons why a perfect agent, such as the OPM of the previous chapters, does not need a validation dataset or regularization procedures: it does not approximate the required sum over hypotheses by a maximization, and it uses meaningful prior information.
 
 
 ### Unreasonably restrictive built-in beliefs
@@ -205,7 +229,7 @@ $$
 
 No matter how many learning data are used, such an agent will keep on making poor predictions. This leads to underfitting.
 
-Restricting an agent's belief in this way is often used to mitigate the "max instead of sum" approximation. We can put this idea in a funny way: since the approximating agent is not balancing all alternatives but only choosing the most flashy one, let's at least give it unreasonable alternatives to maximize from.
+Restricting an agent's set of beliefs in this way is often used to mitigate the "max instead of sum" approximation. We can put this idea in a funny way: since the approximating agent is not balancing all alternatives but only choosing the most attention-calling one, let's at least give it *unreasonable* alternatives to maximize from.
 
 
 ## Machine learning taxonomy
