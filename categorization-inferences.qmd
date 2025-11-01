@@ -5,11 +5,11 @@
 
 In this and the next few chapters we shall focus on particular kinds of inferences and predictions, and on how an AI agent should do them. Later on we shall also explore ways to make our agent faster, at the expense of optimality; most present-day machine-learning algorithms are examples of such fast, sub-optimal approximations.
 
-## A task-oriented categorization of some inference problems {#sec-cat-problems}
+## A task- and information-oriented categorization of some inference problems {#sec-cat-problems}
 
-There are all sorts of inferences in everyday life and in highly technological applications, in situations without serious consequences and in others, like medicine, where lives may be at stake.
+All sorts of inferences must be faced in everyday life and in highly technological applications; in situations without serious consequences and in others, like medicine, where lives may be at stake.
 
-Owing to such variety we cannot define clear-cut categories of inferences. But an informal categorization can provide a starting point to examine some new kind of inference task that we may have to face. Many tasks will fall in between categories; every data-engineering or data-science problem is unique.
+Such variety of inferences cannot be separated into clear-cut categories. But an informal categorization can provide a starting point to examine some new kind of inference that we may have to face. Many inference tasks will fall in between categories; every data-engineering or data-science problem is unique.
 
 The important questions for us are these:
 
@@ -29,62 +29,218 @@ So let's focus on a categorization based on the types of desired information and
 :::
 ::::
 
-\
-We focus on tasks where multiple "instances" with similar characteristics are involved, and the agent has some question related to a "new instance".<!-- , possibly to be repeated an indefinite number of times. --> According to the conceptual framework developed in part [Data II]{.yellow}, we can view these "instances" as *units* of a practically infinite population. The "characteristics" that the agent observed or must guess  are *variates* common to all these units.
+We focus on tasks where multiple "instances" with similar characteristics are involved, and the agent has some question related to a "new instance".<!-- , possibly to be repeated an indefinite number of times. --> According to the conceptual framework developed in the [Data II]{.yellow} part (chapters [-@sec-variates]--[-@sec-pop-samples]), we can view these "instances" as *units* of a practically infinite population. The "characteristics" that the agent observed or must guess  are *variates* common to all these units.
 
 :::{.column-margin}
-Remember that you can adopt any terminology you like. If you prefer "instance" and "characteristics" or some other words to "unit" and "variate", then use them. What's important is that you understand the ideas and methods behind these words, and that you can explain what you mean to others.
+Remember that you can adopt any terminology you like. If you prefer "instance" and "characteristics" or some other words to "unit" and "variate", then use them. What's important is that you understand the ideas and methods behind these words, and that you can exactly explain what you mean to others.
 :::
 
+## Flexible categorization using probability notation {#sec-categ-probtheory}
+
+An extremely useful way to express an inference task is directly through probability notation "$\P(\dotso \| \dotso)$", once the relevant variates -- or more generally the relevant *sentences* ([ch. @sec-sentences]) -- have been defined. It has two main advantages:
+
+- It directly gives us the probability or probabilities that the agent eventually needs to calculate.
+- It often eliminates **ambiguity** or **vagueness** in the inference task.
+
+This latter advantage is often highly underestimated. As was briefly mentioned in [§@sec-identify-sentences], many apparent difficulties in inference tasks arise not because of computational difficulties, but because it isn't clear what the inference is about. You can witness, for example, different conclusions and debates in trying to determine "which model ois better" -- which is not a clear inference at all, until it is precisely stated what "better" means, how it is measured, and by which variate it is represented.
+
+<!-- What the suggested values will be in any specific case will depend on the circumstances of the particular problem; we cannot give a universal rule for them beyond the common-sense one, that if anybody does not know what his suggested value is, or whether there is one, he does not know what question he is asking and consequently does not know what his answer means. (Jeffreys) -->
+
+It is therefore to your advantage if you learn and practice to translate an inference and its information into probability notation, and vice versa to read from probability notation what type of inference is being drawn.
+
+We shall use this probability-notation method for delineating approximate categories of inference. Recall ([§@sec-basic-elements-inference]) that in probability notation 
+
+$$\P(\text{\red\small[proposal]}\|\text{\green\small[conditional]} \and \yI)$$ 
+
+the [proposal]{.red} contains what the agent's belief is about, and the [conditional]{.green} contains what's supposed to be known to the agent, together with the background [information $\yI$.]{.m}
+
+
+### Notation
+
+First let's introduce some symbol conventions to be used in this and the next chapters. We consider a population, its units being the instances where an agent learned or guessed something. Denote the variates involved in the inferences by letters like\ \ $X$, $Y$,\ \ etc; keep in mind that each of these variates might itself be a composite one, for instance $X = (A, B)$.\ \ Subscripts, usually\ \ ${}_1$ , ${}_2$ , ${}_n$ ,\ \ etc., identify the individual instances; each subscript might be associated to the time or place of the instance.
+
+Focus on the inference that the agent is currently making, let's say on unit $N+1$. We can then divide all population variates intro three roles:
+
+- The [**predictands**]{.blue}^[literally "what has to be predicted"] are the variates that the agent must guess for this unit, because it doesn't know their values. We shall usually denote the predictands, jointly, with the symbol $Y$. *An inference always has a predictand.*
+
+- The [**predictors**]{.blue} are variates that the agent has observed in this unit; it knows their value. We shall usually denote the predictors, jointly, with the symbol $X$. *An inference may not have any predictors.*
+
+- The [**nuisance variates**]{.blue} are the remaining ones, which the agent neither needs to guess nor has observed in unit; it doesn't know their values, and is not interested in their values. Nuisance variates, jointly, shall usually be denoted by $W$. *An inference may not have any nuisance variates.*
+
+In probability notation these roles are clear as we write
+
+$$
+\begin{aligned}
+&\text{\small population variates: }\ Y, X, W
+\\[1ex]
+&\P(Y_{N+1} \mo y_{N+1} \| X_{N+1}\mo x_{N+1} \and \dotso)
+\end{aligned}
+$$
+
+where the dots $\dotso$ do not refer to the present unit. You see that, for this $(N+1)$th unit, the predictand "$Y$" is in the proposal, at the left of the conditional bar; this is what the agent's belief is about. In the conditional, at the right of the conditional bar, we see there's a predictor "$X$"; this means that its value is assumed to be known to the agent. We don't see the variate "$W$": not on the left of the conditional bar, because this is not what the belief is about; and not on the right, because its value is unknown. But we know this is a population variate; thus it is a nuisance variate. Note that the variate $W$ might be known to the agent for *other* units.^[In machine learning, instead of "predictand" the terms "dependent variable", "class" or "label" (for nominal variates) are often; instead of "predictor", the terms "independent variable" or "feature" are often used.]
+
+:::{.callout-important}
+## 
+
+**The roles of "predictand", "predictor", "nuisance variate" do not need to be fixed once and for all.**\ \ Take the hospital example ([§@sec-repr-joint-prob]): for the present inference the predictand might be $\mathit{Urgency}$:
+
+$$
+\P(U_{N+1}\mo \dotso \| \dotso) \ ,
+$$
+
+but in the next inference the predictand might be $\mathit{Transportation}$:
+
+$$
+\P(T_{N+2}\mo \dotso \| \dotso) \ .
+$$
+
+There are some inference tasks where the predictand and predictor are always the same. An example is image classification: an agent designed for it always takes an image as predictor, and tries to guess the image's label as predictand:
+
+$$
+\begin{aligned}
+&\P(\mathit{Label}_{N+1}\mo \dotso \|\mathit{Image}_{N+1}\mo \dotso) \ ,
+\\[1ex]
+&\P(\mathit{Label}_{N+2}\mo \dotso \|\mathit{Image}_{N+2}\mo \dotso) \ ,
+\\[1ex]
+&\dotso
+\end{aligned}
+$$
+
+In other inference tasks the predictand and predictor may be different from time to time, and even be exchanged. Examples occur in medicine: for a patient we may need to infer the disease given the observed symptoms, and for another patient we may need to forecast the symptoms, say to reduce their severity, given the patient's known disease:
+
+$$
+\begin{aligned}
+&\P(\mathit{Disease}_{N+1}\mo \dotso \|\mathit{Symptom}_{N+1}\mo \dotso) \ ,
+\\[1ex]
+&\P(\mathit{Symptom}_{N+2}\mo \dotso \|\mathit{Disease}_{N+2}\mo \dotso) \ .
+\\[1ex]
+&\dotso
+\end{aligned}
+$$
+
+:::
+
+The agent generally has mixed information about the three groups of variates for other units $1, 2, \dotsc, N$, usually called the *training data*. It may know $Y$ for one unit, $X$ for another, $W$ for another, $(Y,X)$ for another still, and so on. Consider for example this expression:
+
+$$
+\P(Y_{5}\mo y_{5}  \| X_{5}\mo x_{5}  \and
+Y_{4}\mo y_{4}  \and
+Y_{3}\mo y_{3}  \and X_{3}\mo x_{3}  \and
+X_{2}\mo x_{2}  \and
+Y_{1}\mo y_{1}  \and W_{1}\mo w_{1}  \and
+\yI)
+$$
+
+This agent, having background information $\yI$, is calculating its belief that the predictand $Y$ has value $y_{5}$ for unit #5. It knows the predictor $X$ for this unit. The agent also knows the variate $Y$, but not $X$, for unit #4; it knows both $Y$ and $X$ for unit #3; it knows only $X$ for unit #2; finally it knows $Y$ and $W$ for unit #1. This task might have additional variates, whose values are unknown to the agent for all units so far -- but which may come into play for future units.
+
+In fact, if any of these variate is composite, say $Y = (A,B)$, the agent may have information only about component variate $A$ rather than for all $Y$. As already remarked, the number of possibilities is endless.
+
+
+## Examples of inference tasks {#sec-example-inference-categories}
+
+Let's have an overview of some common inference tasks
 
 ### New unit: given vs generated
 
-A first distinction can be made between
+A first important distinction can be made between
 
-- [{{< fa sign-out-alt >}} {{< fa cube >}}\ \ Tasks where an agent must itself *generate* a new unit.]{.darkgrey}
+- [Tasks where an agent is given a new unit, of which it must *guess* some or all variates.]{.green}
 
-- [{{< fa cube >}} {{< fa question >}}\ \ Tasks where a new unit is given to an agent, who must *guess* some of its variates.]{.darkgrey}
+- [Tasks where an agent must *generate* a new unit, with all its variates.]{.green}
 
-An example of the first type of task is image generation: an algorithm is given a collection of images and is asked to generate a new image based on, or "inspired" by, them.
+Examples of the first type of task are *image generation* and *word generation*, which Large Language Models do. An algorithm is given a collection of images or a corpus of texts, and is asked to generate a new image or text based on, or “inspired” by, them.
 
-It's very important to keep in mind that despite the use of the words "generate" and "guess", **both tasks above require the computation of probabilities**. So both are *inference* tasks. This is because both in generation and in guessing an agent needs to assess its degrees of belief -- about what's best to generate, or about the possible guesses.
+It’s very important to keep in mind that despite the use of the words “generate” and “guess”, both tasks above require the computation of probabilities; that is, the agent must assess its beliefs. They are both *inference* tasks. In generation, the agent needs to assess what’s best to generate; in guessing, it needs to assess the possible guesses.
 
 Indeed we shall see that these two types of task are actually quite close to each other from the point of view of Decision Theory & Probability Theory.
 
 :::{.small .midgrey}
-In machine learning, the terms "discriminative" and "generative" are sometimes associated with the two types of task above. This association, however, is quite loose, because some tasks typically called "generative" actually belong to the first type. We therefore try to avoid this terminology here. It's enough to keep in mind the distinction between the two types of task above.
+In machine learning, the terms "generative" and "discriminative" are sometimes associated with the two types of task above.
 :::
 
 
 ### Guessing variates: all or some
 
-Focusing on the second type of task (a new unit is given to the agent), we can further divide it into two subtypes:
+Focusing on the second type of task above -- the agent must make guesses about a unit given to it -- we can further divide it into two subtypes:
 
-- [{{< fa regular star >}}\ \ The agent must guess *all* variates of the new unit.]{.darkgrey}
+- [The agent must guess *all* variates of the new unit]{.green}:
 
-- [{{< fa star-half-alt >}}\ \ The agent must guess *some* variates of the new unit, but can observe other variates of the new unit.]{.darkgrey}
+$$
+\begin{aligned}
+&\text{\small population variates: }\ Y
+\\[1ex]
+&\P(Y_{N+1} \mo y_{N+1} \| \dotso)
+\end{aligned}
+$$
+
+
+- [The agent must guess *some* variates of the new unit, but can observe all others]{.green}:
+
+$$
+\begin{aligned}
+&\text{\small population variates: }\ Y, X
+\\[1ex]
+&\P(Y_{N+1} \mo y_{N+1} \| X_{N+1}\mo x_{N+1} \and \dotso)
+\end{aligned}
+$$
+
 
 An example of the first subtype of task is the "urgent vs non-urgent" problem of [§@sec-conditional-joint-sim]: having observed incoming patients, some of which where urgent and some non-urgent, the agent must guess whether the next incoming patient will be urgent or not. No other kinds of information (transport, patient characteristics, or others) are available.
 
-We shall call [**predictands**]{.blue}^[literally "what has to be predicted"] the variates that the agent must guess in a new unit, and [**predictors**]{.blue} those that the agent can observe.^[In machine learning and other fields, the terms "dependent variable", "class" or "label" (for nominal variates) are often used for "predictand"; and the terms "independent variable" or "features" are often used for "predictor".] The first subtype above can be viewed as a special case of the second where all variates are predictands, and there are no predictors.
-
 :::{.small .midgrey}
-The terms "unsupervised learning" and "supervised learning" are sometimes associated in machine learning with these two subtypes of task. But the association is loose and can be misleading. "Clustering" tasks, for example, are usually called "unsupervised" but they are examples of the second subtype above, where the agent has some predictors.
+In machine learning, the terms "unsupervised learning" and "supervised learning" are sometimes associated with these two subtypes of task. But the association is loose. "Clustering" tasks for example, discussed below, are usually called "unsupervised" but they are examples of the second subtype above, where the agent has some predictors.
 :::
 
 ### Information available in previous units
 
 Finally we can further divide the second subtype above into two or three subsubtypes, depending on the information available to the agent about *previous units*:
 
-- [{{< fa star-half-alt >}} {{< fa star-half-alt >}}\ \ All predictors and predictands of previous units are known to the agent]{.darkgrey}
+- [Predictor and predictand are known for all previous units $N,\dotsc,1$]{.green}:
 
-- [{{< fa star-half >}} {{< fa star-half >}}\ \ All predictors of previous units, but not the predictands, are known to the agent]{.darkgrey}
-
-- [{{< fa regular star-half >}} {{< fa regular star-half >}}\ \ All predictands of previous units, but not the predictors, are known to the agent]{.darkgrey}
-
+$$
+\begin{aligned}
+&\text{\small population variates: }\ Y, X
+\\[1ex]
+&\P(Y_{N+1} \mo y_{N+1} \| X_{N+1}\mo x_{N+1} \and 
+Y_{N} \mo y_{N} \and X_{N}\mo x_{N} \and 
+\dotso
+Y_{1} \mo y_{1} \and X_{1}\mo x_{1} \and 
+\yI)
+\end{aligned}
+$$
 \
 
-An example of the first subsubtype of task is image classification. The agent is for example given the following 128 × 128-pixel images and character-labels from the [One Punch Man](https://onepunchman.fandom.com) series:
+- [The predictor variate, but not the predictand one, is known for all previous units $N,\dotsc,1$]{.green}:
+
+$$
+\begin{aligned}
+&\text{\small population variates: }\ Y, X
+\\[1ex]
+&\P(Y_{N+1} \mo y_{N+1} \| X_{N+1}\mo x_{N+1} \and 
+X_{N}\mo x_{N} \and 
+\dotso
+X_{1}\mo x_{1} \and 
+\yI)
+\end{aligned}
+$$
+\
+
+- [The predictand variate, but not the predictor one, is known for all previous units $N,\dotsc,1$]{.green}:
+
+$$
+\begin{aligned}
+&\text{\small population variates: }\ Y, X
+\\[1ex]
+&\P(Y_{N+1} \mo y_{N+1} \| X_{N+1}\mo x_{N+1} \and 
+Y_{N}\mo y_{N} \and 
+\dotso
+Y_{1}\mo y_{1} \and 
+\yI)
+\end{aligned}
+$$
+\
+
+An example of the first subsubtype of task above is image classification. The agent is for example given the following 128 × 128-pixel images (predictor) and character-labels (predictand) from the [One Punch Man](https://onepunchman.fandom.com) series:
 
 ![](saitama_images.png){width=100%}
 
@@ -94,129 +250,7 @@ and is then given one new 128 × 128-pixel image:
 
 of which it must guess the character-label.
 
-In the example just given, the image is the predictor, the character-label is the predictand.
-
-\
-
-A slight modification of the example above gives us a task of the second subsubtype. A different agent is given the images above, *but without labels*:
-
-![](saitama_images_nolabels.png){width=100%}
-
-and must then guess some kind of "label" or "group" for the new image above; and possibly also for the images already given. The kind of "group" requested depends on the specific problem.
-
-In this example the image is the predictor, and the label or group is the predictand. The difference from the previous example is that the agent doesn't have the predictand values of previous units.
-
-:::{.small .midgrey}
-The term "supervised learning" typically refer to the first subsubtype above.
-
-The term "unsupervised learning" can refer to the second subsubtype, for instance in "clustering" tasks. In a clustering task, the agent tries to guess which group or "cluster" a unit belong to, given a collection of similar units, whose groups are not known either. The cluster effectively is the *predictand* variate. In some cases the agent may want to guess the cluster not only of a new unit, but also of all previous units.
-
-The third subsubtype is very rarely considered in machine learning, yet it is not an unrealistic task.
-:::
-
-The types, subtypes, subsubtypes above are obviously not mutually exclusive or comprehensive. We can easily imagine scenarios where an agent has some predictors & predictands available about *some* previous units, but only predictors or only predictands available for other previous units. This scenario falls in between the three subsubtypes above.
-
-:::{.small .midgrey}
-In machine learning, hybrid situations like these are categorized as "missing data" or "imputation".
-:::
-
-## Flexible categorization using probability theory {#sec-categ-probtheory}
-
-We have been speaking about the agent's guessing the values of some variates. "Guessing" means that there's a state of *uncertainty*: the agent can't simply say something like "the value of the label is `Saitama`", because that could be false. Uncertainty means that the most honest thing that the agent can do is to express *degrees of belief* about each of the possible values. Probability theory enters the scene.
-
-In fact it turns out that the categorization above into subtypes and subsubtypes of tasks can be presented in a more straightforward and flexible way using probability-theory notation.
-
-### Notation
-
-First let's introduce some symbol conventions to be used in the next chapters.
-
-- We shall denote with $\bZ$ all variates that are of interest to the agent: those to be guessed as well as those that may be already known.
-- The variates to be guessed in a new unit (the predictands) will be collectively denoted with $\bY$.
-- The variates that can be observed in a new unit (the predictors) will be collectively denoted with $\bX$. In cases where there are no predictors, $\bX$ is empty.
-
-Therefore we have $\bZ = (\bY \and \bX)$. In cases where there are no predictors we have $\bZ = \bY$.
-
-- $\bZ_i$\ \ denote all variates for unit [#$i$.]{.m}
-- $\bY_i$\ \ denote all predictands for unit [#$i$.]{.m}
-- $\bX_i$\ \ denote all predictors for unit [#$i$.]{.m}
-
-As usual we number from\ \ $i=1$\ \ to\ \ $i=N$\ \ the units that serve for learning, and\ \ $i=N+1$\ \ is the *new* unit of interest to the agent.
-
-Recall ([§@sec-basic-elements-inference]) that in probability notation 
-
-$$\P(\text{\red\small[proposal]}\|\text{\green\small[conditional]} \and \yI)$$ 
-
-the [proposal]{.red} contains what the agent's belief is about, and the [conditional]{.green} contains what's supposed to be known to the agent, together with the background [information $\yI$.]{.m}
-
-\
-Finally let's see how to express different typologies of tasks in probability notation.
-
-\
-
-### [{{< fa regular star >}}]{.darkgrey}\ \ The agent must guess *all* variates of the new unit
-
-This kinds of guess is represented by the probability distribution
-
-$$
-\P(\red
-Z_{N+1}\mo z
-\black\|
-\green
-Z_{N}\mo z_{N}
-\and \dotsb \and
-Z_{1}\mo z_{1}
-\black \and \yI)
-$$
-
-for all possible values $\red z$ in the domain of $\bZ$. The specific values $\green z_N, \dotsc, z_1$ of the variate $\bZ$ for the previous units are known to the agent.
-
-\
-
-### [{{< fa star-half-alt >}}]{.darkgrey}\ \ The agent must guess *some* variates of the new unit, having observed other variates of the new unit
-
-This kind of guess is represented by the probability distribution
-
-$$
-\P(\red
-Y_{N+1}\mo y
-\black\|
-\green
-X_{N+1}\mo x
-\, \and\, 
-\dotsb \,
-\black \and \yI)
-$$
-
-for all possible values $\red y$ in the domain of the predictands $\bY$. The value $\green x$ of the predictors $\bX$ for the new unit is known to the agent.
-
-The remaining information "$\dotsb$" contained in the conditional depends on the subsubtype of task:
-
-\
-
-#### [{{< fa star-half-alt >}} {{< fa star-half-alt >}}]{.darkgrey}\ \ All predictors and predictands of previous units are known to the agent
-
-This corresponds to the probability distribution
-
-$$
-\P(\red
-Y_{N+1}\mo y
-\black\|
-\green
-X_{N+1}\mo x
-\, \and\, 
-Y_{N}\mo y_{N}
-\and
-X_{N}\mo x_{N}
-\and \dotsb \and
-Y_{1}\mo y_{1}
-\and
-X_{1}\mo x_{1}
-\black \and \yI)
-$$
-
-for all possible $\red y$. All information about predictands $\bY$ and predictors $\bX$ for previous units appears in the conditional.
-
-In the example with image classification, a pictorial representation of this probability would be
+A pictorial representation of the probability notation for this case could be as follows:
 
 ![](saitama_example2.png){width=100%}
 
@@ -224,115 +258,124 @@ where ${\red y} \in \set{\red\cat{Saitama}, \cat{Fubuki}, \cat{Genos}, \cat{Meta
 
 \
 
-#### [{{< fa star-half >}} {{< fa star-half >}}]{.darkgrey}\ \ All predictors of previous units, but not their predictands, are known to the agent
+An example similar to the second subtype is *clustering*. The agent is for example given the following set of points in $(\alpha, \beta)$ coordinates:
 
-This corresponds to the probability distribution
+![](clusters_nolabels.jpg){width=75% fig-align="center"}
 
+Each point is a unit, and the predictor variate is the pair of coordinates $(\alpha, \beta)$.
+
+The agent must now guess the *label* of each point: this is the predictand. One possible guess could be the following:
+
+![](clusters_labels.jpg){width=75% fig-align="center"}
+
+This kind of inference can be expressed as follows:
+
+:::{.column-page-inset-right}
 $$
-\P(\red
-Y_{N+1}\mo y
-\black\|
-\green
-X_{N+1}\mo x
-\, \and\, 
-X_{N}\mo x_{N}
-\and \dotsb\and
-X_{1}\mo x_{1}
-\black \and \yI)
+\begin{aligned}
+&\text{\small population variates: }\ \mathit{label}, \alpha, \beta
+\\[1ex]
+&\P(
+\mathit{label}_{N+1} \mo \dotso
+\,\and\, \dotso \,\and\,
+\mathit{label}_{1} \mo \dotso
+\|
+\alpha_{N+1} \mo \dotso \,\and\,
+\beta_{N+1} \mo \dotso
+\,\and\, \dotso \,\and\,
+\alpha_{1} \mo \dotso \,\and\,
+\beta_{1} \mo \dotso
+\,\and\, \yI)
+\end{aligned}
 $$
+:::
 
-for all possible $\red y$. All information about predictors $\bX$ for the previous units, but *not* that about their predictands $\bY$, appears in the conditional.
+<!-- ![](saitama_images_nolabels.png){width=100%} -->
+
+
+:::{.small .midgrey}
+In machine learning, the term "supervised learning" typically refer to the first subsubtype above.
+
+The term "unsupervised learning" can refer to the second subsubtype.
+
+The third subsubtype is very rarely considered in machine learning, yet it is not an unrealistic task.
+:::
 
 \
 
-### [{{< fa star-of-life >}}]{.darkgrey} More general and hybrid tasks
-
-Consider a task that doesn't fit into any of the types discussed above: The agent wants to guess the predictands for a new unit, say #3, after observing that its predictors have value $\green x$. Of two previous units, the agent knows the predictor value $\green x_1$ of the first, and the predictand value $\green y_2$ of the second. This task is expressed by the probability
+The types, subtypes, subsubtypes described above are obviously not mutually exclusive or comprehensive. Consider for instance the following task, which doesn't fit into any of the types discussed above. The agent must guess the predictand $Y$ for the new unit #3, observing that its predictor $X$ has value $x_3$. Of two previous units, the agent knows the predictor value $x_1$ of the first, and the predictand value $y_2$ of the second. This task is expressed by
 
 $$
-\P(\red
-Y_{3}\mo y
-\black\|
-\green
-X_{3}\mo x
+\begin{aligned}
+&\text{\small population variates: }\ Y, X
+\\[1ex]
+&\P(Y_{3}\mo y_3
+\|
+X_{3}\mo x_3
 \, \and\, 
 Y_{2}\mo y_{2}
 \and
 X_{1}\mo x_{1}
-\black \and \yI)
+ \and \yI)
+\end{aligned}
 $$
 
-\
+:::{.small .midgrey}
+In machine learning, hybrid situations like these are categorized as "missing data" or "imputation".
+:::
 
 ::::{.column-page-inset-right}
 :::{.callout-caution}
 
-
-
-- Write down the general probability expression for the task of subsubtype "[all predictands of previous units, but not their predictors, are known to the agent]{.midgrey}".
-
-- What kind of task does the following probability express?:
-
-    $$
-\P(\red
-Y_{N+1}\mo y_{N+1}
-\and Y_{N}\mo y_{N}
-\and \dotsb \and
-Y_{2}\mo y_{2}\and
-Y_{1}\mo y_{1}
-\black\|
-\green
-X_{N+1}\mo x_{N+1}
-\and X_{N}\mo x_{N}
-\and \dotsb\and
-X_{2}\mo x_{2}
-\and
-X_{1}\mo x_{1}
-\black \and \yI)
-$$
+- Find an example, invented or realistic, for the last type of task discussed above:
     
-	What kind of task could it represent in machine-learning terminology?
+    $$
+\begin{aligned}
+&\text{\small population variates: }\ Y, X
+\\[1ex]
+&\P(Y_{N+1} \mo y_{N+1} \| X_{N+1}\mo x_{N+1} \and 
+Y_{N}\mo y_{N} \and 
+\dotso
+Y_{1}\mo y_{1} \and 
+\yI)
+\end{aligned}
+$$
+
+
+
+
+- What kind of task does the following probability express? what kind of peculiarities does it have?
+    
+    $$
+\P(
+Y_{N+1}\mo y_{N+1}
+\|
+X_{N+1}\mo x_{N+1} \,\and\,
+X_{N}\mo x_{N} \and
+W_{N}\mo w_{N} \,\and\,
+X_{1}\mo x_{1} \and
+W_{1}\mo w_{1} \,\and\,
+\yI)
+$$
 
 :::
 ::::
 
-### [{{< fa sign-out-alt >}}]{.darkgrey}\ \ The agent must *generate* a new unit
 
-Our very first categorization included the task of generating a new unit, given previous examples. In this kind of task there are possible alternatives that the agent could generate. How should one alternative be chosen? A moment's thought shows that the *probabilities* for the possible alternatives should enter the choice.
+## The underlying distribution {#sec-underlying-distribution}
 
-Suppose, as a very simple example, that a generative agent has been shown, in an unsystematic order, 30 copies of the symbol [{{< fa regular circle-up >}}]{.green} and 10 copies of the symbol [{{< fa regular circle-down >}}]{.yellow}, and is asked to generate a new symbol out of these examples. Intuitively we expect that it will generate [{{< fa regular circle-up >}}]{.green}, but we cannot and don't want to exclude the possibility that it will generate [{{< fa regular circle-down >}}]{.yellow}. These two generation possibilities should simply have different probabilities and, in the long run, appear with different frequencies.
 
-Also in this kind of task, therefore, we have the probability distribution
-
-$$
-\P(\red
-Z_{N+1}\mo z
-\black\|
-\green
-Z_{N}\mo z_{N}
-\and \dotsb \and
-Z_{1}\mo z_{1}
-\black \and \yI)
-$$
-
-the difference from before is that the sentence $\red Z_{N+1}\mo z$ represents not the hypothesis that a *given* new unit has value $\red z$, but the possibility of *generating* a new unit with that value. In other words, the symbol "$\mo$" here means "*must be set to...*" rather than "*would be observed to be...*". Remember the discussion and warnings in [§@sec-sentence-notation]?
-
-\
-
-Our general conclusion is this:
+From the discussion and all examples above we can draw the following conclusion:
 
 :::{.callout-note style="font-size:120%"}
 ##  
 ::::{style="font-size:120%"}
-Probability distribution such as those discussed above should intrinsically enter all types of inference algorithms, including machine-learning algorithms.
+Probability distribution such as those discussed above intrinsically enter all types of inference algorithms, including machine-learning algorithms.
 ::::
 :::
 
-This is the condition for any inference algorithm to be optimal and self-consistent. The less an algorithm satisfies that condition, the less optimal and less consistent it is.
+This is the condition for any inference algorithm to be optimal and self-consistent. The less an algorithm satisfies that condition, the less optimal and the less consistent it is.
 
-\
-
-## The underlying distribution {#sec-underlying-distribution}
 
 A remarkable feature of all the probabilities discussed in the above task categorization is that they can all be calculated from *one* and the same probability distribution. We briefly discussed and used this feature in [chapter @sec-learning].
 
@@ -354,37 +397,10 @@ Therefore we have, for the probabilities of some of the tasks above,
 $$
 \begin{aligned}
 &\P(\red
-Z_{N+1}\mo z
+Y_{N+1}\mo y_{N+1}
 \black\|
 \green
-Z_{N}\mo z_{N}
-\and \dotsb \and
-Z_{1}\mo z_{1}
-\black \and \yI)
-=
-\frac{
-\P(\red
-Z_{N+1}\mo z
-\black\and
-\green
-Z_{N}\mo z_{N}
-\and \dotsb \and
-Z_{1}\mo z_{1}
-\black \| \yI)
-}{
-\P(
-\green
-Z_{N}\mo z_{N}
-\and \dotsb \and
-Z_{1}\mo z_{1}
-\black \| \yI)
-}
-\\[2em]
-&\P(\red
-Y_{N+1}\mo y
-\black\|
-\green
-X_{N+1}\mo x
+X_{N+1}\mo x_{N+1}
 \, \and\, 
 Y_{N}\mo y_{N}
 \and
@@ -398,10 +414,10 @@ X_{1}\mo x_{1}
 &\qquad{}=
 \frac{
 \P(\red
-Y_{N+1}\mo y
+Y_{N+1}\mo y_{N+1}
 \black\and
 \green
-X_{N+1}\mo x
+X_{N+1}\mo x_{N+1}
 \, \and\, 
 Y_{N}\mo y_{N}
 \and
@@ -414,7 +430,7 @@ X_{1}\mo x_{1}
 }{
 \P(
 \green
-X_{N+1}\mo x
+X_{N+1}\mo x_{N+1}
 \, \and\, 
 Y_{N}\mo y_{N}
 \and
@@ -427,10 +443,10 @@ X_{1}\mo x_{1}
 }
 \\[2em]
 &\P(\red
-Y_{N+1}\mo y
+Y_{N+1}\mo y_{N+1}
 \black\|
 \green
-X_{N+1}\mo x
+X_{N+1}\mo x_{N+1}
 \, \and\, 
 X_{N}\mo x_{N}
 \and \dotsb\and
@@ -440,10 +456,10 @@ X_{1}\mo x_{1}
 &\qquad{}=
 \frac{
 \P(\red
-Y_{N+1}\mo y
+Y_{N+1}\mo y_{N+1}
 \black\and
 \green
-X_{N+1}\mo x
+X_{N+1}\mo x_{N+1}
 \, \and\, 
 X_{N}\mo x_{N}
 \and \dotsb\and
@@ -452,7 +468,7 @@ X_{1}\mo x_{1}
 }{
 \P(
 \green
-X_{N+1}\mo x
+X_{N+1}\mo x_{N+1}
 \, \and\, 
 X_{N}\mo x_{N}
 \and \dotsb\and
@@ -472,49 +488,14 @@ $$
 \sum_{\yellow c}\P({\yellow C\mo c} \and  {\green\boldsymbol{\dotsb}} \| \yI)
 $$
 
-Using the marginalization rule we find these final expressions of the probabilities for some tasks discussed so far:
+Using the marginalization rule we find these final expressions of the probabilities for some of the tasks discussed so far:
 
 ::::{.column-page-right}
 :::{.callout-note}
 ##  
 
-- [{{< fa regular star >}}]{.darkgrey} Guess all variates:
 
-$$
-\P(\red
-Z_{N+1}\mo z
-\black\|
-\green
-Z_{N}\mo z_{N}
-\and \dotsb \and
-Z_{1}\mo z_{1}
-\black \and \yI)
-=
-\frac{
-\P(\red
-Z_{N+1}\mo z
-\black\and
-\green
-Z_{N}\mo z_{N}
-\and \dotsb \and
-Z_{1}\mo z_{1}
-\black \| \yI)
-}{
-\sum_{\purple z}
-\P(
-\red
-Z_{N+1}\mo {\purple z}
-\black\and\green
-Z_{N}\mo z_{N}
-\and \dotsb \and
-Z_{1}\mo z_{1}
-\black \| \yI)
-}
-$$
-
-\
-
-- [{{< fa star-half-alt >}} {{< fa star-half-alt >}}]{.darkgrey} All previous predictors and predictands known:
+- All previous predictors and predictands known:
 
 $$
 \begin{aligned}
@@ -571,7 +552,7 @@ $$
 
 \
 
-- [{{< fa star-half >}} {{< fa star-half >}}]{.darkgrey} Previous predictors known, previous predictands unknown:
+- Previous predictors known, previous predictands unknown:
 
 $$
 \begin{aligned}
@@ -692,7 +673,7 @@ $$
 **All these formulae, even for hybrid tasks, involve sums and ratios of only one distribution:**
 
 $$\boldsymbol{
-\P(\blue
+\P(
 Y_{N+1}\mo y_{N+1}
 \and
 X_{N+1}\mo x_{N+1}
@@ -700,11 +681,11 @@ X_{N+1}\mo x_{N+1}
 Y_{1}\mo y_{1}
 \and
 X_{1}\mo x_{1}
-\black \| \yI)
+ \| \yI)
 }
 $$
 
-Stop for a moment and contemplate some of the consequences of this remarkable fact:
+Stop for a moment and think about the consequences:
 
 - [{{< fa arrows-spin >}}\ \ *An agent that can perform one of the tasks above can, in principle, also perform all other tasks.*]{.blue}
 
@@ -735,16 +716,15 @@ As regards the third consequence, we shall see that there are different states o
 In a previous example of "hybrid" task we had the probability distribution
 
 $$
-\P(\red
+\P(
 Y_{3}\mo y
-\black\|
-\green
+\|
 X_{3}\mo x
 \, \and\, 
 Y_{2}\mo y_{2}
 \and
 X_{1}\mo x_{1}
-\black \and \yI)
+ \and \yI)
 $$
 
 Rewrite it in terms of the underlying joint distribution.
