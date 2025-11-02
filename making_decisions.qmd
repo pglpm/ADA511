@@ -23,7 +23,7 @@ According to Decision Theory the agent's final decision is determined by the
 ## [**Principle of maximal expected utility**]{style="font-size:120%"}
 ::::{style="font-size:120%"}
 
-The optimal decision, which should be made by the agent, is the one having maximal expected utility:
+The optimal decision which should be made by the agent is the one having maximal expected utility:
 
 $$
 \yD_{\text{optimal}} =
@@ -31,8 +31,9 @@ $$
 \P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)
 $$
 
-(where, in some tasks, the probabilities may not depend on $\yD$)
+where, in some tasks, the probabilities may not depend on $\yD$.
 
+This is also called the [*principle of expected-utility maximization*]{.blue} and other similar names.
 ::::
 :::
 :::::
@@ -50,7 +51,7 @@ It may happen that there are several decisions which have equal, maximal expecte
 
 ### Numerical implementation in simple cases
 
-The principle of maximal expected utility is straightforward to calculate in many important problems.
+The principle of maximal expected utility is straightforward to implement in many important problems.
 
 In [§@sec-what-utilities] we represented the set of utilities by a utility matrix $\um$. If the probabilities of the outcomes do **not** depend on the decisions, we represent them as a column matrix $\Pm$, having one entry per outcome:
 
@@ -129,8 +130,8 @@ All that's left is to equip our prototype agent with a function that outputs the
 	Output:
     : a list of elements `EUs` and `optimal`:
     
-        - `EUs` is a vector containing the expected utilities of all decisions, sorted from highest to lowest
-		- `optimal` is the decision having maximal expected utility, or one of them, if more than one, selected with equal probability
+        - `EUs` is a vector containing the expected utilities of all decisions, sorted from highest to lowest;
+		- `optimal` is the decision having maximal expected utility, or one of them, if more than one, selected with equal probability.
 	
 	Notes:
 	: - If *`utils`* is missing or `NULL`, a matrix of the form $\begin{bsmallmatrix}1&0&\dotso\\0&1&\dotso\\\dotso&\dotso&\dotso\end{bsmallmatrix}$ is assumed (which corresponds to using *accuracy* as evaluation metric).
@@ -264,7 +265,7 @@ This idea extends to more complex situations where an agent has an available seq
 :::{.callout-important}
 ## The final decision is *not* unpredictable
 
-Note that even when we apply such ideas, **we are still nevertheless following the principle of expected-utility maximization**. We haven't changed or contradicted that principle in any way.
+Note that even when we apply such ideas, **we are still nevertheless following the principle of maximal expected utility**. We haven't changed or contradicted that principle in any way.
 
 And we are **not** making decisions "at random". What we've done is simply to consider a different set of decisions; the final choice is never "random".
 
@@ -279,7 +280,7 @@ To which then Dispatch adds one more possible decision:
 
 Dispatch determines that this latter decision [#3]{.yellow} has higher expected utility than decisions [#1]{.yellow} and [#2]{.yellow}, and therefore follows it. It isn't making a decision "at random" among the three possibilities. The final *location* becomes unpredictable, to Dispatch and to the robbers, but the *decision* is not unpredictable: it's [#3]{.yellow}, determined by maximization of expected utility.
 
-Unfortunately many texts oversimplify this idea, and seem to imply that in some cases it's best to make decisions "at random", in apparent contradiction with the principle of expected-utility maximization. As we have seen, this is not the case.
+Unfortunately many texts oversimplify this idea, and seem to imply that in some cases it's best to make decisions "at random", in apparent contradiction with the principle of maximal expected utility. As we have seen, this is not the case.
 \
 
 It's also important to emphasize that the unpredictability is desired *on the antagonist agent's side*, not on the side of the agent making the decision.
@@ -287,22 +288,22 @@ It's also important to emphasize that the unpredictability is desired *on the an
 
 ### The reason for unpredictably choosing among options with equal expected utility
 
-In some decision-making problems, several choices may happen to have equal, maximal expected utilities. In such situations it is usually recommended to "choose randomly" among those choices. This recommendation is an application of the ideas discussed above.
+In a decision-making problem, several choices may happen to have equal, maximal expected utilities. In such situations it is usually recommended to "choose randomly" among those choices; this is what the function `decide()` ([§@sec-max-exp-util-example]) does. This recommendation is an application of the ideas just discussed.
 
-The reason is that we could have made some small error in estimating utilities, so that the actual expected utility of one of those choices might be actually higher than the others'. If we simply decided to choose, say, the first listed option, then in many repetitions of this decision-making problem me might actually be incurring an accumulated loss, if the actual best one were, say, the second option.
+The reason is that we could have made some small error in estimating utilities, so that the exact expected utility of one of those choices might be actually higher than the others'. If we simply decided to always choose, say, the first listed option, then in many repetitions of this decision-making problem we might incur an accumulated loss, if the actual optimal option were, say, the second.
 
 If we redefine our set of decisions, instead, as
 
-[#1]{.yellow}. Follow option 1.  
-[#2]{.yellow}. Follow option 2.  
+[#1]{.yellow}. Follow option 1  
+[#2]{.yellow}. Follow option 2  
 ...  
-[#0]{.yellow}. Use a random number generator to choose which of the options above to follow.
+[#0]{.yellow}. Use a random number generator to choose which of the options above to follow
 
-and in our decision problem include the possibility that the utilities have a small error, then a quick calculation shows that decision [#0]{.yellow} is the one with maximal expected utility.
+and in our decision problem include the possibility that the utilities have a small error, then a quick calculation shows that decision [#0]{.yellow} is the one with maximal expected utility in a repetition of this decision problem.
 
 :::{.callout-caution}
 
-Try to draw the diagram for the redefined decision problem above. Include additional possible outcomes that take into account the possible errors in utilities, and use the redefined sets of decisions.
+Try to draw the diagram for the redefined decision problem above, repeated twice. Include additional possible outcomes that take into account the possible errors in utilities, and use the redefined sets of decisions.
 
 Show that, with this more precise diagram, decision [#0]{.yellow} above has indeed highest expected utility.
 :::
@@ -325,7 +326,7 @@ The simple decision-making problems and framework that we have discussed in thes
 
 \
 
-- **Uncertain utilities**. It is possible to recast Decision Theory and the principle of maximum expected utility in terms, not of utility functions $\uu(\yD \and {\red Y\mo y} \| \yI)$, but of probability distributions over utility values:
+- **Uncertain utilities**. It is possible to recast Decision Theory and the principle of maximal expected utility in terms, not of utility functions $\uu(\yD \and {\red Y\mo y} \| \yI)$, but of probability distributions over utility values:
     
     $$\P({\blue U\mo u} \| \yD \and {\red Y\mo y} \and \yI)$$
     
