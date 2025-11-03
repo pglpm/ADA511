@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -43,7 +78,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-0d100ed2618fb62a1aeda6df484cbc4d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-6fc7f9edc9275b1be4df9d56d9e5af00.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -584,8 +619,15 @@ window.Quarto = {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-what-decision-llm" id="toc-sec-what-decision-llm" class="nav-link active" data-scroll-target="#sec-what-decision-llm"><span class="header-section-number">38.1</span> Agents that generate text: what’s the decision-making problem?</a></li>
+  <li><a href="#sec-tentative-decision-llm" id="toc-sec-tentative-decision-llm" class="nav-link" data-scroll-target="#sec-tentative-decision-llm"><span class="header-section-number">38.2</span> A tentative decision-making point of view</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -616,7 +658,7 @@ window.Quarto = {
 
 
 <div class="hidden">
-<p><span class="math inline">\(\DeclarePairedDelimiter{\set}{\{}{\}}\)</span> </p>
+<p><span class="math inline">\(\DeclarePairedDelimiter{\set}{\{}{\}}\)</span> <span style="display:inline-block;"><span class="math inline">\(\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}\)</span></span> </p>
 </div>
 <div class="hidden">
 
@@ -624,9 +666,81 @@ window.Quarto = {
 <div class="hidden">
 
 </div>
-<p>To be written.</p>
+<section id="sec-what-decision-llm" class="level2" data-number="38.1">
+<h2 data-number="38.1" class="anchored" data-anchor-id="sec-what-decision-llm"><span class="header-section-number">38.1</span> Agents that generate text: what’s the decision-making problem?</h2>
+<p>In <a href="slm.html#sec-language-inference" class="quarto-xref">§&nbsp;<span>34.1</span></a> we saw that present-day Large Language Model determine their belief in what the next word or token should be, only based on the sequence of words seen so far, and on the frequencies of such sequences in a huge collection of texts. These beliefs are not determined on possible future outcomes of their choice of words, as instead is the case in human conversation. We managed to use our Optimal Predictor Machine in the same way in a simplified setting.</p>
+<p>Large Language Models do not output probabilities, however: they output words. So at every step they are effectively choosing one of the possible words about which they calculated their beliefs. This is decision, and to be optimal and self-consistent it should be based on some outcomes and their utilities.</p>
+<p>What are the outcomes and utilities underlying word-choice in Large Language Models? This is still an open question. The approaches followed so far in the literature have been based more on intuition and on “playing around” rather than framing the problem in a systematic way. This means that there’s a lot of room for an AI engineer to bring forth a better understanding and major improvements.<br>
+</p>
+<p>Let’s consider our OPM agent used as a “small language model” in <a href="slm.html#sec-opm-as-slm" class="quarto-xref">§&nbsp;<span>34.2</span></a>. It was only calculating degrees of belief about the <span style="display:inline-block;"><span class="math inline">\(n\)</span>th</span> token of a string of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> tokens. First of all let’s ask again: beliefs about what? We could say: the belief that this <span style="display:inline-block;"><span class="math inline">\(n\)</span>th</span> token is the correct one, in this particular sequence. Keep in mind that this is a suspicious point of view; can we really say that there’s a “correct” token?</p>
+<p>If we want our OPM agent to also <em>choose</em> one of the possible tokens, we need to find the appropriate set of outcomes and their utilities for this decision problem.</p>
+<div id="cau-unique1" class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise&nbsp;38.1
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>On your own or in group, think about the problem above.</p>
+<ul>
+<li><p>What kind of meaningful <em>outcomes</em> are there in this problem?</p></li>
+<li><p>Can they be easily assessed? Do they depend on the choice of present token alone, or in future ones as well?</p></li>
+<li><p>What are the utility values for the outcomes? How to assess them?</p></li>
+<li><p>Can we find alternative points of view about outcomes and utilities – points of view that do not reflect natural language but may make sense somehow in the present context?</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="sec-tentative-decision-llm" class="level2" data-number="38.2">
+<h2 data-number="38.2" class="anchored" data-anchor-id="sec-tentative-decision-llm"><span class="header-section-number">38.2</span> A tentative decision-making point of view</h2>
+<p>A <em>tentative</em> and somewhat vague point of view is the following: the agent should generate, on the long run, text that “looks natural”. Now if we assign a given utility, say <span style="display:inline-block;"><span class="math inline">\(+1\)</span>,</span> to the “correct” choice of token, the agent should at each step choose the token that always has highest probability. This, however, eventually leads to a circular repetition, as soon as a string of <span style="display:inline-block;"><span class="math inline">\(n-1\)</span></span> token appears again. Let’s see an example of this phenomenon with our OPM agent.</p>
+<p>Let’s build again an agent that does inference about 3-grams from the United Nation’s <a href="https://www.un.org/en/about-us/universal-declaration-of-human-rights"><em>Universal Declaration of Human Rights</em></a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Load main functions</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'tplotfunctions.R'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'OPM_nominal.R'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'textpreparation.R'</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Set seed for reproducibility</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">700</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="do">## Prepare metadata and training data</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>ngramfiles <span class="ot">&lt;-</span> <span class="fu">preparengramfiles</span>(</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">inputfile =</span> <span class="st">'texts/human_rights.txt'</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">outsuffix =</span> <span class="st">'rights'</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">3</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxtokens =</span> <span class="cn">Inf</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Unique tokens:  506.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Data:  1904  3-grams.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Files saved.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Create the OPM agent</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>opmSLM <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">metadata =</span> ngramfiles<span class="sc">$</span>metadata,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ngramfiles<span class="sc">$</span>data,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">savememory =</span> <span class="cn">TRUE</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now let’s operate the agent as follows:</p>
+<ol start="0" type="1">
+<li>We give an initial prompt of two tokens: <code>ARTICLE</code>, <code>x</code>.</li>
+<li>We let the agent calculate the degrees of belief about the next token.</li>
+<li>The next token is <em>chosen</em> by a decision process with a <em>unit utility matrix</em>: correct token choices have utility <span class="math inline">\(+1\)</span>; and wrong choices, <span class="math inline">\(0\)</span>.</li>
+<li>The first token is discarded, the second becomes first, and the last token generated becomes the second.</li>
+<li>Repeat from 1.</li>
+</ol>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -3,11 +3,79 @@
 {{< include macros_exchangeability.qmd >}}
 {{< include macros_opm.qmd >}}
 
-To be written.
-
 ```{r}
 #| echo: false
 knitr::opts_knit$set(root.dir = "code/")
 options(repr.plot.width = 6 * sqrt(2), repr.plot.height = 6)
 ```
 
+## Agents that generate text: what's the decision-making problem? {#sec-what-decision-llm}
+
+In [§@sec-language-inference] we saw that present-day Large Language Model determine their belief in what the next word or token should be, only based on the sequence of words seen so far, and on the frequencies of such sequences in a huge collection of texts. These beliefs are not determined on possible future outcomes of their choice of words, as instead is the case in human conversation. We managed to use our Optimal Predictor Machine in the same way in a simplified setting.
+
+Large Language Models do not output probabilities, however: they output words. So at every step they are effectively choosing one of the possible words about which they calculated their beliefs. This is decision, and to be optimal and self-consistent it should be based on some outcomes and their utilities.
+
+What are the outcomes and utilities underlying word-choice in Large Language Models? This is still an open question. The approaches followed so far in the literature have been based more on intuition and on "playing around" rather than framing the problem in a systematic way. This means that there's a lot of room for an AI engineer to bring forth a better understanding and major improvements.
+\
+
+Let's consider our OPM agent used as a "small language model" in [§@sec-opm-as-slm]. It was only calculating degrees of belief about the $n$th token of a string of $n$ tokens. First of all let's ask again: beliefs about what? We could say: the belief that this $n$th token is the correct one, in this particular sequence. Keep in mind that this is a suspicious point of view; can we really say that there's a "correct" token?
+
+If we want our OPM agent to also *choose* one of the possible tokens, we need to find the appropriate set of outcomes and their utilities for this decision problem.
+
+:::{.callout-caution}
+
+On your own or in group, think about the problem above.
+
+- What kind of meaningful *outcomes* are there in this problem?
+
+- Can they be easily assessed? Do they depend on the choice of present token alone, or in future ones as well?
+
+- What are the utility values for the outcomes? How to assess them?
+
+- Can we find alternative points of view about outcomes and utilities -- points of view that do not reflect natural language but may make sense somehow in the present context?
+:::
+
+## A tentative decision-making point of view {#sec-tentative-decision-llm}
+
+A *tentative* and somewhat vague point of view is the following: the agent should generate, on the long run, text that "looks natural". Now if we assign a given utility, say $+1$, to the "correct" choice of token, the agent should at each step choose the token that always has highest probability. This, however, eventually leads to a circular repetition, as soon as a string of $n-1$ token appears again. Let's see an example of this phenomenon with our OPM agent.
+
+Let's build again an agent that does inference about 3-grams from the United Nation's [*Universal Declaration of Human Rights*](https://www.un.org/en/about-us/universal-declaration-of-human-rights):
+
+```{r}
+## Load main functions
+source('tplotfunctions.R')
+source('OPM_nominal.R')
+source('textpreparation.R')
+
+## Set seed for reproducibility
+set.seed(700)
+
+## Prepare metadata and training data
+ngramfiles <- preparengramfiles(
+    inputfile = 'texts/human_rights.txt',
+    outsuffix = 'rights',
+    n = 3,
+    maxtokens = Inf
+)
+
+## Create the OPM agent
+opmSLM <- buildagent(
+    metadata = ngramfiles$metadata,
+    data = ngramfiles$data,
+    savememory = TRUE
+)
+```
+
+Now let's operate the agent as follows:
+
+0. We give an initial prompt of two tokens: `ARTICLE`, `x`.
+1. We let the agent calculate the degrees of belief about the next token.
+2. The next token is *chosen* by a decision process with a *unit utility matrix*: correct token choices have utility $+1$; and wrong choices, $0$.
+3. The first token is discarded, the second becomes first, and the last token generated becomes the second.
+4. Repeat from 1.
+
+We save the string of tokens thus generated and output it at the end.
+
+```{r}
+for()
+```
