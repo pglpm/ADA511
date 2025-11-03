@@ -88,26 +88,26 @@ The same algorithm is shown and explained in section 19.3 in Russell and Norvig,
 We start by creating a node, which becomes a *leaf* node either if it classifies all examples correctly (no reason to split), or if there are no more features left (not possible to split). Otherwise, we find the most important feature by calling `Importance(examples)`, and proceed to make all possible splits. Now, the magic happens in the `Importance` function. How can we quantify which feature is best to discriminate on? We have in sections @sec-infinite-populations and @sec-entropy-mutualinfo met a useful definition from information theory, which is the **Shannon entropy**:
 
 $$
-    H(f) \defd -\sum_{i} f_i\ \log_2 f_i
+    H(f) \defd -\sum_{i} f_i\ \log_2 f_i\ \mathrm{Sh}
     \qquad\text{\midgrey\small(with \(0\cdot\log 0 \defd 0\))}
 $$
 
 where the $f_i$ are frequency distributions. If we stick to the simple example of our target features being "yes" or "no", we can write out the summation like so:
 
 $$
-    H = - f_{\mathrm{yes}} \log_2 f_{\mathrm{yes}} - f_{\mathrm{no}} \log_2 f_{\mathrm{no}}
+    H = -(f_{\mathrm{yes}} \log_2 f_{\mathrm{yes}} + f_{\mathrm{no}} \log_2 f_{\mathrm{no}})\ \mathrm{Sh}
 $$
 
 Let us compute the entropy for two different cases, to see how it works. In the first case, we have 10 examples: 6 corresponding to "yes", and four corresponding to "no". The entropy is then
 
 $$
-    H(6\;\text{yes}, 4\;\text{no}) = - (6/10) \log_2 (6/10) - (4/10) \log_2 (4/10) = 0.97
+    H(6\;\text{yes}, 4\;\text{no}) = -[(6/10) \log_2 (6/10) + (4/10) \log_2 (4/10)]\ \mathrm{Sh} = 0.97\ \mathrm{Sh}
 $$
 
 In the second case, we still have 10 examples, but nearly all of the same class: 9 examples are "yes", and 1 is "no":
 
 $$
-    H(9\;\text{yes}, 1\;\text{no}) = - (9/10) \log_2 (9/10) - (1/10) \log_2 (1/10) = 0.47
+    H(9\;\text{yes}, 1\;\text{no}) = - [(9/10) \log_2 (9/10) + (1/10) \log_2 (1/10)]\ \mathrm{Sh} = 0.47\ \mathrm{Sh}
 $$
 
 Interpreting the entropy as a measure of impurity in the set of examples, we can guess (or compute, using $0\cdot \log_2 0 = 0$) that the lowest possible entropy occurs for a set where all are of the same class. When doing classification, this is of course what we aim for -- separating all examples into those corresponding to "yes" and those corresponding to "no". A way of selecting the most important feature is then to choose the one where we expect the highest reduction in entropy, caused by splitting on this feature. This is called the [**information gain**]{.blue}, and is generally defined as
