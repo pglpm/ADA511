@@ -70,12 +70,104 @@ Now let's operate the agent as follows:
 
 0. We give an initial prompt of two tokens: `ARTICLE`, `x`.
 1. We let the agent calculate the degrees of belief about the next token.
-2. The next token is *chosen* by a decision process with a *unit utility matrix*: correct token choices have utility $+1$; and wrong choices, $0$.
+2. The next token is *chosen* as the one having highest probability. This corresponds to a decision process with a *unit utility matrix*: correct token choices have utility $+1$; and wrong choices, $0$.
 3. The first token is discarded, the second becomes first, and the last token generated becomes the second.
 4. Repeat from 1.
 
-We save the string of tokens thus generated and output it at the end.
+```{r}
+
+## Starting tokens
+word1 <- 'ARTICLE'
+word2 <- 'x'
+
+## Convenience variable to wrap text
+textlength <- 0
+
+for(i in 1:100){
+    ## Print the starting tokens if first iteration
+    if(i == 1){ cat('\n', word1, word2, '') }
+
+    ## Calculate beliefs about next token
+    probs <- infer(agent = opmSLM,
+        predictor = list(word1 = word1, word2 = word2),
+        predictand = 'word3')
+
+    ## Decision: next token
+    ## is the one with max prob.
+    word3 <- names(which.max(probs))
+
+    ## Wrap text if it'll get too long
+    textlength <- textlength + nchar(word3) + 1
+    if(textlength > 50){
+        cat('\n')
+        textlength <- 0
+    }
+
+    ## Print chosen token
+    cat(word3, '')
+
+    ## Use last two tokens for new prediction
+    word1 <- word2
+    word2 <- word3
+}
+```
+
+As you see, the agent started looping at "`THE` `RIGHT`". The text is doesn't look natural from this point of view. The set of decisions and of utilities we chose for the agent are not appropriate.
+\
+
+Let's try to define a little more precisely what we mean by "look natural".
+
+- One condition is the absence of text loops like the one above. The text should be to us somewhat *unpredictable*.
+- Also, the frequencies with which 3-grams appear in the output text should reflect those of natural language -- like the frequencies in the texts used to train the agent.
+
+These conditions suggest that we use an "*unpredictable decision*", in the sense discussed in [§@sec-unpred-decisions].
+
+Let's introduce the following decision:
+
+["Unpredictably select and output the next token according to its belief"]{.yellow}.
+
+In the long run, making this decision will produce text that is unpredictable, and also whose 3-gram frequencies reflect those of the training texts, because the agent bases its beliefs on those (though beliefs and frequencies are not exactly equal). Therefore it seems that, in the long run, this decision will lead to the highest utility.
+\
+
+The function `generatetext()` in the file [`textpreparation.R`](https://github.com/pglpm/ADA511/blob/master/code/textpreparation.R) applies the heuristic strategy above and outputs the resulting text. We saw an example output in [§@sec-preview-gentext]. Let's see another example output:
 
 ```{r}
-for()
+text <- generatetext(
+    agent = opmSLM,
+    prompt = c('ARTICLE', 'x'),
+    stopat = 70,
+    online = FALSE
+)
+
+wrapprint(text, wrapat = 50)
 ```
+
+
+
+:::{.callout-important}
+##  
+
+The discussion above is **not a rigorous application of the principle of maximal expected utility**. We did not list properly the decisions, or the outcomes, or the utility values. The reasoning was purely heuristic and intuitive.
+
+For this reason it is quite possible that the strategy adopted is **not** optimal.
+:::
+
+:::{.callout-caution}
+
+- Try to formalize our heuristic reasoning above and to derive the strategy rigorously, from the principle of maximal expected utility. [(This is not an easy task, but why not try?)]{.midgrey}
+
+- Reverse-engineer the function `generatetext()` and verify that it indeed implements the decision discussed above.
+
+- Try generating text with the OPM agent using other prompts. You should notice that sometimes the output text suddenly becomes gibberish, or is gibberish right from the start. It is also possible that gibberish output suddenly becomes more coherent again.
+    
+    Can you explain why these transitions from between sensible and insensible text occur?
+
+- Use other text to train the OPM agent and explore its output. You can prepare texts yourself, or use the ones in the directory [`code/texts`](https://github.com/pglpm/ADA511/tree/master/code/texts). In size order:
+    
+    - [`human_rights.txt`](https://github.com/pglpm/ADA511/blob/master/code/texts/human_rights.txt): [*Universal Declaration of Human Rights*](https://www.un.org/en/about-us/universal-declaration-of-human-rights).
+    - [`EUparliament.txt`](https://github.com/pglpm/ADA511/blob/master/code/texts/EUparliament.txt): sample of [*European Parliament Proceedings*](https://www.statmt.org/europarl/).
+    - [sherlock_holmes.txt](https://github.com/pglpm/ADA511/blob/master/code/texts/sherlock_holmes.txt): [*The Complete Sherlock Holmes*](https://sherlock-holm.es).
+    - [`ABC.txt`](https://github.com/pglpm/ADA511/blob/master/code/texts/ABC.txt): [*Australian Broadcasting Commission*](http://www.abc.net.au/).
+
+:::
+

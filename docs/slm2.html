@@ -734,10 +734,132 @@ Exercise&nbsp;38.1
 <ol start="0" type="1">
 <li>We give an initial prompt of two tokens: <code>ARTICLE</code>, <code>x</code>.</li>
 <li>We let the agent calculate the degrees of belief about the next token.</li>
-<li>The next token is <em>chosen</em> by a decision process with a <em>unit utility matrix</em>: correct token choices have utility <span class="math inline">\(+1\)</span>; and wrong choices, <span class="math inline">\(0\)</span>.</li>
+<li>The next token is <em>chosen</em> as the one having highest probability. This corresponds to a decision process with a <em>unit utility matrix</em>: correct token choices have utility <span class="math inline">\(+1\)</span>; and wrong choices, <span class="math inline">\(0\)</span>.</li>
 <li>The first token is discarded, the second becomes first, and the last token generated becomes the second.</li>
 <li>Repeat from 1.</li>
 </ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Starting tokens</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>word1 <span class="ot">&lt;-</span> <span class="st">'ARTICLE'</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>word2 <span class="ot">&lt;-</span> <span class="st">'x'</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Convenience variable to wrap text</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>textlength <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>){</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Print the starting tokens if first iteration</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(i <span class="sc">==</span> <span class="dv">1</span>){ <span class="fu">cat</span>(<span class="st">'</span><span class="sc">\n</span><span class="st">'</span>, word1, word2, <span class="st">''</span>) }</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Calculate beliefs about next token</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmSLM,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">predictor =</span> <span class="fu">list</span>(<span class="at">word1 =</span> word1, <span class="at">word2 =</span> word2),</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">predictand =</span> <span class="st">'word3'</span>)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Decision: next token</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="do">## is the one with max prob.</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    word3 <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">which.max</span>(probs))</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Wrap text if it'll get too long</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    textlength <span class="ot">&lt;-</span> textlength <span class="sc">+</span> <span class="fu">nchar</span>(word3) <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(textlength <span class="sc">&gt;</span> <span class="dv">50</span>){</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="fu">cat</span>(<span class="st">'</span><span class="sc">\n</span><span class="st">'</span>)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        textlength <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Print chosen token</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(word3, <span class="st">''</span>)</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    <span class="do">## Use last two tokens for new prediction</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    word1 <span class="ot">&lt;-</span> word2</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    word2 <span class="ot">&lt;-</span> word3</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ ARTICLE x EVERYONE HAS THE RIGHT TO FREEDOM OF OPINION AND 
+EXPRESSION ; THIS RIGHT INCLUDES FREEDOM TO CHANGE HIS 
+RELIGION OR BELIEF , AND THE RIGHT TO FREEDOM OF OPINION 
+AND EXPRESSION ; THIS RIGHT INCLUDES FREEDOM TO 
+CHANGE HIS RELIGION OR BELIEF , AND THE RIGHT TO FREEDOM 
+OF OPINION AND EXPRESSION ; THIS RIGHT INCLUDES 
+FREEDOM TO CHANGE HIS RELIGION OR BELIEF , AND THE RIGHT 
+TO FREEDOM OF OPINION AND EXPRESSION ; THIS RIGHT 
+INCLUDES FREEDOM TO CHANGE HIS RELIGION OR BELIEF , AND 
+THE RIGHT TO FREEDOM OF OPINION AND EXPRESSION ; THIS 
+RIGHT INCLUDES FREEDOM TO </code></pre>
+</div>
+</div>
+<p>As you see, the agent started looping at “<code>THE</code> <code>RIGHT</code>”. The text is doesn’t look natural from this point of view. The set of decisions and of utilities we chose for the agent are not appropriate.<br>
+</p>
+<p>Let’s try to define a little more precisely what we mean by “look natural”.</p>
+<ul>
+<li>One condition is the absence of text loops like the one above. The text should be to us somewhat <em>unpredictable</em>.</li>
+<li>Also, the frequencies with which 3-grams appear in the output text should reflect those of natural language – like the frequencies in the texts used to train the agent.</li>
+</ul>
+<p>These conditions suggest that we use an “<em>unpredictable decision</em>”, in the sense discussed in <a href="making_decisions.html#sec-unpred-decisions" class="quarto-xref">§&nbsp;<span>36.3</span></a>.</p>
+<p>Let’s introduce the following decision:</p>
+<p><span class="yellow">“Unpredictably select and output the next token according to its belief”</span>.</p>
+<p>In the long run, making this decision will produce text that is unpredictable, and also whose 3-gram frequencies reflect those of the training texts, because the agent bases its beliefs on those (though beliefs and frequencies are not exactly equal). Therefore it seems that, in the long run, this decision will lead to the highest utility.<br>
+</p>
+<p>The function <code>generatetext()</code> in the file <a href="https://github.com/pglpm/ADA511/blob/master/code/textpreparation.R"><code>textpreparation.R</code></a> applies the heuristic strategy above and outputs the resulting text. We saw an example output in <a href="slm.html#sec-preview-gentext" class="quarto-xref">§&nbsp;<span>34.5</span></a>. Let’s see another example output:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>text <span class="ot">&lt;-</span> <span class="fu">generatetext</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">agent =</span> opmSLM,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">prompt =</span> <span class="fu">c</span>(<span class="st">'ARTICLE'</span>, <span class="st">'x'</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">stopat =</span> <span class="dv">70</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">online =</span> <span class="cn">FALSE</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">wrapprint</span>(text, <span class="at">wrapat =</span> <span class="dv">50</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code> ARTICLE x EVERYONE HAS THE RIGHT TO JUST AND
+ FAVOURABLE CONDITIONS OF WORK AND TO SHARE IN SCIENTIFIC
+ ADVANCEMENT AND ITS BENEFITS. EVERYONE HAS THE RIGHT TO
+ FREEDOM OF MOVEMENT AND RESIDENCE WITHIN THE BORDERS OF
+ EACH STATE. EVERYONE HAS THE RIGHT TO BE PRESUMED
+ INNOCENT UNTIL PROVED GUILTY ACCORDING TO LAW IN A
+ DEMOCRATIC SOCIETY. THESE RIGHTS AND FREEDOMS, EVERYONE
+ SHALL BE GIVEN TO THEIR ...</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+&nbsp;
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The discussion above is <strong>not a rigorous application of the principle of maximal expected utility</strong>. We did not list properly the decisions, or the outcomes, or the utility values. The reasoning was purely heuristic and intuitive.</p>
+<p>For this reason it is quite possible that the strategy adopted is <strong>not</strong> optimal.</p>
+</div>
+</div>
+<div id="cau-unique2" class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise&nbsp;38.2
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>Try to formalize our heuristic reasoning above and to derive the strategy rigorously, from the principle of maximal expected utility. <span class="midgrey">(This is not an easy task, but why not try?)</span></p></li>
+<li><p>Reverse-engineer the function <code>generatetext()</code> and verify that it indeed implements the decision discussed above.</p></li>
+<li><p>Try generating text with the OPM agent using other prompts. You should notice that sometimes the output text suddenly becomes gibberish, or is gibberish right from the start. It is also possible that gibberish output suddenly becomes more coherent again.</p>
+<p>Can you explain why these transitions from between sensible and insensible text occur?</p></li>
+<li><p>Use other text to train the OPM agent and explore its output. You can prepare texts yourself, or use the ones in the directory <a href="https://github.com/pglpm/ADA511/tree/master/code/texts"><code>code/texts</code></a>. In size order:</p>
+<ul>
+<li><a href="https://github.com/pglpm/ADA511/blob/master/code/texts/human_rights.txt"><code>human_rights.txt</code></a>: <a href="https://www.un.org/en/about-us/universal-declaration-of-human-rights"><em>Universal Declaration of Human Rights</em></a>.</li>
+<li><a href="https://github.com/pglpm/ADA511/blob/master/code/texts/EUparliament.txt"><code>EUparliament.txt</code></a>: sample of <a href="https://www.statmt.org/europarl/"><em>European Parliament Proceedings</em></a>.</li>
+<li><a href="https://github.com/pglpm/ADA511/blob/master/code/texts/sherlock_holmes.txt">sherlock_holmes.txt</a>: <a href="https://sherlock-holm.es"><em>The Complete Sherlock Holmes</em></a>.</li>
+<li><a href="https://github.com/pglpm/ADA511/blob/master/code/texts/ABC.txt"><code>ABC.txt</code></a>: <a href="http://www.abc.net.au/"><em>Australian Broadcasting Commission</em></a>.</li>
+</ul></li>
+</ul>
+</div>
+</div>
 
 
 </section>
