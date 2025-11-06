@@ -41,11 +41,11 @@ This is a very powerful property, which is explained in understandable terms [he
 
 ## Training neural networks
 
-Finding the optimal values of the model's parameters $\mathbf{w}$ is usually called to *train* the model. When we looked at polynomials in the machine learning introduction (@sec-ml-introduction) we did not talk about this yet, partly because polynomial models have a closed-form solution for the best parameters, meaning they can be computed directly. Since neural networks are nonlinear by design, we need a different approach, which it to start with random parameter values and iteratively try to improve them.
+Finding the optimal values of the model's parameters $\mathbf{w}$ is usually called to *train* the model. When we looked at polynomials in the machine learning introduction (@sec-ml-introduction) we did not talk about this yet, partly because polynomial models have a closed-form solution for the best parameters, meaning they can be computed directly. Since neural networks are nonlinear by design, analytic solutions are not available and we need a numerical approach; for instance: start with unsystematically chosen parameter values, then iteratively try to improve them.
 
 ### Loss functions
 
-The first step towards improving the parameters, is to define what improvement is. Ultimately, our goal is to make predictions about the data that equal the true values, which is to say, we want to minimise the difference between predictions $f(\mathbf{x}, \mathbf{w}$ and true values $y$. This difference can be formulated in several different ways, but in the case of regression, the most common is the sum of squared errors:
+The first step towards improving the parameters, is to define what improvement is. Ultimately, our goal is to make predictions about the data that equal the true values, which is to say, we want to minimise the difference between predictions $f(\pmb{x}, \pmb{w},  \text{true values }y)$. This difference can be formulated in several different ways, but in the case of regression, the most common is the sum of squared errors:
 
 $$
 L(\mathbf{w}) = \sum_{\text{data points } i} (f(\mathbf{x}_i, \mathbf{w}) - y_i)^2
@@ -54,7 +54,7 @@ $$
 $L$ is called a [**loss function**]{.blue}, alternatively a *cost* function or an *error* function. With this in place, the training process becomes a minimisation problem:
 
 $$
-\underset{\mathbf{w}}{\mathrm{arg\,min}}\, L(\mathbf{w}) \,,
+\underset{\mathbf{w}}{\mathrm{arg\,min}}\, L(\mathbf{w}) \,.
 $$ {#eq-loss-minimisation}
 
 To minimise the loss function we still need to apply it to some data $\mathbf{x}$, but we have not made this dependence explicit, since the data are "unchanged" throughout the minimisation process. 
@@ -72,7 +72,7 @@ The process of actually adjusting the parameters in the correct direction is cal
 
 ### Gradient descent
 
-While we did not get into it earlier, the concept of defining a loss function and doing gradient descent, is in fact how the majority of machine learning algorithms are trained. Even for decision trees, which had their dedicated algorith, we ended up with a loss minimisation task once we introduced boosting. 
+While we did not get into it earlier, the concept of defining a loss function and doing gradient descent, is in fact how the majority of machine learning algorithms are trained. Even for decision trees, which had their dedicated algorithm, we ended up with a loss minimisation task once we introduced boosting.
 
 Straight-forward gradient descent as shown in equation {@eq-gradient-descent} can work fine for relatively simple models, but will stop at the first minimum it encounters. For a reasonably complicated network, the loss function landscape can be expected to have several local minima or saddle points, causing the method to get stuck in places with suboptimal parameters. Several improved algorithms aim to tackle this. 
 
@@ -86,7 +86,7 @@ All of the above can be combined, and the most common method of doing so is the 
 
 In the previous chapter, we had several ways of limiting decision trees so they would not overfit to the training data. Many apply also here, but having introduced the concept of loss functions, we will add a general approach.
 
-First, limiting complexity by tuning hyperparameters, is always an option. For a standard network, we can adjust the number of layers and the number of nodes per layer. Making good guesses about the architecture of the network is difficult, so a *hyperparameter search* if often necessary to develop a performant model. 
+First, limiting complexity by tuning hyperparameters, is always an option. For a standard network, we can adjust the number of layers and the number of nodes per layer. Making good guesses about the architecture of the network is difficult, so a *hyperparameter search* is often necessary to develop a performant model. 
 
 Secondly, similar to random forests, one can make ensembles of models, trained on subsets (with replacement) of the data. For neural networks, however, this is less common, since the network is sort of an ensemble by itself. But remember that for random forests we also randomly dropped some of the features during training. The equivalent for neural networks is to randomly drop *nodes*, by zeroing their output for a single training iteration. This is called **dropout**. 
 

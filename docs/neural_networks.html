@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-09-16">
+<meta name="dcterms.date" content="2025-11-06">
 
 <title>41&nbsp; Neural networks – ADA511 0.4</title>
 <style>
@@ -134,7 +134,7 @@ window.Quarto = {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.4</span><br><span class="small grey">2025-09-16</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.4</span><br><span class="small grey">2025-11-06</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -614,7 +614,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-09-16</p>
+      <p class="date">2025-11-06</p>
     </div>
   </div>
   
@@ -631,7 +631,7 @@ window.Quarto = {
 </div>
 <p>Neural networks are performing extremely well on complex tasks such as language modelling and realistic image generation, although the principle behind how they work, is quite simple.</p>
 <p>The basic building block is a <strong>node</strong>, which receives some values as input, and computes a single output:</p>
-<div id="fig-neural-network-node" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="400">
+<div id="fig-neural-network-node" class="quarto-float quarto-figure quarto-figure-center anchored" width="400" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-neural-network-node-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="fig_neural_network_node.png" id="fig-neural-network-node" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="400">
@@ -662,16 +662,16 @@ z = h(a) = h \left( b + \sum_{i=0}^N w_i x_i \right)
 <p>This is a very powerful property, which is explained in understandable terms <a href="http://neuralnetworksanddeeplearning.com/chap4.html">here</a> (the proof (CITE) is rather technical). But, as we know already, this only helps if we are trying to model something which has a functional relationship.</p>
 <section id="training-neural-networks" class="level2" data-number="41.1">
 <h2 data-number="41.1" class="anchored" data-anchor-id="training-neural-networks"><span class="header-section-number">41.1</span> Training neural networks</h2>
-<p>Finding the optimal values of the model’s parameters <span style="display:inline-block;"><span class="math inline">\(\mathbf{w}\)</span></span> is usually called to <em>train</em> the model. When we looked at polynomials in the machine learning introduction (<a href="machine_learning_overview.html" class="quarto-xref"><span>Chapter 39</span></a>) we did not talk about this yet, partly because polynomial models have a closed-form solution for the best parameters, meaning they can be computed directly. Since neural networks are nonlinear by design, we need a different approach, which it to start with random parameter values and iteratively try to improve them.</p>
+<p>Finding the optimal values of the model’s parameters <span style="display:inline-block;"><span class="math inline">\(\mathbf{w}\)</span></span> is usually called to <em>train</em> the model. When we looked at polynomials in the machine learning introduction (<a href="machine_learning_overview.html" class="quarto-xref"><span>Chapter 39</span></a>) we did not talk about this yet, partly because polynomial models have a closed-form solution for the best parameters, meaning they can be computed directly. Since neural networks are nonlinear by design, analytic solutions are not available and we need a numerical approach; for instance: start with unsystematically chosen parameter values, then iteratively try to improve them.</p>
 <section id="loss-functions" class="level3">
 <h3 class="anchored" data-anchor-id="loss-functions">Loss functions</h3>
-<p>The first step towards improving the parameters, is to define what improvement is. Ultimately, our goal is to make predictions about the data that equal the true values, which is to say, we want to minimise the difference between predictions <span style="display:inline-block;"><span class="math inline">\(f(\mathbf{x}, \mathbf{w}\)</span></span> and true values <span style="display:inline-block;"><span class="math inline">\(y\)</span>.</span> This difference can be formulated in several different ways, but in the case of regression, the most common is the sum of squared errors:</p>
+<p>The first step towards improving the parameters, is to define what improvement is. Ultimately, our goal is to make predictions about the data that equal the true values, which is to say, we want to minimise the difference between predictions <span style="display:inline-block;"><span class="math inline">\(f(\pmb{x}, \pmb{w},  \text{true values }y)\)</span>.</span> This difference can be formulated in several different ways, but in the case of regression, the most common is the sum of squared errors:</p>
 <p><span class="math display">\[
 L(\mathbf{w}) = \sum_{\text{data points } i} (f(\mathbf{x}_i, \mathbf{w}) - y_i)^2
 \]</span></p>
 <p><span class="math inline">\(L\)</span> is called a <span class="blue"><strong>loss function</strong></span>, alternatively a <em>cost</em> function or an <em>error</em> function. With this in place, the training process becomes a minimisation problem:</p>
 <p><span id="eq-loss-minimisation"><span class="math display">\[
-\underset{\mathbf{w}}{\mathrm{arg\,min}}\, L(\mathbf{w}) \,,
+\underset{\mathbf{w}}{\mathrm{arg\,min}}\, L(\mathbf{w}) \,.
 \tag{41.1}\]</span></span></p>
 <p>To minimise the loss function we still need to apply it to some data <span style="display:inline-block;"><span class="math inline">\(\mathbf{x}\)</span>,</span> but we have not made this dependence explicit, since the data are “unchanged” throughout the minimisation process.</p>
 <p>As for any bounded function, the minimum can be found either where the <a href="https://mathworld.wolfram.com/Gradient.html">gradient</a> <span style="display:inline-block;"><span class="math inline">\(\nabla L(\mathbf{w})\)</span></span> is zero, or where it does not exist. Solving this analytically is usually impossible, so we resort to a numerical solution – iteratively taking steps in the direction of smaller loss. The crucial point in neural network training is that the loss function is differentiable with respect to the network parameters, meaning we can compute <span style="display:inline-block;"><span class="math inline">\(\nabla L(\mathbf{w})\)</span></span> and take steps in the negative (downwards) direction:</p>
@@ -683,7 +683,7 @@ L(\mathbf{w}) = \sum_{\text{data points } i} (f(\mathbf{x}_i, \mathbf{w}) - y_i)
 </section>
 <section id="gradient-descent" class="level3">
 <h3 class="anchored" data-anchor-id="gradient-descent">Gradient descent</h3>
-<p>While we did not get into it earlier, the concept of defining a loss function and doing gradient descent, is in fact how the majority of machine learning algorithms are trained. Even for decision trees, which had their dedicated algorith, we ended up with a loss minimisation task once we introduced boosting.</p>
+<p>While we did not get into it earlier, the concept of defining a loss function and doing gradient descent, is in fact how the majority of machine learning algorithms are trained. Even for decision trees, which had their dedicated algorithm, we ended up with a loss minimisation task once we introduced boosting.</p>
 <p>Straight-forward gradient descent as shown in equation {<a href="#eq-gradient-descent" class="quarto-xref"><span>41.2</span></a>} can work fine for relatively simple models, but will stop at the first minimum it encounters. For a reasonably complicated network, the loss function landscape can be expected to have several local minima or saddle points, causing the method to get stuck in places with suboptimal parameters. Several improved algorithms aim to tackle this.</p>
 <ul>
 <li><em>Stochastic</em> gradient descent updates the parameters through equation {<a href="#eq-gradient-descent" class="quarto-xref"><span>41.2</span></a>} for only a subset of data at a time. This is more computationally efficient, and the stochastic element helps against getting stuck in a local minimum, since a local minimum for some subset of data might not be a minimum for a different subset.</li>
@@ -696,7 +696,7 @@ L(\mathbf{w}) = \sum_{\text{data points } i} (f(\mathbf{x}_i, \mathbf{w}) - y_i)
 <section id="preventing-overfitting---regularisation" class="level1" data-number="42">
 <h1 data-number="42"><span class="header-section-number">42</span> Preventing overfitting - <em>regularisation</em></h1>
 <p>In the previous chapter, we had several ways of limiting decision trees so they would not overfit to the training data. Many apply also here, but having introduced the concept of loss functions, we will add a general approach.</p>
-<p>First, limiting complexity by tuning hyperparameters, is always an option. For a standard network, we can adjust the number of layers and the number of nodes per layer. Making good guesses about the architecture of the network is difficult, so a <em>hyperparameter search</em> if often necessary to develop a performant model.</p>
+<p>First, limiting complexity by tuning hyperparameters, is always an option. For a standard network, we can adjust the number of layers and the number of nodes per layer. Making good guesses about the architecture of the network is difficult, so a <em>hyperparameter search</em> is often necessary to develop a performant model.</p>
 <p>Secondly, similar to random forests, one can make ensembles of models, trained on subsets (with replacement) of the data. For neural networks, however, this is less common, since the network is sort of an ensemble by itself. But remember that for random forests we also randomly dropped some of the features during training. The equivalent for neural networks is to randomly drop <em>nodes</em>, by zeroing their output for a single training iteration. This is called <strong>dropout</strong>.</p>
 <p>Lastly, let us introduce general regularisation, which is based on modifying the loss function. This means it can be applied to any machine learning algorithm that minimises loss, and is not specific to the algorithm itself. What we want to do is to add a term in the loss function that penalises large parameter values. This way we do not need to restrict the explicit complexity of the model by changing the structure, but we rather restrict the “volume” the parameters can span out. The minimisation problem in equation {<a href="#eq-loss-minimisation" class="quarto-xref"><span>41.1</span></a>} then becomes</p>
 <p><span id="eq-loss-with-regularisation"><span class="math display">\[

@@ -43,7 +43,7 @@ buildagent <- function(
     }
 
     ## stop if variates are missing in data
-    if(!all(variatenames %in% colnames(data))){
+    if(!(is.null(nrow(data)) || nrow(data) == 0) && !all(variatenames %in% colnames(data))){
         stop('Missing variates in data.')
     }
     ## reorder data columns according to metadata variates
@@ -53,16 +53,20 @@ buildagent <- function(
     }
     data <- data[, variatenames, drop = FALSE]
     ## remove datapoints with missing values
-    tokeep <- complete.cases(data)
-    N <- sum(tokeep) # total number of learning data
-    if(any(!tokeep)){
-        message('Removing datapoints with missing values: ',
-            N, ' data left.')
-        if(all(!tokeep)){ # no data left
-            data <- NULL
-        } else {
-            data <- data[tokeep, , drop = FALSE]
+    if(!is.null(data)){
+        tokeep <- complete.cases(data)
+        N <- sum(tokeep) # total number of learning data
+        if(any(!tokeep)){
+            message('Removing datapoints with missing values: ',
+                N, ' data left.')
+            if(all(!tokeep)){ # no data left
+                data <- NULL
+            } else {
+                data <- data[tokeep, , drop = FALSE]
+            }
         }
+    } else {
+        N <- 0
     }
 
 
@@ -110,25 +114,34 @@ buildagent <- function(
         agentclass <- 'agent'
 
         ## check which variate values are not present in data
-        missingvals <- Filter(length,
-            sapply(variatenames, function(var){
-                variates[[var]][!(variates[[var]] %in% data[,var])]
-            })
-        )
-        temp <- data.frame(matrix(NA_character_,
-            sum(lengths(missingvals)), nvariates))
-        colnames(temp) <- variatenames
+        ## must add a spurious variate in case data only has one variate
+        if(!is.null(data)){
+            missingvals <- Filter(length,
+                sapply(variatenames, function(var){
+                    variates[[var]][!(variates[[var]] %in% data[,var])]
+                })
+            )
 
-        i <- 0
-        for(var in names(missingvals)){
-            toadd <- missingvals[[var]]
-            temp[i + seq_along(toadd), var] <- toadd
-            i <- i + length(toadd)
+            temp <- data.frame(matrix(NA_character_,
+                nrow = sum(lengths(missingvals)), ncol = nvariates + 1L))
+            colnames(temp) <- c('@$%^&', variatenames)
+
+            i <- 0
+            for(var in names(missingvals)){
+                toadd <- missingvals[[var]]
+                temp[i + seq_along(toadd), var] <- toadd
+                i <- i + length(toadd)
+            }
+
+            ## count occurrences of all possible joint values
+            ## counts := #z for all values of z
+            counts <- table(rbind( cbind('@$%^&' = 'a', data), temp))
+            temp <- dimnames(counts)[-1]
+            dim(counts) <- dim(counts)[-1]
+            dimnames(counts) <- temp
+        } else {
+            counts <- array(0L, dim = lengths(variates), dimnames = variates)
         }
-
-        ## count occurrences of all possible joint values
-        ## counts := #z for all values of z
-        counts <- table(rbind(data, temp))
 
         ## store how many times each different count value appears
         freqscounts <- tabulate(c(counts) + 1L)
@@ -327,7 +340,6 @@ infer.agent <- function(
         ## Calculate final probabilities for predictands
         temp <- dimnames(counts) # save dimnames
         counts <- colSums(exp(log(outer(alphas, counts, `+`)) + logauxk))
-
         ## Reshape array of results
         if(is.null(dim(counts))){
             dim(counts) <- length(counts)
