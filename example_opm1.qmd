@@ -153,10 +153,10 @@ We ask the `opm10` agent to forecast the $\mathit{income}$ of the next unit, usi
 infer(agent = opm10, predictand = 'income')
 ```
 
-This agent gives a slightly larger probability to the $\cat{<=50K}$ case. Using the function `plotFsamples1D()` we can also inspect the `opm10`-agent's belief about the frequency distribution of $\mathit{income}$ for the full population. This belief is represented by a generalized scatter plot of 200 representative frequency distributions, represented as the [light-blue lines]{.lightblue}:
+This agent gives a slightly larger probability to the $\cat{<=50K}$ case. Using the function `plotFbelief()` we can also inspect the `opm10`-agent's belief about the frequency distribution of $\mathit{income}$ for the full population. This belief is represented by a generalized scatter plot of 200 representative frequency distributions, represented as the [light-blue lines]{.lightblue}:
 
 ```{r}
-plotFsamples1D(agent = opm10,
+plotFbelief(agent = opm10,
     n = 200, ## number of example frequency distributions
     predictand = 'income',
     ylim = c(0,1), ## y-axis range
@@ -171,7 +171,7 @@ This plot expresses the `opm10`-agent's belief that future training data might l
 Let's visualize the beliefs of the `opmAll`-agent, trained with the full training dataset:
 
 ```{r}
-plotFsamples1D(agent = opmAll, n = 200,
+plotFbelief(agent = opmAll, n = 200,
     predictand = 'income',
     ylim = c(0,1), main = 'opmAll')
 ```
@@ -184,7 +184,7 @@ We can perform a similar exploration for any other variate. Let's take the $\mat
 
 
 ```{r}
-plotFsamples1D(agent = opm10, n = 200,
+plotFbelief(agent = opm10, n = 200,
     predictand = 'race',
     ylim = c(0,1), main = 'opm10',
     cex.axis = 0.75) ## smaller axis-font size
@@ -196,7 +196,7 @@ This is corroborated by the fully-trained agent:
 
 
 ```{r}
-plotFsamples1D(agent = opmAll, n = 200,
+plotFbelief(agent = opmAll, n = 200,
     predictand = 'race',
     ylim = c(0,1), main = 'opmAll', cex.axis = 0.75)
 ```
@@ -240,7 +240,7 @@ We ask the `opm10` agent to forecast the $\mathit{income}$ of a new unit, given 
 The `opm10`-agent's belief about the unit -- as well as about the *full subpopulation* ([§@sec-subpopulations]) of units having those predictors -- is shown in the following plot:
 
 ```{r}
-plotFsamples1D(agent = opm10, n = 200,
+plotFbelief(agent = opm10, n = 200,
     predictand = 'income',
     predictor = list(occupation = 'Exec-managerial', sex = 'Male'),
     ylim = c(0,1), main = 'opm10')
@@ -251,7 +251,7 @@ Note how the `opm10`-agent still slightly higher probability to $\mathit{income}
 The `opmAll`-agent's beliefs are shown below:
 
 ```{r}
-plotFsamples1D(agent = opmAll, n = 200,
+plotFbelief(agent = opmAll, n = 200,
     predictand = 'income',
     predictor = list(occupation = 'Exec-managerial', sex = 'Male'),
     ylim = c(0,1), main = 'opmAll')
@@ -275,7 +275,7 @@ It returns a 14 × 2 table of joint probabilities. The most probable combina
 
 ### The `rF()` function
 
-This function generates **full-population** frequency distributions (even for subpopulations) that are probable according to the data. It is used internally by `plotFsamples1D()`, which plots the generated frequency distributions as [light-blue lines]{.lightblue}.
+This function generates **full-population** frequency distributions (even for subpopulations) that are probable according to the data. It is used internally by `plotFbelief()`, which plots the generated frequency distributions as [light-blue lines]{.lightblue}.
 
 Let's see, as an example, three samples of how the full-population frequency distribution for $\mathit{sex} \and \mathit{income}$ (jointly) could be:
 

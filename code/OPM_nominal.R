@@ -654,7 +654,7 @@ rF.agent <- function(
 
 
 #### Plots samples of full-population freq. distributions for one variate
-plotFsamples1D <- function(
+plotFbelief <- function(
     agent,
     n = 100,
     predictand,
