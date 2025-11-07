@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-11-03">
+<meta name="dcterms.date" content="2025-11-07">
 
 <title>38&nbsp; The Optimal Predictor Machine generates text – ADA511 0.4</title>
 <style>
@@ -169,7 +169,7 @@ window.Quarto = {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.4</span><br><span class="small grey">2025-11-03</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.4</span><br><span class="small grey">2025-11-07</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -624,7 +624,7 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-what-decision-llm" id="toc-sec-what-decision-llm" class="nav-link active" data-scroll-target="#sec-what-decision-llm"><span class="header-section-number">38.1</span> Agents that generate text: what’s the decision-making problem?</a></li>
+  <li><a href="#sec-what-decision-llm" id="toc-sec-what-decision-llm" class="nav-link active" data-scroll-target="#sec-what-decision-llm"><span class="header-section-number">38.1</span> Agents that generate text: what’s the underlying decision-making problem?</a></li>
   <li><a href="#sec-tentative-decision-llm" id="toc-sec-tentative-decision-llm" class="nav-link" data-scroll-target="#sec-tentative-decision-llm"><span class="header-section-number">38.2</span> A tentative decision-making point of view</a></li>
   </ul>
 </nav>
@@ -645,7 +645,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-11-03</p>
+      <p class="date">2025-11-07</p>
     </div>
   </div>
   
@@ -667,7 +667,7 @@ window.Quarto = {
 
 </div>
 <section id="sec-what-decision-llm" class="level2" data-number="38.1">
-<h2 data-number="38.1" class="anchored" data-anchor-id="sec-what-decision-llm"><span class="header-section-number">38.1</span> Agents that generate text: what’s the decision-making problem?</h2>
+<h2 data-number="38.1" class="anchored" data-anchor-id="sec-what-decision-llm"><span class="header-section-number">38.1</span> Agents that generate text: what’s the underlying decision-making problem?</h2>
 <p>In <a href="slm.html#sec-language-inference" class="quarto-xref">§&nbsp;<span>34.1</span></a> we saw that present-day Large Language Model determine their belief in what the next word or token should be, only based on the sequence of words seen so far, and on the frequencies of such sequences in a huge collection of texts. These beliefs are not determined on possible future outcomes of their choice of words, as instead is the case in human conversation. We managed to use our Optimal Predictor Machine in the same way in a simplified setting.</p>
 <p>Large Language Models do not output probabilities, however: they output words. So at every step they are effectively choosing one of the possible words about which they calculated their beliefs. This is decision, and to be optimal and self-consistent it should be based on some outcomes and their utilities.</p>
 <p>What are the outcomes and utilities underlying word-choice in Large Language Models? This is still an open question. The approaches followed so far in the literature have been based more on intuition and on “playing around” rather than framing the problem in a systematic way. This means that there’s a lot of room for an AI engineer to bring forth a better understanding and major improvements.<br>
@@ -702,7 +702,7 @@ Exercise&nbsp;38.1
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Load main functions</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'tplotfunctions.R'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'OPM_nominal.R'</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'textpreparation.R'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'SLMutilities.R'</span>)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Set seed for reproducibility</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">700</span>)</span>
@@ -800,7 +800,7 @@ RIGHT INCLUDES FREEDOM TO </code></pre>
 <p><span class="yellow">“Unpredictably select and output the next token according to its belief”</span>.</p>
 <p>In the long run, making this decision will produce text that is unpredictable, and also whose 3-gram frequencies reflect those of the training texts, because the agent bases its beliefs on those (though beliefs and frequencies are not exactly equal). Therefore it seems that, in the long run, this decision will lead to the highest utility.<br>
 </p>
-<p>The function <code>generatetext()</code> in the file <a href="https://github.com/pglpm/ADA511/blob/master/code/textpreparation.R"><code>textpreparation.R</code></a> applies the heuristic strategy above and outputs the resulting text. We saw an example output in <a href="slm.html#sec-preview-gentext" class="quarto-xref">§&nbsp;<span>34.5</span></a>. Let’s see another example output:</p>
+<p>The function <code>generatetext()</code> in the file <a href="https://github.com/pglpm/ADA511/blob/master/code/SLMutilities.R"><code>SLMutilities.R</code></a> applies the heuristic strategy above and outputs the resulting text. We saw an example output in <a href="slm.html#sec-preview-gentext" class="quarto-xref">§&nbsp;<span>34.5</span></a>. Let’s see another example output:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>text <span class="ot">&lt;-</span> <span class="fu">generatetext</span>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">agent =</span> opmSLM,</span>

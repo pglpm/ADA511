@@ -709,21 +709,22 @@ window.Quarto = {
 <p>To use the OPM this way, we define a population of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> variates, let’s say <span style="display:inline-block;"><span class="math inline">\(n = 3\)</span>.</span> The three variates are defined as <strong>consecutive</strong> words in some specific set of texts. We can call them <span style="display:inline-block;"><span class="math inline">\({\small\verb;word1;}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\small\verb;word2;}\)</span>,</span> <span style="display:inline-block;"><span class="math inline">\({\small\verb;word3;}\)</span>,</span> and so on. Instead of words it’s actually best to use <span class="blue"><em>tokens</em></span>, which comprise not only words, but punctuation marks like <code>,.;:!?</code> and other signs. (The exact definition of token depends on the specific application, and can even include parts of words.) Such a sequence of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> tokens is often called an <strong>n-gram</strong>.</p>
 <section id="sec-prepare-text" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="sec-prepare-text">Preparing the training data from some text</h3>
-<p>In order to prepare the training data for our OPM agent, let’s load some helper R functions defined in the <a href="https://github.com/pglpm/ADA511/blob/master/code/textpreparation.R"><code>textpreparation.R</code></a> file, as well as the OPM functions, from the usual directory<br>
+<p>In order to prepare the training data for our OPM agent, let’s load some helper R functions defined in the <a href="https://github.com/pglpm/ADA511/blob/master/code/SLMutilities.R"><code>SLMutilities.R</code></a> file, as well as the OPM functions, from the usual directory<br>
 <a href="https://github.com/pglpm/ADA511/blob/master/code">https://github.com/pglpm/ADA511/blob/master/code</a>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'tplotfunctions.R'</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'OPM_nominal.R'</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'textpreparation.R'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'SLMutilities.R'</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">400</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The function <code>preparengramfiles()</code> takes three input arguments:</p>
+<p>The function <code>preparengramfiles()</code> takes four input arguments:</p>
 <ul>
 <li><code>inputfile</code>: the name of a text <code>.txt</code> file, used to train the agent;</li>
-<li><code>outsuffix</code>: the suffix for the output files (see below);</li>
 <li><code>n</code>: the <span class="math inline">\(n\)</span> of the n-grams, default <code>n = 3</code>;</li>
-<li><code>maxtokens</code>: the maximum number of unique tokens to use – the “vocabulary” – in case we need to save memory; default is <code>maxtokens = Inf</code>, which uses all tokens from the input text.</li>
+<li><code>maxtokens</code>: the maximum number of unique tokens to use – the “vocabulary” – in case we need to save memory; default is <code>maxtokens = Inf</code>, which uses all tokens from the input text;</li>
+<li><code>numbersasx</code>: convert any groups of digits to the token <code>x</code>? Default <code>TRUE</code>;</li>
+<li><code>outsuffix</code>: the suffix for the output files (see below);</li>
 </ul>
 <p>The function creates two <code>csv</code> files: one containing the training data with all n-grams from the input text, and one containing the metadata, consisting in the vocabulary. It outputs the file names as list with elements <code>metadata</code> and <code>data</code>. These files have exactly the same format used in the previous chapter; for our OPM agent these data and metadata aren’t qualitatively different from the ones of the adult-income task.</p>
 <p>For simplicity, the helper function above converts all text to upper case and ASCII characters; it replaces every sequence of digits 0–9 with the single lowercase letter <code>x</code>; and only keeps the following punctuation: <code>,.;:?!%$&amp;@+'/-</code>.</p>
@@ -741,8 +742,9 @@ Around the world, around the world.</p>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">inputfile =</span> <span class="st">'texts/around_the_world.txt'</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">outsuffix =</span> <span class="st">'around'</span>,</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">3</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxtokens =</span> <span class="cn">Inf</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxtokens =</span> <span class="cn">Inf</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">numbersasx =</span> <span class="cn">TRUE</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Unique tokens:  5.</code></pre>
 </div>
@@ -879,8 +881,9 @@ Everyone is entitled to all the rights and freedoms set forth in this Declaratio
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">inputfile =</span> <span class="st">'texts/human_rights.txt'</span>,</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">outsuffix =</span> <span class="st">'rights'</span>,</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">3</span>,</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxtokens =</span> <span class="cn">Inf</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxtokens =</span> <span class="cn">Inf</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">numbersasx =</span> <span class="cn">TRUE</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Unique tokens:  506.</code></pre>
 </div>
@@ -1000,8 +1003,9 @@ Exercise&nbsp;34.1
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">inputfile =</span> <span class="st">'texts/human_rights.txt'</span>,</span>
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">outsuffix =</span> <span class="st">'temp'</span>,</span>
 <span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">6</span>,</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxtokens =</span> <span class="cn">Inf</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxtokens =</span> <span class="cn">Inf</span>,</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">numbersasx =</span> <span class="cn">TRUE</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Unique tokens:  506.</code></pre>
 </div>

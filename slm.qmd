@@ -45,23 +45,24 @@ To use the OPM this way, we define a population of $n$ variates, let's say $n = 
 
 ### Preparing the training data from some text {#sec-prepare-text}
 
-In order to prepare the training data for our OPM agent, let's load some helper R functions defined in the [`textpreparation.R`](https://github.com/pglpm/ADA511/blob/master/code/textpreparation.R) file, as well as the OPM functions, from the usual directory\
+In order to prepare the training data for our OPM agent, let's load some helper R functions defined in the [`SLMutilities.R`](https://github.com/pglpm/ADA511/blob/master/code/SLMutilities.R) file, as well as the OPM functions, from the usual directory\
 [https://github.com/pglpm/ADA511/blob/master/code](https://github.com/pglpm/ADA511/blob/master/code):
 
 ```{r}
 source('tplotfunctions.R')
 source('OPM_nominal.R')
-source('textpreparation.R')
+source('SLMutilities.R')
 
 set.seed(400)
 ```
 
-The function `preparengramfiles()` takes three input arguments:
+The function `preparengramfiles()` takes four input arguments:
 
 - `inputfile`: the name of a text `.txt` file, used to train the agent;
-- `outsuffix`: the suffix for the output files (see below);
 - `n`: the $n$ of the n-grams, default `n = 3`;
-- `maxtokens`: the maximum number of unique tokens to use -- the "vocabulary" -- in case we need to save memory; default is `maxtokens = Inf`, which uses all tokens from the input text.
+- `maxtokens`: the maximum number of unique tokens to use -- the "vocabulary" -- in case we need to save memory; default is `maxtokens = Inf`, which uses all tokens from the input text;
+- `numbersasx`: convert any groups of digits to the token `x`? Default `TRUE`;
+- `outsuffix`: the suffix for the output files (see below);
 
 The function creates two `csv` files: one containing the training data with all n-grams from the input text, and one containing the metadata, consisting in the vocabulary. It outputs the file names as list with elements `metadata` and `data`. These files have exactly the same format used in the previous chapter; for our OPM agent these data and metadata aren't qualitatively different from the ones of the adult-income task.
 
@@ -84,7 +85,8 @@ ngramfiles <- preparengramfiles(
     inputfile = 'texts/around_the_world.txt',
     outsuffix = 'around',
     n = 3,
-    maxtokens = Inf
+    maxtokens = Inf,
+    numbersasx = TRUE
 )
 ```
 
@@ -183,7 +185,8 @@ ngramfiles <- preparengramfiles(
     inputfile = 'texts/human_rights.txt',
     outsuffix = 'rights',
     n = 3,
-    maxtokens = Inf
+    maxtokens = Inf,
+    numbersasx = TRUE
 )
 ```
 
@@ -289,7 +292,8 @@ ngramfiles <- preparengramfiles(
     inputfile = 'texts/human_rights.txt',
     outsuffix = 'temp',
     n = 6,
-    maxtokens = Inf
+    maxtokens = Inf,
+    numbersasx = TRUE
 )
 
 ## ...Build a temporary agent from them...

@@ -1,10 +1,12 @@
 #### Helper function: separate punctation from words
-separatepunct <- function(text){
+separatepunct <- function(text, numbersasx = TRUE){
     text <- toupper(iconv(text, to = 'ASCII//TRANSLIT'))
     text <- gsub(
         "[^1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ,.;:?!%$&@+'/-]",
         "", text)
-    text <- gsub("[0-9]+", "x", text)
+    if(numbersasx){
+        text <- gsub("[0-9]+", "x", text)
+    }
     text <- unlist(
         strsplit(x = gsub(
             "([,.;:?!])",
@@ -70,11 +72,15 @@ preparengramfiles <- function(
     outsuffix = inputfile,
     n = 3,
     maxtokens = Inf,
+    numbersasx = TRUE,
     outprefix = NULL
 ) {
     ## retrieve text from file and do a first word division
-    text <-  separatepunct(scan(file = inputfile,
-        what = 'character', sep = "", quote= NULL, allowEscapes = FALSE))
+    text <-  separatepunct(
+        text = scan(file = inputfile,
+            what = 'character', sep = "", quote= NULL, allowEscapes = FALSE),
+        numbersasx = numbersasx
+    )
 
     ## find unique tokens
     tokens <- sort(table(text), decreasing = TRUE)
