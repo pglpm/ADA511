@@ -6,6 +6,24 @@ inferP(
     P(-h & -s | f & J) == 0.1,
     P(h | f  & J) == P(s | f & J)
 )
+## min  max 
+## 0.55 0.55 
+
+inferP(
+    target = P(!h | f & J),
+    P((!h) + (!s) | f & J) == 1,
+    P((!h) & (!s) | f & J) == 0.1,
+    P(h | f  & J) == P(s | f & J)
+)
+
+
+inferP(
+    target = P(!h ~ f & J),
+    P(!h || !s ~ f & J) == 1,
+    P(!h & !s ~ f & J) == 0.1,
+    P(h ~ f  & J) == P(s ~ f & J),
+    solidus = FALSE
+)
 
 
 

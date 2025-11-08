@@ -21,19 +21,28 @@
 #' `tomorrow it rains` # note the backticks
 #' ```
 #'
-#' Available logical connectives are "not" (negation, "\eqn{\lnot}"), "and" (conjunction, "\eqn{\land}"), "or" (disjunction, "\eqn{\lor}"), "if-then" (implication, "\eqn{\Rightarrow}"). The first three follow the standard R syntax for logical operators (see [base::logical]):
-#' - Not: ` !` or ` -`
-#' - And: ` & ` or ` && ` or ` * `
-#' - Or: ` + `; if argument `solidus = FALSE`, also ` || ` or ` | ` are allowed.
+#' Available logical connectives are "not" (negation, "\eqn{\lnot}"), "and" (conjunction, "\eqn{\land}"), "or" (disjunction, "\eqn{\lor}"), "if-then" (implication, "\eqn{\Rightarrow}") which internally is simply defined as "x or not-y". Two kinds of notation are available:
 #'
-#' The "if-then" connective is represented by the infix operator ` > `; internally `x > y` is simply defined as `x or not-y`.
+#' **Arithmetic notation**: should be used with argument `solidus = TRUE`:
+#' - Not: ` -`
+#' - And: ` * `
+#' - Or: ` + `
+#' - If-then: ` > `
+#'
+#' **Logical notation** (see [base::logical]): should be used with the argument `solidus = FALSE`:
+#' - Not: ` ! `
+#' - And: ` & ` or ` && `
+#' - Or: ` | ` or ` || `
+#' - If-then: two-argument function `ifthen()`
+#'
+#' The two kinds of notation can actually be mixed (only ` | ` and ` || ` are not allowed if `solidus = TRUE`), but **beware** of very unusual connective precedence in that case; for example, `!a + b` is interpreted as `!(a + b)`. If you use mixed notation you should explicitly group with parentheses to ensure the desired connective precedence. A warning is issued when `!` is used for negation together with `+`, `*`, because the grouping is dangerously counter-intuitive in this case.
 #'
 #' Examples of logical expressions:
 #' ```
 #' a
 #' a & b
 #' (a + hypothesis1) & -A
-#' red.ball & ((a > !b) + c)
+#' red.ball & ((a > -b) + c)
 #' ```
 #'
 #' ### Probabilities of logical expressions
@@ -44,15 +53,12 @@
 #'     
 #' can be entered in the following ways, among others (extra spaces added just for clarity):
 #' ```
-#' P(!a + b  |  c & H)
-#' P(-a + b  |  c && H)
-#' P(!a + b  |  c * H)
+#' P(-a + b  |  c * H)
 #' ```
-#' or, if argument  `solidus = FALSE`, in the following ways:
+#' or, if argument  `solidus = FALSE`:
 #' ```
 #' P(!a | b  ~  c & H)
-#' P(-a + b  ~  c && H)
-#' P(!a || b  ~  c * H)
+#' P(!a || b  ~  c && H)
 #' ```
 #' It is also possible to use `Pr`, `p`, `pr`, `F`, `f`, `T` (for "truth"), or `t` instead of `P`.
 #'
@@ -96,7 +102,7 @@
 #' ## Trivial example with inequality constraint
 #' inferP(
 #'   target = P(a | h),
-#'   P(!a | h) >= 0.2
+#'   P(-a | h) >= 0.2
 #' )
 #'
 #' #' ## The probability of an "and" is always less
@@ -155,20 +161,20 @@
 #' @import lpSolve
 #' @importFrom stats as.formula
 inferP <- function(target, ..., solidus = TRUE) {
-    ## Logical connectives
+    ## Logical connectives and checks
+    tocheck <- deparse(as.formula(substitute(~ alist(target, ...))))
     if(solidus){
         connectives <- list(
             `&` = .Primitive("&&"),
             `*` = .Primitive("&&"),
             `+` = .Primitive("||"),
             `-` = .Primitive("!"),
-            `>` = function(x, y){y || !x}
+            `>` = function(x, y){y || !x},
+            ifthen = function(x, y){y || !x}
         )
         bar <- '|'
         ## Check if "||" is used
-        if(!all( gregexpr(' || ',
-            deparse(as.formula(substitute(~ alist(target, ...)))),
-            fixed = TRUE)[[1]] == -1 )){
+        if(!all( gregexpr(' || ', tocheck, fixed = TRUE)[[1]] == -1 )){
             stop("When argument 'solidus = TRUE', use of '||' is not allowed")
             }
 
@@ -178,11 +184,21 @@ inferP <- function(target, ..., solidus = TRUE) {
             `*` = .Primitive("&&"),
             `+` = .Primitive("||"),
             `-` = .Primitive("!"),
-            `>` = function(x, y){y || !x}
+            `>` = function(x, y){y || !x},
+            ifthen = function(x, y){y || !x}
         )
         bar <- '~'
     }
     barmatch <- paste0(' ', bar, ' ')
+
+    ## Warn if '!' is mixed with arithmetic notation
+    if(!all( gregexpr('!', tocheck, fixed = TRUE)[[1]] == -1 ) && (
+           !all( gregexpr('+', tocheck, fixed = TRUE)[[1]] == -1 ) ||
+           !all( gregexpr('*', tocheck, fixed = TRUE)[[1]] == -1 ) ||
+           !all( gregexpr('>', tocheck, fixed = TRUE)[[1]] == -1 )
+           )){
+        warning("Keep in mind that '!' can behave in unexpected ways with '*' '+' '>'.")
+    }
 
     ## number of constraints
     nc <- length(substitute(alist(...)))
