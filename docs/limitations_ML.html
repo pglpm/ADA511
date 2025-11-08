@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-10-28">
+<meta name="dcterms.date" content="2025-11-08">
 
 <title>42&nbsp; Decisions: limitations of present-day machine-learning algorithms – ADA511 0.4</title>
 <style>
@@ -134,7 +134,7 @@ window.Quarto = {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.4</span><br><span class="small grey">2025-10-28</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.4</span><br><span class="small grey">2025-11-08</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -596,7 +596,7 @@ window.Quarto = {
   <li><a href="#unknowns-vs-decisions" id="toc-unknowns-vs-decisions" class="nav-link" data-scroll-target="#unknowns-vs-decisions">Unknowns vs decisions</a></li>
   <li><a href="#a-typical-decision-making-problem-in-medicine" id="toc-a-typical-decision-making-problem-in-medicine" class="nav-link" data-scroll-target="#a-typical-decision-making-problem-in-medicine">A typical decision-making problem in medicine</a></li>
   <li><a href="#sub-optimality-of-a-typical-machine-learning-algorithm" id="toc-sub-optimality-of-a-typical-machine-learning-algorithm" class="nav-link" data-scroll-target="#sub-optimality-of-a-typical-machine-learning-algorithm">Sub-optimality of a typical machine-learning algorithm</a></li>
-  <li><a href="#output-scores-or-weights-are-not-probabilities" id="toc-output-scores-or-weights-are-not-probabilities" class="nav-link" data-scroll-target="#output-scores-or-weights-are-not-probabilities">Output scores or weights are <em>not</em> probabilities!</a></li>
+  <li><a href="#output-scores-or-weights-are-not-probabilities" id="toc-output-scores-or-weights-are-not-probabilities" class="nav-link" data-scroll-target="#output-scores-or-weights-are-not-probabilities"><span class="red"><i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i>&nbsp;&nbsp;Output scores or weights are <em>not</em> probabilities!</span></a></li>
   </ul></li>
   </ul>
 </nav>
@@ -617,7 +617,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-10-28</p>
+      <p class="date">2025-11-08</p>
     </div>
   </div>
   
@@ -897,13 +897,15 @@ Exercise&nbsp;42.2
 <p>Explore and maybe even implement this possibility.</p>
 </div>
 </div>
+<p><br>
+</p>
 </section>
 <section id="output-scores-or-weights-are-not-probabilities" class="level3">
-<h3 class="anchored" data-anchor-id="output-scores-or-weights-are-not-probabilities">Output scores or weights are <em>not</em> probabilities!</h3>
-<p>Some machine-learning algorithms are capable of giving continuous “scores” or “weights” between 0 and 1, instead of a simple answer such as “yes” or “no”. But unfortunately, typically <strong>such scores are not probabilities or frequencies</strong>, even if there may be some association between them and the probability or frequency.</p>
-<p>A real-life example of this mismatch is evident in the plot below (see “for the extra curious” below for references). It shows the 0–1 output score given by a random forest in a binary-classification task on a test set, versus the actual frequency of the corresponding class:</p>
+<h3 class="anchored" data-anchor-id="output-scores-or-weights-are-not-probabilities"><span class="red"><i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i>&nbsp;&nbsp;Output scores or weights are <em>not</em> probabilities!</span></h3>
+<p>Some machine-learning algorithms are capable of giving continuous “scores” or “weights” between 0 and 1 – for instance the output of a <em>softmax</em> function – instead of a simple answer such as “yes” or “no”. But unfortunately <strong>such scores are not probabilities or frequencies</strong>, even if there may be some association between them and a probability or frequency.</p>
+<p>A real-life example of this mismatch is evident in the plot below (see “for the extra curious” below for references). It shows the 0–1 output score given by a random forest in a binary-classification task on a test set, versus the probability of the corresponding class, calculated by an agent that has learned from further data and from the random forest’s score:</p>
 <p><img src="mismatch_freq_weight.png" class="img-fluid" style="width:100.0%"></p>
-<p>Clearly the output score is different from the frequency; if they were the same the graphs would be straight lines with ±45° inclination.</p>
+<p>Clearly the output score is different from the probability; if they were the same the graphs would be straight lines with ±45° slopes.</p>
 <p>Imagine what would happen if the clinician from our example above <em>mistook</em> the output score for a probability:</p>
 <ul>
 <li><p><span class="yellow"><i class="fa-regular fa-face-grin-beam-sweat" aria-label="face-grin-beam-sweat"></i></span>&nbsp;&nbsp;Output score in the <span class="midgrey">range <span class="math inline">\(0\)</span>–<span class="math inline">\(0.25\)</span></span>: the clinician would choose treatment <span style="display:inline-block;"><span class="math inline">\({\color[RGB]{204,187,68}A}\)</span>.</span> Luckily the upper boundary of this score range approximately corresponds to a frequency of <span style="display:inline-block;"><span class="math inline">\(25\%\)</span>,</span> so in this case the clinician would be choosing the optimal treatment.</p></li>
@@ -914,9 +916,9 @@ Exercise&nbsp;42.2
 <p>Note that we cannot say “the suboptimal treatment is chosen one out of four times”, because in this example we don’t know how many patients end up having a score in the <span class="midgrey"><span class="math inline">\(0.5\)</span>–<span class="math inline">\(0.75\)</span></span> range. In a concrete case it could be that 90% of the patients end up in this range, which would mean that the misuse of the output score would lead to a suboptimal treatment in 90% of cases.</p>
 <p><br>
 </p>
-<p>Another real example of the difference between weights or scores and probabilities is shown in the plot below, obtained by applying a neural network to the same binary-classification task on a test set. The <em>x</em>-axis shows the internal output-layer weight that the neural network assign to one class (more precisely, the diagonal where the two output-layer weights have equal values). The <em>y</em>-axis shows the frequency of that class. Typically a <a href="https://mathworld.wolfram.com/SigmoidFunction.html">“softmax” or sigmoid function</a> is applied to the output-layer weights, in order to obtain positive, normalized scores that are often miscalled “probabilities”. The softmax in the present case is shown as the <span class="midgrey">dashed grey line</span>.</p>
+<p>Another real example of the difference between weights or scores and probabilities is shown in the plot below, obtained by applying a neural network to the same binary-classification task on a test set. The <em>x</em>-axis shows the internal output-layer weight that the neural network assigns to one class (more precisely, the diagonal where the two output-layer weights have equal values). The <em>y</em>-axis shows the probability of that class. Typically a <a href="https://mathworld.wolfram.com/SigmoidFunction.html">“softmax” or sigmoid function</a> is applied to the output-layer weights, in order to obtain positive, normalized scores that are often miscalled “probabilities”. The softmax in the present case is shown as the <span class="midgrey">dashed grey line</span>:</p>
 <p><img src="mismatch_freq_weight_NN.png" class="img-fluid" style="width:100.0%"></p>
-<p>We can observe an even worse mismatch that for the random forest. For instance, if the softmax is between <span style="display:inline-block;"><span class="math inline">\(0\)</span>–</span><span style="display:inline-block;"><span class="math inline">\(0.25\)</span>,</span> then the output-layer weight must have been less than approximately <span style="display:inline-block;"><span class="math inline">\(-0.5\)</span>,</span> which in turn means that the actual frequency could be anywhere between <span style="display:inline-block;"><span class="math inline">\(0\%\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(50\%\)</span>.</span> For a softmax between <span style="display:inline-block;"><span class="math inline">\(0.75\)</span>–</span><span style="display:inline-block;"><span class="math inline">\(1\)</span>,</span> the actual frequency could be anywhere between <span style="display:inline-block;"><span class="math inline">\(50\%\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(92\%\)</span>.</span></p>
+<p>We can observe an even worse mismatch than for the random forest. For instance, if the softmax is between <span style="display:inline-block;"><span class="math inline">\(0\)</span>–</span><span style="display:inline-block;"><span class="math inline">\(0.25\)</span>,</span> then the output-layer weight must have been less than approximately <span style="display:inline-block;"><span class="math inline">\(-0.5\)</span>,</span> which in turn means that the probability could be anywhere between <span style="display:inline-block;"><span class="math inline">\(0\%\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(50\%\)</span>.</span> For a softmax between <span style="display:inline-block;"><span class="math inline">\(0.75\)</span>–</span><span style="display:inline-block;"><span class="math inline">\(1\)</span>,</span> the probability could be anywhere between <span style="display:inline-block;"><span class="math inline">\(50\%\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(92\%\)</span>.</span></p>
 <p>In both plots above, notice how the probability for each class can never be higher than around <span style="display:inline-block;"><span class="math inline">\(92\%\)</span>,</span> yet the weights or scores go up to <span style="display:inline-block;"><span class="math inline">\(1\)</span>.</span></p>
 <div class="callout callout-style-default callout-important no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
