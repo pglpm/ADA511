@@ -271,7 +271,7 @@ The fundamental inference rules are used in the same way as their truth-inferenc
 
 Armed with the fundamental rules of inference, let's solve our earlier inference problem. As usual, we first analyse it and represent it in terms of atomic sentences; we find what are its proposal and conditional; and we find which initial inferences are given in the problem.
 
-### (1) Atomic sentences
+### 1. Atomic sentences
 
 $$
 \begin{aligned}
@@ -287,7 +287,7 @@ $$
 
 The background information in this example is different from the previous, truth-inference one, so we use the different symbol $\yJ$ for it.
 
-### (2) Proposal, conditional, and target inference
+### 2. Proposal, conditional, and target inference
 
 The proposal is $\lnot\yh$, just like in the [truth-inference example](#sec-trivial-inference-analysis).
 
@@ -300,7 +300,7 @@ $$
 \red\P(\lnot\yh \| \yf \land \yJ)
 $$
 
-### (3) Starting inferences
+### 3. Starting inferences
 
 We are told that if an electric component fails early, then at production it didn't pass the heating test or the shock test (or neither). This is given as a sure fact. Let's write it as
 
@@ -490,7 +490,7 @@ The algorithm described in the previous section is implemented in the R function
 
 The `inferP()` function takes as first `target =` argument the probability we want to find, and as remaining arguments the values of the given probabilities, or equalities among probabilities. We must use the following notation:
 
-- $\lnot$\ \ becomes\ \ ` !`\ or equivalently\ ` -`
+- $\lnot$\ \ becomes\ \ ` -`\ or equivalently\ ` !`
 - $\land$\ \ becomes\ \ ` & `\ or equivalently\ ` && `
 - $\lor$\ \ becomes\ \ `+`
 - $=$\ \ becomes\ \ `==`
@@ -506,18 +506,16 @@ knitr::opts_knit$set(root.dir = "other_code/")
 ```
 
 ```{r}
-library('lpSolve') ## load the library
-
 source('inferP.R') ## load the function
 
 inferP(
     ## target probability:
-    target = P(!h  |  f & J),
+    target = P(-h | f & J),
     ## given probabilities:
-    P(!h + !s  |  f & J) == 1,
-    P(!h & !s  |  f & J) == 0.1,
-    P(h  |  f & J) == P(s  |  f & J)
-) 
+    P(-h + -s | f & J) == 1,
+    P(-h & -s | f & J) == 0.1,
+    P(h | f  & J) == P(s | f & J)
+)
 ```
 
 Obviously the algorithm becomes more expensive, the larger the number of sentences in the inference problem. In inference problems involving continuous quantities, such as energy, such an algorithm cannot be applied in practice. Also, the way the algorithm above works cannot be represented as a sequence of "logical" steps with consecutive applications of the rules, as shown in the step-wise solution above. Later on in this course we shall focus on specific kinds of inferences for which other, less opaque inference algorithms are available.

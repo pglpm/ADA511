@@ -23,7 +23,7 @@
 #'
 #' Available logical connectives are "not" (negation, "\eqn{\lnot}"), "and" (conjunction, "\eqn{\land}"), "or" (disjunction, "\eqn{\lor}"), "if-then" (implication, "\eqn{\Rightarrow}"). The first three follow the standard R syntax for logical operators (see [base::logical]):
 #' - Not: ` !` or ` -`
-#' - And: ` & ` or ` && `
+#' - And: ` & ` or ` && ` or ` * `
 #' - Or: ` + `; if argument `solidus = FALSE`, also ` || ` or ` | ` are allowed.
 #'
 #' The "if-then" connective is represented by the infix operator ` > `; internally `x > y` is simply defined as `x or not-y`.
@@ -46,15 +46,15 @@
 #' ```
 #' P(!a + b  |  c & H)
 #' P(-a + b  |  c && H)
-#' P(!a + b  |  c & H)
+#' P(!a + b  |  c * H)
 #' ```
 #' or, if argument  `solidus = FALSE`, in the following ways:
 #' ```
 #' P(!a | b  ~  c & H)
 #' P(-a + b  ~  c && H)
-#' P(!a || b  ~  c & H)
+#' P(!a || b  ~  c * H)
 #' ```
-#' It is also possible to use `p` or `Pr` or `pr` instead of `P`.
+#' It is also possible to use `Pr`, `p`, `pr`, `F`, `f`, `T` (for "truth"), or `t` instead of `P`.
 #'
 #' ## Probability constraints
 #'
@@ -80,25 +80,32 @@
 #'
 #' @returns A vector of `min` and `max` values for the target probability, or `NA` if the constraints are mutually contradictory. If `min` and `max` are `0` and `1` then the constraints do not restrict the target probability in any way.
 #'
-#' @import lpSolve
-#'
 #' @references
-#' T. Hailperin: *Best Possible Inequalities for the Probability of a Logical Function of Events*. Am. Math. Monthly 72(4):343, 1965 <\doi{doi:https://doi.org/10.1080/00029890.1965.11970533}>.
+#' T. Hailperin: *Best Possible Inequalities for the Probability of a Logical Function of Events*. Am. Math. Monthly 72(4):343, 1965 <doi:10.1080/00029890.1965.11970533>.
 #'
 #' T. Hailperin: *Sentential Probability Logic: Origins, Development, Current Status, and Technical Applications*. Associated University Presses, 1996 <https://archive.org/details/hailperin1996-Sentential_probability_logic/>.
 #'
 #'
 #' @examples
 #'
-#' ## The probability of an "and" is always less
+#' ## No constraints
+#' inferP(
+#'   target = P(a | h)
+#' )
+#'
+#' ## Trivial example with inequality constraint
+#' inferP(
+#'   target = P(a | h),
+#'   P(!a | h) >= 0.2
+#' )
+#'
+#' #' ## The probability of an "and" is always less
 #' ## than the probabilities of the and-ed propositions:
 #' inferP(
 #'   target = P(a & b | h),
 #'   P(a | h) == 0.3,
 #'   P(b | h) == 0.6
 #' )
-#' ## min max
-#' ## 0.0 0.3
 #'
 #' ## P(a & b | h) is completely determined
 #' ## by P(a | h) and P(b | a & h):
@@ -107,8 +114,20 @@
 #'     P(a | h) == 0.3,
 #'     P(b | a & h) == 0.2
 #' )
-#' ##  min  max
-#' ## 0.06 0.06
+#'
+#' ## Logical implication (modus ponens)
+#' inferP(
+#'   target = P(b | I),
+#'   P(a | I) == 1,
+#'   P(a > b | I) == 1
+#' )
+#'
+#' ## Cut rule of sequent calculus
+#' inferP(
+#'   target = P(X + Y | I & J),
+#'   P(A & X | I) == 1,
+#'   P(Y | A & J) == 1
+#' )
 #'
 #' ## Solution to the Monty Hall problem (see accompanying vignette):
 #' inferP(
@@ -131,15 +150,16 @@
 #'     P(car2  |  you1 & I) == P(car3  |  you1 & I),
 #'     P(host2  |  you1 & car1 & I) == P(host3  |  you1 & car1 & I)
 #' )
-#' ##      min      max
-#' ## 0.666667 0.666667
 #'
 #' @export
+#' @import lpSolve
+#' @importFrom stats as.formula
 inferP <- function(target, ..., solidus = TRUE) {
     ## Logical connectives
     if(solidus){
         connectives <- list(
             `&` = .Primitive("&&"),
+            `*` = .Primitive("&&"),
             `+` = .Primitive("||"),
             `-` = .Primitive("!"),
             `>` = function(x, y){y || !x}
@@ -155,6 +175,7 @@ inferP <- function(target, ..., solidus = TRUE) {
     } else {
         connectives <- list(
             `&` = .Primitive("&&"),
+            `*` = .Primitive("&&"),
             `+` = .Primitive("||"),
             `-` = .Primitive("!"),
             `>` = function(x, y){y || !x}
@@ -180,8 +201,11 @@ inferP <- function(target, ..., solidus = TRUE) {
 
     ## print(combos) # for debugging
 
-    ## Accepted probability (or truth) symbols
-    Psyms <- c('P', 'p', 'Pr', 'pr', 'T', 't')
+    ## function to check whether there's some probability symbol
+    checkP <- function(x){
+        ## class(try(eval(x), silent = TRUE)) == 'try-error'
+        deparse(x) %in% c('P', 'p', 'Pr', 'pr', 'T', 't', 'F', 'f')
+    }
     ## accepted relation symbols
     Esyms <- c('==', '<=', '>=', '<', '>')
 
@@ -196,7 +220,7 @@ inferP <- function(target, ..., solidus = TRUE) {
     ## Syntax check
     if(
         !(length(Tsupp) == 2) ||
-            !(deparse(Tsupp[[1]]) %in% Psyms) ||
+            !checkP(Tsupp[[1]]) ||
              length(gregexpr(barmatch, deparse(Tsupp), fixed = TRUE)[[1]]) > 1
     ) {
         stop('invalid target')
@@ -256,7 +280,7 @@ inferP <- function(target, ..., solidus = TRUE) {
         ## Syntax check
         if(
             !(length(left) == 2) ||
-                !(deparse(left[[1]]) %in% Psyms) ||
+                !checkP(left[[1]]) ||
                  length(gregexpr(barmatch, deparse(left), fixed = TRUE)[[1]]) > 1
         ) {
             stop('invalid left side in argument ', i)
@@ -275,7 +299,7 @@ inferP <- function(target, ..., solidus = TRUE) {
             if(length(right) == 2) {
                 ## right side is a probability
                 if(
-                    !(deparse(right[[1]]) %in% Psyms) ||
+                    !checkP(right[[1]]) ||
                         length(gregexpr(barmatch, deparse(right), fixed = TRUE)[[1]]) > 1
                 ) {
                     stop('invalid right side in argument ', i)
@@ -288,7 +312,7 @@ inferP <- function(target, ..., solidus = TRUE) {
             if(
                 !(deparse(right[[1]]) %in% c('*', '/')) ||
                     !(length(right[[2]]) == 2) ||
-                     !(deparse(right[[2]][[1]]) %in% Psyms)
+                     !checkP(right[[2]][[1]])
             ) {
                 stop('invalid right side in argument ', i)
             }

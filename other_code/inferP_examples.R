@@ -1,5 +1,14 @@
 source('inferP.R')
 
+inferP(
+    target = P(-h | f & J),
+    P(-h + -s | f & J) == 1,
+    P(-h & -s | f & J) == 0.1,
+    P(h | f  & J) == P(s | f & J)
+)
+
+
+
 ## Trivial
 inferP(p(x))
 ## min max 
