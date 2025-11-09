@@ -4,77 +4,94 @@
 
 In most engineering and data-science problems we don't know the truth or falsity of outcomes and hypotheses that interest us. But this doesn't mean that nothing can be said or done in such situations. Now we shall finally see how to draw *uncertain* inferences, that is, how to calculate the *probability* of something that interests us, given particular data, information, and assumptions.
 
-So far we have used the term "probability" somewhat informally and intuitively. It is time to make it more precise and to emphasize some of its most important aspects, especially for Artificial Intelligence. Then we'll dive into the rules of probability-inference.
+So far we have used the term "probability" somewhat informally and intuitively. It's time to make it more precise and to emphasize some of its most important aspects, especially for Artificial Intelligence. Then we'll dive into the rules of probability-inference.
 
 
 ## When truth isn't known: beliefs and probability {#sec-probability-def}
 
-If we want to design an AI agent that can make decisions and act in uncertain situations, we need to equip it with *probabilities* and *utilities*, as we saw in [ch. @sec-framework]. It is intuitively clear what utilities are: they quantify how desirable the agent finds different outcomes. What do probabilities quantify?
+If we want to design an AI agent that can make decisions and act in uncertain situations, we need to equip it with *probabilities* and *utilities*, as we saw in [ch. @sec-framework]. It is intuitively clear what utilities are: they quantify how desirable different outcomes are to the agent. What do probabilities quantify?
 
-Think of situations in which you had to choose between several possible decisions, each having uncertain outcomes. What drove your decision was the desiderability or undesiderability of the outcomes, and also how strongly you *believed* in the occurrence of possible outcomes. For instance, you have to walk outdoors; it looks like it could rain; you consider whether to take an umbrella, or just a rain jacket, or just a normal jacket. You weigh the (un)desiderability of getting just a couple light raindrops on your head, getting soaked, or staying dry. You also assess your belief that it won't rain, or it will just shed a couple light drops, or it will rain heavily. Maybe you end up thinking "It looks like it won't rain yet in the next ten minutes, so I can just walk to my destination without the umbrella".
+A first *tentative* answer could be this: the probability of an outcome  quantifies how often the agent has seen that outcome. That is, it represents the observed frequency of that outcome.
 
-In building an AI agent that can act under uncertainty, we likewise need the agent to be able to [**quantify its beliefs**]{.blue} and its uncertainty about the possible outcomes. [*This is what probabilities are*]{.blue}.
+Although it seems reasonable in many respects, the answer above still doesn't capture several elements that appear in the way we make rational inferences, and that are extremely important in designing an AI agent that can operate in uncertain conditions.
+
+To see what's missing, consider the following scenario:
+\
+
+> Someone shows you and a friend of yours, called Aisha, a mechanical device designed to toss a coin. The device looks complicated; neither of you has a full grasp of its design. A normal coin is placed on the device, and your friend Aisha is required to place a bet on whether the tossed coin will land `heads` or `tails`. If she guesses correctly she wins $1; nothing otherwise. Note that not betting is not an option: feel free to imagine circumstances (possibly very nasty) where your friend can't refuse to bet. Let's also make clear that no "cheating" is taking place: for instance, the outcome does *not* depend on the betting choice (you can imagine that the coin is tossed right before Aisha bets, but the outcome hidden from her until she bets). From now on you can only observe Aisha's choices and hear what she says, but cannot talk with her.
+> 
+> In this situation your friend says that it does not matter whether she bets on `heads` or `tails`; she has no more belief in one outcome than the other. In fact, she decides by tossing a coin she had in her pocket.
+
+*Do you think Aisha's judgement and choice are *rational*?*
+
+Aisha's conclusion comes not only from the fact that the win is equal to the loss, but also from the fact that **her beliefs in the `heads` outcome and in the `tails` outcome are equal**. If one belief were stronger than the other, she would definitely bet on that outcome instead.
+
+Yet this equality of beliefs *does not come from an equality of frequencies*. In fact neither you or your friend have any frequencies whatsoever; you have never seen a similar tossing device in operation before. For all you know, the device might be designed to always produce `heads`, or always `tails`, or maybe one or the other with peculiar frequencies not equal to 50%/50%.
+
+Let's continue:
+
+> Now you and your friend observe the toss outcome. It's `tails`. The device is prepared again, exactly as in the first toss, and Aisha is required to bet again. However, now they propose Aisha two different bets: betting `tails` and guessing correctly, she wins $1; betting `heads` and guessing correctly, she wins $2  (and remember: no one is trying to deceive her; no cheating).
+> 
+> Aisha says the following. If she had been proposed a $1-win on either `heads` or `tails`, then she would have bet on `tails`, just because the device had shown `tails` once. But she still has no much more belief in `tails` than `heads`; so given the double win on `heads`, she now bets `heads`.
+
+*Do you think Aisha's judgement and choice are *rational*?*
+
+Clearly Aisha's beliefs in the two possible outcomes are almost equal. And this near-equality *is different from the observed frequency*: the frequency right now is 100% `tails`. The frequency does affect Aisha's belief a little (she'd choose `tails` if offered an equal bet), but is *different* from her belief.
+
+Fast-forward in time.
+
+> The device is repeatedly used, say for 1000 times (plus some extra times until you or your friend says "stop", if you like). In these repetitions you and Aisha count that `heads` occurred 781 times, and `tails` 219 times, without any recognizable pattern. Now Aisha is asked again to place a bet on the next toss.
+> 
+> Aisha says that she believes more strongly that the coin will land `heads` than `tails`. She even quantifies her belief to around 78% for `heads` and 22% for `tails`. It's very close or identical to the frequency you both observed. Aisha bets accordingly.
+
+*Do you think Aisha's judgement and choice are *rational*?*
+
+Now we can say that her beliefs and the observed frequencies are aligned.
+
+Final part of this scenario:
+
+> Finally, another friend of yours, called Aiden, is brought in, and shown the device. Aiden cannot communicate with you or Aisha; he's in the same situation she and you were around 1000 tosses ago. Aiden is required to place a bet, and he says that he has no preferences for betting on `heads` or `tails` -- with exactly the same reasoning Aisha did 1000 tosses ago.
+
+*Do you think Aiden's judgement and choice are *rational*?*
+
+\
+
+If you think that Aisha's and Aiden's behaviour and choices were rational, consider a situation in which two AI agents were in their place. It is apparent that we need to [**equip an AI agent with a sort of quantified, rational "degree of belief"**]{.blue} in order for it to make rational decisions in uncertain situations. This degree of belief can have connections with an observed frequency, but is generally different from it. The two notions must therefore be kept separate, and quantified separately. In fact, we may think of situations in which an agent may be *uncertain about a frequency* and needs to quantify its own belief about the frequency; we'll meet these situations in the [**Inference III**]{.green} part.
+
+What we call [**probability**]{.blue} is this quantified degree of belief:
 
 :::{.callout-note}
 ##  
 
-::::{style="font-size:120%"}
+::::{style="font-size:150%"}
 
 The [**probability**]{.blue} of a sentence is an agent's quantified [**degree of belief**]{.blue} in the truth of that sentence.
 
 ::::
 :::
 
-We shall take the notion of [*degree of belief*]{.blue} as intuitively understood, just as we did with the notion of truth. And we shall use the terms [*probability*]{.blue}, [*degree of belief*]{.blue}, [*plausibility*]{.blue}, [*credibility*]{.blue}^[*credibility* literally means "believability" (from Latin *credo* = *to believe*).] as synonyms.
-
+We shall take the notion of [*degree of belief*]{.blue} as intuitively understood, just as we did with the notion of truth. We shall use the terms [*probability*]{.blue}, [*degree of belief*]{.blue}, [*belief*]{.blue}, [*plausibility*]{.blue}, [*credibility*]{.blue}^[*credibility* literally means "believability" (from Latin *credo* = *to believe*).] as synonyms.
 \
 
 Probabilities are quantified between $0$ and $1$, or equivalently between $0\%$ and $100\%$. Assigning to a sentence a probability `1` is the same as saying that it is `true`; and a probability `0`, that it is `false`. A probability of `0.5` represents a belief completely symmetric with respect to truth and falsity.
 
 Said otherwise, if an agent assigns to a sentence a probability `1`, it means that the agent is completely certain that the sentence is `true`. If the agent assigns a probability `0`, it means that the agent is completely certain that the sentence is `false`. If the agent assigns a probability `0.5`, it means that the agent is equally uncertain about the truth as about the falsity of the sentence.
 
-Let's emphasize and agree on some important facts about probabilities:
+## Important aspects of probabilities {#sec-aspects-probability}
+
+From our discussion of the tossing-device scenario above we can gather several important aspects and facts about probabilities:
 
 ### [{{< fa hand-point-right >}} Probabilities are not frequencies]{.blue}
 
-In thinking about the rainy-weather example above, you might say: "If I have a strong belief that it will rain, it's because in past similar situations, when I observed a similar sky and temperature condition, it ended up raining in the majority of those situations". Likewise, in our initial electronic-component scenario, you might say "those probabilities must be the frequencies with which previous electronic components failed or worked".
+This fact is clear by now. Indeed:
 
-Indeed there is a connection between degree of belief and frequency. We shall *quantitatively* discuss this connection in later chapters, and make sure that an AI agent uses this connection.
+- there can be a degree of belief when no frequencies are available;
+- a degree of belief can be very different from observed frequencies;
+- a degree of belief can be equal to an observed frequency.
 
-Yet, degree of belief and frequency are not exactly the same, and in designing an AI agent it is important to keep the two notions separate. Let's see this with an example:
-\
+One remarkable feature of the framework that we're going to study is that **the quantitative connection between these two notions is taken care of automatically!** We shall see how this work in the [**Inference III**]{.green} part.
 
-> Suppose someone shows you and a fried of yours a mechanical device designed to toss a coin. The device looks complicated and neither of you has a full grasp of its design. A normal coin is placed on the device, and your friend is required to place a $1 bet on whether the tossed coin will land `heads` or `tails`. You two cannot discuss, you can only observe your friend's choices. Note that not betting is not an option: feel free to imagine circumstances (possibly very nasty) where your friend can't refuse to bet; and consider that we're examining this example also from the point of view of an *AI* agent that might have to choose between the two options, with no other options available. Let's also make clear that no "cheating" is taking place: for instance, the outcome does *not* depend on the betting choice (you can imagine that the coin is tossed right before your friend bets, but the outcome hidden from them until they bet).
-> 
-> In this situation your friend says that it does not matter whether they bet on `heads` or `tails`; in fact, they decide by tossing a coin they had in their pocket.
-> 
-> *Do you think your friend's choice is *rational*?*
-> 
-> Their conclusion comes not only from the fact that the win is equal to the loss, but also from the fact that **their beliefs in the `heads` outcome and in the `tails` outcome are equal**. If one belief were stronger than the other, your friend would definitely bet on that outcome instead.
-> 
-> Yet this equality of beliefs *does not come from an equality of frequencies*. In fact neither you or your friend have any frequencies whatsoever. And for all you know, the device might be designed to always produce `heads`, or always `tails`, or maybe one or the other with peculiar frequencies not equal to 50%/50%.  
-> 
-> 
-> Now suppose that after the first bet you and your friend observe the outcome, say `tails`. The device is thereafter repeatedly used, say for 1000 times (plus some extra times until you or your friend says "stop", if you like). In these repetitions you and your friend count that `heads` occurred 781 times, and `tails` 219 times, without any recognizable pattern. Now your friend is asked again to place a bet on the next toss (and remember: no one is trying to deceive you; no cheating).
-> 
-> Your friend says that they believe more strongly that the coin will land `heads` than `tails`. They even quantify their belief to around 78% for `heads` and 22% for `tails`. It's very close or identical to the frequency you both observed. Your friend bets accordingly.
-> 
-> *Do you think your friend's judgement and choice are *rational*?*
-> 
-> Finally, now a new friend of yours is brought in, and shown the device. This new friend cannot communicate with you two, and they are in the same situation you and your other friend were around 1000 tosses ago. The new friend is required to place a bet, and they say that they have no preferences for betting on `heads` or `tails` -- with exactly the same reasoning your other friend did 1000 tosses ago.
-
-> *Do you think your new friend's choice is *rational*?*
-
-\
-
-This example brings to light that the beliefs underlying a rational choice may be different from frequencies, even though in some situations there can be a strong connection between the two. We therefore must keep these two notions quite distinct.
-
-This distinction is especially important in the design of an AI agent. Just like us, an AI agent may have to make a decision, and therefore quantify the plausibility of different outcomes, when no frequencies are known, or more generally in situations that are unique, with no previous examples. We need to have a number to quantify the plausibility that the agent attributes to the possible outcomes. Such a number cannot be a frequency, because that may not be available. [*This number, the agent's degree of belief, is what we call "probability".*]{.blue}
-
-But obviously we want such a number to be equal or close to a frequency, when it's available. This is not a problem: we shall see that the framework we're going to develop will do this automatically!
-\
-
-Note also the different status of these two notions from an epistemological point of view.^[That is, from the point of view of an agent's knowledge.] Frequencies can be unknown to some agents. Degrees of belief cannot be "unknown": the agent must have them in order to act. At worst, degrees of belief can be just difficult to calculate.
+Note also the different status of the notions "frequency" and "probability/belief" from an epistemological point of view.^[That is, from the point of view of an agent's knowledge.] Frequencies can be unknown to some agents. Degrees of belief cannot be "unknown": the agent must have them in order to act. At worst, degrees of belief can be difficult to calculate.
 
 :::{.callout-important}
 ## {{< fa exclamation-triangle >}}
@@ -82,20 +99,21 @@ Note also the different status of these two notions from an epistemological poin
 Be careful when you read authors speaking of an "unknown probability": they actually mean either "unknown frequency", or a probability that has to be calculated; it's "unknown" in the same sense that the value of\ \ "$1-0.7 \cdot 0.2/(1-0.3)$"\ \ is "unknown" to you right now.
 :::
 
+
 ### [**{{< fa hand-point-right >}} Probabilities are agent- and knowledge-dependent**]{.blue}
 
-The coin-tossing-device example above also shows that different agents can have different probabilities, that is, degrees of belief, about the same situation. 
+The tossing-device scenario shows that different agents can have different probabilities, that is, degrees of belief, about the same situation.
 
-This happened when your second friend entered the scene. You and your first friend had beliefs around 78% for `heads` and 22% for `tails`; your second friend had 50%/50% beliefs. Both sets of beliefs were rational and appropriate to their respective situations. They simply reflected the different states of knowledge of the agents that held them.
+This happened when Aiden entered the scene. Aisha had beliefs around 78% for `heads` and 22% for `tails`; but Aiden had 50%/50% beliefs for the same toss. Both sets of beliefs were rational and appropriate to their respective situations. They simply reflected the different states of knowledge of the agents that held them.
 
-An omniscient agent would know the truth or falsity of every sentence, and assign only probabilities `0` or `1`. Some authors speak of "*actual* (but unknown) probabilities". But if there were "actual" probabilities, they would be all `0` or `1`, and it would be pointless to speak about probabilities at all -- every inference would be a truth-inference.
+An omniscient agent would know the truth or falsity of every sentence, and assign only probabilities `0` or `1`. Some literature speaks of "*actual* (but unknown) probabilities". But if there were "actual" probabilities, they would be all `0` or `1`, and it would be pointless to speak about probabilities at all -- every inference would be a truth-inference.
 
 
 ### [**{{< fa hand-point-right >}} Probabilities are not physical properties**]{.blue}
 
-The fact that two agents can hold different probabilities in the same situation also shows that probabilities are not physical properties, which could me objectively measured with some meter.
+The fact that two agents can hold different probabilities in the same situation also shows that probabilities are not physical properties, which could be objectively measured with some meter.
 
-Whether a tossed coin lands heads up or tails up is fully determined by the initial conditions (position, orientation, momentum, rotational momentum) of the toss and the boundary conditions (air velocity and pressure) during the flight. The same is true for all macroscopic engineering phenomena (even quantum phenomena have never been proved to be non-deterministic, and there are [deterministic and experimentally consistent](https://doi.org/10.48550/arXiv.quant-ph/9504010)  mathematical representations of quantum theory). So we cannot measure a probability using some physical apparatus.
+Whether a tossed coin lands heads or tails is fully determined by the initial conditions (position, orientation, momentum, rotational momentum) of the toss and the boundary conditions (air velocity and pressure) during the flight. The same is true for all macroscopic engineering phenomena (even quantum phenomena have never been proved to be non-deterministic, and there are [deterministic and experimentally consistent](https://doi.org/10.48550/arXiv.quant-ph/9504010) mathematical representations of quantum theory). So we cannot measure a probability using some physical apparatus.
 
 ::::{.column-margin}
 ::: {.callout-warning}
@@ -106,7 +124,6 @@ Whether a tossed coin lands heads up or tails up is fully determined by the init
 ::::
 
 We can objectively measure frequencies, in several instances of a phenomenon. Frequencies, as opposed to probabilities, are physically measurable quantities. This shows again the difference between probabilities and frequencies.
-
 
 
 ### [**{{< fa hand-point-right >}} Probabilities are assigned to *sentences***]{.blue}
@@ -127,22 +144,22 @@ the numerical quantity is the same, but the meaning is very different. The proba
 
 \
 
-These points listed above are not just a matter of principle. They have important practical consequences. A data scientist who is not attentive to the source of the data (measured? set? reported, and so maybe less trustworthy?), or who does not carefully assess the context of a probability, or who mixes a probability with a frequency, or who does not take advantage (when possible) of the physics involved in the a problem -- such data scientist will design systems with sub-optimal performance^[This fact can be mathematically proven.] -- or even cause deaths.
+The points listed above are not just a matter of principle. They have important practical consequences. A data scientist who is not attentive to the source of the data (measured? set? reported, and so maybe less trustworthy?), or who does not carefully assess the context of a probability, or who mixes a probability with a frequency, or who does not take advantage (when possible) of the physics involved in the a problem -- such data scientist will design systems with sub-optimal performance^[This fact can be mathematically proven.] -- or even cause deaths.
 
 
 ## The many uses of the word "probability"
 
-In these notes we shall consistently use the term "probability" in the sense explained above: an agent's *degree of belief*. But beware that this term is used in many different and incompatible senses, depending on whom you're speaking with or which literature you're reading.
+The terms "degree of belief" and "frequency" are quite distinct and are used more or less consistently in the literature. Whenever you encounter these terms you more or less know what's intended.
 
-Some people use this term in the sense of "frequency": the number of times something happened in a series of repetitions. As we have seen, to build an AI we need to quantify both notions and keep them separate: the distinction between "frequency" and "probability" is crucial. Frequencies do not enable us to quantify an agent's beliefs in situations where data are missing. But an agent's beliefs will automatically come close to frequencies when doing so is reasonable.
-\
-\
+Sadly the situation is completely different with the term "probability", which is used in the literature in incompatible ways. Some literature uses this term as a synonym of "frequency". Other literature uses it as a synonym of "degree of belief", as we do; use of "probability" as "degree of belief" is called [**Bayesian probability theory**]{.blue}.
 
-Some people use "probability" in the sense of the number of *a-priori* successes over the number of possibilities. For instance, if you roll a die, and the die comes up {{< fa dice-three >}}, then this result was 1 among six possible results. This is fine, but this definition does not allow us to capture the difference between an agent who has seen that the outcome of the roll was {{< fa dice-three >}}, and an agent who has *not* seen that outcome. We expect the two agents to behave differently, because they have different knowledge. If we programmed the agent to have a degree of belief of 1/6 *even after seeing the outcome of a die roll*, we would have programmed an agent incapable of using new data. Would you be happy if a clinician made some medical tests, and then *ignored* the results of the tests, behaving as if they were still unknown?
-\
-\
+Some recent literature in machine learning uses "probability" in yet another way, to denote the numeric output of some machine-learning algorithms. This numeric output is neither a frequency or a degree of belief, and only has vague associations with them; we'll discuss this in [ch. @sec-ML-utility-limitation].
 
-All these different uses are just a matter of semantics, and in the end it doesn't matter which word we use, as long as we understand its meaning and as long as we're adopting the meaning that is *useful* for our present task.
+There are also a couple more different uses of the term "probability" in the literature. It's a mess.
+
+In this course we could have stuck to the terms "degree of belief" and "frequency" only, avoiding the problematic "probability". But such a choice would not be very helpful to you, because you will nevertheless encounter this term in your readings and scientific discussions. In the AI literature the most common use is as "degree of belief", so we also adopt it, sometimes using "(degree of) belief" and sometimes "probability", interchangeably.
+
+But beware of this term when you read the literature, or in your scientific discussions. You must try to understand the intended meaning from the context. You're also free to choose (preferably consistently) the terminology you like most. What's important is that the *notions* underlying these words are clear to you.
 
 :::{.callout-important}
 ## {{< fa exclamation-triangle >}} Beware of *likelihood* as a synonym for *probability*
@@ -150,6 +167,9 @@ All these different uses are just a matter of semantics, and in the end it doesn
 In everyday language, "[likelihood](https://dictionary.cambridge.org/dictionary/english/likelihood)" is synonym with "probability". In technical writings about probability or statistics, however, "likelihood" means something different and is *not* a synonym of "probability", as we explain below ([§@sec-likelihood]).
 :::
 
+\
+
+\
 
 ## An unsure inference. Probability notation {#sec-uncertain-inference}
 
