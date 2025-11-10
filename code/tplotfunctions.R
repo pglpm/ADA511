@@ -171,7 +171,7 @@ flexiplot <- function(
         }
     } else if(!missing('x') && missing('y')){
         y <- x
-        y[] <- rep(seq_len(NROW(x)), each = NCOL(x))
+        y[] <- rep(seq_len(NCOL(x)), each = NROW(x))
         if(is.null(xlab)){ xlab <- deparse1(substitute(x)) }
         if(is.null(xjitter)){ xjitter <- FALSE }
         if(is.null(ydomain) && is.null(ylim)){
