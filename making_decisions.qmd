@@ -290,6 +290,95 @@ It's also important to emphasize that the unpredictability is desired *on the an
 
 In a decision-making problem, several choices may happen to have equal, maximal expected utilities. In such situations it is usually recommended to "choose randomly" among those choices; this is what the function `decide()` ([§@sec-max-exp-util-example]) does. This recommendation is an application of the ideas just discussed.
 
+## Multiple decisions: decision trees {#sec-decision-trees}
+
+### Characteristics and graphical representation of a decision tree
+
+In [§@sec-decision-theory] we discussed one important feature of Decision Theory: it can be applied in a sequential, recursive, or modular way. The typical case for such application is when further decisions are available if a specific outcome occurs. It would take several chapters to develop this more general application in full; here we summarize its main features and method.
+
+Consider a set of decisions and outcomes, which depend on the occurrence of other outcomes and decisions, which in turn may depend on the occurrence of yet more outcomes and decisions, and so on. Graphically this situation can be represented by a [**decision tree**]{.blue}, which depicts the sequences of decisions and outcomes in tree-like fashion. Here is an example:
+
+::: {.column-page-right}
+![](multiple_decision_tree.png){width=100%}
+:::
+
+As usual, [decision nodes]{.yellow} are represented by squares, and [inference nodes]{.red} by circles. The root decision node is on the left. It presents a number of decisions which we can denote
+
+$$\yD_{1,1},\quad \yD_{1,2},\quad\dotsc,\quad\yD_{1,\dotsc},\quad\dotsc$$
+
+The first index\ \ "${}_{1,}$"\ \ indicates that these are root decisions; the second index enumerates these decisions. Each decision has a set of possible outcomes which we can denote, all together,
+
+$$\yO_{1,1},\quad \yO_{1,2},\quad\dotsc,\quad\yO_{1,\dotsc},\quad\dotsc$$
+
+with the same indexing convention. Each outcome has an associated degree of belief, which generally depends on the outcome and on the respective decision. For instance, the probability for outcome $\yO_{1,1}$ must be written
+
+$$\P(\yO_{1,1} \| \yD_{1,1} \and \yI)$$
+
+where $\yI$ is the agent's background information.
+\
+
+So far this looks *almost* like a basic decision tree ([§@sec-basic-decision-tree]). Why "almost"? because *we don't associate utilities to these outcomes*. Not yet. Instead, we see that some outcomes, like $\yO_{1,1}$, open new decision nodes, with associated outcomes. We can keep the same notation convention as for the root decision node, but now using\ \ "${}_{2,}$"\ \ as first index:
+
+$$\yD_{2,1},\quad \yD_{2,2},\quad\dotsc,\quad\yD_{2,\dotsc},\quad\dotsc$$
+
+and for the their outcomes as well:
+
+$$\yO_{2,1},\quad \yO_{2,2},\quad\dotsc,\quad\yO_{2,\dotsc},\quad\dotsc$$
+
+Note that this is just a notation we use here; you can use any other convenient notation you like.
+
+Each outcome of the second level has an associated degree of belief. Note that **the degree of belief in an outcome generally depends on all previous decisions and outcomes leading to that outcome**. For instance, the probability for outcome $\yO_{2,2}$ must be written
+
+$$\P(\yO_{2,2} \| \yD_{2,1} \and \yO_{1,1} \and \yD_{1,1} \and \yI)$$
+\
+
+What about utilities? In this particular decision tree, the outcomes $\yO_{2,1}$ and $\yO_{2,2}$ do not lead to any subsequent possible decisions: they are among the tips of the tree. Then we do associate utilities to them: **utilities are only associated to all outcomes at the *tips* of the decision tree**. And it's important to note that **the utility associated to an outcome generally depends on all previous decisions and outcomes leading to that outcome**. For instance, the utility associated to outcome $\yO_{2,2}$ must be written
+
+$$\uu(\yD_{1,1} \and \yO_{1,1} \and  \yD_{2,1} \and \yO_{2,2} \|\yI)$$
+\
+
+Let's summarize these important features of a general decision tree:
+
+:::{.callout-note}
+## Characteristics of a decision tree
+
+- Some outcomes lead to further decision nodes with associated outcomes.
+
+- Degrees of belief are associated to **each outcome**. The degree of belief in an outcome generally depends on **all previous decisions and outcomes** leading to that outcome.
+
+- Utilities are associated to **outcomes at the tips** (not to intermediate ones). The utility associated to an outcome generally depends on **all previous decisions and outcomes** leading to that outcome.
+
+- At each level of the tree, it may happen that some outcomes lead to further decisions, while other outcomes are tips.
+:::
+
+### Decision making with a decision tree
+
+Now to the important question: how do we choose the optimal decision at each decision node? The procedure, which is quite intuitive once one understands its general principle, is called [**averaging out and folding back**]{.blue} or [**backwards induction**]{.blue}. It starts from the tips, and step-wise associates a utility to each decision and each outcome, moving from the tips to the root of the decision tree:
+
+:::{.callout-note}
+## Backwards induction
+
+1. Take all outcomes at the **tips* which originate from the same inference node (circle).
+    
+    At that inference node, calculate the **expected utility**, using the probabilities and utilities associated with the tip outcomes.
+    
+    Note that this inference node stems from a particular decision. The calculated expected utility is associated to that decision.
+
+2. Repeat the previous step until all tip outcomes have been exhausted.
+
+
+3. Take all decisions which have an associated expected utility (at the corresponding inference node), and which originate from the same decision node (square).
+    
+    At that decision node, calculate the **maximal expected utility** among the expected utilities of the decisions originating at that node.
+    
+    Note that this decision node stems from a particular outcome. The calculated maximal expected utility is associated to that outcome.
+
+4. Repeat the previous step until all outcomes closest to tip outcomes have been exhausted.
+
+Now we have that some outcomes which initially didn't have any associated utility, because they were not tips, have got an associated utility.
+
+Starting from these, repeat the four steps above, and so on recursively. In the end you arrive at the association of expected utilities to all decisions originating from the root decision node.
+:::
 
 
 ## The full extent of Decision Theory {#sec-DT-generalization}
