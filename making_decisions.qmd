@@ -7,7 +7,7 @@
 
 In the previous chapter we associated utilities to consequences, that is, pairs $(\yD \and {\red Y\mo y})$ of decisions and outcomes. We can also associate utilities to the decisions alone -- and these are used to determine the *optimal* decision.
 
-The [**expected utility**]{.blue} of a decision $\yD$ is calculated as a weighted average over all possible outcomes, the weighs being the outcomes' probabilities:
+The [**expected utility**]{.blue} of a decision $\yD$ in a basic decision problem is calculated as a weighted average over all possible outcomes, the weighs being the outcomes' probabilities:
 
 $$\uu(\yD \|\yI) 
 = \sum_{\red y} \uu(\yD \and {\red Y\mo y} \| \yI) \cdot
@@ -20,7 +20,7 @@ According to Decision Theory the agent's final decision is determined by the
 
 :::::{.column-page-right}
 :::{.callout-note style="font-size:120%"}
-## [**Principle of maximal expected utility**]{style="font-size:120%"}
+## [**Principle of maximal expected utility for simple decision problems**]{style="font-size:120%"}
 ::::{style="font-size:120%"}
 
 The optimal decision which should be made by the agent is the one having maximal expected utility:
@@ -296,6 +296,14 @@ In a decision-making problem, several choices may happen to have equal, maximal 
 
 In [§@sec-decision-theory] we discussed one important feature of Decision Theory: it can be applied in a sequential, recursive, or modular way. The typical case for such application is when further decisions are available if a specific outcome occurs. It would take several chapters to develop this more general application in full; here we summarize its main features and method.
 
+::::{.column-margin}
+::: {.callout-tip}
+## {{< fa rocket >}} For the extra curious
+- §15.5 and chapter 16 of [*Artificial Intelligence*](references.html)
+- Chapter 2 of [*Decision Analysis*](references.html)
+:::
+::::
+
 Consider a set of decisions and outcomes, which depend on the occurrence of other outcomes and decisions, which in turn may depend on the occurrence of yet more outcomes and decisions, and so on. Graphically this situation can be represented by a [**decision tree**]{.blue}, which depicts the sequences of decisions and outcomes in tree-like fashion. Here is an example:
 
 ::: {.column-page-right}
@@ -364,8 +372,8 @@ Now to the important question: how do we choose the optimal decision at each dec
     
     Note that this inference node stems from a particular decision. The calculated expected utility is associated to that decision.
 
-2. Repeat the previous step until all tip outcomes have been exhausted.
-
+2. Repeat the previous step until all tip outcomes have been exhausted.    
+ 
 
 3. Take all decisions which have an associated expected utility (at the corresponding inference node), and which originate from the same decision node (square).
     
@@ -373,27 +381,55 @@ Now to the important question: how do we choose the optimal decision at each dec
     
     Note that this decision node stems from a particular outcome. The calculated maximal expected utility is associated to that outcome.
 
-4. Repeat the previous step until all outcomes closest to tip outcomes have been exhausted.
+4. Repeat the previous step until all outcomes closest to tip outcomes have been exhausted.    
+ 
 
-Now we have that some outcomes which initially didn't have any associated utility, because they were not tips, have got an associated utility.
+Now we have that some outcomes which initially didn't have any associated utility, because they were not tips of the decision tree, have obtained an associated utility.
 
 Starting from these, repeat the four steps above, and so on recursively. In the end you arrive at the association of expected utilities to all decisions originating from the root decision node.
 :::
+
+[**{{< fa person-digging >}} A concrete example will be added {{< fa person-digging >}}**]{.grey .small}
+
+:::{.callout-important}
+## {{< fa exclamation-triangle >}} Misunderstandings and misuses of backwards induction
+
+It's important to be aware of some characteristics and consequences of backwards induction. Misunderstanding of these is often the origin of misapplications and misunderstandings of this basic method of Decision Theory.
+
+[Outcome utilities may depend on outcome frequencies]{.purple}
+: We have seen that the utility of a final outcome depends on the whole sequence of decisions and outcomes leading to it. This means that such utility may depend on the *frequencies* with which particular outcomes occur in that sequence. These are objectively observable frequencies, not degrees of beliefs, so there is no contradiction with the basic principle that the utility of an outcome *cannot* depend on the probability for that outcome.
+    
+    Some people confuse or simplify a sequential decision problem with a basic decision, trying to interpret the frequencies of the sequence as probabilities in the basic decision. Then they declare that the basic principle of Decision Theory -- that the utility of an outcome cannot depend on the degree of belief on that outcome -- is broken. Their erroneous conclusion comes from a double error: (1) they confuse a sequential problem with a basic one; (2) they confuse frequencies with degrees of belief.
+
+[Utilities need not be additive]{.purple}
+: We have seen that utilities are associated *only* to the outcomes at the tip of the decision tree. So the utility is a property of the whole history leading to that outcome, so to speak. In some situations this history may include outcomes that are similar, in some sense, to the final outcome. For example, in a problem of 100 sequential coin bets and tosses, the final outcome might be `heads`, preceded by a sequence of 44 `heads` and 55 `tails`.
+    
+    In such situations, some people associate a utility to `heads` and one to `tails`, and then consider the utility of a sequence leading to 45 `heads` and 55 `tails` to be the sum of 45 heads-utilities and 55 tails-utilities. But **Decision Theory does not say that the final utility should be calculated this way**. In fact, Decision Theory does not even associate any utility to intermediate outcomes; only to the whole history. The summing procedure above is only a special assumption, which may be valid or reasonable in some cases, but unreasonable and invalid in others.
+
+\
+
+    So be careful in your decision analyses; do not take shortcuts or make erroneous simplifications!
+:::
+
 
 
 ## The full extent of Decision Theory {#sec-DT-generalization}
 
 The simple decision-making problems and framework that we have discussed in these notes are only the basic blocks of Decision Theory. This theory covers more complicated decision problems. We only mention some examples:
 
-- **Sequential decisions**. Many decision-making problems involve sequences of possible decisions, alternating with sequences of possible outcomes. These sequences can be represented as decision trees. Decision theory allows us to find the optimal decision sequence  for instance through the *"averaging out  and folding back" procedure*.
-
 ::::{.small}
 ::: {.callout-tip}
 ## {{< fa rocket >}} For the extra curious
-- §15.5 and chapter 16 of [*Artificial Intelligence*](references.html)
-- Chapter 2 of [*Decision Analysis*](references.html)
+Full accounts of Decision Theory can for example be found in:
+
+- [*Decision Analysis*](references.html)
+- [*Introduction to Statistical Decision Theory*](references.html)
 :::
 ::::
+
+
+
+- **Sequential decisions**. Many decision-making problems involve sequences of possible decisions, alternating with sequences of possible outcomes. These sequences can be represented as decision trees. Decision theory allows us to find the optimal decision sequence  for instance through the *"averaging out  and folding back" procedure*.
 
 \
 
