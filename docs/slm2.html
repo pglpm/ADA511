@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-11-08">
+<meta name="dcterms.date" content="2025-12-02">
 
 <title>38&nbsp; The Optimal Predictor Machine generates text – ADA511 0.4</title>
 <style>
@@ -169,7 +169,7 @@ window.Quarto = {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADA511 <span class="small grey">0.4</span><br><span class="small grey">2025-11-08</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+      <a href="./">ADA511 <span class="small grey">0.4</span><br><span class="small grey">2025-12-02</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -645,7 +645,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-11-08</p>
+      <p class="date">2025-12-02</p>
     </div>
   </div>
   
@@ -668,12 +668,12 @@ window.Quarto = {
 </div>
 <section id="sec-what-decision-llm" class="level2" data-number="38.1">
 <h2 data-number="38.1" class="anchored" data-anchor-id="sec-what-decision-llm"><span class="header-section-number">38.1</span> Agents that generate text: what’s the underlying decision-making problem?</h2>
-<p>In <a href="slm.html#sec-language-inference" class="quarto-xref">§&nbsp;<span>34.1</span></a> we saw that present-day Large Language Model determine their belief in what the next word or token should be, only based on the sequence of words seen so far, and on the frequencies of such sequences in a huge collection of texts. These beliefs are not determined on possible future outcomes of their choice of words, as instead is the case in human conversation. We managed to use our Optimal Predictor Machine in the same way in a simplified setting.</p>
-<p>Large Language Models do not output probabilities, however: they output words. So at every step they are effectively choosing one of the possible words about which they calculated their beliefs. This is decision, and to be optimal and self-consistent it should be based on some outcomes and their utilities.</p>
-<p>What are the outcomes and utilities underlying word-choice in Large Language Models? This is still an open question. The approaches followed so far in the literature have been based more on intuition and on “playing around” rather than framing the problem in a systematic way. This means that there’s a lot of room for an AI engineer to bring forth a better understanding and major improvements.<br>
+<p>In <a href="slm.html#sec-language-inference" class="quarto-xref">§&nbsp;<span>34.1</span></a> we saw that present-day Large Language Models determine their belief in what the next word or token should be, based only on the sequence of words seen so far, and on the frequencies of such sequences in a huge collection of texts. This belief is not determined by possible <em>future</em> outcomes of the choice of words, as instead is the case in human conversation. We managed to use our Optimal Predictor Machine in a way somewhat similar to a Large Language Model, in a simplified setting.</p>
+<p>Large Language Models do not output probabilities, however: they output words. So at every step they are effectively <em>choosing</em> one of the possible words about which they calculated their beliefs. This means that there’s an underlying decision; and to be optimal and self-consistent, such decision should be based the the utilities of some outcomes.</p>
+<p>What are the outcomes and utilities underlying word-choice in Large Language Models? This is still an open question. The approaches followed so far in the literature have been based more on intuition and on “playing around” rather than on framing the problem in a systematic way. This means that there’s a lot of room for an AI engineer to bring forth a better understanding as well as major improvements.<br>
 </p>
-<p>Let’s consider our OPM agent used as a “small language model” in <a href="slm.html#sec-opm-as-slm" class="quarto-xref">§&nbsp;<span>34.2</span></a>. It was only calculating degrees of belief about the <span style="display:inline-block;"><span class="math inline">\(n\)</span>th</span> token of a string of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> tokens. First of all let’s ask again: beliefs about what? We could say: the belief that this <span style="display:inline-block;"><span class="math inline">\(n\)</span>th</span> token is the correct one, in this particular sequence. Keep in mind that this is a suspicious point of view; can we really say that there’s a “correct” token?</p>
-<p>If we want our OPM agent to also <em>choose</em> one of the possible tokens, we need to find the appropriate set of outcomes and their utilities for this decision problem.</p>
+<p>Let’s consider our OPM agent used as a “small language model” in <a href="slm.html#sec-opm-as-slm" class="quarto-xref">§&nbsp;<span>34.2</span></a>. It was only calculating degrees of belief about the <span style="display:inline-block;"><span class="math inline">\(n\)</span>th</span> token of a string of <span style="display:inline-block;"><span class="math inline">\(n\)</span></span> tokens. First of all let’s ask again: beliefs about what? We could say: the belief that this <span style="display:inline-block;"><span class="math inline">\(n\)</span>th</span> token is the correct one, in this particular sequence. Keep in mind that this is a suspicious point of view, though: can we really say that there’s a “correct” token?</p>
+<p>If we want our OPM agent to also <em>choose</em> one of the possible tokens, we need to find the appropriate set of outcomes and utilities for this decision problem.</p>
 <div id="cau-unique1" class="callout callout-style-default callout-caution callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -686,8 +686,8 @@ Exercise&nbsp;38.1
 <div class="callout-body-container callout-body">
 <p>On your own or in group, think about the problem above.</p>
 <ul>
-<li><p>What kind of meaningful <em>outcomes</em> are there in this problem?</p></li>
-<li><p>Can they be easily assessed? Do they depend on the choice of present token alone, or in future ones as well?</p></li>
+<li><p>What kind of meaningful <em>outcomes</em> are there in this decision problem?</p></li>
+<li><p>Can such outcomes be easily assessed? Do they depend on the choice of present token alone, or in future ones as well?</p></li>
 <li><p>What are the utility values for the outcomes? How to assess them?</p></li>
 <li><p>Can we find alternative points of view about outcomes and utilities – points of view that do not reflect natural language but may make sense somehow in the present context?</p></li>
 </ul>
@@ -696,7 +696,8 @@ Exercise&nbsp;38.1
 </section>
 <section id="sec-tentative-decision-llm" class="level2" data-number="38.2">
 <h2 data-number="38.2" class="anchored" data-anchor-id="sec-tentative-decision-llm"><span class="header-section-number">38.2</span> A tentative decision-making point of view</h2>
-<p>A <em>tentative</em> and somewhat vague point of view is the following: the agent should generate, on the long run, text that “looks natural”. Now if we assign a given utility, say <span style="display:inline-block;"><span class="math inline">\(+1\)</span>,</span> to the “correct” choice of token, the agent should at each step choose the token that always has highest probability. This, however, eventually leads to a circular repetition, as soon as a string of <span style="display:inline-block;"><span class="math inline">\(n-1\)</span></span> token appears again. Let’s see an example of this phenomenon with our OPM agent.</p>
+<p>A <em>tentative</em> and somewhat vague point of view is the following: the agent should generate, on the long run, text that “looks natural”.</p>
+<p>Now if we assign a given utility, say <span style="display:inline-block;"><span class="math inline">\(+1\)</span>,</span> to the “correct” choice of token, the agent would at each step choose the token that always has highest probability. This, however, would eventually lead to a circular repetition, as soon as a string of <span style="display:inline-block;"><span class="math inline">\(n-1\)</span></span> tokens appears again. Let’s see an example of this phenomenon with our OPM agent.</p>
 <p>Let’s build again an agent that does inference about 3-grams from the United Nation’s <a href="https://www.un.org/en/about-us/universal-declaration-of-human-rights"><em>Universal Declaration of Human Rights</em></a>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Load main functions</span></span>
