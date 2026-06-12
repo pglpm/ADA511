@@ -506,14 +506,14 @@ This algorithm is not mathematically difficult, but it is somewhat involved. It 
 
 ## An implementation in R
 
-The algorithm described in the previous section is implemented in the R function [`inferP()`](https://github.com/pglpm/ADA511/blob/master/code/inferP.R); it requires the [**lpSolve**](https://cran.r-project.org/package=lpSolve) R package, which we installed in the [R introduction](Rintro1.html).
+The algorithm described in the previous section is implemented in the R function [`inferP()`](https://pglpm.github.io/Pinference/reference/inferP.html); it requires the [**Pinference**](https://cran.r-project.org/package=Pinference) R package, which we installed in the [R introduction](Rintro1.html).
 
 The `inferP()` function takes as first `target =` argument the probability we want to find, and as remaining arguments the values of the given probabilities, or equalities among probabilities. We must use the following notation:
 
-- $\lnot$\ \ becomes\ \ ` -`
-- $\land$\ \ becomes\ \ ` & `\ or equivalently\ ` * `
-- $\lor$\ \ becomes\ \ `+`
-- $=$\ \ becomes\ \ `==`
+- $\lnot$\ \ becomes\ \ ` - `
+- $\land$\ \ becomes\ \ ` * `
+- $\lor$\ \ becomes\ \ ` + `
+- $=$\ \ becomes\ \ ` == `
 - conditional bar $\|$\ \ becomes\ \ ` | `
 
 The output are the minimum and maximum possible values of the target probability, or `NA` if the starting probabilities are inconsistent.
@@ -526,15 +526,15 @@ knitr::opts_knit$set(root.dir = "other_code/")
 ```
 
 ```{r}
-source('inferP.R') ## load the function
+library('Pinference') ## load the package
 
 inferP(
     ## target probability:
-    target = P(-h | f & J),
+    target = P(-h | f * J),
     ## given probabilities:
-    P(-h + -s | f & J) == 1,
-    P(-h & -s | f & J) == 0.1,
-    P(h | f  & J) == P(s | f & J)
+    P(-h + -s | f * J) == 1,
+    P(-h * -s | f * J) == 0.1,
+    P(h | f * J) == P(s | f * J)
 )
 ```
 
@@ -547,9 +547,9 @@ Obviously the algorithm becomes more expensive, the larger the number of sentenc
 - Consider the following inference:
 ```{r}
 inferP(
-    target = P(hypothesis  |  evidence1 & evidence2 & I),
-    P(hypothesis  |  evidence1 & I) == 0.1,
-    P(hypothesis  |  evidence2 & I) == 0.9
+    target = P(hypothesis  |  evidence1 * evidence2 * I),
+    P(hypothesis  |  evidence1 * I) == 0.1,
+    P(hypothesis  |  evidence2 * I) == 0.9
 )
 ```
 What does this result tells us about "combining evidence" to prove a hypothesis?
