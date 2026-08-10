@@ -787,7 +787,7 @@ window.Quarto = {
 \]</span></p>
 <p>We’d like to visualize this probability density between <span style="display:inline-block;"><span class="math inline">\(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}-7\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(X\mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}10\)</span>.</span> Then we proceed as follows:</p>
 <ul>
-<li><p>Generate a large number of values, say hundreds, for <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> from <span style="display:inline-block;"><span class="math inline">\(-5\)</span></span> to <span style="display:inline-block;"><span class="math inline">\(10\)</span>.</span> The number of values to generate depends on the resolution at which the final plot will be shown.</p>
+<li><p>Generate a large number of values, say hundreds, for <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> from <span style="display:inline-block;"><span class="math inline">\(-7\)</span></span> to <span style="display:inline-block;"><span class="math inline">\(10\)</span>.</span> The number of values to generate depends on the resolution at which the final plot will be shown.</p>
 <p>In this example we’ll generate 257 values using the function <a href="https://stat.ethz.ch/R-manual/R-patched/library/base/html/seq.html"><code>seq()</code></a> with argument <code>length =</code>, and store them in the variable <code>x</code>.</p></li>
 <li><p>Calculate the probability density for each <span style="display:inline-block;"><span class="math inline">\(X\)</span></span> value generated. In R this is often easy, as we can give the whole sequence of numbers to a mathematical function.</p>
 <p>In R, the formula for the Gaussian distribution is given by the function <a href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Normal.html"><code>dnorm()</code></a> with arguments <code>mean =</code> and <code>sd =</code>.</p></li>
@@ -798,7 +798,7 @@ window.Quarto = {
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(x, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">pplot</span>(<span class="at">x =</span> x, <span class="at">y =</span> p, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">ylab =</span> <span class="st">'p(x | I)'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">pplot</span>(<span class="at">x =</span> x, <span class="at">y =</span> p, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">xlab =</span> <span class="st">'x'</span>, <span class="at">ylab =</span> <span class="st">'p(x | I)'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -815,7 +815,7 @@ window.Quarto = {
 <section id="sec-R-1Dscatter" class="level2">
 <h2 class="anchored" data-anchor-id="sec-R-1Dscatter">1D ensemble plots in R</h2>
 <p>What if we want to represent a probability density as an ensemble plot, as was done in <a href="probability_distributions.html#sec-represent-dens" class="quarto-xref">§&nbsp;<span>Representation of probability densities</span></a>?</p>
-<p>First of all we need to generate sample points that reflect the probability density. R has built-in functions to generate sample points for many common densities; they have the form <code>r...()</code> corresponding to the <code>d...()</code> one. For instance, to generate 100 points from a Gaussian density we can use <code>rnorm()</code> with arguments <code>n =</code> for the number of points, and <code>mean =</code>, <code>sd =</code> for the mean and standard deviation. Packages like <a href="https://cran.r-project.org/package=extraDistr"><strong>extraDistr</strong></a> also provide point generators.</p>
+<p>First of all we need to generate sample points that reflect the probability density. R has built-in functions to generate sample points for many common densities; they have the form <code>r...()</code> corresponding to the <code>d...()</code> one. For instance, to generate 100 points from a Gaussian density we can use <code>rnorm()</code> with arguments <code>n =</code> for the number of points, and <code>mean =</code>, <code>sd =</code> for the mean and standard deviation. Packages like <a href="https://cran.r-project.org/package=extraDistr"><strong>extraDistr</strong></a> also provide sample-point generators.</p>
 <p>How many sample points should we generate? The answer is heavily context- and problem-dependent. Too few points, say a dozen, may not give any clear idea of the density. Too many, say thousands, may end up producing a compact blob where no density differences are discernible. It also depends on the structure of the probability density itself. Around a 100 sample points or so may be a good starting point. But if you need to explore regions of the domain where the probability density is low, then you’ll need more points.</p>
 <p>Let’s generate 100 sample points for the Gaussian density of the previous example, storing them in the <code>samples</code> variable:</p>
 <div class="cell">
@@ -823,10 +823,10 @@ window.Quarto = {
 </div>
 <p>Then we need to display these points in a graph.</p>
 <p>R has the built-in function <a href="https://stat.ethz.ch/R-manual/R-patched/library/graphics/html/rug.html"><code>rug()</code></a> to display the sample points as thin vertical lines on the x-axis. The argument <code>ticksize =</code> specifies the length of these lines: <code>1</code> means the whole plot’s height, <code>0.5</code> half the plot’s height, and so on. You can also choose colour and line type and width with the usual <code>col =</code>, <code>lty =</code>, <code>lwd =</code> arguments.</p>
-<p>Let’s use this function to add to the previous plot the sample points we just generated (we also redraw the plot):</p>
+<p>Let’s use this function to add to the previous plot the sample points we just generated (we also redraw the plot); note that some sample points may land outside our plot’s x-range:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Redraw the plot</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pplot</span>(<span class="at">x =</span> x, <span class="at">y =</span> p, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">ylab =</span> <span class="st">'p(x | I)'</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pplot</span>(<span class="at">x =</span> x, <span class="at">y =</span> p, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">xlab =</span> <span class="st">'x'</span>, <span class="at">ylab =</span> <span class="st">'p(x | I)'</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rug</span>(samplesgauss, <span class="at">ticksize =</span> <span class="fl">0.25</span>, <span class="at">col =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -841,7 +841,7 @@ clipped</code></pre>
 </div>
 </div>
 </div>
-<p>Our custom function <code>pplot()</code> can also draw 1D ensemble plots. In the present example, we simply need to give it the sample points as the <code>x</code> argument and <code>NA</code> as the <code>y</code> argument:</p>
+<p>Our custom function <code>pplot()</code> can also draw 1D ensemble plots. In the present example we simply need to give it the sample points as the <code>x</code> argument and <code>NA</code> as the <code>y</code> argument:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pplot</span>(<span class="at">x =</span> samplesgauss, <span class="at">y =</span> <span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -863,7 +863,7 @@ clipped</code></pre>
 </div>
 </div>
 </div>
-<p>Still another alternative is to generate many sample points and represent them as a cloud of dots, which also extends in the y-direction. This is done by using the arguments <code>pch = '.'</code> and <code>yjitter = TRUE</code>. Let’s first generate 10 000 sample points and then plot them this way:</p>
+<p>Still another alternative is to generate many sample points and represent them as a cloud of dots, which extends also in the y-direction. This is done by using the arguments <code>pch = '.'</code> and <code>yjitter = TRUE</code>. Let’s first generate 10 000 sample points and then plot them this way:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="do">## generate new sample points</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>samplesgauss <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">10000</span>, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span>
@@ -877,8 +877,6 @@ clipped</code></pre>
 </div>
 </div>
 </div>
-<p><br>
-</p>
 <p>Finally, let’s suppose we want two visualize and compare two different probability densities for <span style="display:inline-block;"><span class="math inline">\(X\)</span>:</span> the Gaussian distribution from before, and a <a href="https://mathworld.wolfram.com/CauchyDistribution.html">Cauchy distribution</a>. We can do this by generating sample points for both, and then plot them together with <code>pplot()</code> as discussed above.</p>
 <p>First let’s generate 10 000 samples from the Cauchy distribution. In R this is done with the function <a href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/Cauchy.html"><code>rcauchy()</code></a>, with arguments <code>n =</code>, <code>location =</code>, and <code>scale =</code>. The location and scale determine where the centre of the distribution is located, and how wide it is; we can for instance choose a location equal to <span style="display:inline-block;"><span class="math inline">\(5\)</span>,</span> as for the Gaussian, and scale equal to <span style="display:inline-block;"><span class="math inline">\(1\)</span>:</span></p>
 <div class="cell">

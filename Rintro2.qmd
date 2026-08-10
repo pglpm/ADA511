@@ -115,7 +115,7 @@ $$
 
 We'd like to visualize this probability density between $X\mo -7$ and $X\mo 10$. Then we proceed as follows:
 
-- Generate a large number of values, say hundreds, for $X$ from $-5$ to $10$. The number of values to generate depends on the resolution at which the final plot will be shown.
+- Generate a large number of values, say hundreds, for $X$ from $-7$ to $10$. The number of values to generate depends on the resolution at which the final plot will be shown.
     
     In this example we'll generate 257 values using the function [`seq()`](https://stat.ethz.ch/R-manual/R-patched/library/base/html/seq.html) with argument `length =`, and store them in the variable `x`.
 
@@ -130,7 +130,7 @@ x <- seq(from = -7, to = 10, length = 257)
 
 p <- dnorm(x, mean = 5, sd = 3)
 
-pplot(x = x, y = p, ylim = c(0, NA), ylab = 'p(x | I)')
+pplot(x = x, y = p, ylim = c(0, NA), xlab = 'x', ylab = 'p(x | I)')
 ```
 
 If we need to display more densities in the same plot we can proceed as described in the previous section.
@@ -144,7 +144,7 @@ R has built-in functions for many common probability densities; they all have th
 
 What if we want to represent a probability density as an ensemble plot, as was done in [§@sec-represent-dens]?
 
-First of all we need to generate sample points that reflect the probability density. R has built-in functions to generate sample points for many common densities; they have the form `r...()` corresponding to the `d...()` one. For instance, to generate 100 points from a Gaussian density we can use `rnorm()` with arguments `n =` for the number of points, and `mean =`, `sd =` for the mean and standard deviation. Packages like [**extraDistr**](https://cran.r-project.org/package=extraDistr) also provide point generators.
+First of all we need to generate sample points that reflect the probability density. R has built-in functions to generate sample points for many common densities; they have the form `r...()` corresponding to the `d...()` one. For instance, to generate 100 points from a Gaussian density we can use `rnorm()` with arguments `n =` for the number of points, and `mean =`, `sd =` for the mean and standard deviation. Packages like [**extraDistr**](https://cran.r-project.org/package=extraDistr) also provide sample-point generators.
 
 How many sample points should we generate? The answer is heavily context- and problem-dependent. Too few points, say a dozen, may not give any clear idea of the density. Too many, say thousands, may end up producing a compact blob where no density differences are discernible. It also depends on the structure of the probability density itself. Around a 100 sample points or so may be a good starting point. But if you need to explore regions of the domain where the probability density is low, then you'll need more points.
 
@@ -158,16 +158,16 @@ Then we need to display these points in a graph.
 
 R has the built-in function [`rug()`](https://stat.ethz.ch/R-manual/R-patched/library/graphics/html/rug.html) to display the sample points as thin vertical lines on the x-axis. The argument `ticksize =` specifies the length of these lines: `1` means the whole plot's height, `0.5` half the plot's height, and so on. You can also choose colour and line type and width with the usual `col =`, `lty =`, `lwd =` arguments.
 
-Let's use this function to add to the previous plot the sample points we just generated (we also redraw the plot):
+Let's use this function to add to the previous plot the sample points we just generated (we also redraw the plot); note that some sample points may land outside our plot's x-range:
 
 ```{r}
 ## Redraw the plot
-pplot(x = x, y = p, ylim = c(0, NA), ylab = 'p(x | I)')
+pplot(x = x, y = p, ylim = c(0, NA), xlab = 'x', ylab = 'p(x | I)')
 
 rug(samplesgauss, ticksize = 0.25, col = 2)
 ```
 
-Our custom function `pplot()` can also draw 1D ensemble plots. In the present example, we simply need to give it the sample points as the `x` argument and `NA` as the `y` argument:
+Our custom function `pplot()` can also draw 1D ensemble plots. In the present example we simply need to give it the sample points as the `x` argument and `NA` as the `y` argument:
 
 ```{r}
 pplot(x = samplesgauss, y = NA)
@@ -179,7 +179,7 @@ You notice that the density around $X\mo 5$ is not very clear; there are too man
 pplot(x = samplesgauss, y = NA, pch = '|')
 ```
 
-Still another alternative is to generate many sample points and represent them as a cloud of dots, which also extends in the y-direction. This is done by using the arguments `pch = '.'` and `yjitter = TRUE`. Let's first generate 10 000 sample points and then plot them this way:
+Still another alternative is to generate many sample points and represent them as a cloud of dots, which extends also in the y-direction. This is done by using the arguments `pch = '.'` and `yjitter = TRUE`. Let's first generate 10 000 sample points and then plot them this way:
 
 ```{r}
 ## generate new sample points
@@ -187,8 +187,6 @@ samplesgauss <- rnorm(n = 10000, mean = 5, sd = 3)
 
 pplot(x = samplesgauss, y = NA, pch = '.', yjitter = TRUE)
 ```
-
-\
 
 Finally, let's suppose we want two visualize and compare two different probability densities for $X$: the Gaussian distribution from before, and a [Cauchy distribution](https://mathworld.wolfram.com/CauchyDistribution.html). We can do this by generating sample points for both, and then plot them together with `pplot()` as discussed above.
 
