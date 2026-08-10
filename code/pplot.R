@@ -97,6 +97,10 @@ pplot <- function(
         if(is.list(x[[aplot]])){x[[aplot]] <- unlist(x[[aplot]],
             recursive = TRUE, use.names = TRUE)}
         if(is.factor(x[[aplot]])){x[[aplot]] <- as.character(x[[aplot]])}
+        if(is.na(type[[(aplot - 1) %% length(type) + 1]]) &&
+               NROW(x[[aplot]]) == NROW(y[[(aplot - 1) %% length(y) + 1]]) + 1){
+            type[[(aplot - 1) %% length(type) + 1]] <- 'hx'
+        }
         if(is.character(x[[aplot]]) &&
                (anyDuplicated(x[[aplot]]) || length(x[[aplot]]) == 1)){
             if(is.na(xjitter[[(aplot - 1) %% length(xjitter) + 1]])){
@@ -112,6 +116,10 @@ pplot <- function(
         if(is.list(y[[aplot]])){y[[aplot]] <- unlist(y[[aplot]],
             recursive = TRUE, use.names = TRUE)}
         if(is.factor(y[[aplot]])){y[[aplot]] <- as.character(y[[aplot]])}
+        if(is.na(type[[(aplot - 1) %% length(type) + 1]]) &&
+               NROW(y[[aplot]]) == NROW(x[[(aplot - 1) %% length(x) + 1]]) + 1){
+            type[[(aplot - 1) %% length(type) + 1]] <- 'hy'
+        }
         if(is.character(y[[aplot]]) &&
                (anyDuplicated(y[[aplot]]) || length(y[[aplot]]) == 1)){
             if(is.na(yjitter[[(aplot - 1) %% length(yjitter) + 1]])){
@@ -276,13 +284,16 @@ pplot <- function(
         ## thisy <- drop(y[[aplot]])
         thisx <- x[[(aplot - 1) %% length(x) + 1]]
         thisy <- y[[(aplot - 1) %% length(y) + 1]]
+        thistype <- type[[(aplot - 1) %% length(type) + 1]]
 
         ## If only one coordinate is given, it's meant for all points
-        if(length(thisy) == 1 && length(thisx) > 1){
+        ## need duplicating in order to have different jitters
+        if(length(thisy) == 1 && NROW(thisx) > 1){
             thisy <- rep.int(x = thisy, times = NROW(thisx))
-        }
-        if(length(thisx) == 1 && length(thisy) > 1){
+            if(is.na(thistype)){ thistype <- 'p' }
+        } else if(length(thisx) == 1 && NROW(thisy) > 1){
             thisx <- rep.int(x = thisx, times = NROW(thisy))
+            if(is.na(thistype)){ thistype <- 'p' }
         }
 
         ## convert characters to integers, according to domains
@@ -307,19 +318,20 @@ pplot <- function(
         ## Check if jitter needed
         thisxjitter <- xjitter[[(aplot - 1) %% length(xjitter) + 1]]
         if((is.na(thisxjitter) && anyDuplicated(thisx)) || isTRUE(thisxjitter)){
-            if(all(thisx == thisx[1])){
-                thisx <- jitter(thisx, amount = 1/3)
-            } else {
+            ## handle different jitter logic for one-number-only
+            if(any(thisx != thisx[1])){
                 thisx <- jitter(thisx, factor = 5/3)
+            } else {
+                thisx <- jitter(thisx, amount = 1/3)
             }
         }
-
         thisyjitter <- yjitter[[(aplot - 1) %% length(yjitter) + 1]]
         if((is.na(thisyjitter) && anyDuplicated(thisy)) || isTRUE(thisyjitter)){
-            if(all(thisy == thisy[1])){
-                thisy <- jitter(thisy, amount = 1/3)
-            } else {
+            ## handle different jitter logic for one-number-only
+            if(any(thisy != thisy[1])){
                 thisy <- jitter(thisy, factor = 5/3)
+            } else {
+                thisy <- jitter(thisy, amount = 1/3)
             }
         }
 

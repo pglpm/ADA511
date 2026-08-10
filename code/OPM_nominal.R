@@ -731,7 +731,7 @@ plotFbelief <- function(
 
         pplot(x = vrts, y = list(samples, fmean),
             type='b', lty=1, lwd=c(1, 4), col = c(5, 8), pch = 16,
-            alpha.f=c(0.07, 0.75),
+            alpha.f=c(1/sqrt(NCOL(samples)), 0.75),
             ## xticks = xx,
             #xdomain = vrts,
             xlab = bquote(italic(.(names(dimnames(samples))[1]))),
