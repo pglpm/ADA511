@@ -729,20 +729,20 @@ plotFbelief <- function(
             }
         }
 
-        xx <- seq_along(vrts)
-        tplot(y = samples, x = xx,
-            type='b', lty=1, lwd=1, pch=16, col=7, alpha=0.25,
-            xticks = xx,
-            xlabels = vrts,
+        pplot(x = vrts, y = list(samples, fmean),
+            type='b', lty=1, lwd=c(1, 4), col = c(5, 8), pch = 16,
+            alpha.f=c(0.07, 0.75),
+            ## xticks = xx,
+            #xdomain = vrts,
             xlab = bquote(italic(.(names(dimnames(samples))[1]))),
             ylab = 'probability',
             ...
         )
-        if(probability){
-            tplot(y = fmean, x = xx,
-                type='b', lty=1, lwd=4, pch=18, col=1, alpha=0.75,
-                add = TRUE)
-        }
+        ## if(probability){
+        ##     pplot(y = fmean, x = vrts,
+        ##         type='b', lty=1, lwd=4, pch=18, col=1, alpha.f=0.75,
+        ##         add = TRUE)
+        ## }
         if(!is.null(file)){
             dev.off()
         }

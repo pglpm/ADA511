@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-11-07">
+<meta name="dcterms.date" content="2026-08-10">
 
 <title>33&nbsp; Example application: adult-income task – Data Science and AI prototyping 0.6</title>
 <style>
@@ -78,7 +78,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-6fc7f9edc9275b1be4df9d56d9e5af00.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-0d100ed2618fb62a1aeda6df484cbc4d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -169,7 +169,7 @@ window.Quarto = {
       <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Data Science and AI prototyping <span class="small grey">0.6</span><br><span class="small grey">2025-11-07</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+      <a href="./">Data Science and AI prototyping <span class="small grey">0.6</span><br><span class="small grey">2026-08-10</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
         <div class="sidebar-tools-main">
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -654,7 +654,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-11-07</p>
+      <p class="date">2026-08-10</p>
     </div>
   </div>
   
@@ -680,7 +680,7 @@ window.Quarto = {
 <a href="https://github.com/pglpm/ADA511/tree/master/code">https://github.com/pglpm/ADA511/tree/master/code</a></p>
 <p>We start loading the R libraries and functions needed at several stages. You need to have installed<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> the packages <a href="https://cran.r-project.org/package=extraDistr"><em>extraDistr</em></a> and <a href="https://cran.r-project.org/package=collapse"><em>collapse</em></a>. Make sure you have saved all source files and data files in the same directory. We also set the seed for the sample generator, to reproduce our results if necessary.</p>
 <div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;This is done with the <a href="https://rdrr.io/r/utils/install.packages.html"><code>install.packages()</code> function</a>.</p></div></div><div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'tplotfunctions.R'</span>)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'pplot.R'</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'OPM_nominal.R'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -735,13 +735,14 @@ window.Quarto = {
 <p>Prepare and train the first agent with the <code>buildagent()</code> function:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## temporarily load all training data</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>traindata <span class="ot">&lt;-</span> <span class="fu">tread.csv</span>(<span class="st">'train-income_data_example.csv'</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="do">## feed first 10 datapoints to the agent</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>opm10 <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">metadata =</span> <span class="st">'meta_income_data_example.csv'</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> traindata[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, ]</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>traindata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'train-income_data_example.csv'</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>, <span class="at">tryLogical =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="do">## feed first 10 datapoints to the agent</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>opm10 <span class="ot">&lt;-</span> <span class="fu">buildagent</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">metadata =</span> <span class="st">'meta_income_data_example.csv'</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> traindata[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, ]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And then the second agent (we also remove the training data to save memory):</p>
 <div class="cell">
@@ -799,7 +800,7 @@ window.Quarto = {
 </ul>
 <p>The agent has internally guessed how many training data should be necessary to affect its prior beliefs. We can peek at its guess by plotting the <code>alphas</code> parameters against the <code>palphas</code> probabilities:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">flexiplot</span>(<span class="at">x =</span> opmAll<span class="sc">$</span>alphas, <span class="at">y =</span> opmAll<span class="sc">$</span>palphas, <span class="at">type =</span> <span class="st">'b'</span>,</span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pplot</span>(<span class="at">x =</span> opmAll<span class="sc">$</span>alphas, <span class="at">y =</span> opmAll<span class="sc">$</span>palphas, <span class="at">type =</span> <span class="st">'b'</span>,</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10000</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>),</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">'required number of training data'</span>, <span class="at">ylab =</span> <span class="st">'probability'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -816,15 +817,14 @@ window.Quarto = {
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(opmAll<span class="sc">$</span>variates)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$workclass
-[1] "Federal-gov"      "Local-gov"        "Private"         
-[4] "Self-emp-inc"     "Self-emp-not-inc" "State-gov"       
-[7] "Without-pay"     
+[1] "Federal-gov"      "Local-gov"        "Private"          "Self-emp-inc"    
+[5] "Self-emp-not-inc" "State-gov"        "Without-pay"     
 
 $education
- [1] "10th"         "11th"         "12th"         "1st-4th"     
- [5] "5th-6th"      "7th-8th"      "9th"          "Assoc-acdm"  
- [9] "Assoc-voc"    "Bachelors"    "Doctorate"    "HS-grad"     
-[13] "Masters"      "Preschool"    "Prof-school"  "Some-college"
+ [1] "10th"         "11th"         "12th"         "1st-4th"      "5th-6th"     
+ [6] "7th-8th"      "9th"          "Assoc-acdm"   "Assoc-voc"    "Bachelors"   
+[11] "Doctorate"    "HS-grad"      "Masters"      "Preschool"    "Prof-school" 
+[16] "Some-college"
 
 $marital_status
 [1] "Divorced"              "Married-AF-spouse"     "Married-civ-spouse"   
@@ -861,11 +861,11 @@ $race
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">infer</span>(<span class="at">agent =</span> opm10, <span class="at">predictand =</span> <span class="st">'income'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>income
-   &lt;=50K     &gt;50K 
-0.506288 0.493712 </code></pre>
+    &lt;=50K      &gt;50K 
+0.5062881 0.4937119 </code></pre>
 </div>
 </div>
-<p>This agent gives a slightly larger probability to the <span style="display:inline-block;"><span class="math inline">\({\small\verb;&lt;=50K;}\)</span></span> case. Using the function <code>plotFbelief()</code> we can also inspect the <code>opm10</code>-agent’s belief about the frequency distribution of <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span></span> for the full population. This belief is represented by a generalized scatter plot of 1000 representative frequency distributions, represented as the <span class="lightblue">light-blue lines</span>:</p>
+<p>This agent gives a slightly larger probability to the <span style="display:inline-block;"><span class="math inline">\({\small\verb;&lt;=50K;}\)</span></span> case. Using the function <code>plotFbelief()</code> we can also inspect the <code>opm10</code>-agent’s belief about the frequency distribution of <span style="display:inline-block;"><span class="math inline">\(\mathit{income}\)</span></span> for the full population. This belief is represented by a generalized ensemble plot of 1000 representative frequency distributions, represented as the <span class="lightblue">light-blue lines</span>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotFbelief</span>(<span class="at">agent =</span> opm10,</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">1000</span>, <span class="do">## number of example frequency distributions</span></span>
@@ -1033,23 +1033,23 @@ occupation          Female Male
 <pre><code>, , 1
 
         income
-sex         &lt;=50K      &gt;50K
-  Female 0.284734 0.0729671
-  Male   0.429640 0.2126587
+sex          &lt;=50K       &gt;50K
+  Female 0.2847341 0.07296711
+  Male   0.4296402 0.21265866
 
 , , 2
 
         income
-sex         &lt;=50K      &gt;50K
-  Female 0.280624 0.0690956
-  Male   0.432737 0.2175428
+sex          &lt;=50K       &gt;50K
+  Female 0.2806244 0.06909564
+  Male   0.4327371 0.21754282
 
 , , 3
 
         income
-sex         &lt;=50K      &gt;50K
-  Female 0.284728 0.0696334
-  Male   0.434569 0.2110701</code></pre>
+sex          &lt;=50K       &gt;50K
+  Female 0.2847275 0.06963342
+  Male   0.4345689 0.21107013</code></pre>
 </div>
 </div>
 <p>These possible full-population frequency distributions can be used to assess how much the probabilities we find could change, if we collected a much, much larger amount of training data. Here is an example:</p>
@@ -1111,7 +1111,7 @@ occupation          Female Male
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mutualinfo</span>(<span class="at">agent =</span> opmAll, <span class="at">A =</span> <span class="st">'occupation'</span>, <span class="at">B =</span> <span class="st">'marital_status'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.0827823</code></pre>
+<pre><code>[1] 0.08278228</code></pre>
 </div>
 </div>
 <p>It is a very low association: knowing either variate decreases the effective number of possible values of the other only <span style="display:inline-block;"><span class="math inline">\(2^{0.0827823\,\mathit{Sh}} \approx 1.06\)</span></span> times.</p>
@@ -1137,9 +1137,9 @@ occupation          Female Male
 <span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(relevances, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>marital_status   relationship      education     occupation      workclass 
-    0.10074130     0.09046621     0.06332052     0.05506897     0.03002995 
+   0.100741300    0.090466214    0.063320516    0.055068967    0.030029954 
 native_country            sex           race 
-    0.01925227     0.01456655     0.00870089 </code></pre>
+   0.019252269    0.014566548    0.008700894 </code></pre>
 </div>
 </div>
 <p>If we had to choose <em>only one</em> variate to infer the outcome, on average it would be best to use <span style="display:inline-block;"><span class="math inline">\(\mathit{marital\_status}\)</span>.</span> Our last choice should be <span style="display:inline-block;"><span class="math inline">\(\mathit{race}\)</span>.</span></p>
@@ -1175,45 +1175,47 @@ Exercise&nbsp;33.1
 <p>At the end we plot a histogram of the probabilities calculated for the new units, to check for instance for how many of the agent was sure (beliefs around 0% or 100%) or unsure (beliefs around 50%). We also report the final utility/accuracy per unit, and the time needed for the computation:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Load test data</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>testdata <span class="ot">&lt;-</span> <span class="fu">tread.csv</span>(<span class="st">'test-income_data_example.csv'</span>)</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>ntest <span class="ot">&lt;-</span> <span class="fu">nrow</span>(testdata) <span class="do">## size of test dataset</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Let's time the calculation</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>stopwatch <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>testprobs <span class="ot">&lt;-</span> <span class="fu">numeric</span>(ntest) <span class="do">## prepare vector of probabilities</span></span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>testhits <span class="ot">&lt;-</span> <span class="fu">numeric</span>(ntest) <span class="do">## prepare vector of hits</span></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>ntest){</span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>    <span class="do">## calculate probabilities for 'income' given all other variates</span></span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>    probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmAll,</span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">predictand =</span> <span class="st">'income'</span>,</span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">predictor =</span> testdata[i, <span class="fu">colnames</span>(testdata) <span class="sc">!=</span> <span class="st">'income'</span>])</span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>    <span class="do">## store the probability for &lt;=50K</span></span>
-<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>    testprobs[i] <span class="ot">&lt;-</span> probs[<span class="st">'&lt;=50K'</span>]</span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>    <span class="do">## decide on one value</span></span>
-<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>    chosenvalue <span class="ot">&lt;-</span> <span class="fu">decide</span>(<span class="at">probs =</span> probs)<span class="sc">$</span>optimal</span>
-<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>    <span class="do">## check if decision == true_value: hit! and store result</span></span>
-<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>    testhits[i] <span class="ot">&lt;-</span> (chosenvalue <span class="sc">==</span> testdata[i, <span class="st">'income'</span>])</span>
-<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a><span class="do">## Print total time required</span></span>
-<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">Sys.time</span>() <span class="sc">-</span> stopwatch)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>testdata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'test-income_data_example.csv'</span>,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>, <span class="at">tryLogical =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>ntest <span class="ot">&lt;-</span> <span class="fu">nrow</span>(testdata) <span class="do">## size of test dataset</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Let's time the calculation</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>stopwatch <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>testprobs <span class="ot">&lt;-</span> <span class="fu">numeric</span>(ntest) <span class="do">## prepare vector of probabilities</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>testhits <span class="ot">&lt;-</span> <span class="fu">numeric</span>(ntest) <span class="do">## prepare vector of hits</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>ntest){</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>    <span class="do">## calculate probabilities for 'income' given all other variates</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>    probs <span class="ot">&lt;-</span> <span class="fu">infer</span>(<span class="at">agent =</span> opmAll,</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">predictand =</span> <span class="st">'income'</span>,</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">predictor =</span> testdata[i, <span class="fu">colnames</span>(testdata) <span class="sc">!=</span> <span class="st">'income'</span>])</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>    <span class="do">## store the probability for &lt;=50K</span></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>    testprobs[i] <span class="ot">&lt;-</span> probs[<span class="st">'&lt;=50K'</span>]</span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>    <span class="do">## decide on one value</span></span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>    chosenvalue <span class="ot">&lt;-</span> <span class="fu">decide</span>(<span class="at">probs =</span> probs)<span class="sc">$</span>optimal</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>    <span class="do">## check if decision == true_value: hit! and store result</span></span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>    testhits[i] <span class="ot">&lt;-</span> (chosenvalue <span class="sc">==</span> testdata[i, <span class="st">'income'</span>])</span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a><span class="do">## Print total time required</span></span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">Sys.time</span>() <span class="sc">-</span> stopwatch)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time difference of 5.55433 secs</code></pre>
+<pre><code>Time difference of 8.71293 secs</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Histogram and average accuracy (rounded to one decimal)</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">thist</span>(testprobs,</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="dv">10</span>), <span class="co"># 9 bins</span></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">'P(income = "&lt;=50K")'</span>,</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">'frequency density in test set'</span>,</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">'accuracy: '</span>, <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(testhits), <span class="dv">1</span>), <span class="st">'%'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>histdata <span class="ot">&lt;-</span> <span class="fu">hist</span>(testprobs, <span class="at">n =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="dv">10</span>), <span class="co"># 9 bins</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">pplot</span>(<span class="at">x =</span> histdata<span class="sc">$</span>breaks, <span class="at">y =</span> histdata<span class="sc">$</span>density, <span class="at">type =</span> <span class="st">'hx'</span>,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">'P(income = "&lt;=50K")'</span>,</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">'frequency density in test set'</span>,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">'accuracy: '</span>, <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(testhits), <span class="dv">1</span>), <span class="st">'%'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

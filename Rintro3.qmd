@@ -1,7 +1,7 @@
 # [Working with R, III]{.lightblue} {.unnumbered}
 {{< include macros.qmd >}}
 
-In this R interlude we shall see how to represent tables of joint probability distributions for two quantities ("contingency tables"), how to generate sample points from discrete probability distributions, and how to create 2D scatter plots of such samples.
+In this R interlude we shall see how to represent tables of joint probability distributions for two quantities ("contingency tables"), how to generate sample points from discrete probability distributions, and how to create 2D scatter plots, also called *ensemble* plots, of such samples.
 
 ```{r}
 #| echo: false
@@ -138,9 +138,9 @@ Very neat to read.
 
 ## Sampling from discrete joint probability distributions in R {#sec-R-sample-joint}
 
-Our next task is to graphically represent the probability distribution of a joint quantity (for the case of two quantities). Here we focus on [scatter-plots representations](joint_probability.html#scatter-plots-and-similar].
+Our next task is to graphically represent the probability distribution of a joint quantity (for the case of two quantities). Here we focus on [ensemble-plots representations](joint_probability.html#scatter-plots-and-similar].
 
-As usual, in order to represent a probability distribution as a scatterplot we first need to generate some sample points from it.
+As usual, in order to represent a probability distribution as an ensemble plot we first need to generate some sample points from it.
 
 The easiest way to do this in the case of a joint quantity is to numerically index its possible values, for instance with integers, and then to draw samples of these indices instead. We can then retrieve the quantity values corresponding to the sampled indices. The sampling is done again with the `sample()' function.
 
@@ -174,13 +174,13 @@ note how the most probable value, $(\texttt{non-urgent}, \texttt{other})$ appear
 
 ## Plotting joint probability distributions in R {#sec-R-plot-joint}
 
-We can finally generate a scatterplot with the sample points just generated. It's easily done with the `flexiplot()` function discussed in our [previous R interlude](Rintro2.html). We extract the $U$-values by using the `$U` operator, and give them as y-axis values. Similarly for the $T$-values, using `$T`, as x-axis values. It's important to use the `xjitter = TRUE` and `yitter = TRUE` arguments.
+We can finally generate an ensemble plot with the sample points just generated. It's easily done with the `pplot()` function discussed in our [previous R interlude](Rintro2.html). We extract the $U$-values by using the `$U` operator, and give them as y-axis values. Similarly for the $T$-values, using `$T`, as x-axis values. It's important to use the `xjitter = TRUE` and `yitter = TRUE` arguments.
 
 ```{r}
 ## load the function
-source('tplotfunctions.R')
+source('pplot.R')
 
-flexiplot(
+pplot(
     x = UTsamples$T,
     y = UTsamples$U,
     xjitter = TRUE,
@@ -193,9 +193,9 @@ You notice that the ordering of the $U$- and $T$-values on the axes does not mat
 
 ```{r}
 ## load the function
-source('tplotfunctions.R')
+source('pplot.R')
 
-flexiplot(
+pplot(
     x = UTsamples$T,
     y = UTsamples$U,
     xjitter = TRUE,
@@ -208,7 +208,7 @@ flexiplot(
 
 \
 
-The same procedure can be used to draw the scatterplot of a joint probability density. As an example, let's first generate 10 000 sample points for the joint quantity $(X, Y)$, where both $X$ and $Y$ are continuous, and store them in a `data.frame`. Don't pay too much attention to how the points are generated, as this is a very special case. We then show the first ten samples:
+The same procedure can be used to generate the ensemble plot of a joint probability density. As an example, let's first generate 10 000 sample points for the joint quantity $(X, Y)$, where both $X$ and $Y$ are continuous, and store them in a `data.frame`. Don't pay too much attention to how the points are generated, as this is a very special case. We then show the first ten samples:
 
 ```{r}
 XYsamples <- data.frame(X = rnorm(n = 10000), Y = rcauchy(n = 10000))
@@ -216,10 +216,10 @@ XYsamples <- data.frame(X = rnorm(n = 10000), Y = rcauchy(n = 10000))
 XYsamples[1:10, ]
 ```
 
-Now we draw the scatter plot with the points above. With continuous quantities we don't need to use the `...jitter = ` arguments. It is often useful to state the x- and y-ranges of the plot explicitly with `xlim =` and `ylim =`; note that this means that some sample points may end up outside the plot:
+Now we generate the ensemble plot with the points above. With continuous quantities we don't need to use the `...jitter = ` arguments. It is often useful to state the x- and y-ranges of the plot explicitly with `xlim =` and `ylim =`; note that this means that some sample points may end up outside the plot:
 
 ```{r}
-flexiplot(
+pplot(
     x = XYsamples$X, y = XYsamples$Y,
     type = 'p', pch = '.',
     xlim = c(-4, 4), ylim = c(-4, 4)

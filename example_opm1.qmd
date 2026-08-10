@@ -23,7 +23,7 @@ All code functions and data files are in the directory\
 We start loading the R libraries and functions needed at several stages. You need to have installed^[This is done with the [`install.packages()` function](https://rdrr.io/r/utils/install.packages.html).] the packages [*extraDistr*](https://cran.r-project.org/package=extraDistr) and [*collapse*](https://cran.r-project.org/package=collapse). Make sure you have saved all source files and data files in the same directory. We also set the seed for the sample generator, to reproduce our results if necessary.
 
 ```{r}
-source('tplotfunctions.R')
+source('pplot.R')
 source('OPM_nominal.R')
 
 set.seed(100)
@@ -88,7 +88,8 @@ Prepare and train the first agent with the `buildagent()` function:
 
 ```{r}
 ## temporarily load all training data
-traindata <- tread.csv('train-income_data_example.csv')
+traindata <- read.csv('train-income_data_example.csv',
+    stringsAsFactors = FALSE, tryLogical = FALSE)
 
 ## feed first 10 datapoints to the agent
 opm10 <- buildagent(
@@ -129,7 +130,7 @@ this shows the information contained in the agent as a list of several objects, 
 The agent has internally guessed how many training data should be necessary to affect its prior beliefs. We can peek at its guess by plotting the `alphas` parameters against the `palphas` probabilities:
 
 ```{r}
-flexiplot(x = opmAll$alphas, y = opmAll$palphas, type = 'b',
+pplot(x = opmAll$alphas, y = opmAll$palphas, type = 'b',
     xlim = c(0, 10000), ylim = c(0, NA),
     xlab = 'required number of training data', ylab = 'probability')
 ```
@@ -158,7 +159,7 @@ We ask the `opm10` agent to forecast the $\mathit{income}$ of the next unit, usi
 infer(agent = opm10, predictand = 'income')
 ```
 
-This agent gives a slightly larger probability to the $\cat{<=50K}$ case. Using the function `plotFbelief()` we can also inspect the `opm10`-agent's belief about the frequency distribution of $\mathit{income}$ for the full population. This belief is represented by a generalized scatter plot of 1000 representative frequency distributions, represented as the [light-blue lines]{.lightblue}:
+This agent gives a slightly larger probability to the $\cat{<=50K}$ case. Using the function `plotFbelief()` we can also inspect the `opm10`-agent's belief about the frequency distribution of $\mathit{income}$ for the full population. This belief is represented by a generalized ensemble plot of 1000 representative frequency distributions, represented as the [light-blue lines]{.lightblue}:
 
 ```{r}
 plotFbelief(agent = opm10,
@@ -394,7 +395,8 @@ At the end we plot a histogram of the probabilities calculated for the new units
 
 ```{r}
 ## Load test data
-testdata <- tread.csv('test-income_data_example.csv')
+testdata <- read.csv('test-income_data_example.csv',
+    stringsAsFactors = FALSE, tryLogical = FALSE)
 
 ntest <- nrow(testdata) ## size of test dataset
 
@@ -425,9 +427,10 @@ for(i in 1:ntest){
 print(Sys.time() - stopwatch)
 
 ## Histogram and average accuracy (rounded to one decimal)
-thist(testprobs,
-    n = seq(0, 1, length.out = 10), # 9 bins
-    plot = TRUE,
+histdata <- hist(testprobs, n = seq(0, 1, length.out = 10), # 9 bins
+    plot = FALSE)
+
+pplot(x = histdata$breaks, y = histdata$density, type = 'hx',
     xlab = 'P(income = "<=50K")',
     ylab = 'frequency density in test set',
     main = paste0('accuracy: ', round(100 * mean(testhits), 1), '%'))
