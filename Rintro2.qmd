@@ -48,22 +48,28 @@ so `b` could be a discrete probability distribution for the quantity `a`.
 
 If the quantity `a` is non-numeric, for instance a sequence of character strings, then we must first somehow convert it to numbers in order to use `plot()`, otherwise we get an error.
 
-In these notes we use the custom function `pplot()`, which takes care of such conversions internally. We can load it from the file [`pplot.R`](https://github.com/pglpm/ADA511/blob/master/code/pplot.R), which you should have already downloaded:
+In these notes we use the custom function `pplot()`, which takes care of such conversions internally. This function is borrowed from the R package [**Prova**](https://pglpm.github.io/prova/), but we can load it from the file [`pplot.R`](https://github.com/pglpm/ADA511/blob/master/code/pplot.R), which you should have already downloaded:
 
 ```{r}
 source('pplot.R')
 ```
 
-Consider a quantity `animal` that could be one of six possible animals, and  the distribution of probability over them, assigned to a variable `prob`. With `pplot()` we can plot the probability distribution as follows:
+Feel free to check the [documentation](https://pglpm.github.io/prova/reference/pplot.html) about this function.
+
+Consider a quantity `animal` with six possible values, and  the distribution of probability over them, assigned to a variable `prob`:
 
 ```{r}
 animal <- c('cat', 'dog', 'chicken', 'cow', 'pig', 'horse')
 prob1 <- c(0.05, 0.3, 0.4, 0.2, 0.03, 0.02)
+```
 
+With `pplot()` we can plot the probability distribution as follows:
+
+```{r}
 pplot(x = animal, y = prob1, type = 'b', ylim = c(0, NA))
 ```
 
-Note how the animal names appear in the x-axis, in the order specified. The range specification `ylim = c(0, NA)` (not available for `plot()`) says that the lower range should be $0$, and the upper range should be the maximum available among the y-axis values.
+Note how the animal names appear in the x-axis, in the order specified. The range specification `ylim = c(0, NA)` (not available for R base `plot()`) says that the lower range should be $0$, and the upper range should be the maximum available among the y-axis values.
 \
 
 Suppose we need to plot two different probability distributions (or two different sets of y-values more generally), stored in the variables `prob1` and `prob2`, for the same x-values, as in the last plot of [§@sec-discr-prob-distr]. We can do this by listing them together with the [`list()`](https://stat.ethz.ch/R-manual/R-patched/library/base/html/list.html) function, and then giving this list as the `y =` argument:
