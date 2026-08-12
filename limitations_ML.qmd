@@ -1,4 +1,4 @@
-# [Decisions: limitations of present-day machine-learning algorithms]{.darkgrey} {#sec-ML-utility-limitation}
+# [Limitations of present-day machine-learning algorithms]{.darkgrey} {#sec-ML-utility-limitation}
 {{< include macros.qmd >}}
 {{< include macros_decisions.qmd >}}
 
@@ -28,9 +28,9 @@ Such a choice is obviously a decision-making problem. We know that the optimal, 
 
 - [{{< fa scale-unbalanced-flip >}}\ \ the probabilities of the possible predictand values]{.green}
 
-- [{{< fa arrows-split-up-and-left >}}\ \ a list of possible decisions]{.yellow}
+- [{{< fa arrows-split-up-and-left >}}\ \ a list of possible actions]{.yellow}
 
-- [{{< fa sack-dollar >}}\ \ the utilities of the decisions, depending on the predictand's true value]{.blue}
+- [{{< fa sack-dollar >}}\ \ the utilities of the actions, depending on the predictand's true value]{.blue}
 
 The algorithm internally must -- at least approximately -- be calculating probabilities and maximizing expected utilities. In principle its internal workings should be susceptible to an explanation or interpretation from this point of view.
 
@@ -50,17 +50,17 @@ The book [*Machine Learning*](references.html) and Part V of the book [*Informa
 
 ## Limitations of machine-learning classifiers (and estimators) {#sec-limit-class}
 
-### Unknowns vs decisions
+### Unknowns vs actions
 
-Decision Theory makes a distinction between what is *unknown* to an agent ("outcomes"), and what the agent has to *choose* ("decisions"). This distinction is common in everyday problems. We may wonder whether it will rain in the next hour. The point of our wonder, however, is not  (except in some situations) the rain phenomenon per se, but its implications about what clothes or shoes we should wear, or about staying indoors or going out, or about going on foot or by car, and so on.
+Decision Theory makes a distinction between what is *unknown* to an agent ("outcomes"), and what the agent has to *choose* ("actions"). This distinction is common in everyday problems. We may wonder whether it will rain in the next hour. The point of our wonder, however, is not  (except in some situations) the rain phenomenon per se, but its implications about what clothes or shoes we should wear, or about staying indoors or going out, or about going on foot or by car, and so on.
 
-An important reason for this distinction is that the set of possible decisions often does **not** have a correspondence with the set of unknown possibilities. In fact, the two sets often have different numbers of elements. You can think of many situations in which you are unsure whether some event will happen or not, and you have *three* plans: one if you are almost sure the event will happen, one if you are almost sure the event will not happen, and a third "safe" plan if you are about 50%/50% uncertain. The "safe" plan typically has consequences that are neither too bad or too good, so that losses and gains are kept to a minimum. This example also shows why the probabilities of the outcomes are important.
+An important reason for this distinction is that the set of possible actions often does **not** have a correspondence with the set of unknown possibilities. In fact, the two sets often have different numbers of elements. You can think of many situations in which you are unsure whether some event will happen or not, and you have *three* plans: one if you are almost sure the event will happen, one if you are almost sure the event will not happen, and a third "safe" plan if you are about 50%/50% uncertain. The "safe" plan typically has consequences that are neither too bad or too good, so that losses and gains are kept to a minimum. This example also shows why the probabilities of the outcomes are important.
 
 \
 
 Many present-day machine-learning algorithms are quite limited in this respect:
 
-- their output is typically one of the unknown values, not one of the decisions
+- their output is typically one of the unknown values, not one of the actions
 - they don't give the probabilities of the unknown values
 
 This limitation may not be important in some tasks, for instance when you are classifying some images as "cat" or "dog" for the purpose of a photo album. But it is extremely important and impairing in serious applications, such as clinical ones. Let's illustrate this with a simple example.
@@ -112,7 +112,7 @@ For example, suppose the clinician has three treatments available: $\yA$, $\yB$,
 
 - treatment $\yC$ is intensive: under it, the patient is expected not to lose extra years if the disease is present, but will lose four years if the disease is not present, owing to the heavy damage caused by this treatment.
 
-Which of the treatments above should the clinician choose? We now know how the clinician should make the optimal decision, but let's explore the possible consequences of not making it, in three different scenarios. In each scenario, the clinician has prescribed several clinical tests (the predictors) for the patient, and obtained their results.
+Which of the treatments above should the clinician choose? We now know how the clinician should make the optimal action, but let's explore the possible consequences of not making it, in three different scenarios. In each scenario, the clinician has prescribed several clinical tests (the predictors) for the patient, and obtained their results.
 
 #### Scenario 1: 10%/90%
 
@@ -143,7 +143,7 @@ $$
 = \boldsymbol{-360\yr}
 $$
 
-Clearly the best decision is treatment $\yA$. It is possible that, unfortunately, the present patient's life will be shortened; but this treatment was the patient's and clinician's best bet.
+Clearly the best action is treatment $\yA$. It is possible that, unfortunately, the present patient's life will be shortened; but this treatment was the patient's and clinician's best bet.
 
 In this scenario, a clinician that doesn't choose the optimal treatment is on average taking away from each patient between 7 months and 3 years of life more than was necessary or unavoidable.
 
@@ -178,7 +178,7 @@ $$
 = \boldsymbol{-200\yr}
 $$
 
-The best decision is treatment $\yB$.
+The best action is treatment $\yB$.
 
 In this scenario, a clinician who chooses treatments $\yA$ or $\yC$ for patients having the same predictors as the present patient is on average taking away one extra year of life from each patient.
 
@@ -210,14 +210,14 @@ $$
 = \boldsymbol{-40\yr}
 $$
 
-Treatment $\yC$ is the best decision in this scenario, for reasons complementary to those of scenario 1.
+Treatment $\yC$ is the best action in this scenario, for reasons complementary to those of scenario 1.
 
 In this scenario, like in the first, a clinician that doesn't choose the optimal treatment is on average taking away, from each patient, between 7 months and 3 years of life more than was necessary or unavoidable.
 
 
 \
 
-In each scenario, note that *any* decision strategy different from "sticking to the optimal decision" leads to suboptimal results -- that is, lives shortened more than what was unavoidable. In scenario 1, for instance, a decision strategy such as "[choose treatment $\yA$ most of the time, and treatment $\yB$ from time to time]{.midgrey}" leads to an additional life shortening of several months. This is clear from the following graph, which shows the average reduction in life expectancy for each treatment, depending on the percentage of patients with the disease:
+In each scenario, note that *any* action strategy different from "sticking to the optimal action" leads to suboptimal results -- that is, lives shortened more than what was unavoidable. In scenario 1, for instance, an action strategy such as "[choose treatment $\yA$ most of the time, and treatment $\yB$ from time to time]{.midgrey}" leads to an additional life shortening of several months. This is clear from the following graph, which shows the average reduction in life expectancy for each treatment, depending on the percentage of patients with the disease:
 
 ![](utilities_treatments.png){width=100%}
 
@@ -247,9 +247,9 @@ Consider a clinician uncertain with 50% probability that the present patient bel
 
 ### Sub-optimality of a typical machine-learning algorithm
 
-The clinical example above shows that there isn't any one-to-one connection between decisions and unknowns. We cannot say, for instance, that treatment $\yC$ "corresponds" to the presence of the disease, because the best treatment is actually $\yB$, not $\yC$, if the probability for $\dise\mo\yy$ is above 50% but below 75%.
+The clinical example above shows that there isn't any one-to-one connection between actions and unknowns. We cannot say, for instance, that treatment $\yC$ "corresponds" to the presence of the disease, because the best treatment is actually $\yB$, not $\yC$, if the probability for $\dise\mo\yy$ is above 50% but below 75%.
 
-<!-- Many or most present-day machine-learning algorithms focus on the unknown variate-value and don't yield any probabilities. This limitation makes it impossible to determine the optimal decision; such algorithms sub-optimal by construction. -->
+<!-- Many or most present-day machine-learning algorithms focus on the unknown variate-value and don't yield any probabilities. This limitation makes it impossible to determine the optimal action; such algorithms sub-optimal by construction. -->
 
 Now imagine that the clinician inputs the patient's predictors into a neural network, trained to give an output about the presence or absence of the disease. The neural network outputs `yes`, but it's known that the neural network can err. Which treatment should the clinician choose?
 

@@ -2,7 +2,7 @@
 {{< include macros.qmd >}}
 {{< include macros_decisions.qmd >}}
 
-## From inferences to decisions
+## From inferences to actions
 
 At long last we have seen how an agent can calculate the probabilities of any kind of sentence, given any facts and assumptions available to it. We studied this probability calculation for general problems, and then more in detail for problems enjoying special properties, for instance when the agent's beliefs are exchangeable ([chapter @sec-exchangeable-beliefs]). Most important, we saw how previous data and background information can be used to determine, and at the same time affect, these probabilities. We have even built a real, prototype agent that can flexibly calculate probabilities in problems involving nominal variates.
 
@@ -15,43 +15,43 @@ Decision Theory requires the decision-making agent to calculate the probabilitie
 So let's face the decision-making problem again at last, and complete the construction of our prototype agent by implementing the final decision-making step.^[Please go back to [chapter @sec-basic-decisions] and review the notions and terminology introduced there.]
 
 
-## Review of a basic decision problem: outcomes, decisions, utilities {#sec-decisions-utilities}
+## Review of a basic decision problem: outcomes, actions, utilities {#sec-decisions-utilities}
 
-Recall the structure of a basic decision:
+Recall the structure of a basic decision problem:
 
 ![](basic_decision_tree.png){width=75%}
 
-In order to make a decision, the agent needs:
+In order to choose an action, the agent needs:
 
-- {{< fa cube >}} The set of possible [*decisions*]{.yellow}, which we represent as sentences like $\yD$.
+- {{< fa cube >}} The set of possible [*actions*]{.yellow}, which we represent as sentences like $\yD$.
 
 - {{< fa cube >}} The set of possible [*outcomes*]{.red}, whose truth is unknown to the agent. In the kind of decision problems that we are examining, the outcomes correspond to the possible values $\red Y\mo y$ of the [predictand]{.red} variate.
 
 
-- {{< fa cube >}} The [*probabilities*]{.green} of the outcomes\ \ $\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)$ which are determined by the agent's background information $\yI$, by any other available information, such as $\data$ about previously observed units and the values of some predictor variates $\green X\mo x$ for the current unit; and possibly also by the agent's decision $\yD$ (see below).
+- {{< fa cube >}} The [*probabilities*]{.green} of the outcomes\ \ $\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)$ which are determined by the agent's background information $\yI$, by any other available information, such as $\data$ about previously observed units and the values of some predictor variates $\green X\mo x$ for the current unit; and possibly also by the agent's action $\yD$ (see below).
 
-- {{< fa cube >}} The [*utilities*]{.blue} of each pair of decision and  outcome $(\yD \and {\red Y\mo y})$.
+- {{< fa cube >}} The [*utilities*]{.blue} of each pair of action and  outcome $(\yD \and {\red Y\mo y})$.
 
-Some texts call the joint pair $({\red Y\mo y} \and \yD)$, or equivalently $(\yD \and {\red Y\mo y})$, of a decision and an outcome, a [**consequence**]{.blue}.
+Some texts call the joint pair $({\red Y\mo y} \and \yD)$, or equivalently $(\yD \and {\red Y\mo y})$, of an action and an outcome, a [**consequence**]{.blue}.
 
 Let's not forget some important points about the notions above:
 
 :::{.callout-important}
 ## {{< fa exclamation-triangle >}}
 
-- We are not assuming any temporal or "causal" relationship between [decisions]{.yellow} and [outcomes]{.red}: **our framework works independently of these relationships**. In some decision-making problems the outcomes happen *after* a decision is made, and may be "influenced" by it or not. In other decision-making problems the outcomes have already happened *before* a decision is made.
+- We are not assuming any temporal or "causal" relationship between [actions]{.yellow} and [outcomes]{.red}: **our framework works independently of these relationships**. In some decision-making problems the outcomes happen *after* an action is taken, and may be "influenced" by it or not. In other decision-making problems the outcomes have already happened *before* an action is taken.
     
-	In a transportation-choice problem, for instance, the outcome "[wet from rain]{.red}" may happen after we make the decision "[go on foot]{.yellow}" rather than "[go by bus]{.yellow}". In an image-classification problem, on the other hand, the outcome "[true label is $\cat{cat}$]{.red}" was already determined before we made the decision "[classify as $\cat{dog}$]{.yellow}".
+	In a transportation-choice problem, for instance, the outcome "[wet from rain]{.red}" may happen after we take the action "[go on foot]{.yellow}" rather than "[go by bus]{.yellow}". In an image-classification problem, on the other hand, the outcome "[true label is $\cat{cat}$]{.red}" was already determined before we took the action "[classify as $\cat{dog}$]{.yellow}".
 
 \
 
-- In connection with the warning above, in some problems the probabilities of the outcomes may depend on the decision; that is, knowledge about the decision is *relevant* to the knowledge about the outcome (see again [§@sec-info-chapter]):
+- In connection with the warning above, in some problems the probabilities of the outcomes may depend on the action; that is, knowledge about the action is *relevant* to the knowledge about the outcome (see again [§@sec-info-chapter]):
     
 	$$\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)$$
 	
-	For instance, in the transportation-choice problem the probability of the outcome "[wet from rain]{.red}" is higher conditional on the decision "[go on foot]{.yellow}" than on the decision "[go by bus]{.yellow}".
+	For instance, in the transportation-choice problem the probability of the outcome "[wet from rain]{.red}" is higher conditional on the action "[go on foot]{.yellow}" than on the action "[go by bus]{.yellow}".
 	
-	In many decision-making problems typical of machine learning, such as classification, information about the decision is *irrelevant* to the information about the outcome (which usually has already happened), and we have
+	In many decision-making problems typical of machine learning, such as classification, information about the action is *irrelevant* to the information about the outcome (which usually has already happened), and we have
 	
 	$$
 	\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)
@@ -60,7 +60,7 @@ Let's not forget some important points about the notions above:
 
 :::
 
-In what follows we shall consider problems, such as classification, where knowledge of the agent's decision is irrelevant to the outcome's probability. We shall nevertheless keep the more general notation\ \ $\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)$.
+In what follows we shall consider problems, such as classification, where knowledge of the agent's action is irrelevant to the outcome's probability. We shall nevertheless keep the more general notation\ \ $\P({\red Y\mo y} \| \yD \and {\green X\mo x} \and \data \and \yI)$.
 
 
 
@@ -68,7 +68,7 @@ In what follows we shall consider problems, such as classification, where knowle
 
 In most decision-making problems the "gain" or "loss" or "satisfaction" or "desiderability" of the outcomes depends on many different aspects. A person purchasing some item may have to choose between something inexpensive but of low quality, or something of high quality but expensive. A clinical patient may have to choose between a treatment that increases life expectancy but worsens the quality of life, or a treatment that improves the quality of life but decreases life expectancy.
 
-Decision Theory says that whenever an agent makes a decision among alternatives having heterogeneous decision aspects, then it is *implicitly* using *only one real number* to summarize and bring together all those aspects. If this weren't true, the agent would be deciding in an irrational way, which could even be exploited against the agent itself.
+Decision Theory says that whenever an agent decides on an action among alternatives having heterogeneous aspects, then it is *implicitly* using *only one real number* to summarize and bring together all those aspects. If this weren't true, the agent would be deciding in an irrational way, which could even be exploited against the agent itself.
 
 Such idea is not counter-intuitive in our culture. We are wont, for example, to exchange *money* for things of wildly different kinds: food, entertainment, health, work, transport, communication, life insurance, knowledge, political power. The monetary value of a human life ("value of statistical life") for some governments is [about USD 10 000 000](https://www.transportation.gov/office-policy/transportation-policy/revised-departmental-guidance-on-valuation-of-a-statistical-life-in-economic-analysis).
 
@@ -84,15 +84,15 @@ Such idea is not counter-intuitive in our culture. We are wont, for example, to 
 
 ### Notation
 
-We denote the utility of the outcome $\red Y\mo y$ following from decision $\yD$ as
+We denote the utility of the outcome $\red Y\mo y$ following from action $\yD$ as
 
 $$
 \uu(\yD \and {\red Y\mo y} \| \yI)
 $$
 
-This notation reminds us that the utilities assigned by an agent depend not only on the outcome, but also on the decision and on the agent's background information $\yI$. 
+This notation reminds us that the utilities assigned by an agent depend not only on the outcome, but also on the action and on the agent's background information $\yI$. 
 
-The utilities for all outcomes and decisions can be encoded in a [**utility matrix**]{.blue} $\um$, having one row per decision and one column per outcome:
+The utilities for all outcomes and actions can be encoded in a [**utility matrix**]{.blue} $\um$, having one row per action and one column per outcome:
 
 $$
 \um \defd
@@ -112,9 +112,9 @@ $$
 $$
 \
 
-### Utilities in sequences of apparently identical decisions {#sec-utility-sequence}
+### Utilities in sequences of apparently identical actions {#sec-utility-sequence}
 
-Keep in mind that the background information $\yI$ also includes *previous decisions and outcomes*, if the present decision and outcome are part of a sequence. Because of this, **when a decision problem occurs again, the utility of a particular decision and outcome may be different from the previous ones.** This will be discussed in [§@sec-decision-trees].
+Keep in mind that the background information $\yI$ also includes *previous actions and outcomes*, if the present action and outcome are part of a sequence. Because of this, **when a decision problem occurs again, the utility of a particular action and outcome may be different from the previous ones.** This will be discussed in [§@sec-decision-trees].
 
 As an example, suppose someone proposes you a sequence of bets. A coin will be tossed several times; before each toss you must decide between $\yDh \defd{}$["bet on heads"]{.yellow} or $\yDt \defd{}$["bet on tails"]{.yellow}; if the outcome is the one you bet on, you win $ 1, otherwise lose $ 1. The utility of a $ 1-loss at the first toss might be $\blue -1$:
 
@@ -141,7 +141,7 @@ and so on. The decreased utility, even if the consequences at each coin toss are
 
 ### Utility of money {#sec-utility-money}
 
-The outcomes of a decision may involve the winning or losing of money. As we have emphasized multiple times, a utility is not the same thing as a sum of money. This means that even if we have associated a utility of $1$ to a money win of $1, the utility associated to a win of $100 may be different from $100, and the utility associated to a loss of $1 may be different from $-1$. There is no definite, universal mathematical relation between utility and money; such a relation must be assessed case by case.
+The outcomes of an action may involve the winning or losing of money. As we have emphasized multiple times, a utility is not the same thing as a sum of money. This means that even if we have associated a utility of $1$ to a money win of $1, the utility associated to a win of $100 may be different from $100, and the utility associated to a loss of $1 may be different from $-1$. There is no definite, universal mathematical relation between utility and money; such a relation must be assessed case by case.
 
 A lot of misunderstanding about decision theory and about the principle of maximal expected utility ([ch. @sec-making-decisions]) has come from the erroneous numerical identification of utility and money. Some researchers have even proposed alternative procedures, owing to such misunderstandings. Here is one example.
 
@@ -180,7 +180,7 @@ $$
 
 The expected utility of bet A is approximately $-2549$, and that of bet B is approximately $0$. Thus the principle of maximal expected utility leads to bet B as the optimal choice!
 
-What's needed is not alternative principles, but a correct utility assessment. This is also a good place to recall the main theorem (by Wald, von Neumann and Morgenstern, Savage, and others) mentioned in [§@sec-decision-theory]: if one finds a different principle to make an optimal decision, then such an alternative principle is either (a) completely equivalent to maximal expected utility, for particular choices of utilities, or (b) logically inconsistent.
+What's needed is not alternative principles, but a correct utility assessment. This is also a good place to recall the main theorem (by Wald, von Neumann and Morgenstern, Savage, and others) mentioned in [§@sec-decision-theory]: if one finds a different principle to take optimal action, then such an alternative principle is either (a) completely equivalent to maximal expected utility, for particular choices of utilities, or (b) logically inconsistent.
 
 :::{.callout-caution}
 According to the money-utility formula above, what's the lowest capital $\$C$ for which bet A becomes the optimal choice?
@@ -189,9 +189,9 @@ According to the money-utility formula above, what's the lowest capital $\$C$ fo
 
 ### Continuous case
 
-In some decision-making problems the set of possible decisions can be considered as continuous.
+In some decision-making problems the set of possible actions can be considered as continuous.
 
-A power-plant operator, for example, may have to decide to supply an amount of power between 100 MW and 200 MW to a geographical region in the next hour. The unknown "outcome" $\red Y$ in this scenario may be the power demand, which could be in the same range. In this case we can represent a decision by a statement $\yellow D\mo d$, such as
+A power-plant operator, for example, may have to decide to supply an amount of power between 100 MW and 200 MW to a geographical region in the next hour. The unknown "outcome" $\red Y$ in this scenario may be the power demand, which could be in the same range. In this case we can represent an action by a statement $\yellow D\mo d$, such as
 
 $$\yellow D\mo 175\,\mathrm{MW}$$
 
@@ -224,7 +224,7 @@ or some other asymmetric function.
 
 ## How to determine utilities? {#sec-whence-utilities}
 
-It can be quite difficult to assess the utilities of the decisions and outcomes in a decision-making problems, because of reasons such as heterogeneity or uncertainty, discussed below. Yet, Decision Theory says that any decision is either implicitly using such a number, or is sub-optimal or logically inconsistent. Moreover, the specification, at some level, of utilities not derived by further analysis is simply unavoidable -- just like the specification of some initial probabilities.
+It can be quite difficult to assess the utilities of the actions and outcomes in a decision-making problems, because of reasons such as heterogeneity or uncertainty, discussed below. Yet, Decision Theory says that any action is either implicitly using such a number, or is sub-optimal or logically inconsistent. Moreover, the specification, at some level, of utilities not derived by further analysis is simply unavoidable -- just like the specification of some initial probabilities.
 
 #### Heterogeneous factors
 
@@ -249,7 +249,7 @@ Several fields, such as medicine, have developed and refined several methodologi
 
 #### Uncertainty
 
-The assessment of utilities can also be affected by uncertainties, and therefore become an inference problem in itself. The utility of an outcome may depend on further decisions and further outcomes, whose utilities in turn depend on further decisions and outcomes. Our basic decision framework can in this case be applied repeatedly, as briefly discussed below. In the simplest case, if the agent is uncertain between utility values $\blue \um'$ with probability $p'$, and utility values $\blue \um''$ with probability $p'' = 1-p'$, then the utilities to use are the averages
+The assessment of utilities can also be affected by uncertainties, and therefore become an inference problem in itself. The utility of an outcome may depend on further actions and further outcomes, whose utilities in turn depend on further actions and outcomes. Our basic decision framework can in this case be applied repeatedly, as briefly discussed below. In the simplest case, if the agent is uncertain between utility values $\blue \um'$ with probability $p'$, and utility values $\blue \um''$ with probability $p'' = 1-p'$, then the utilities to use are the averages
 
 $$p'\,{\blue\um'} + p''\,{\blue\um''}$$
 
@@ -312,11 +312,11 @@ The assessment of initial utilities constitutes a field under active development
 
 ## Utilities as evaluation metric {#sec-utilities-metric}
 
-The utilities of the consequences not only allow the agent to determine the optimal decision, as we shall see in the next chapter. They also allow us to quantify how much utility an agent yielded in a concrete application or sequence of applications of a specific decision-making task.
+The utilities of the consequences not only allow the agent to determine the optimal action, as we shall see in the next chapter. They also allow us to quantify how much utility an agent yielded in a concrete application or sequence of applications of a specific decision-making task.
 
 Since the possible gains and losses of a specific problem are encoded in the problem-specific utilities $\um$, these utilities quantify *by definition* how much has been gained or lost in solving the problem.
 
-Suppose that in the first instance of a decision-making task the agent makes decision $\yD_1$, and in that instance the outcome ${\red Y}_1$ turns out to be $\ry_1$ (this may be discovered a long time after the decision was made). The utility (possibly a loss) gained at that instance is then, by definition,
+Suppose that in the first instance of a decision-making task the agent chooses action $\yD_1$, and in that instance the outcome ${\red Y}_1$ turns out to be $\ry_1$ (this may be discovered a long time after the action was taken). The utility (possibly a loss) gained at that instance is then, by definition,
 
 $$
 \uu(\yD_1 \and {\red Y_{\black 1}\mo y_{\black 1}} \| \yI)
@@ -343,7 +343,7 @@ The utility yield can be calculated in a test run of the agent, to check whether
 
 For the test run we need a set of data $i=1,2,\dotsc,M$ (which should come from the same population underlying the real application, see [§@sec-samples]) for which the actual outcomes ${\red Y_{\black i}\mo y_{\black i}}$ are known, and for which any predictors ${\green X_{\black i}\mo x_{\black i}}$ are also available, so that they can be used by the agents under evaluation.
 
-Each agent is then applied to these data: it is given the predictors ${\green X_{\black i}\mo x_{\black i}}$, and from these it will determine and possibly execute the optimal decision $\yD_i$, for all $i$. The total or average utility yield generated by the agent is then given by the formula above.
+Each agent is then applied to these data: it is given the predictors ${\green X_{\black i}\mo x_{\black i}}$, and from these it will determine and possibly execute the optimal action $\yD_i$, for all $i$. The total or average utility yield generated by the agent is then given by the formula above.
 
 The test utility yield of an agent can be examined to uncover possible design flaws (say, wrong background information, or programming bugs). The yields of different agents can be compared to decide which is most appropriate to the task.
 
@@ -369,7 +369,7 @@ A hasty and naive application of decision theory could represent the problem wit
 
 ![](decision_tree_gambler_wrong.png){width=75%}
 
-and the decision with maximal expected utility would be $\sB$. But the gambler obviously prefers $\sA$. A critic of Decision Theory would then say that this happens because, contrary to the axiom of independence, we should allow the utilities to depend on the probabilities, which are more uncertain for $\sA$ than for $\sB$.
+and the action with maximal expected utility would be $\sB$. But the gambler obviously prefers $\sA$. A critic of Decision Theory would then say that this happens because, contrary to the axiom of independence, we should allow the utilities to depend on the probabilities, which are more uncertain for $\sA$ than for $\sB$.
 
 But the above application is wrong and illogical. In the representation above, the probabilities refer to the monetary outcome; but we said that the gambler doesn't care about losing money. If "thrill & risk" is the factor that determines the utilities, then the probabilities should be about that same factor.
 
@@ -377,7 +377,7 @@ For the gambler, choosing $\sB$ leads *for certain* to a situation with little "
 
 ![](decision_tree_gambler_right.png){width=75%}
 
-Note that the utilities do *not* depend on the probabilities, exactly as required by the independence axiom. The principle of maximal expected utility leads to decision $\sA$, the gambler's favourite. Also note that the relevant probabilities are not the ones (about money winnings) mentioned in the initial statement of the problem. Just because we read or hear the word "probability" doesn't mean that that's the probability we need.
+Note that the utilities do *not* depend on the probabilities, exactly as required by the independence axiom. The principle of maximal expected utility leads to action $\sA$, the gambler's favourite. Also note that the relevant probabilities are not the ones (about money winnings) mentioned in the initial statement of the problem. Just because we read or hear the word "probability" doesn't mean that that's the probability we need.
 
 This would-be counterexample therefore vindicates Decision Theory. The problem was not in the axiom of independence, but in the fact that the framework was illogically applied. The "need" to break the axiom of independence to recover the intuitively correct solution (basically correcting an error with another error) was actually a warning sign that some illogical reasoning was taking place.
 
