@@ -694,23 +694,27 @@ window.Quarto = {
 <h2 data-number="8.1" class="anchored" data-anchor-id="sec-probability-def"><span class="header-section-number">8.1</span> When truth isn’t known: beliefs and probability</h2>
 <p>If we want to design an AI agent that can make decisions and act in uncertain situations, we need to equip it with <em>probabilities</em> and <em>utilities</em>. This is an inescapable necessity, as discussed in <a href="framework.html#sec-decision-theory" class="quarto-xref">§&nbsp;<span>2.5</span></a>. It is intuitively clear what utilities are: they quantify how desirable different outcomes are to the agent. What do probabilities quantify?</p>
 <p>A first <em>tentative</em> answer could be this: the probability of an outcome quantifies how often the agent has seen that outcome. That is, it represents the observed frequency of that outcome.</p>
-<p>Although it seems reasonable in many respects, the answer above still doesn’t capture several elements that appear in the way we make rational inferences, and that are extremely important in designing an AI agent that can operate in uncertain conditions.</p>
+<p>Although it seems reasonable in many respects, this tentative answer still doesn’t capture several elements that appear in the way we make rational inferences, and that are extremely important in designing an AI agent that can operate in uncertain conditions.</p>
 <p>To see what’s missing, consider the following scenario:<br>
 </p>
 <blockquote class="blockquote">
-<p>Someone shows you and a friend of yours, called Aisha, a mechanical device designed to toss a coin. The device looks complicated; neither of you has a full grasp of its design. A normal coin is placed on the device, and your friend Aisha is required to place a bet on whether the tossed coin will land <code>heads</code> or <code>tails</code>. If she guesses correctly she wins $1; nothing otherwise. Note that not betting is not an option: feel free to imagine circumstances (possibly very nasty) where your friend can’t refuse to bet. Let’s also make clear that no “cheating” is taking place: for instance, the outcome does <em>not</em> depend on the betting choice (you can imagine that the coin is tossed right before Aisha bets, but the outcome hidden from her until she bets). From now on you can only observe Aisha’s choices and hear what she says, but cannot talk with her.</p>
-<p>In this situation your friend says that it does not matter whether she bets on <code>heads</code> or <code>tails</code>; she has no more belief in one outcome than the other. In fact, she decides by tossing a coin she had in her pocket.</p>
+<p>Someone shows you and a friend of yours, called Aisha, a mechanical device designed to toss a coin. The device looks complicated; neither of you has a full grasp of its design. A normal coin is placed on the device, and your friend Aisha is required to place a bet on whether the tossed coin will land <code>heads</code> or <code>tails</code>. If she guesses correctly she wins $1; nothing otherwise. Note that not-betting is not an option: feel free to imagine circumstances (possibly very nasty) where your friend cannot refuse to bet. Let’s also make clear that no cheating is taking place: for instance, the outcome does <em>not</em> depend on the betting choice (you can imagine that the coin is tossed right before Aisha bets, but the outcome hidden from her until she bets).</p>
+<p>From now on you can only observe Aisha’s choices and hear what she says, but you cannot talk with her. In this situation your friend says that it does not matter whether she bets on <code>heads</code> or <code>tails</code>; she has no more belief in one outcome than the other. In fact, she decides by tossing a coin she had in her pocket.</p>
 </blockquote>
 <p><em>Do you think Aisha’s judgement and choice are </em>rational<em>?</em></p>
 <p>Aisha’s conclusion comes not only from the fact that the win is the same in either outcome, but also from the fact that <strong>her beliefs in the <code>heads</code> outcome and in the <code>tails</code> outcome are equal</strong>. If one belief were stronger than the other, she would definitely bet on that outcome instead.</p>
-<p>Yet this equality of beliefs <em>does not come from an equality of frequencies</em>. In fact neither you or your friend have observed any frequencies whatsoever; you have never seen a similar tossing device in operation before. For all you know, the device might be designed to always produce <code>heads</code>, or always <code>tails</code>, or maybe one or the other with peculiar frequencies not equal to 50%/50%.</p>
+<p>Yet this equality of beliefs <strong>does not come from an equality of frequencies</strong>. In fact neither you or your friend have observed any frequencies whatsoever! You have never seen a similar tossing device in operation before. For all you know, the device might be designed to always produce <code>heads</code>, or always <code>tails</code>, or maybe one or the other with peculiar frequencies not equal to 50%/50%.</p>
+<p><br>
+</p>
 <p>Let’s continue:</p>
 <blockquote class="blockquote">
 <p>Now you and your friend observe the toss outcome. It’s <code>tails</code>. The device is prepared again, exactly as in the first toss, and Aisha is required to bet again. However, now they propose Aisha two different bets: betting <code>tails</code> and guessing correctly, she wins $1; betting <code>heads</code> and guessing correctly, she wins $2. (And remember: the outcome won’t depend on her bet; no cheating is taking place).</p>
-<p>Aisha says the following. If she had been proposed a $1-win on either <code>heads</code> or <code>tails</code>, then she would have bet on <code>tails</code>, just because the device had shown <code>tails</code> once. But she still has no much more belief in <code>tails</code> than <code>heads</code>; so given the double win on <code>heads</code>, she now bets <code>heads</code>.</p>
+<p>Aisha says the following: If she had been proposed a $1-win on either <code>heads</code> or <code>tails</code>, then she would have bet on <code>tails</code>, just because the device had shown <code>tails</code> once. But she still has no much more belief in <code>tails</code> than <code>heads</code>; so given the double win on <code>heads</code>, she now bets <code>heads</code>.</p>
 </blockquote>
 <p><em>Do you think Aisha’s judgement and choice are </em>rational<em>?</em></p>
 <p>Clearly Aisha’s beliefs in the two possible outcomes are almost equal. And this near-equality <em>is different from the observed frequency</em>: the frequency right now is 100% <code>tails</code>. The frequency does affect Aisha’s belief a little (she’d choose <code>tails</code> if offered an equal bet), but is <em>different</em> from her belief.</p>
+<p><br>
+</p>
 <p>Fast-forward in time:</p>
 <blockquote class="blockquote">
 <p>The device is repeatedly used, say for 1000 times (plus some extra times until you or your friend says “stop”, if you like). In these repetitions you and Aisha count that <code>heads</code> occurred 781 times, and <code>tails</code> 219 times, without any recognizable pattern. Now Aisha is asked again to place a bet on the next toss.</p>
@@ -718,6 +722,8 @@ window.Quarto = {
 </blockquote>
 <p><em>Do you think Aisha’s judgement and choice are </em>rational<em>?</em></p>
 <p>Now we can say that her beliefs and the observed frequencies are aligned.</p>
+<p><br>
+</p>
 <p>Final part of this scenario:</p>
 <blockquote class="blockquote">
 <p>Finally, another friend of yours, called Aiden, is brought in, and shown the device. Aiden cannot communicate with you or Aisha; he’s in the same situation she and you were around 1000 tosses ago. Aiden is required to place a bet, and he says that he has no preferences for betting on <code>heads</code> or <code>tails</code> – with exactly the same reasoning Aisha did 1000 tosses ago.</p>
