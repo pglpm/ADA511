@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2026-08-26">
+
+<title>8&nbsp; Probabilistic AI agents – Data Science and AI prototyping 0.7</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./probability_inference.html" rel="next">
+<link href="./truth_inference.html" rel="prev">
+<link href="./favicon.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-6fc7f9edc9275b1be4df9d56d9e5af00.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="ada511styles.css">
+</head>
+
+<body class="nav-sidebar docked slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span id="sec-probab-ai" class="quarto-section-identifier"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title"><span class="green">Probabilistic AI agents</span></span></span></h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./ada511logo8_small.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science and AI prototyping <span class="small grey">0.7</span><br><span class="small grey">2026-08-26</span><br></a><a href="http://creativecommons.org/licenses/by-sa/4.0"><img src="cc_by_sa.png" class="img-fluid" style="width:3em" alt="CC BY-SA 4.0"> <span class="small grey">licence</span></a><br> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dear student<br> and aspiring data- &amp; AI-engineer</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text"><span class="lightblue"><strong>An invitation</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title"><span class="lightblue">Accept or discard?</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title"><span class="lightblue">Framework</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./basic_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title"><span class="lightblue">Basic decision problems</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-1-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title"><span class="midgrey">Connection with machine learning and AI</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Rintro1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="lightblue">Working with R, I</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title"><span class="green">What is an inference?</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sentences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title"><span class="green">Sentences</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./truth_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><span class="green">Truth inference and logical AI agents</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probabilistic_AI.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title"><span class="green">Probabilistic AI agents</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><span class="green">Probability inference</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./derived_rules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title"><span class="green">Shortcut rules</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./monty.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><span class="green">Monty Hall and related inference problems</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-2-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title"><span class="midgrey">Second connection with machine learning</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data I</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title"><span class="yellow">Quantities and data types</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quantities_types_multi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title"><span class="yellow">Joint quantities and complex data types</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./probability_distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><span class="green">Probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Rintro2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="lightblue">Working with R, II</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./joint_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><span class="green">Joint probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Rintro3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="lightblue">Working with R, III</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./marginal_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><span class="green">Marginal probability distributions</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conditional_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><span class="green">Conditional probability and learning</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conditional_summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="green">Learning and conditional probability: a summary</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./information.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title"><span class="green">Information, relevance, independence, association</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connection-3-ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title"><span class="midgrey">Third connection with machine learning</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text"><span class="yellow"><strong>Data II</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./populations_variates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title"><span class="yellow">Populations and variates</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title"><span class="yellow">Statistics</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./subpopulations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title"><span class="yellow">Subpopulations and conditional frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./samples.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title"><span class="yellow">Infinite populations and samples</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text"><span class="green"><strong>Inference III</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./categorization-inferences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title"><span class="green">A categorization of inferences</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exchangeable_probabilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title"><span class="green">Exchangeable beliefs</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference_from_freqs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title"><span class="green">Inferences from frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inference_about_freqs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title"><span class="green">Inference about frequencies</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dirichlet-mixture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title"><span class="green">Example of belief over frequencies: the Dirichlet-mixture distribution</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary_formulae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title"><span class="green">Final inference formulae for exchangeable beliefs</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text"><span class="red"><strong>A prototype Optimal Predictor Machine</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./look_behind.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title"><span class="red">A look behind</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title"><span class="red">Implementing an OPM</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./prototype_code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title"><span class="red">Prototype code and workflow</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./example_opm1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title"><span class="red">Example application: adult-income task</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title"><span class="red">Example application: “small language model”</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text"><span class="blue"><strong>Decision-making</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title"><span class="blue">Utilities</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./making_decisions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title"><span class="blue">Making decisions and taking action</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./example_opm2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title"><span class="red">The prototype Optimal Predictor Machine takes action</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./slm2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title"><span class="red">The Optimal Predictor Machine generates text</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text"><span class="midgrey"><strong>Approximations: machine learning</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine_learning_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Introduction to machine learning</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ML_DT_NN.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Machine learning: decision trees and neural networks <em>(by S. Mæland)</em></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./limitations_ML.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title"><span class="darkgrey">Limitations of present-day machine-learning algorithms</span></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utilities_evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title"><span class="darkgrey">Evaluation practices and utilities</span></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text"><span class="lightblue"><strong>Conclusion</strong></span></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./whither.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="lightblue">What next?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bibliography.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="lightblue">Further reading</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./thanks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="lightblue">Thanks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="lightblue">References</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-probability-def" id="toc-sec-probability-def" class="nav-link active" data-scroll-target="#sec-probability-def"><span class="header-section-number">8.1</span> When truth isn’t known: beliefs and probability</a></li>
+  <li><a href="#sec-aspects-probability" id="toc-sec-aspects-probability" class="nav-link" data-scroll-target="#sec-aspects-probability"><span class="header-section-number">8.2</span> Important aspects of probabilities</a>
+  <ul class="collapse">
+  <li><a href="#probabilities-are-not-frequencies" id="toc-probabilities-are-not-frequencies" class="nav-link" data-scroll-target="#probabilities-are-not-frequencies"><span class="blue"><i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i> Probabilities are not frequencies</span></a></li>
+  <li><a href="#probabilities-are-agent--and-knowledge-dependent" id="toc-probabilities-are-agent--and-knowledge-dependent" class="nav-link" data-scroll-target="#probabilities-are-agent--and-knowledge-dependent"><span class="blue"><strong><i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i> Probabilities are agent- and knowledge-dependent</strong></span></a></li>
+  <li><a href="#probabilities-are-not-physical-properties" id="toc-probabilities-are-not-physical-properties" class="nav-link" data-scroll-target="#probabilities-are-not-physical-properties"><span class="blue"><strong><i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i> Probabilities are not physical properties</strong></span></a></li>
+  <li><a href="#probabilities-are-assigned-to-sentences" id="toc-probabilities-are-assigned-to-sentences" class="nav-link" data-scroll-target="#probabilities-are-assigned-to-sentences"><span class="blue"><strong><i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i> Probabilities are assigned to <em>sentences</em></strong></span></a></li>
+  </ul></li>
+  <li><a href="#the-many-uses-of-the-word-probability" id="toc-the-many-uses-of-the-word-probability" class="nav-link" data-scroll-target="#the-many-uses-of-the-word-probability"><span class="header-section-number">8.3</span> The many uses of the word “probability”</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span id="sec-probab-ai" class="quarto-section-identifier"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title"><span class="green">Probabilistic AI agents</span></span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Updated</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2026-08-26</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="hidden">
+<p><span class="math inline">\(\DeclarePairedDelimiter{\set}{\{}{\}}\)</span> <span style="display:inline-block;"><span class="math inline">\(\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}\)</span></span> </p>
+</div>
+<div class="hidden">
+
+</div>
+<p>In most engineering and data-science problems we don’t know the truth or falsity of outcomes and hypotheses that interest us. But this doesn’t mean that nothing can be said or done in such situations. Now we shall finally see how to draw <em>uncertain</em> inferences, that is, how to calculate the <em>probability</em> of something that interests us, given particular data, information, and assumptions.</p>
+<p>So far we have used the term “probability” somewhat informally and intuitively. It’s time to make it more precise and to emphasize some of its most important aspects, especially for Artificial Intelligence. Then we’ll dive into the rules of probability-inference.</p>
+<section id="sec-probability-def" class="level2 page-columns page-full" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="sec-probability-def"><span class="header-section-number">8.1</span> When truth isn’t known: beliefs and probability</h2>
+<p>If we want to design an AI agent that can make decisions and act in uncertain situations, we need to equip it with <em>probabilities</em> and <em>utilities</em>. This is an inescapable necessity, as discussed in <a href="framework.html#sec-decision-theory" class="quarto-xref">§&nbsp;<span>2.5</span></a>. It is intuitively clear what utilities are: they quantify how desirable different outcomes are to the agent. What do probabilities quantify?</p>
+<p>A first <em>tentative</em> answer could be this: the probability of an outcome quantifies how often the agent has seen that outcome. That is, it represents the observed frequency of that outcome.</p>
+<p>Although it seems reasonable in many respects, this tentative answer still doesn’t capture several elements that appear in the way we make rational inferences, and that are extremely important in designing an AI agent that can operate in uncertain conditions.</p>
+<p>To see what’s missing, consider the following scenario:<br>
+</p>
+<blockquote class="blockquote">
+<p>Someone shows you and a friend of yours, called Aisha, a mechanical device designed to toss a coin. The device looks complicated; neither of you has a full grasp of its design. A normal coin is placed on the device, and your friend Aisha is required to place a bet on whether the tossed coin will land <code>heads</code> or <code>tails</code>. If she guesses correctly she wins $1; nothing otherwise. Note that not-betting is not an option: feel free to imagine circumstances (possibly very nasty) where your friend cannot refuse to bet. Let’s also make clear that no cheating is taking place: for instance, the outcome does <em>not</em> depend on the betting choice (you can imagine that the coin is tossed right before Aisha bets, but the outcome hidden from her until she bets).</p>
+<p>From now on you can only observe Aisha’s choices and hear what she says, but you cannot talk with her. In this situation your friend says that it does not matter whether she bets on <code>heads</code> or <code>tails</code>; she has no more belief in one outcome than the other. In fact, she decides by tossing a coin she had in her pocket.</p>
+</blockquote>
+<p><em>Do you think Aisha’s judgement and choice are </em>rational<em>?</em></p>
+<p>Aisha’s conclusion comes not only from the fact that the win is the same in either outcome, but also from the fact that <strong>her beliefs in the <code>heads</code> outcome and in the <code>tails</code> outcome are equal</strong>. If one belief were stronger than the other, she would definitely bet on that outcome instead. And from this initial scenario we gather an important insight:</p>
+<p><i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i> This equality of beliefs <strong>does not come from an equality of frequencies</strong>. In fact neither you or your friend have observed any frequencies whatsoever! You have never seen a similar tossing device in operation before. For all you know, the device might be designed to always produce <code>heads</code>, or always <code>tails</code>, or maybe one or the other with peculiar frequencies not equal to 50%/50%.</p>
+<p><br>
+</p>
+<p>Let’s continue:</p>
+<blockquote class="blockquote">
+<p>Now you and your friend observe the toss outcome. It’s <code>tails</code>. The device is prepared again, exactly as in the first toss, and Aisha is required to bet again. However, now they propose Aisha two different bets: betting <code>tails</code> and guessing correctly, she wins $1; betting <code>heads</code> and guessing correctly, she wins $2. (And remember: the outcome won’t depend on her bet; no cheating is taking place).</p>
+<p>Aisha says the following: If she had been proposed a $1-win on either <code>heads</code> or <code>tails</code>, then she would have bet on <code>tails</code>, just because the device had shown <code>tails</code> once. But she still has no much more belief in <code>tails</code> than <code>heads</code>; so given the double win on <code>heads</code>, she now bets <code>heads</code>.</p>
+</blockquote>
+<p><em>Do you think Aisha’s judgement and choice are </em>rational<em>?</em></p>
+<p>Clearly Aisha’s beliefs in the two possible outcomes are almost equal; and this judgement is not irrational. So we gather another important insight:</p>
+<p><i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i> This near-equality, 50%/50%, of beliefs <em>is different from the observed frequency</em>: the frequency right now is 100% <code>tails</code>. The frequency does affect Aisha’s belief a little (she’d choose <code>tails</code> if offered an equal bet), but is <em>different</em> from her belief.</p>
+<p><br>
+</p>
+<p>Fast-forward in time:</p>
+<blockquote class="blockquote">
+<p>The device is repeatedly used, say for 1000 times (plus some extra times until you or your friend says “stop”, if you like). In these repetitions you and Aisha count that <code>heads</code> occurred 781 times, and <code>tails</code> 219 times, without any recognizable pattern. Now Aisha is asked again to place a bet on the next toss.</p>
+<p>Aisha says that she believes more strongly that the coin will land <code>heads</code> than <code>tails</code>. She even quantifies her belief to around 78% for <code>heads</code> and 22% for <code>tails</code>. It’s very close or identical to the frequency you both observed. Aisha bets accordingly.</p>
+</blockquote>
+<p><em>Do you think Aisha’s judgement and choice are </em>rational<em>?</em></p>
+<p>Now we can say that her beliefs and the observed frequencies are aligned. This is another insight:</p>
+<p><i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i> When frequencies are <em>available</em>, and come from <em>many</em> repetitions, then beliefs and frequencies tend to align.</p>
+<p><br>
+</p>
+<p>Final part of this scenario:</p>
+<blockquote class="blockquote">
+<p>Finally, another friend of yours, called Aiden, is brought in, and shown the device. Aiden cannot communicate with you or Aisha; he’s in the same situation she and you were around 1000 tosses ago. Aiden is required to place a bet, and he says that he has no preferences for betting on <code>heads</code> or <code>tails</code> – with exactly the same reasoning Aisha did 1000 tosses ago.</p>
+</blockquote>
+<p><em>Do you think Aiden’s judgement and choice are </em>rational<em>?</em></p>
+<p>They must be, as Aiden is now in the same position, situation, and state of knowledge as Aisha was before. We gather another insight:</p>
+<p><i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i> Two agents may have different beliefs about the <em>same</em> situation; and yet both beliefs may be rational at the same time.</p>
+<p><br>
+</p>
+<p>If you think that Aisha’s and Aiden’s behaviour and choices were rational, consider a situation in which two AI agents were in their place. It is apparent that we need to <span class="blue"><strong>equip an AI agent with a sort of quantified, rational “degree of belief”</strong></span> in order for it to take rational action in uncertain situations. This is also the result discussed in <a href="framework.html#sec-decision-theory" class="quarto-xref">§&nbsp;<span>2.5</span></a>. <strong>This degree of belief can have connections with an observed frequency, but is generally different from it.</strong> The two notions must therefore be kept separate, and quantified separately. In fact, we may think of situations in which an agent may be <em>uncertain about a frequency</em> and needs to quantify its own belief about the frequency; we’ll meet these situations in the <span class="green"><strong>Inference&nbsp;III</strong></span> part.</p>
+<p>What we call <span class="blue"><strong>probability</strong></span> is this quantified degree of belief:</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+&nbsp;
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div style="font-size:150%">
+<p>The <span class="blue"><strong>probability</strong></span> of a sentence is an agent’s quantified <span class="blue"><strong>degree of belief</strong></span> in that sentence.</p>
+</div>
+</div>
+</div>
+<p>We shall take the notion of <span class="blue"><em>degree of belief</em></span> as intuitively understood, just as we did with the notion of truth. We shall use the terms <span class="blue"><em>probability</em></span>, <span class="blue"><em>degree of belief</em></span>, <span class="blue"><em>belief</em></span>, <span class="blue"><em>plausibility</em></span>, <span class="blue"><em>credibility</em></span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> as synonyms.<br>
+</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;<em>credibility</em> literally means “believability” (from Latin <em>credo</em>&nbsp;=&nbsp;<em>I&nbsp;believe</em>).</p></div></div><p>Probabilities are quantified between <span style="display:inline-block;"><span class="math inline">\(0\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(1\)</span>,</span> or equivalently between <span style="display:inline-block;"><span class="math inline">\(0\%\)</span></span> and <span style="display:inline-block;"><span class="math inline">\(100\%\)</span>.</span> Assigning to a sentence a probability <code>1</code> is the same as saying that it is <code>true</code>; and a probability <code>0</code>, that it is <code>false</code>. A probability of <code>0.5</code> represents a belief completely symmetric with respect to truth and falsity.</p>
+<p>Said otherwise, if an agent assigns to a sentence a probability <code>1</code>, it means that the agent is completely certain that the sentence is <code>true</code>. If the agent assigns a probability <code>0</code>, it means that the agent is completely certain that the sentence is <code>false</code>. If the agent assigns a probability <code>0.5</code>, it means that the agent is equally uncertain about the truth as about the falsity of the sentence.</p>
+</section>
+<section id="sec-aspects-probability" class="level2 page-columns page-full" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="sec-aspects-probability"><span class="header-section-number">8.2</span> Important aspects of probabilities</h2>
+<p>From our discussion of the tossing-device scenario above we can gather several important aspects and facts about probabilities:</p>
+<section id="probabilities-are-not-frequencies" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="probabilities-are-not-frequencies"><span class="blue"><i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i> Probabilities are not frequencies</span></h3>
+<p>This fact is clear by now. Indeed:</p>
+<ul>
+<li>there can be a degree of belief even when no frequencies are available;</li>
+<li>a degree of belief can be very different from an observed frequency;</li>
+<li>a degree of belief can be equal to an observed frequency.</li>
+</ul>
+<p>One remarkable feature of the framework that we’re going to study is that <strong>the quantitative connection between these two notions is taken care of automatically!</strong> We shall see how this connection works in the <span class="green"><strong>Inference&nbsp;III</strong></span> part.</p>
+<p>Note also the different status of the notions “frequency” and “probability/belief” from an epistemological point of view.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Frequencies can be unknown to some agents. Degrees of belief cannot be “unknown”: the agent must have them in order to act. At worst, degrees of belief can be difficult to calculate.</p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;That is, from the point of view of an agent’s knowledge.</p></div></div><div class="callout callout-style-default callout-important no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Be careful when you read authors speaking of an “unknown probability”: they actually mean either “unknown frequency”, or a probability that has to be calculated; it’s “unknown” in the same sense that the value of&nbsp;&nbsp;<span style="display:inline-block;">“<span class="math inline">\(1-0.7 \cdot 0.2/(1-0.3)\)</span>”</span>&nbsp;&nbsp;is “unknown” to you right now.</p>
+</div>
+</div>
+</section>
+<section id="probabilities-are-agent--and-knowledge-dependent" class="level3">
+<h3 class="anchored" data-anchor-id="probabilities-are-agent--and-knowledge-dependent"><span class="blue"><strong><i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i> Probabilities are agent- and knowledge-dependent</strong></span></h3>
+<p>The tossing-device scenario shows that different agents can have different probabilities, that is, degrees of belief, about the same situation.</p>
+<p>This happened when Aiden entered the scene. Aisha had beliefs around 78% for <code>heads</code> and 22% for <code>tails</code>; but Aiden had 50%/50% beliefs for the same toss. Yet <strong>both sets of beliefs were rational and appropriate to their respective situations</strong>. They simply reflected the different <em>states of knowledge</em> of the agents that held them.</p>
+<p>An omniscient agent would know the truth or falsity of every sentence, and assign only probabilities <code>0</code> or <code>1</code>. Some literature speaks of “<em>actual</em> (but unknown) probabilities”. If there were “actual” probabilities, they would be all <code>0</code> or <code>1</code>, and it would be pointless to speak about probabilities at all – every inference would be a truth-inference.</p>
+</section>
+<section id="probabilities-are-not-physical-properties" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="probabilities-are-not-physical-properties"><span class="blue"><strong><i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i> Probabilities are not physical properties</strong></span></h3>
+<p>The fact that two agents can hold different probabilities in the same situation also shows that probabilities are not physical properties, which could be objectively measured with some meter.</p>
+<p>Whether a tossed coin lands heads or tails is fully determined by the initial conditions (position, orientation, momentum, rotational momentum) of the toss and the boundary conditions (air velocity and pressure) during the flight. The same is true for all macroscopic engineering phenomena (even quantum phenomena have never been proved to be non-deterministic, and there are <a href="https://doi.org/10.48550/arXiv.quant-ph/9504010">deterministic and experimentally consistent</a> mathematical representations of quantum theory). So we cannot measure a probability using some physical apparatus.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-book" aria-label="book"></i> Study reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="lightblue"><strong>Skim through</strong></span> Diaconis &amp; al.&nbsp;2007: <a href="references.html"><em>Dynamical Bias in the Coin Toss</em></a>. </p>
+</div>
+</div>
+</div></div><p>We can objectively measure frequencies, in several instances of a phenomenon. Frequencies, as opposed to probabilities, are physically measurable quantities. This shows again the difference between probabilities and frequencies.</p>
+</section>
+<section id="probabilities-are-assigned-to-sentences" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="probabilities-are-assigned-to-sentences"><span class="blue"><strong><i class="fa-solid fa-hand-point-right" aria-label="hand-point-right"></i> Probabilities are assigned to <em>sentences</em></strong></span></h3>
+<p>We already discussed this point in <a href="sentences.html#sec-sentence-notation" class="quarto-xref">§&nbsp;<span>6.3</span></a>, but let’s reiterate it. Consider an engineer working on a problem of electric-power distribution in a specific geographical region. At a given moment the engineer may believe with <span style="display:inline-block;"><span class="math inline">\(75\%\)</span></span> probability that the measured average power output in the next hour will be 100 MW. The <span style="display:inline-block;"><span class="math inline">\(75\%\)</span></span> probability is assigned not to the quantity “100 MW”, but to the <em>sentence</em></p>
+<p><span class="math display">\[
+\textsf{\small`The measured average power output in the next hour will be 100\,MW'}
+\]</span></p>
+<p>This difference is extremely important. Consider the alternative sentence</p>
+<p><span class="math display">\[
+\textsf{\small`The average power output in the next hour will be \emph{set} to 100\,MW'}
+\]</span></p>
+<p>the numerical quantity is the same, but the meaning is very different. The probability can therefore be very different. If the engineer is the person who decides how to set that output, and has decided to set it to 100 MW, then the probability is obviously <span style="display:inline-block;"><span class="math inline">\(100\%\)</span></span> (or very close to), because the engineer already knows what the output will be. The probability depends not only on a number, but on what it’s being done with that number: measuring, setting, third-party reporting, and so on. Often we write simply <span style="display:inline-block;">“<span class="math inline">\(O \mathclose{}\mathord{\nonscript\mkern 0mu\textrm{\small=}\nonscript\mkern 0mu}\mathopen{}10\,\mathrm{W}\)</span>”</span>, provided that the full sentence behind this shorthand is understood.</p>
+<p><br>
+</p>
+<p>The points listed above are not just a matter of principle. They have important practical consequences. A data scientist who is not attentive to the source of the data (measured? set? reported, and so maybe less trustworthy?), or who does not carefully assess the context of a probability, or who mixes a probability with a frequency, or who does not take advantage (when possible) of the physics involved in the a problem – such data scientist will design systems with sub-optimal performance<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> – or even cause deaths.</p>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;This fact can be mathematically proven.</p></div></div></section>
+</section>
+<section id="the-many-uses-of-the-word-probability" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="the-many-uses-of-the-word-probability"><span class="header-section-number">8.3</span> The many uses of the word “probability”</h2>
+<p>The terms “degree of belief” and “frequency” are quite distinct and are used more or less consistently in the literature. Whenever you encounter these terms you more or less know what’s intended.</p>
+<p>Sadly the situation is completely different with the term “probability”, which is used in the literature in incompatible ways. Some literature uses this term as a synonym of “frequency”. Other literature uses it as a synonym of “degree of belief”, as we do; use of “probability” as “degree of belief” is called <span class="blue"><strong>Bayesian probability theory</strong></span>.</p>
+<p>Some recent literature in machine learning uses “probability” in yet another way, to denote the numeric output of some machine-learning algorithms. This numeric output is neither a frequency or a degree of belief, and only has vague associations with them; we’ll discuss this in <a href="limitations_ML.html" class="quarto-xref">ch.&nbsp;&nbsp;<span>42</span></a>.</p>
+<p>There are also a couple more different uses of the term “probability” in the literature. It’s a mess.</p>
+<p>In this course we could have stuck to the terms “degree of belief” and “frequency” only, avoiding the problematic “probability”. But such a choice would not be very helpful to you, because you will nevertheless encounter this term in your readings and scientific discussions. In the AI literature the most common use is as “degree of belief”, so we also adopt it, sometimes using “(degree of) belief” and sometimes “probability”, interchangeably.</p>
+<p>But beware of this term when you read the literature, or in your scientific discussions. You must try to understand the intended meaning from the context. You’re also free to choose (preferably consistently) the terminology you like most. What’s important is that the <em>notions</em> underlying these words are clear to you.</p>
+<div class="callout callout-style-default callout-important no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-exclamation-triangle" aria-label="exclamation-triangle"></i> Beware of <em>likelihood</em> as a synonym for <em>probability</em>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In everyday language, “<a href="https://dictionary.cambridge.org/dictionary/english/likelihood">likelihood</a>” is synonym with “probability”. In technical writings about probability or statistics, however, “likelihood” means something different and is <em>not</em> a synonym of “probability”, as we explain below (<a href="probability_inference.html#sec-likelihood" class="quarto-xref">§&nbsp;<span>9.6.1</span></a>).</p>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./truth_inference.html" class="pagination-link" aria-label="[Truth inference and logical AI agents]{.green}">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><span class="green">Truth inference and logical AI agents</span></span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./probability_inference.html" class="pagination-link" aria-label="[Probability inference]{.green}">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><span class="green">Probability inference</span></span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
